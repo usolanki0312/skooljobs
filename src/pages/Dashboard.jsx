@@ -1,20 +1,28 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Topbar from "../components/Topbar";
+import { useEffect } from "react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const handleLogout = () => {
+  useEffect(() => {
 
-  // remove user data
+  const currentUser =
+    localStorage.getItem("currentUser");
+
+  if (!currentUser) {
+
+    navigate("/login");
+  }
+
+}, [navigate]);
+ const handleLogout = () => {
 
   localStorage.removeItem("currentUser");
 
   localStorage.removeItem("userName");
 
-  // redirect to login page
-
-  navigate("/login");
+  window.location.href = "/";
 };
 
   const [profileImage, setProfileImage] = useState(
@@ -345,19 +353,49 @@ const Dashboard = () => {
 
                     <div className="flex gap-4 mt-5">
 
-                      <button
-                        onClick={() => handleApply(job)}
-                        className="bg-primary text-white px-4 py-2 rounded-xl"
-                      >
-                        Apply
-                      </button>
+                    <button
+  onClick={() => handleApply(job)}
+  disabled={appliedJobs.some(
+    (item) => item.id === job.id
+  )}
+  className={`px-4 py-2 rounded-xl text-white ${
+    appliedJobs.some(
+      (item) => item.id === job.id
+    )
+      ? "bg-green-500 cursor-not-allowed"
+      : "bg-primary"
+  }`}
+>
 
-                      <button
-                        onClick={() => handleSave(job)}
-                        className="border border-primary text-primary px-4 py-2 rounded-xl"
-                      >
-                        Save
-                      </button>
+  {appliedJobs.some(
+    (item) => item.id === job.id
+  )
+    ? "Applied"
+    : "Apply"}
+
+</button>
+
+                <button
+  onClick={() => handleSave(job)}
+  disabled={savedJobs.some(
+    (item) => item.id === job.id
+  )}
+  className={`px-4 py-2 rounded-xl border ${
+    savedJobs.some(
+      (item) => item.id === job.id
+    )
+      ? "bg-green-500 text-white border-green-500 cursor-not-allowed"
+      : "border-primary text-primary"
+  }`}
+>
+
+  {savedJobs.some(
+    (item) => item.id === job.id
+  )
+    ? "Saved"
+    : "Save"}
+
+</button>
 
                     </div>
 
@@ -513,19 +551,49 @@ const Dashboard = () => {
 
                   <div className="flex gap-4 mt-4">
 
-                    <button
-                      onClick={() => handleApply(job)}
-                      className="bg-primary text-white px-4 py-2 rounded-xl"
-                    >
-                      Apply
-                    </button>
+                 <button
+  onClick={() => handleApply(job)}
+  disabled={appliedJobs.some(
+    (item) => item.id === job.id
+  )}
+  className={`px-4 py-2 rounded-xl text-white ${
+    appliedJobs.some(
+      (item) => item.id === job.id
+    )
+      ? "bg-green-500 cursor-not-allowed"
+      : "bg-primary"
+  }`}
+>
 
-                    <button
-                      onClick={() => handleSave(job)}
-                      className="border border-primary text-primary px-4 py-2 rounded-xl"
-                    >
-                      Save
-                    </button>
+  {appliedJobs.some(
+    (item) => item.id === job.id
+  )
+    ? "Applied"
+    : "Apply"}
+
+</button>
+
+<button
+  onClick={() => handleSave(job)}
+  disabled={savedJobs.some(
+    (item) => item.id === job.id
+  )}
+  className={`px-4 py-2 rounded-xl border ${
+    savedJobs.some(
+      (item) => item.id === job.id
+    )
+      ? "bg-green-500 text-white border-green-500 cursor-not-allowed"
+      : "border-primary text-primary"
+  }`}
+>
+
+  {savedJobs.some(
+    (item) => item.id === job.id
+  )
+    ? "Saved"
+    : "Save"}
+
+</button>
 
                   </div>
 
