@@ -316,140 +316,146 @@ const Dashboard = () => {
 
             </div>
 <div className="flex gap-6 mt-6">
-            {/* RECOMMENDED JOBS */}
 
-            <div className="bg-white rounded-2xl shadow-soft p-6 mt-6">
+  {/* RECOMMENDED JOBS */}
 
-              <h2 className="text-2xl font-bold text-primary mb-6">
-                Recommended Jobs
-              </h2>
+  <div className="flex-1 bg-white rounded-2xl shadow-soft p-6">
 
-              <div className="grid grid-cols-2 gap-6">
+    <h2 className="text-2xl font-bold text-primary mb-6">
+      Recommended Jobs
+    </h2>
 
-                {recommendedJobs.map((job) => (
+    <div className="grid grid-cols-2 gap-6">
 
-                  <div
-                    key={job.id}
-                    className="border border-borderColor rounded-2xl p-5"
-                  >
+      {recommendedJobs.map((job) => (
 
-                    <img
-                      src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d"
-                      alt="job"
-                      className="w-full h-40 object-cover rounded-xl"
-                    />
+        <div
+          key={job.id}
+          className="border border-borderColor rounded-2xl p-5"
+        >
 
-                    <h3 className="text-xl font-bold text-primary mt-4">
-                      {job.role}
-                    </h3>
+          <img
+            src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d"
+            alt="job"
+            className="w-full h-40 object-cover rounded-xl"
+          />
 
-                    <p className="text-gray-600 mt-2">
-                      {job.company}
-                    </p>
+          <h3 className="text-xl font-bold text-primary mt-4">
+            {job.role}
+          </h3>
 
-                    <p className="text-gray-500 text-sm mt-1">
-                      {job.location}
-                    </p>
+          <p className="text-gray-600 mt-2">
+            {job.company}
+          </p>
 
-                    <div className="flex gap-4 mt-5">
+          <p className="text-gray-500 text-sm mt-1">
+            {job.location}
+          </p>
 
-                    <button
-  onClick={() => handleApply(job)}
-  disabled={appliedJobs.some(
-    (item) => item.id === job.id
-  )}
-  className={`px-4 py-2 rounded-xl text-white ${
-    appliedJobs.some(
-      (item) => item.id === job.id
-    )
-      ? "bg-green-500 cursor-not-allowed"
-      : "bg-primary"
-  }`}
->
+          <div className="flex gap-4 mt-5">
 
-  {appliedJobs.some(
-    (item) => item.id === job.id
-  )
-    ? "Applied"
-    : "Apply"}
+            {/* APPLY BUTTON */}
 
-</button>
+            <button
+              onClick={() => handleApply(job)}
+              disabled={appliedJobs.some(
+                (item) => item.id === job.id
+              )}
+              className={`px-4 py-2 rounded-xl text-white ${
+                appliedJobs.some(
+                  (item) => item.id === job.id
+                )
+                  ? "bg-green-500 cursor-not-allowed"
+                  : "bg-primary"
+              }`}
+            >
 
-                <button
-  onClick={() => handleSave(job)}
-  disabled={savedJobs.some(
-    (item) => item.id === job.id
-  )}
-  className={`px-4 py-2 rounded-xl border ${
-    savedJobs.some(
-      (item) => item.id === job.id
-    )
-      ? "bg-green-500 text-white border-green-500 cursor-not-allowed"
-      : "border-primary text-primary"
-  }`}
->
+              {appliedJobs.some(
+                (item) => item.id === job.id
+              )
+                ? "Applied"
+                : "Apply"}
 
-  {savedJobs.some(
-    (item) => item.id === job.id
-  )
-    ? "Saved"
-    : "Save"}
+            </button>
 
-</button>
+            {/* SAVE BUTTON */}
 
-                    </div>
+            <button
+              onClick={() => handleSave(job)}
+              disabled={savedJobs.some(
+                (item) => item.id === job.id
+              )}
+              className={`px-4 py-2 rounded-xl border ${
+                savedJobs.some(
+                  (item) => item.id === job.id
+                )
+                  ? "bg-green-500 text-white border-green-500 cursor-not-allowed"
+                  : "border-primary text-primary"
+              }`}
+            >
 
-                  </div>
-                ))}
+              {savedJobs.some(
+                (item) => item.id === job.id
+              )
+                ? "Saved"
+                : "Save"}
 
-              </div>
+            </button>
 
-            </div>
-            {/* CHAT BOX */}
+          </div>
 
-<div className="w-[280px] bg-white rounded-2xl shadow-soft p-5 h-fit">
+        </div>
+      ))}
 
-  <div className="flex items-center gap-3 border-b border-borderColor pb-4">
+    </div>
 
-    <img
-      src={profileImage}
-      alt="profile"
-      className="w-12 h-12 rounded-full object-cover"
+  </div>
+
+ 
+
+  <div className="w-[280px] bg-white rounded-2xl shadow-soft p-5 h-fit">
+
+    <div className="flex items-center gap-3 border-b border-borderColor pb-4">
+
+      <img
+        src={profileImage}
+        alt="profile"
+        className="w-12 h-12 rounded-full object-cover"
+      />
+
+      <div>
+
+        <h3 className="font-bold text-primary">
+          {loggedInUser}
+        </h3>
+
+        <p className="text-sm text-green-500">
+          Online
+        </p>
+
+      </div>
+
+    </div>
+
+    <div className="h-[300px] overflow-y-auto mt-4 flex flex-col gap-3">
+
+      <div className="bg-light p-3 rounded-xl text-sm">
+        Welcome to SkoolJobs 👋
+      </div>
+
+      <div className="bg-primary text-white p-3 rounded-xl text-sm ml-auto">
+        Hello Sir
+      </div>
+
+    </div>
+
+    <input
+      type="text"
+      placeholder="Type message..."
+      className="w-full border border-borderColor p-3 rounded-xl mt-4 outline-none"
     />
 
-    <div>
-
-      <h3 className="font-bold text-primary">
-        {loggedInUser}
-      </h3>
-
-      <p className="text-sm text-green-500">
-        Online
-      </p>
-
-    </div>
-
   </div>
-
-  <div className="h-[300px] overflow-y-auto mt-4 flex flex-col gap-3">
-
-    <div className="bg-light p-3 rounded-xl text-sm">
-      Welcome to SkoolJobs 👋
-    </div>
-
-    <div className="bg-primary text-white p-3 rounded-xl text-sm ml-auto">
-      Hello Sir
-    </div>
-
-  </div>
-
-  <input
-    type="text"
-    placeholder="Type message..."
-    className="w-full border border-borderColor p-3 rounded-xl mt-4 outline-none"
-  />
-
-</div>
 
 </div>
         </>
