@@ -1,270 +1,653 @@
-import React, { useState } from "react";
-import TeacherProfile from "./TeacherProfile";
-
-import {
-  User,
-  FileText,
-  Briefcase,
-  ClipboardCheck,
-  FileBadge,
-  Send,
-} from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Topbar from "../components/Topbar";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
 
-  const [activePage, setActivePage] = useState("profile");
+  // remove user data
+
+  localStorage.removeItem("currentUser");
+
+  localStorage.removeItem("userName");
+
+  // redirect to login page
+
+  navigate("/login");
+};
+
+  const [profileImage, setProfileImage] = useState(
+    "https://i.pravatar.cc/150"
+  );
+
+  const loggedInUser =
+    localStorage.getItem("userName") || "Gopal";
+
+  const jobsData = [
+    {
+      id: 1,
+      company: "Google",
+      role: "Frontend Developer",
+      location: "Bangalore",
+      skill: "React",
+    },
+
+    {
+      id: 2,
+      company: "Microsoft",
+      role: "React Developer",
+      location: "Hyderabad",
+      skill: "React",
+    },
+
+    {
+      id: 3,
+      company: "Amazon",
+      role: "UI Designer",
+      location: "Pune",
+      skill: "UI/UX",
+    },
+
+    {
+      id: 4,
+      company: "Infosys",
+      role: "Java Developer",
+      location: "Indore",
+      skill: "Java",
+    },
+  ];
+
+  const resumes = [
+    {
+      id: 1,
+      name: "React Resume.pdf",
+      skill: "React",
+    },
+
+    {
+      id: 2,
+      name: "Java Resume.pdf",
+      skill: "Java",
+    },
+
+    {
+      id: 3,
+      name: "UIUX Resume.pdf",
+      skill: "UI/UX",
+    },
+
+    {
+      id: 4,
+      name: "FullStack Resume.pdf",
+      skill: "React",
+    },
+  ];
+
+  const [selectedResume, setSelectedResume] =
+    useState(resumes[0]);
+
+  const [appliedJobs, setAppliedJobs] = useState([]);
+  const [savedJobs, setSavedJobs] = useState([]);
+  const [activities, setActivities] = useState([]);
+  const [activeSection, setActiveSection] =
+    useState("dashboard");
+
+  const recommendedJobs = jobsData.filter(
+    (job) => job.skill === selectedResume.skill
+  );
+
+  const handleApply = (job) => {
+
+    const alreadyApplied = appliedJobs.find(
+      (item) => item.id === job.id
+    );
+
+    if (!alreadyApplied) {
+
+      setAppliedJobs([...appliedJobs, job]);
+
+      setActivities([
+        `Applied for ${job.role} at ${job.company}`,
+        ...activities,
+      ]);
+    }
+  };
+
+  const handleSave = (job) => {
+
+    const alreadySaved = savedJobs.find(
+      (item) => item.id === job.id
+    );
+
+    if (!alreadySaved) {
+
+      setSavedJobs([...savedJobs, job]);
+
+      setActivities([
+        `Saved ${job.role} at ${job.company}`,
+        ...activities,
+      ]);
+    }
+  };
+  
+
+  
+
+  const handleProfileImage = (event) => {
+
+    const file = event.target.files[0];
+
+    if (file) {
+
+      setProfileImage(
+        URL.createObjectURL(file)
+      );
+
+      setActivities([
+        "Updated profile photo",
+        ...activities,
+      ]);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#eef2f7]">
+    <div className="flex bg-light min-h-screen">
 
-      {/* Navbar */}
-      <div className="h-20 bg-white border-b flex items-center justify-between px-10">
+      {/* SIDEBAR */}
 
-        <div className="flex items-center gap-4">
+      <div className="w-64 bg-primary text-white min-h-screen p-5">
 
-          <div className="w-12 h-12 rounded-xl bg-blue-900 flex items-center justify-center text-white text-2xl font-bold shadow-md">
-            S
-          </div>
+        <div className="flex flex-col items-center">
 
-          <h1 className="text-4xl font-bold text-blue-900">
-            SkoolJobs
-          </h1>
+          <img
+            src={profileImage}
+            alt="profile"
+            className="w-24 h-24 rounded-full border-4 border-white object-cover"
+          />
+
+          <label className="mt-4 bg-white text-primary px-4 py-2 rounded-xl cursor-pointer text-sm font-semibold">
+
+            Upload Photo
+
+            <input
+              type="file"
+              hidden
+              onChange={handleProfileImage}
+            />
+
+          </label>
+
+          <h2 className="mt-4 text-xl font-bold">
+            {loggedInUser}
+          </h2>
 
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="mt-10 flex flex-col gap-4">
 
-          <div className="flex items-center gap-3 bg-[#eef2f7] px-4 py-2 rounded-full">
+          <button
+            onClick={() => setActiveSection("dashboard")}
+            className="bg-white/20 p-3 rounded-xl text-left"
+          >
+            Dashboard
+          </button>
 
-            <div className="w-10 h-10 rounded-full bg-blue-900 text-white flex items-center justify-center font-bold">
-              A
-            </div>
+        <button
+  onClick={() => navigate("/teacher-profile")}
+  className="bg-white/20 p-3 rounded-xl text-left"
+>
+  My Profile
+</button>
 
-            <p className="font-semibold text-blue-900">
-              Aman Rajput
-            </p>
+          <button
+            onClick={() => setActiveSection("alljobs")}
+            className="bg-white/20 p-3 rounded-xl text-left"
+          >
+            All Jobs
+          </button>
 
-          </div>
+          <button
+            onClick={() => setActiveSection("recommendation")}
+            className="bg-white/20 p-3 rounded-xl text-left"
+          >
+            Recommendation
+          </button>
 
-          <button className="bg-red-100 text-red-600 px-6 py-3 rounded-2xl font-semibold">
+          <button
+            onClick={() => setActiveSection("resume")}
+            className="bg-white/20 p-3 rounded-xl text-left"
+          >
+            Resume
+          </button>
+
+          <button
+            onClick={() => setActiveSection("activity")}
+            className="bg-white/20 p-3 rounded-xl text-left"
+          >
+            Recent Activity
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 p-3 rounded-xl text-left mt-10"
+          >
             Logout
           </button>
 
         </div>
+
       </div>
 
-      {/* Layout */}
-      <div className="flex gap-8 p-8">
+      {/* MAIN */}
 
-        {/* Sidebar */}
-        <div className="w-[320px] bg-white rounded-[30px] shadow-sm p-6 h-[85vh] overflow-y-auto">
+      <div className="flex-1 p-6">
 
-          <p className="text-sm text-blue-900 font-bold uppercase">
-            Navigation Hub
-          </p>
+        <Topbar />
 
-          <h2 className="text-4xl font-bold text-blue-900 mt-2">
-            Teacher Panel
-          </h2>
+        {/* DASHBOARD */}
 
-          <div className="border-b my-6"></div>
+        {activeSection === "dashboard" && (
 
-          <div className="space-y-4">
+          <>
+            <div className="grid grid-cols-4 gap-6 mt-6">
 
-            {/* My Profile */}
-            <div
-              onClick={() => setActivePage("profile")}
-              className={`flex items-center gap-4 px-6 py-5 rounded-2xl cursor-pointer transition 
-               ${
-                 activePage === "profile"
-                   ? "bg-blue-900 text-white"
-                   : "text-blue-900 hover:bg-[#eef2f7]"
-               }`}
-            >
-
-              <User size={24} />
-
-              <span className="text-xl font-semibold">
-                My Profile
-              </span>
-
-            </div>
-
-            {/* Resume */}
-            <div
-              onClick={() => setActivePage("resume")}
-              className="flex items-center gap-4 px-6 py-4 text-blue-900 hover:bg-[#eef2f7] rounded-2xl cursor-pointer transition"
-            >
-
-              <FileText size={22} />
-
-              <span className="text-lg font-semibold">
-                My Resume
-              </span>
-
-            </div>
-
-            {/* Recommended */}
-            <div
-              onClick={() => setActivePage("recommended")}
-              className="flex items-center gap-4 px-6 py-4 text-blue-900 hover:bg-[#eef2f7] rounded-2xl cursor-pointer transition"
-            >
-
-              <Briefcase size={22} />
-
-              <span className="text-lg font-semibold">
-                Recommended Jobs
-              </span>
-
-            </div>
-
-            {/* Recent */}
-            <div
-              onClick={() => setActivePage("recent")}
-              className="flex items-center gap-4 px-6 py-4 text-blue-900 hover:bg-[#eef2f7] rounded-2xl cursor-pointer transition"
-            >
-
-              <ClipboardCheck size={22} />
-
-              <span className="text-lg font-semibold">
-                Recent Activity
-              </span>
-
-            </div>
-
-            {/* Completion */}
-            <div
-              onClick={() => setActivePage("completion")}
-              className="flex items-center justify-between px-6 py-4 text-blue-900 hover:bg-[#eef2f7] rounded-2xl cursor-pointer transition"
-            >
-
-              <div className="flex items-center gap-4">
-
-                <User size={22} />
-
-                <span className="text-lg font-semibold">
-                  Profile Completion
-                </span>
-
-              </div>
-
-              <div className="bg-blue-100 text-blue-900 w-14 h-8 rounded-full flex items-center justify-center text-sm font-bold">
-                85%
-              </div>
-
-            </div>
-
-            {/* Applied */}
-            <div
-              onClick={() => setActivePage("applied")}
-              className="flex items-center justify-between px-6 py-4 text-blue-900 hover:bg-[#eef2f7] rounded-2xl cursor-pointer transition"
-            >
-
-              <div className="flex items-center gap-4">
-
-                <ClipboardCheck size={22} />
-
-                <span className="text-lg font-semibold">
+              <div
+                onClick={() =>
+                  setActiveSection("applied")
+                }
+                className="bg-white rounded-2xl shadow-soft p-5 cursor-pointer"
+              >
+                <h2 className="text-lg font-semibold text-primary">
                   Applied Jobs
-                </span>
-
-              </div>
-
-              <div className="bg-blue-100 text-blue-900 w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold">
-                1
-              </div>
-
-            </div>
-
-            {/* CV */}
-            <div
-              onClick={() => setActivePage("cv")}
-              className="flex items-center gap-4 px-6 py-4 text-blue-900 hover:bg-[#eef2f7] rounded-2xl cursor-pointer transition"
-            >
-
-              <FileBadge size={22} />
-
-              <span className="text-lg font-semibold">
-                CV & Cover Letter
-              </span>
-
-            </div>
-
-          </div>
-        </div>
-
-        {/* Center Content */}
-        <div className="flex-1">
-
-          {activePage === "profile" && <TeacherProfile />}
-
-          {activePage === "resume" && (
-            <div className="bg-white rounded-[30px] p-10 shadow-sm">
-              <h1 className="text-4xl font-bold text-blue-900">
-                My Resume
-              </h1>
-            </div>
-          )}
-
-          {activePage === "recommended" && (
-            <div className="bg-white rounded-[30px] p-10 shadow-sm">
-              <h1 className="text-4xl font-bold text-blue-900">
-                Recommended Jobs
-              </h1>
-            </div>
-          )}
-
-          {activePage === "recent" && (
-            <div className="bg-white rounded-[30px] p-10 shadow-sm">
-              <h1 className="text-4xl font-bold text-blue-900">
-                Recent Activity
-              </h1>
-            </div>
-          )}
-
-        </div>
-
-        {/* Chat Box */}
-        <div className="w-[420px] bg-white rounded-[30px] shadow-sm overflow-hidden h-[85vh] flex flex-col">
-
-          <div className="bg-blue-900 text-white p-6">
-
-            <div className="flex justify-between items-center">
-
-              <div>
-
-                <h2 className="text-3xl font-bold">
-                  Direct Messaging
                 </h2>
 
-                <p className="text-lg mt-2 text-blue-100">
-                  Recruiter Connect
+                <p className="text-4xl font-bold mt-4">
+                  {appliedJobs.length}
+                </p>
+              </div>
+
+              <div
+                onClick={() =>
+                  setActiveSection("saved")
+                }
+                className="bg-white rounded-2xl shadow-soft p-5 cursor-pointer"
+              >
+                <h2 className="text-lg font-semibold text-primary">
+                  Saved Jobs
+                </h2>
+
+                <p className="text-4xl font-bold mt-4">
+                  {savedJobs.length}
+                </p>
+              </div>
+
+              <div className="bg-white rounded-2xl shadow-soft p-5">
+
+                <h2 className="text-lg font-semibold text-primary">
+                  Interviews
+                </h2>
+
+                <p className="text-4xl font-bold mt-4">
+                  03
                 </p>
 
               </div>
 
-              <div className="w-4 h-4 bg-green-400 rounded-full"></div>
+              <div className="bg-white rounded-2xl shadow-soft p-5">
+
+                <h2 className="text-lg font-semibold text-primary">
+                  Profile Score
+                </h2>
+
+                <p className="text-4xl font-bold mt-4">
+                  75%
+                </p>
+
+              </div>
 
             </div>
+<div className="flex gap-6 mt-6">
+            {/* RECOMMENDED JOBS */}
+
+            <div className="bg-white rounded-2xl shadow-soft p-6 mt-6">
+
+              <h2 className="text-2xl font-bold text-primary mb-6">
+                Recommended Jobs
+              </h2>
+
+              <div className="grid grid-cols-2 gap-6">
+
+                {recommendedJobs.map((job) => (
+
+                  <div
+                    key={job.id}
+                    className="border border-borderColor rounded-2xl p-5"
+                  >
+
+                    <img
+                      src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d"
+                      alt="job"
+                      className="w-full h-40 object-cover rounded-xl"
+                    />
+
+                    <h3 className="text-xl font-bold text-primary mt-4">
+                      {job.role}
+                    </h3>
+
+                    <p className="text-gray-600 mt-2">
+                      {job.company}
+                    </p>
+
+                    <p className="text-gray-500 text-sm mt-1">
+                      {job.location}
+                    </p>
+
+                    <div className="flex gap-4 mt-5">
+
+                      <button
+                        onClick={() => handleApply(job)}
+                        className="bg-primary text-white px-4 py-2 rounded-xl"
+                      >
+                        Apply
+                      </button>
+
+                      <button
+                        onClick={() => handleSave(job)}
+                        className="border border-primary text-primary px-4 py-2 rounded-xl"
+                      >
+                        Save
+                      </button>
+
+                    </div>
+
+                  </div>
+                ))}
+
+              </div>
+
+            </div>
+            {/* CHAT BOX */}
+
+<div className="w-[280px] bg-white rounded-2xl shadow-soft p-5 h-fit">
+
+  <div className="flex items-center gap-3 border-b border-borderColor pb-4">
+
+    <img
+      src={profileImage}
+      alt="profile"
+      className="w-12 h-12 rounded-full object-cover"
+    />
+
+    <div>
+
+      <h3 className="font-bold text-primary">
+        {loggedInUser}
+      </h3>
+
+      <p className="text-sm text-green-500">
+        Online
+      </p>
+
+    </div>
+
+  </div>
+
+  <div className="h-[300px] overflow-y-auto mt-4 flex flex-col gap-3">
+
+    <div className="bg-light p-3 rounded-xl text-sm">
+      Welcome to SkoolJobs 👋
+    </div>
+
+    <div className="bg-primary text-white p-3 rounded-xl text-sm ml-auto">
+      Hello Sir
+    </div>
+
+  </div>
+
+  <input
+    type="text"
+    placeholder="Type message..."
+    className="w-full border border-borderColor p-3 rounded-xl mt-4 outline-none"
+  />
+
+</div>
+
+</div>
+        </>
+)}
+
+        {/* APPLIED JOBS */}
+
+        {activeSection === "applied" && (
+
+          <div className="bg-white rounded-2xl shadow-soft p-6 mt-6">
+
+            <h2 className="text-2xl font-bold text-primary mb-6">
+              Applied Jobs
+            </h2>
+
+            {appliedJobs.length === 0 ? (
+              <p>No Applied Jobs</p>
+            ) : (
+              appliedJobs.map((job) => (
+
+                <div
+                  key={job.id}
+                  className="border border-borderColor rounded-xl p-5 mb-4"
+                >
+                  <h3 className="font-bold text-primary">
+                    {job.role}
+                  </h3>
+
+                  <p>{job.company}</p>
+
+                  <p>{job.location}</p>
+
+                </div>
+              ))
+            )}
+
           </div>
+        )}
 
-          <div className="flex-1 p-5"></div>
+        {/* SAVED JOBS */}
 
-          <div className="p-4 border-t flex items-center gap-4">
+        {activeSection === "saved" && (
 
-            <input
-              type="text"
-              placeholder="Write message..."
-              className="flex-1 bg-[#eef2f7] rounded-2xl px-6 py-4 outline-none"
-            />
+          <div className="bg-white rounded-2xl shadow-soft p-6 mt-6">
 
-            <button className="w-14 h-14 rounded-2xl bg-blue-900 text-white flex items-center justify-center">
-              <Send />
-            </button>
+            <h2 className="text-2xl font-bold text-primary mb-6">
+              Saved Jobs
+            </h2>
+
+            {savedJobs.length === 0 ? (
+              <p>No Saved Jobs</p>
+            ) : (
+              savedJobs.map((job) => (
+
+                <div
+                  key={job.id}
+                  className="border border-borderColor rounded-xl p-5 mb-4"
+                >
+                  <h3 className="font-bold text-primary">
+                    {job.role}
+                  </h3>
+
+                  <p>{job.company}</p>
+
+                  <p>{job.location}</p>
+
+                </div>
+              ))
+            )}
 
           </div>
-        </div>
+        )}
+
+        {/* ALL JOBS */}
+
+        {activeSection === "alljobs" && (
+
+          <div className="bg-white rounded-2xl shadow-soft p-6 mt-6">
+
+            <h2 className="text-2xl font-bold text-primary mb-6">
+              All Jobs
+            </h2>
+
+            <div className="grid grid-cols-2 gap-6">
+
+              {jobsData.map((job) => (
+
+                <div
+                  key={job.id}
+                  className="border border-borderColor rounded-xl p-5"
+                >
+                  <h3 className="font-bold text-primary">
+                    {job.role}
+                  </h3>
+
+                  <p>{job.company}</p>
+
+                  <p>{job.location}</p>
+
+                  <div className="flex gap-4 mt-4">
+
+                    <button
+                      onClick={() => handleApply(job)}
+                      className="bg-primary text-white px-4 py-2 rounded-xl"
+                    >
+                      Apply
+                    </button>
+
+                    <button
+                      onClick={() => handleSave(job)}
+                      className="border border-primary text-primary px-4 py-2 rounded-xl"
+                    >
+                      Save
+                    </button>
+
+                  </div>
+
+                </div>
+              ))}
+
+            </div>
+
+          </div>
+        )}
+
+        {/* RESUME */}
+
+        {activeSection === "resume" && (
+
+          <div className="bg-white rounded-2xl shadow-soft p-6 mt-6">
+
+            <h2 className="text-2xl font-bold text-primary mb-6">
+              My Resume
+            </h2>
+
+            <div className="grid grid-cols-2 gap-6">
+
+              {resumes.map((resume) => (
+
+                <div
+                  key={resume.id}
+                  onClick={() =>
+                    setSelectedResume(resume)
+                  }
+                  className="border border-borderColor rounded-xl p-5 cursor-pointer"
+                >
+                  <h3 className="font-bold text-primary">
+                    {resume.name}
+                  </h3>
+
+                  <p className="mt-2 text-gray-500">
+                    Skill : {resume.skill}
+                  </p>
+
+                </div>
+              ))}
+
+            </div>
+
+          </div>
+        )}
+
+        {/* RECOMMENDATION */}
+
+        {activeSection === "recommendation" && (
+
+          <div className="bg-white rounded-2xl shadow-soft p-6 mt-6">
+
+            <h2 className="text-2xl font-bold text-primary mb-6">
+              Resume Based Recommendation
+            </h2>
+
+            <p className="mb-6 text-gray-500">
+              Selected Resume :
+              {selectedResume.name}
+            </p>
+
+            <div className="grid grid-cols-2 gap-6">
+
+              {recommendedJobs.map((job) => (
+
+                <div
+                  key={job.id}
+                  className="border border-borderColor rounded-xl p-5"
+                >
+                  <h3 className="font-bold text-primary">
+                    {job.role}
+                  </h3>
+
+                  <p>{job.company}</p>
+
+                  <p>{job.location}</p>
+
+                </div>
+              ))}
+
+            </div>
+
+          </div>
+        )}
+        {/* CHAT BOX */}
+
+
+
+        {/* RECENT ACTIVITY */}
+
+        {activeSection === "activity" && (
+
+          <div className="bg-white rounded-2xl shadow-soft p-6 mt-6">
+
+            <h2 className="text-2xl font-bold text-primary mb-6">
+              Recent Activity
+            </h2>
+
+            {activities.length === 0 ? (
+
+              <p>No Recent Activity</p>
+
+            ) : (
+
+              activities.map((activity, index) => (
+
+                <div
+                  key={index}
+                  className="border border-borderColor rounded-xl p-4 mb-4"
+                >
+                  {activity}
+                </div>
+              ))
+            )}
+
+          </div>
+        )}
+
       </div>
+
     </div>
   );
 };

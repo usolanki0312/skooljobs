@@ -1,558 +1,581 @@
-import React, { useEffect, useState } from "react";
-
+import { useState } from "react";
+import BackButton from "../components/BackButton";
 const TeacherProfile = () => {
 
-  const [formData, setFormData] = useState({
+  const [profileImage, setProfileImage] = useState(
+    "https://i.pravatar.cc/150"
+  );
+
+  const [teacherData, setTeacherData] = useState({
     title: "Mr",
     firstName: "",
     middleName: "",
     lastName: "",
-
     dob: "",
     age: "",
-
     nationality: "",
-
-    currentJobTitle: "",
-
+    currentJob: "",
     mainSubject: "",
-
-    additionalSubjects: [],
-
-    class1: "",
-    class2: "",
-
-    language1: "English",
-    language2: "",
-    language3: "",
-
-    status1: "Fluency enough to teach",
-    status2: "",
-    status3: "",
-
-    qualification1: "",
-    qualification2: "",
+    additionalSubject: "",
+    classesTaught: "",
+    language: "",
+    status: "",
+    qualification: "",
+    experience: "",
+    email: "",
+    phone: "",
+    address: "",
   });
 
-  /* Handle Change */
   const handleChange = (e) => {
 
     const { name, value } = e.target;
 
-    setFormData({
-      ...formData,
+    setTeacherData({
+      ...teacherData,
       [name]: value,
     });
-
   };
 
-  /* Auto Age Calculate */
-  useEffect(() => {
+  const handleDobChange = (e) => {
 
-    if (formData.dob) {
+  const dob = e.target.value;
 
-      const birthDate = new Date(formData.dob);
+  const birthDate = new Date(dob);
 
-      const today = new Date();
+  const today = new Date();
 
-      let age = today.getFullYear() - birthDate.getFullYear();
+  let age =
+    today.getFullYear() -
+    birthDate.getFullYear();
 
-      const monthDiff =
-        today.getMonth() - birthDate.getMonth();
+  const monthDifference =
+    today.getMonth() -
+    birthDate.getMonth();
 
-      if (
-        monthDiff < 0 ||
-        (monthDiff === 0 &&
-          today.getDate() < birthDate.getDate())
-      ) {
-        age--;
-      }
+  if (
+    monthDifference < 0 ||
+    (
+      monthDifference === 0 &&
+      today.getDate() < birthDate.getDate()
+    )
+  ) {
+    age--;
+  }
 
-      setFormData((prev) => ({
-        ...prev,
-        age: age,
-      }));
+  setTeacherData({
+    ...teacherData,
+    dob: dob,
+    age: age,
+  });
+};
+  const handleProfileImage = (event) => {
+
+    const file = event.target.files[0];
+
+    if (file) {
+      setProfileImage(
+        URL.createObjectURL(file)
+      );
     }
+  };
 
-  }, [formData.dob]);
-
-  /* Submit */
   const handleSubmit = (e) => {
 
     e.preventDefault();
 
-    console.log(formData);
+    console.log(teacherData);
 
-    alert("Profile Saved Successfully 🚀");
+    alert("Profile Saved Successfully");
   };
 
   return (
-    <div className="bg-white rounded-[28px] p-4 sm:p-6 lg:p-8 shadow-sm">
+    <div className="min-h-screen bg-light p-6">
 
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5 mb-10">
+      <div className="bg-white rounded-2xl shadow-soft p-8">
 
-        <div>
+  <div className="mb-6">
+    <BackButton />
+  </div>
 
-          <h1 className="text-3xl sm:text-5xl font-bold text-blue-900">
-            My Profile
-          </h1>
+  {/* TOP */}
 
-          <p className="text-gray-500 mt-2 text-sm sm:text-base">
-            Complete your teacher profile details
+        {/* TOP */}
+
+        <div className="flex justify-between items-center mb-10">
+
+          <div className="flex items-center gap-5">
+
+            <div className="flex flex-col items-center">
+
+              <img
+                src={profileImage}
+                alt="profile"
+                className="w-28 h-28 rounded-full border-4 border-primary object-cover"
+              />
+
+              <label className="mt-4 bg-primary text-white px-4 py-2 rounded-xl cursor-pointer text-sm">
+
+                Upload Photo
+
+                <input
+                  type="file"
+                  hidden
+                  onChange={handleProfileImage}
+                />
+
+              </label>
+
+            </div>
+
+            <div>
+
+              <h1 className="text-4xl font-bold text-primary">
+                Teacher Profile
+              </h1>
+
+              <p className="text-gray-500 mt-2">
+                Manage your profile details
+              </p>
+
+            </div>
+
+          </div>
+
+          <p className="text-gray-500">
+            Last Login : Today 10:00 AM
           </p>
 
         </div>
 
-        <div className="lg:text-right">
+        {/* PROFILE SECTION */}
 
-          <p className="text-sm text-gray-500">
-            Last login: Today 10:00 AM
-          </p>
+        <div className="flex gap-6">
 
-          <button className="text-blue-900 font-bold mt-2 hover:text-blue-700 transition">
-            Logout
-          </button>
+          {/* LEFT SIDEBAR */}
+
+          <div className="w-64 bg-light rounded-2xl p-5 h-fit">
+
+            <div className="flex flex-col gap-4">
+
+              <button className="bg-primary text-white p-3 rounded-xl text-left">
+                Basic Info
+              </button>
+
+              <button className="hover:bg-white p-3 rounded-xl text-left">
+                Contact Details
+              </button>
+
+              <button className="hover:bg-white p-3 rounded-xl text-left">
+                Qualification
+              </button>
+
+              <button className="hover:bg-white p-3 rounded-xl text-left">
+                Experience
+              </button>
+
+              <button className="hover:bg-white p-3 rounded-xl text-left">
+                Resume
+              </button>
+
+            </div>
+
+          </div>
+
+          {/* RIGHT FORM */}
+
+          <form
+            onSubmit={handleSubmit}
+            className="flex-1"
+          >
+
+        <div className="grid grid-cols-3 gap-6">
+
+  {/* TITLE */}
+
+  <div>
+    <label className="block mb-2 font-semibold text-primary">
+      Title
+    </label>
+
+    <select
+      name="title"
+      value={teacherData.title}
+      onChange={handleChange}
+      className="w-full border border-borderColor bg-light p-3 rounded-xl outline-none"
+    >
+
+      <option value="Mr">
+        Mr
+      </option>
+
+      <option value="Mrs">
+        Mrs
+      </option>
+
+      <option value="Miss">
+        Miss
+      </option>
+
+    </select>
+  </div>
+
+  {/* FIRST NAME */}
+
+  <div>
+    <label className="block mb-2 font-semibold text-primary">
+      First Name
+    </label>
+
+    <input
+      type="text"
+      name="firstName"
+      value={teacherData.firstName}
+      onChange={handleChange}
+      placeholder="First Name"
+      className="w-full border border-borderColor bg-light p-3 rounded-xl outline-none"
+    />
+  </div>
+
+  {/* MIDDLE NAME */}
+
+  <div>
+    <label className="block mb-2 font-semibold text-primary">
+      Middle Name
+    </label>
+
+    <input
+      type="text"
+      name="middleName"
+      value={teacherData.middleName}
+      onChange={handleChange}
+      placeholder="Middle Name"
+      className="w-full border border-borderColor bg-light p-3 rounded-xl outline-none"
+    />
+  </div>
+
+  {/* LAST NAME */}
+
+  <div>
+    <label className="block mb-2 font-semibold text-primary">
+      Last Name
+    </label>
+
+    <input
+      type="text"
+      name="lastName"
+      value={teacherData.lastName}
+      onChange={handleChange}
+      placeholder="Last Name"
+      className="w-full border border-borderColor bg-light p-3 rounded-xl outline-none"
+    />
+  </div>
+
+  {/* DOB */}
+
+  <div>
+    <label className="block mb-2 font-semibold text-primary">
+      DOB
+    </label>
+
+  <input
+  type="date"
+  name="dob"
+  value={teacherData.dob}
+  onChange={handleDobChange}
+  className="w-full border border-borderColor bg-light p-3 rounded-xl outline-none"
+/>
+  </div>
+
+  {/* AGE */}
+
+  <div>
+    <label className="block mb-2 font-semibold text-primary">
+      Age
+    </label>
+<input
+  type="number"
+  name="age"
+  value={teacherData.age}
+  readOnly
+  placeholder="Age"
+  className="w-full border border-borderColor bg-light p-3 rounded-xl outline-none"
+/>  
+  </div>
+
+  {/* NATIONALITY */}
+
+  <div>
+    <label className="block mb-2 font-semibold text-primary">
+      Nationality
+    </label>
+
+    <input
+      type="text"
+      name="nationality"
+      value={teacherData.nationality}
+      onChange={handleChange}
+      placeholder="Nationality"
+      className="w-full border border-borderColor bg-light p-3 rounded-xl outline-none"
+    />
+  </div>
+
+  {/* CURRENT JOB */}
+
+  <div>
+    <label className="block mb-2 font-semibold text-primary">
+      Current Job Title
+    </label>
+
+    <input
+      type="text"
+      name="currentJob"
+      value={teacherData.currentJob}
+      onChange={handleChange}
+      placeholder="Frontend Developer"
+      className="w-full border border-borderColor bg-light p-3 rounded-xl outline-none"
+    />
+  </div>
+
+  {/* MAIN SUBJECT */}
+
+  <div>
+    <label className="block mb-2 font-semibold text-primary">
+      Main Subject
+    </label>
+
+    <select
+      name="mainSubject"
+      value={teacherData.mainSubject}
+      onChange={handleChange}
+      className="w-full border border-borderColor bg-light p-3 rounded-xl outline-none"
+    >
+
+      <option value="">
+        Select Subject
+      </option>
+
+      <option value="Math">
+        Math
+      </option>
+
+      <option value="Science">
+        Science
+      </option>
+
+      <option value="English">
+        English
+      </option>
+
+      <option value="Computer">
+        Computer
+      </option>
+
+    </select>
+  </div>
+
+  {/* ADDITIONAL SUBJECT */}
+
+  <div>
+    <label className="block mb-2 font-semibold text-primary">
+      Additional Subject
+    </label>
+
+    <input
+      type="text"
+      name="additionalSubject"
+      value={teacherData.additionalSubject}
+      onChange={handleChange}
+      placeholder="History"
+      className="w-full border border-borderColor bg-light p-3 rounded-xl outline-none"
+    />
+  </div>
+
+  {/* CLASSES */}
+
+  <div>
+    <label className="block mb-2 font-semibold text-primary">
+      Classes Taught
+    </label>
+
+    <select
+      name="classesTaught"
+      value={teacherData.classesTaught}
+      onChange={handleChange}
+      className="w-full border border-borderColor bg-light p-3 rounded-xl outline-none"
+    >
+
+      <option value="">
+        Select Class
+      </option>
+
+      <option value="Class 1">
+        Class 1
+      </option>
+
+      <option value="Class 2">
+        Class 2
+      </option>
+
+      <option value="Class 3">
+        Class 3
+      </option>
+
+      <option value="Class 4">
+        Class 4
+      </option>
+
+    </select>
+  </div>
+
+  {/* LANGUAGE */}
+
+  <div>
+    <label className="block mb-2 font-semibold text-primary">
+      Language
+    </label>
+
+    <select
+      name="language"
+      value={teacherData.language}
+      onChange={handleChange}
+      className="w-full border border-borderColor bg-light p-3 rounded-xl outline-none"
+    >
+
+      <option value="">
+        Select Language
+      </option>
+
+      <option value="English">
+        English
+      </option>
+
+      <option value="Hindi">
+        Hindi
+      </option>
+
+      <option value="French">
+        French
+      </option>
+
+    </select>
+  </div>
+
+  {/* STATUS */}
+
+  <div>
+    <label className="block mb-2 font-semibold text-primary">
+      Status
+    </label>
+
+    <select
+      name="status"
+      value={teacherData.status}
+      onChange={handleChange}
+      className="w-full border border-borderColor bg-light p-3 rounded-xl outline-none"
+    >
+
+      <option value="">
+        Select Status
+      </option>
+
+      <option value="Beginner">
+        Beginner
+      </option>
+
+      <option value="Intermediate">
+        Intermediate
+      </option>
+
+      <option value="Expert">
+        Expert
+      </option>
+
+    </select>
+  </div>
+
+  {/* QUALIFICATION */}
+
+  <div>
+    <label className="block mb-2 font-semibold text-primary">
+      Qualification
+    </label>
+
+    <input
+      type="text"
+      name="qualification"
+      value={teacherData.qualification}
+      onChange={handleChange}
+      placeholder="MCA"
+      className="w-full border border-borderColor bg-light p-3 rounded-xl outline-none"
+    />
+  </div>
+
+  {/* EXPERIENCE */}
+
+  <div>
+    <label className="block mb-2 font-semibold text-primary">
+      Experience
+    </label>
+
+    <input
+      type="text"
+      name="experience"
+      value={teacherData.experience}
+      onChange={handleChange}
+      placeholder="5 Years"
+      className="w-full border border-borderColor bg-light p-3 rounded-xl outline-none"
+    />
+  </div>
+
+  {/* EMAIL */}
+
+  <div>
+    <label className="block mb-2 font-semibold text-primary">
+      Email
+    </label>
+
+    <input
+      type="email"
+      name="email"
+      value={teacherData.email}
+      onChange={handleChange}
+      placeholder="Email"
+      className="w-full border border-borderColor bg-light p-3 rounded-xl outline-none"
+    />
+  </div>
+
+  {/* PHONE */}
+
+  <div>
+    <label className="block mb-2 font-semibold text-primary">
+      Phone Number
+    </label>
+
+    <input
+      type="text"
+      name="phone"
+      value={teacherData.phone}
+      onChange={handleChange}
+      placeholder="Phone Number"
+      className="w-full border border-borderColor bg-light p-3 rounded-xl outline-none"
+    />
+  </div>
+
+</div>
+
+            <button
+              type="submit"
+              className="mt-10 bg-primary text-white px-8 py-3 rounded-xl hover:bg-secondary transition"
+            >
+              Save Profile
+            </button>
+
+          </form>
 
         </div>
 
       </div>
-
-      {/* Form */}
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-8"
-      >
-
-        {/* Row 1 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-
-          {/* Title */}
-          <div>
-
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Title
-            </label>
-
-            <select
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-            >
-              <option>Mr</option>
-              <option>Mrs</option>
-              <option>Miss</option>
-            </select>
-
-          </div>
-
-          {/* First Name */}
-          <div>
-
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              First Name
-            </label>
-
-            <input
-              type="text"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              placeholder="First Name"
-              className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-            />
-
-          </div>
-
-          {/* Middle Name */}
-          <div>
-
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Middle Name
-            </label>
-
-            <input
-              type="text"
-              name="middleName"
-              value={formData.middleName}
-              onChange={handleChange}
-              placeholder="Middle Name"
-              className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-            />
-
-          </div>
-
-          {/* Last Name */}
-          <div>
-
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Last Name
-            </label>
-
-            <input
-              type="text"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              placeholder="Last Name"
-              className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-            />
-
-          </div>
-
-        </div>
-
-        {/* DOB Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-
-          {/* DOB */}
-          <div>
-
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              DOB
-            </label>
-
-            <input
-              type="date"
-              name="dob"
-              value={formData.dob}
-              onChange={handleChange}
-              className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-            />
-
-          </div>
-
-          {/* Age */}
-          <div>
-
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Age
-            </label>
-
-            <input
-              type="text"
-              value={formData.age}
-              readOnly
-              placeholder="Calculated from DOB"
-              className="w-full h-[55px] border border-gray-300 rounded-xl px-4 bg-gray-100"
-            />
-
-            <p className="text-xs text-gray-400 mt-2">
-              Auto calculated from DOB
-            </p>
-
-          </div>
-
-          {/* Nationality */}
-          <div>
-
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Nationality
-            </label>
-
-            <input
-              type="text"
-              name="nationality"
-              value={formData.nationality}
-              onChange={handleChange}
-              placeholder="Nationality"
-              className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-            />
-
-          </div>
-
-        </div>
-
-        {/* Current Job */}
-        <div>
-
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Current Job Title
-          </label>
-
-          <select
-            name="currentJobTitle"
-            value={formData.currentJobTitle}
-            onChange={handleChange}
-            className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-          >
-
-            <option value="">
-              Select...
-            </option>
-
-            <option>
-              PGT Mathematics Teacher
-            </option>
-
-            <option>
-              TGT Science Teacher
-            </option>
-
-            <option>
-              English Teacher
-            </option>
-
-          </select>
-
-        </div>
-
-        {/* Subject Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-
-          {/* Main Subject */}
-          <div>
-
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Main Subject
-            </label>
-
-            <select
-              name="mainSubject"
-              value={formData.mainSubject}
-              onChange={handleChange}
-              className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-            >
-
-              <option value="">
-                Select...
-              </option>
-
-              <option>
-                Mathematics
-              </option>
-
-              <option>
-                Science
-              </option>
-
-              <option>
-                English
-              </option>
-
-            </select>
-
-            <p className="text-xs text-gray-400 mt-2">
-              Only one can be selected
-            </p>
-
-          </div>
-
-          {/* Additional Subjects */}
-          <div>
-
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Additional Subject(s)
-            </label>
-
-            <textarea
-              rows="5"
-              name="additionalSubjects"
-              placeholder="History, Geography, Art, Music"
-              className="w-full border border-gray-300 rounded-xl p-4 outline-none resize-none focus:border-blue-700"
-            ></textarea>
-
-            <p className="text-xs text-gray-400 mt-2">
-              Multiple subjects can be selected
-            </p>
-
-          </div>
-
-        </div>
-
-        {/* Classes */}
-        <div>
-
-          <label className="block text-sm font-semibold text-gray-700 mb-3">
-            Classes Taught
-          </label>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-
-            <select
-              name="class1"
-              value={formData.class1}
-              onChange={handleChange}
-              className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-            >
-
-              <option>Class A</option>
-              <option>Class B</option>
-              <option>Class C</option>
-
-            </select>
-
-            <select
-              name="class2"
-              value={formData.class2}
-              onChange={handleChange}
-              className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-            >
-
-              <option>Class C</option>
-              <option>Class D</option>
-
-            </select>
-
-          </div>
-
-        </div>
-
-        {/* Language + Status */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-
-          {/* Languages */}
-          <div>
-
-            <label className="block text-sm font-semibold text-gray-700 mb-3">
-              Language
-            </label>
-
-            <div className="space-y-4">
-
-              <select
-                name="language1"
-                value={formData.language1}
-                onChange={handleChange}
-                className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-              >
-                <option>English</option>
-                <option>Hindi</option>
-              </select>
-
-              <select
-                name="language2"
-                value={formData.language2}
-                onChange={handleChange}
-                className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-              >
-                <option>Select...</option>
-                <option>Hindi</option>
-              </select>
-
-              <select
-                name="language3"
-                value={formData.language3}
-                onChange={handleChange}
-                className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-              >
-                <option>Select...</option>
-                <option>French</option>
-              </select>
-
-            </div>
-
-          </div>
-
-          {/* Status */}
-          <div>
-
-            <label className="block text-sm font-semibold text-gray-700 mb-3">
-              Status
-            </label>
-
-            <div className="space-y-4">
-
-              <select
-                name="status1"
-                value={formData.status1}
-                onChange={handleChange}
-                className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-              >
-                <option>
-                  Fluency enough to teach
-                </option>
-              </select>
-
-              <select
-                name="status2"
-                value={formData.status2}
-                onChange={handleChange}
-                className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-              >
-                <option>Select...</option>
-              </select>
-
-              <select
-                name="status3"
-                value={formData.status3}
-                onChange={handleChange}
-                className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-              >
-                <option>Select...</option>
-              </select>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* Qualification */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-
-          <div>
-
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Highest Qualification 1
-            </label>
-
-            <select
-              name="qualification1"
-              value={formData.qualification1}
-              onChange={handleChange}
-              className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-            >
-
-              <option>Select...</option>
-
-              <option>B.Ed</option>
-
-              <option>M.Ed</option>
-
-            </select>
-
-          </div>
-
-          <div>
-
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Highest Qualification 2
-            </label>
-
-            <select
-              name="qualification2"
-              value={formData.qualification2}
-              onChange={handleChange}
-              className="w-full h-[55px] border border-gray-300 rounded-xl px-4 outline-none focus:border-blue-700"
-            >
-
-              <option>Select...</option>
-
-              <option>M.Sc</option>
-
-              <option>PhD</option>
-
-            </select>
-
-          </div>
-
-        </div>
-
-        {/* Save Button */}
-        <div className="flex justify-end pt-4">
-
-          <button
-            type="submit"
-            className="bg-blue-700 hover:bg-blue-800 text-white px-8 py-3 rounded-xl font-semibold transition"
-          >
-            Save Profile
-          </button>
-
-        </div>
-
-      </form>
 
     </div>
   );
