@@ -1,5 +1,5 @@
 import { useState } from "react";
-import BackButton from "../components/BackButton";
+import BackButton from "../components/backbutton";
 const TeacherProfile = () => {
 
   const [profileImage, setProfileImage] = useState(

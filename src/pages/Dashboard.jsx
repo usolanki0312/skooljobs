@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Topbar from "../components/Topbar";
+import Topbar from "../components/topbar";
 import { useEffect } from "react";
 
 const Dashboard = () => {
