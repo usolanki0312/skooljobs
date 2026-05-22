@@ -8,11 +8,14 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState("candidate");
+  const [activeTab, setActiveTab] =
+    useState("candidate");
 
-  const [username, setUsername] = useState("");
+  const [username, setUsername] =
+    useState("");
 
-  const [password, setPassword] = useState("");
+  const [password, setPassword] =
+    useState("");
 
   const handleLogin = (e) => {
 
@@ -20,22 +23,54 @@ function Login() {
 
     if (!username || !password) {
 
-      alert("Please enter both username and password");
+      alert(
+        "Please enter username and password"
+      );
 
       return;
     }
 
-    const existingUsersStr =
-      localStorage.getItem("skooljobs_users");
+    // TEACHER LOGIN
 
-    let users = [];
+    if (
+      activeTab === "candidate" &&
+      username === "teacher@gmail.com" &&
+      password === "123456"
+    ) {
 
-    if (existingUsersStr) {
+      const dummyTeacher = {
 
-      users = JSON.parse(existingUsersStr);
+        id: 1,
+
+        name: "Rahul Sharma",
+
+        email: "teacher@gmail.com",
+
+        role: "candidate",
+
+        phone: "9876543210",
+
+        subject: "Mathematics",
+
+        city: "Indore",
+
+        experience: "5 Years",
+
+        profilePhoto:
+          "https://i.pravatar.cc/300?img=12"
+      };
+
+      localStorage.setItem(
+        "currentUser",
+        JSON.stringify(dummyTeacher)
+      );
+
+      navigate("/dashboard");
+
+      return;
     }
 
-    // EMPLOYER DEMO LOGIN
+    // SCHOOL LOGIN
 
     if (
       activeTab === "employer" &&
@@ -43,20 +78,29 @@ function Login() {
       password === "password"
     ) {
 
-      const demoEmployer = {
-        email: username,
-        name: "HR Manager",
+      const dummySchool = {
+
+        id: 2,
+
+        name: "Green Valley School",
+
+        email: "hr@school.in",
+
         role: "employer",
+
+        city: "Bhopal",
+
+        phone: "9999999999",
+
+        totalTeachers: 45,
+
+        profilePhoto:
+          "https://i.pravatar.cc/300?img=20"
       };
 
       localStorage.setItem(
         "currentUser",
-        JSON.stringify(demoEmployer)
-      );
-
-      localStorage.setItem(
-        "userName",
-        "HR Manager"
+        JSON.stringify(dummySchool)
       );
 
       navigate("/dashboard");
@@ -64,49 +108,7 @@ function Login() {
       return;
     }
 
-    const user = users.find(
-      (u) =>
-        (
-          u.email === username ||
-          u.phone === username
-        ) &&
-        u.password === password &&
-        u.role === activeTab
-    );
-
-    if (user) {
-
-      // SAVE CURRENT USER
-
-      localStorage.setItem(
-        "currentUser",
-        JSON.stringify(user)
-      );
-
-      // SAVE USERNAME
-
-      localStorage.setItem(
-        "userName",
-        user.name || username
-      );
-
-      navigate("/dashboard");
-
-    } else {
-
-      if (activeTab === "employer") {
-
-        alert(
-          "Invalid credentials. For demo, use hr@school.in / password"
-        );
-
-      } else {
-
-        alert(
-          "Invalid credentials. Please check your username and password, or sign up if you don't have an account."
-        );
-      }
-    }
+    alert("Invalid Credentials");
   };
 
   return (
@@ -177,7 +179,7 @@ function Login() {
 
           placeholder={
             activeTab === "candidate"
-              ? "Email or Mobile Number"
+              ? "teacher@gmail.com"
               : "hr@school.in"
           }
         />
@@ -193,10 +195,14 @@ function Login() {
             setPassword(e.target.value)
           }
 
-          placeholder="Enter password"
+          placeholder={
+            activeTab === "candidate"
+              ? "123456"
+              : "password"
+          }
         />
 
-        {/* REMEMBER ME */}
+        {/* REMEMBER */}
 
         <div className="flex items-center justify-between pt-2">
 
@@ -207,7 +213,7 @@ function Login() {
               className="w-[18px] h-[18px] accent-primary rounded border-borderColor cursor-pointer"
             />
 
-            <span className="text-[14px] text-primary font-semibold group-hover:text-primary/80 transition-colors">
+            <span className="text-[14px] text-primary font-semibold">
 
               Remember me
 
@@ -217,7 +223,7 @@ function Login() {
 
           <Link
             to="/forgot-password"
-            className="text-primary text-[13.5px] hover:underline font-bold transition-colors"
+            className="text-primary text-[13.5px] hover:underline font-bold"
           >
 
             Forgot password?
@@ -237,6 +243,10 @@ function Login() {
           </AuthButton>
 
         </div>
+
+        {/* DEMO CREDENTIALS */}
+
+      
 
         {/* FOOTER */}
 
