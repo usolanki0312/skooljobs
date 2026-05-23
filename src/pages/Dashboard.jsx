@@ -1,727 +1,487 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Award,
+  Bookmark,
+  BriefcaseBusiness,
+  CheckCircle2,
+  Clock3,
+  FileText,
+  GraduationCap,
+  LayoutDashboard,
+  LogOut,
+  MapPin,
+  MessageCircle,
+  Send,
+  Sparkles,
+  Star,
+  UserRound,
+} from "lucide-react";
 import Topbar from "../components/topbar";
-import { useEffect } from "react";
+
+const jobsData = [
+  {
+    id: 1,
+    school: "Green Valley School",
+    role: "Mathematics Teacher",
+    location: "Indore",
+    skill: "Mathematics",
+    salary: "4.8 LPA",
+    type: "Full time",
+    match: 96,
+  },
+  {
+    id: 2,
+    school: "Delhi Public Academy",
+    role: "Science Faculty",
+    location: "Bhopal",
+    skill: "Science",
+    salary: "5.2 LPA",
+    type: "Full time",
+    match: 91,
+  },
+  {
+    id: 3,
+    school: "St. Mary's International",
+    role: "English Teacher",
+    location: "Pune",
+    skill: "English",
+    salary: "4.4 LPA",
+    type: "Hybrid",
+    match: 86,
+  },
+  {
+    id: 4,
+    school: "Bright Future School",
+    role: "Computer Teacher",
+    location: "Bangalore",
+    skill: "Computer",
+    salary: "6.0 LPA",
+    type: "Full time",
+    match: 89,
+  },
+];
+
+const resumes = [
+  { id: 1, name: "Mathematics Teacher Resume.pdf", skill: "Mathematics", score: 88 },
+  { id: 2, name: "Science Faculty Resume.pdf", skill: "Science", score: 81 },
+  { id: 3, name: "English Teacher Resume.pdf", skill: "English", score: 76 },
+  { id: 4, name: "Computer Teacher Resume.pdf", skill: "Computer", score: 84 },
+];
+
+const navItems = [
+  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { id: "alljobs", label: "All Jobs", icon: BriefcaseBusiness },
+  { id: "recommendation", label: "Recommendation", icon: Sparkles },
+  { id: "resume", label: "Resume", icon: FileText },
+  { id: "activity", label: "Recent Activity", icon: Clock3 },
+];
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  useEffect(() => {
-
-  const currentUser =
-    localStorage.getItem("currentUser");
-
-  if (!currentUser) {
-
-    navigate("/login");
-  }
-
-}, [navigate]);
- const handleLogout = () => {
-
-  localStorage.removeItem("currentUser");
-
-  localStorage.removeItem("userName");
-
-  window.location.href = "/";
-};
-
-  const [profileImage, setProfileImage] = useState(
-    "https://i.pravatar.cc/150"
-  );
-
-  const loggedInUser =
-    localStorage.getItem("userName") || "Gopal";
-
-  const jobsData = [
-    {
-      id: 1,
-      company: "Google",
-      role: "Frontend Developer",
-      location: "Bangalore",
-      skill: "React",
-    },
-
-    {
-      id: 2,
-      company: "Microsoft",
-      role: "React Developer",
-      location: "Hyderabad",
-      skill: "React",
-    },
-
-    {
-      id: 3,
-      company: "Amazon",
-      role: "UI Designer",
-      location: "Pune",
-      skill: "UI/UX",
-    },
-
-    {
-      id: 4,
-      company: "Infosys",
-      role: "Java Developer",
-      location: "Indore",
-      skill: "Java",
-    },
-  ];
-
-  const resumes = [
-    {
-      id: 1,
-      name: "React Resume.pdf",
-      skill: "React",
-    },
-
-    {
-      id: 2,
-      name: "Java Resume.pdf",
-      skill: "Java",
-    },
-
-    {
-      id: 3,
-      name: "UIUX Resume.pdf",
-      skill: "UI/UX",
-    },
-
-    {
-      id: 4,
-      name: "FullStack Resume.pdf",
-      skill: "React",
-    },
-  ];
-
-  const [selectedResume, setSelectedResume] =
-    useState(resumes[0]);
-
+  const [profileImage, setProfileImage] = useState("https://i.pravatar.cc/300?img=12");
+  const [selectedResume, setSelectedResume] = useState(resumes[0]);
   const [appliedJobs, setAppliedJobs] = useState([]);
   const [savedJobs, setSavedJobs] = useState([]);
-  const [activities, setActivities] = useState([]);
-  const [activeSection, setActiveSection] =
-    useState("dashboard");
+  const [activities, setActivities] = useState(["Profile viewed by Green Valley School"]);
+  const [activeSection, setActiveSection] = useState("dashboard");
 
-  const recommendedJobs = jobsData.filter(
-    (job) => job.skill === selectedResume.skill
-  );
+  const currentUser = useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem("currentUser") || "{}");
+    } catch {
+      return {};
+    }
+  }, []);
+
+  useEffect(() => {
+    const user = localStorage.getItem("currentUser");
+    if (!user) {
+      navigate("/");
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    if (currentUser.profilePhoto) {
+      setProfileImage(currentUser.profilePhoto);
+    }
+  }, [currentUser.profilePhoto]);
+
+  const displayName = currentUser.name || currentUser.firstName || "Gopal";
+  const recommendedJobs = jobsData.filter((job) => job.skill === selectedResume.skill);
+
+  const addActivity = (message) => {
+    setActivities((prev) => [message, ...prev]);
+  };
 
   const handleApply = (job) => {
-
-    const alreadyApplied = appliedJobs.find(
-      (item) => item.id === job.id
-    );
-
-    if (!alreadyApplied) {
-
-      setAppliedJobs([...appliedJobs, job]);
-
-      setActivities([
-        `Applied for ${job.role} at ${job.company}`,
-        ...activities,
-      ]);
+    if (!appliedJobs.some((item) => item.id === job.id)) {
+      setAppliedJobs((prev) => [...prev, job]);
+      addActivity(`Applied for ${job.role} at ${job.school}`);
     }
   };
 
   const handleSave = (job) => {
-
-    const alreadySaved = savedJobs.find(
-      (item) => item.id === job.id
-    );
-
-    if (!alreadySaved) {
-
-      setSavedJobs([...savedJobs, job]);
-
-      setActivities([
-        `Saved ${job.role} at ${job.company}`,
-        ...activities,
-      ]);
+    if (!savedJobs.some((item) => item.id === job.id)) {
+      setSavedJobs((prev) => [...prev, job]);
+      addActivity(`Saved ${job.role} at ${job.school}`);
     }
   };
-  
-
-  
 
   const handleProfileImage = (event) => {
-
     const file = event.target.files[0];
-
     if (file) {
-
-      setProfileImage(
-        URL.createObjectURL(file)
-      );
-
-      setActivities([
-        "Updated profile photo",
-        ...activities,
-      ]);
+      setProfileImage(URL.createObjectURL(file));
+      addActivity("Updated profile photo");
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("userName");
+    navigate("/");
+  };
+
+  const JobCard = ({ job, compact = false }) => {
+    const isApplied = appliedJobs.some((item) => item.id === job.id);
+    const isSaved = savedJobs.some((item) => item.id === job.id);
+
+    return (
+      <div className="rounded-3xl border border-borderColor bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <GraduationCap size={25} />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-primary">{job.role}</h3>
+              <p className="text-sm font-semibold text-slate-500">{job.school}</p>
+            </div>
+          </div>
+          <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-600">
+            {job.match}% Match
+          </span>
+        </div>
+
+        <div className="mt-5 grid grid-cols-1 gap-3 text-sm text-slate-500 sm:grid-cols-2">
+          <span className="flex items-center gap-2">
+            <MapPin size={16} /> {job.location}
+          </span>
+          <span className="flex items-center gap-2">
+            <BriefcaseBusiness size={16} /> {job.type}
+          </span>
+          {!compact && (
+            <>
+              <span className="flex items-center gap-2">
+                <Award size={16} /> {job.skill}
+              </span>
+              <span className="font-bold text-primary">{job.salary}</span>
+            </>
+          )}
+        </div>
+
+        <div className="mt-5 flex flex-wrap gap-3">
+          <button
+            onClick={() => handleApply(job)}
+            disabled={isApplied}
+            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold text-white ${
+              isApplied ? "bg-green-500" : "bg-primary hover:bg-primary/95"
+            }`}
+            type="button"
+          >
+            <Send size={16} /> {isApplied ? "Applied" : "Apply"}
+          </button>
+          <button
+            onClick={() => handleSave(job)}
+            disabled={isSaved}
+            className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-bold ${
+              isSaved
+                ? "border-green-500 bg-green-500 text-white"
+                : "border-primary text-primary hover:bg-primary/5"
+            }`}
+            type="button"
+          >
+            <Bookmark size={16} /> {isSaved ? "Saved" : "Save"}
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderDashboard = () => (
+    <>
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
+        {[
+          { label: "Applied Jobs", value: appliedJobs.length, icon: CheckCircle2, id: "applied" },
+          { label: "Saved Jobs", value: savedJobs.length, icon: Bookmark, id: "saved" },
+          { label: "Interviews", value: "03", icon: MessageCircle, id: "dashboard" },
+          { label: "Profile Score", value: "86%", icon: Star, id: "dashboard" },
+        ].map((stat) => {
+          const Icon = stat.icon;
+          return (
+            <button
+              key={stat.label}
+              onClick={() => setActiveSection(stat.id)}
+              className="rounded-3xl bg-white p-5 text-left shadow-soft transition hover:-translate-y-0.5"
+              type="button"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-bold text-slate-500">{stat.label}</span>
+                <span className="rounded-2xl bg-primary/10 p-3 text-primary">
+                  <Icon size={20} />
+                </span>
+              </div>
+              <p className="mt-5 text-4xl font-bold text-primary">{stat.value}</p>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[1fr_330px]">
+        <section className="rounded-3xl bg-white p-6 shadow-soft">
+          <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-primary">Recommended Jobs</h2>
+              <p className="mt-1 text-sm text-slate-500">Based on {selectedResume.name}</p>
+            </div>
+            <button onClick={() => setActiveSection("recommendation")} className="text-sm font-bold text-primary" type="button">
+              View all
+            </button>
+          </div>
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            {recommendedJobs.map((job) => (
+              <JobCard key={job.id} job={job} />
+            ))}
+          </div>
+        </section>
+
+        <aside className="space-y-6">
+          <div className="rounded-3xl bg-white p-6 shadow-soft">
+            <div className="flex items-center gap-4 border-b border-borderColor pb-5">
+              <img src={profileImage} alt="profile" className="h-16 w-16 rounded-2xl object-cover" />
+              <div>
+                <h3 className="font-bold text-primary">{displayName}</h3>
+                <p className="text-sm text-green-500">Available for jobs</p>
+              </div>
+            </div>
+            <label className="mt-5 inline-flex cursor-pointer rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white">
+              Upload Photo
+              <input type="file" hidden onChange={handleProfileImage} />
+            </label>
+            <button
+              onClick={() => navigate("/teacher-profile")}
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-primary px-4 py-3 text-sm font-bold text-primary hover:bg-primary/5"
+              type="button"
+            >
+              <UserRound size={17} /> Complete Profile
+            </button>
+          </div>
+
+          <div className="rounded-3xl bg-white p-6 shadow-soft">
+            <h3 className="text-lg font-bold text-primary">Recent Activity</h3>
+            <div className="mt-5 space-y-4">
+              {activities.slice(0, 4).map((activity, index) => (
+                <div key={`${activity}-${index}`} className="flex gap-3 text-sm text-slate-600">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                  <span>{activity}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </aside>
+      </div>
+    </>
+  );
+
+  const renderJobsList = (title, jobs, emptyText) => (
+    <section className="rounded-3xl bg-white p-6 shadow-soft">
+      <h2 className="text-2xl font-bold text-primary">{title}</h2>
+      <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
+        {jobs.length === 0 ? (
+          <p className="rounded-2xl bg-light p-5 text-sm text-slate-500">{emptyText}</p>
+        ) : (
+          jobs.map((job) => <JobCard key={job.id} job={job} compact />)
+        )}
+      </div>
+    </section>
+  );
+
+  const renderResume = () => (
+    <section className="rounded-3xl bg-white p-6 shadow-soft">
+      <h2 className="text-2xl font-bold text-primary">Resume Match Center</h2>
+      <p className="mt-1 text-sm text-slate-500">Select a resume to update recommendations.</p>
+      <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
+        {resumes.map((resume) => {
+          const isSelected = selectedResume.id === resume.id;
+          return (
+            <button
+              key={resume.id}
+              onClick={() => {
+                setSelectedResume(resume);
+                addActivity(`Selected ${resume.name}`);
+              }}
+              className={`rounded-3xl border p-5 text-left transition ${
+                isSelected
+                  ? "border-primary bg-primary text-white shadow-soft"
+                  : "border-borderColor bg-white text-slate-700 hover:border-primary"
+              }`}
+              type="button"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <FileText size={26} />
+                <span className={`rounded-full px-3 py-1 text-xs font-bold ${isSelected ? "bg-white/20" : "bg-primary/10 text-primary"}`}>
+                  {resume.score}% Score
+                </span>
+              </div>
+              <h3 className="mt-4 font-bold">{resume.name}</h3>
+              <p className={`mt-2 text-sm ${isSelected ? "text-white/80" : "text-slate-500"}`}>Skill focus: {resume.skill}</p>
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
+
+  const renderContent = () => {
+    if (activeSection === "applied") {
+      return renderJobsList("Applied Jobs", appliedJobs, "No applied jobs yet.");
+    }
+    if (activeSection === "saved") {
+      return renderJobsList("Saved Jobs", savedJobs, "No saved jobs yet.");
+    }
+    if (activeSection === "alljobs") {
+      return renderJobsList("All Teaching Jobs", jobsData, "No jobs available.");
+    }
+    if (activeSection === "recommendation") {
+      return renderJobsList(
+        "Resume Based Recommendation",
+        recommendedJobs,
+        "No recommendations for this resume yet."
+      );
+    }
+    if (activeSection === "resume") {
+      return renderResume();
+    }
+    if (activeSection === "activity") {
+      return (
+        <section className="rounded-3xl bg-white p-6 shadow-soft">
+          <h2 className="text-2xl font-bold text-primary">Recent Activity</h2>
+          <div className="mt-6 space-y-4">
+            {activities.map((activity, index) => (
+              <div key={`${activity}-${index}`} className="rounded-2xl border border-borderColor p-4 text-sm text-slate-600">
+                {activity}
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+    return renderDashboard();
   };
 
   return (
-    <div className="flex bg-light min-h-screen">
+    <div className="min-h-screen bg-light">
+      <div className="flex min-h-screen">
+        <aside className="hidden w-72 bg-primary p-5 text-white lg:block">
+          <div className="rounded-3xl bg-white/10 p-5">
+            <div className="flex items-center gap-4">
+              <img src={profileImage} alt="profile" className="h-14 w-14 rounded-2xl border-2 border-white/40 object-cover" />
+              <div>
+                <h1 className="font-bold">{displayName}</h1>
+                <p className="text-xs text-white/70">Teacher Account</p>
+              </div>
+            </div>
+          </div>
 
-      {/* SIDEBAR */}
+          <nav className="mt-8 space-y-2">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeSection === item.id;
+              const navButton = (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveSection(item.id)}
+                  className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${
+                    isActive ? "bg-white text-primary" : "text-white/80 hover:bg-white/10 hover:text-white"
+                  }`}
+                  type="button"
+                >
+                  <Icon size={18} /> {item.label}
+                </button>
+              );
 
-      <div className="w-64 bg-primary text-white min-h-screen p-5">
+              if (item.id !== "dashboard") {
+                return navButton;
+              }
 
-        <div className="flex flex-col items-center">
-
-          <img
-            src={profileImage}
-            alt="profile"
-            className="w-24 h-24 rounded-full border-4 border-white object-cover"
-          />
-
-          <label className="mt-4 bg-white text-primary px-4 py-2 rounded-xl cursor-pointer text-sm font-semibold">
-
-            Upload Photo
-
-            <input
-              type="file"
-              hidden
-              onChange={handleProfileImage}
-            />
-
-          </label>
-
-          <h2 className="mt-4 text-xl font-bold">
-            {loggedInUser}
-          </h2>
-
-        </div>
-
-        <div className="mt-10 flex flex-col gap-4">
-
-          <button
-            onClick={() => setActiveSection("dashboard")}
-            className="bg-white/20 p-3 rounded-xl text-left"
-          >
-            Dashboard
-          </button>
-
-        <button
-  onClick={() => navigate("/teacher-profile")}
-  className="bg-white/20 p-3 rounded-xl text-left"
->
-  My Profile
-</button>
-
-          <button
-            onClick={() => setActiveSection("alljobs")}
-            className="bg-white/20 p-3 rounded-xl text-left"
-          >
-            All Jobs
-          </button>
-
-          <button
-            onClick={() => setActiveSection("recommendation")}
-            className="bg-white/20 p-3 rounded-xl text-left"
-          >
-            Recommendation
-          </button>
-
-          <button
-            onClick={() => setActiveSection("resume")}
-            className="bg-white/20 p-3 rounded-xl text-left"
-          >
-            Resume
-          </button>
-
-          <button
-            onClick={() => setActiveSection("activity")}
-            className="bg-white/20 p-3 rounded-xl text-left"
-          >
-            Recent Activity
-          </button>
+              return (
+                <div key={item.id} className="space-y-2">
+                  {navButton}
+                  <button
+                    onClick={() => navigate("/teacher-profile")}
+                    className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold text-white/80 hover:bg-white/10 hover:text-white"
+                    type="button"
+                  >
+                    <UserRound size={18} /> My Profile
+                  </button>
+                </div>
+              );
+            })}
+          </nav>
 
           <button
             onClick={handleLogout}
-            className="bg-red-500 p-3 rounded-xl text-left mt-10"
+            className="mt-10 flex w-full items-center gap-3 rounded-2xl bg-red-500 px-4 py-3 text-left text-sm font-bold text-white"
+            type="button"
           >
-            Logout
+            <LogOut size={18} /> Logout
           </button>
+        </aside>
 
-        </div>
+        <main className="flex-1 p-5 lg:p-8">
+          <Topbar />
+          <div className="mt-4 flex gap-2 overflow-x-auto rounded-3xl bg-white p-3 shadow-soft lg:hidden">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeSection === item.id;
+              const navButton = (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveSection(item.id)}
+                  className={`flex shrink-0 items-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition ${
+                    isActive
+                      ? "bg-primary text-white"
+                      : "bg-light text-primary"
+                  }`}
+                  type="button"
+                >
+                  <Icon size={17} />
+                  {item.label}
+                </button>
+              );
 
+              if (item.id !== "dashboard") {
+                return navButton;
+              }
+
+              return (
+                <div key={item.id} className="flex shrink-0 gap-2">
+                  {navButton}
+                  <button
+                    onClick={() => navigate("/teacher-profile")}
+                    className="flex shrink-0 items-center gap-2 rounded-2xl bg-light px-4 py-3 text-sm font-bold text-primary"
+                    type="button"
+                  >
+                    <UserRound size={17} />
+                    My Profile
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-6">{renderContent()}</div>
+        </main>
       </div>
-
-      {/* MAIN */}
-
-      <div className="flex-1 p-6">
-
-        <Topbar />
-
-        {/* DASHBOARD */}
-
-        {activeSection === "dashboard" && (
-
-          <>
-            <div className="grid grid-cols-4 gap-6 mt-6">
-
-              <div
-                onClick={() =>
-                  setActiveSection("applied")
-                }
-                className="bg-white rounded-2xl shadow-soft p-5 cursor-pointer"
-              >
-                <h2 className="text-lg font-semibold text-primary">
-                  Applied Jobs
-                </h2>
-
-                <p className="text-4xl font-bold mt-4">
-                  {appliedJobs.length}
-                </p>
-              </div>
-
-              <div
-                onClick={() =>
-                  setActiveSection("saved")
-                }
-                className="bg-white rounded-2xl shadow-soft p-5 cursor-pointer"
-              >
-                <h2 className="text-lg font-semibold text-primary">
-                  Saved Jobs
-                </h2>
-
-                <p className="text-4xl font-bold mt-4">
-                  {savedJobs.length}
-                </p>
-              </div>
-
-              <div className="bg-white rounded-2xl shadow-soft p-5">
-
-                <h2 className="text-lg font-semibold text-primary">
-                  Interviews
-                </h2>
-
-                <p className="text-4xl font-bold mt-4">
-                  03
-                </p>
-
-              </div>
-
-              <div className="bg-white rounded-2xl shadow-soft p-5">
-
-                <h2 className="text-lg font-semibold text-primary">
-                  Profile Score
-                </h2>
-
-                <p className="text-4xl font-bold mt-4">
-                  75%
-                </p>
-
-              </div>
-
-            </div>
-<div className="flex gap-6 mt-6">
-
-  {/* RECOMMENDED JOBS */}
-
-  <div className="flex-1 bg-white rounded-2xl shadow-soft p-6">
-
-    <h2 className="text-2xl font-bold text-primary mb-6">
-      Recommended Jobs
-    </h2>
-
-    <div className="grid grid-cols-2 gap-6">
-
-      {recommendedJobs.map((job) => (
-
-        <div
-          key={job.id}
-          className="border border-borderColor rounded-2xl p-5"
-        >
-
-          <img
-            src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d"
-            alt="job"
-            className="w-full h-40 object-cover rounded-xl"
-          />
-
-          <h3 className="text-xl font-bold text-primary mt-4">
-            {job.role}
-          </h3>
-
-          <p className="text-gray-600 mt-2">
-            {job.company}
-          </p>
-
-          <p className="text-gray-500 text-sm mt-1">
-            {job.location}
-          </p>
-
-          <div className="flex gap-4 mt-5">
-
-            {/* APPLY BUTTON */}
-
-            <button
-              onClick={() => handleApply(job)}
-              disabled={appliedJobs.some(
-                (item) => item.id === job.id
-              )}
-              className={`px-4 py-2 rounded-xl text-white ${
-                appliedJobs.some(
-                  (item) => item.id === job.id
-                )
-                  ? "bg-green-500 cursor-not-allowed"
-                  : "bg-primary"
-              }`}
-            >
-
-              {appliedJobs.some(
-                (item) => item.id === job.id
-              )
-                ? "Applied"
-                : "Apply"}
-
-            </button>
-
-            {/* SAVE BUTTON */}
-
-            <button
-              onClick={() => handleSave(job)}
-              disabled={savedJobs.some(
-                (item) => item.id === job.id
-              )}
-              className={`px-4 py-2 rounded-xl border ${
-                savedJobs.some(
-                  (item) => item.id === job.id
-                )
-                  ? "bg-green-500 text-white border-green-500 cursor-not-allowed"
-                  : "border-primary text-primary"
-              }`}
-            >
-
-              {savedJobs.some(
-                (item) => item.id === job.id
-              )
-                ? "Saved"
-                : "Save"}
-
-            </button>
-
-          </div>
-
-        </div>
-      ))}
-
-    </div>
-
-  </div>
-
- 
-
-  <div className="w-[280px] bg-white rounded-2xl shadow-soft p-5 h-fit">
-
-    <div className="flex items-center gap-3 border-b border-borderColor pb-4">
-
-      <img
-        src={profileImage}
-        alt="profile"
-        className="w-12 h-12 rounded-full object-cover"
-      />
-
-      <div>
-
-        <h3 className="font-bold text-primary">
-          {loggedInUser}
-        </h3>
-
-        <p className="text-sm text-green-500">
-          Online
-        </p>
-
-      </div>
-
-    </div>
-
-    <div className="h-[300px] overflow-y-auto mt-4 flex flex-col gap-3">
-
-      <div className="bg-light p-3 rounded-xl text-sm">
-        Welcome to SkoolJobs 👋
-      </div>
-
-      <div className="bg-primary text-white p-3 rounded-xl text-sm ml-auto">
-        Hello Sir
-      </div>
-
-    </div>
-
-    <input
-      type="text"
-      placeholder="Type message..."
-      className="w-full border border-borderColor p-3 rounded-xl mt-4 outline-none"
-    />
-
-  </div>
-
-</div>
-        </>
-)}
-
-        {/* APPLIED JOBS */}
-
-        {activeSection === "applied" && (
-
-          <div className="bg-white rounded-2xl shadow-soft p-6 mt-6">
-
-            <h2 className="text-2xl font-bold text-primary mb-6">
-              Applied Jobs
-            </h2>
-
-            {appliedJobs.length === 0 ? (
-              <p>No Applied Jobs</p>
-            ) : (
-              appliedJobs.map((job) => (
-
-                <div
-                  key={job.id}
-                  className="border border-borderColor rounded-xl p-5 mb-4"
-                >
-                  <h3 className="font-bold text-primary">
-                    {job.role}
-                  </h3>
-
-                  <p>{job.company}</p>
-
-                  <p>{job.location}</p>
-
-                </div>
-              ))
-            )}
-
-          </div>
-        )}
-
-        {/* SAVED JOBS */}
-
-        {activeSection === "saved" && (
-
-          <div className="bg-white rounded-2xl shadow-soft p-6 mt-6">
-
-            <h2 className="text-2xl font-bold text-primary mb-6">
-              Saved Jobs
-            </h2>
-
-            {savedJobs.length === 0 ? (
-              <p>No Saved Jobs</p>
-            ) : (
-              savedJobs.map((job) => (
-
-                <div
-                  key={job.id}
-                  className="border border-borderColor rounded-xl p-5 mb-4"
-                >
-                  <h3 className="font-bold text-primary">
-                    {job.role}
-                  </h3>
-
-                  <p>{job.company}</p>
-
-                  <p>{job.location}</p>
-
-                </div>
-              ))
-            )}
-
-          </div>
-        )}
-
-        {/* ALL JOBS */}
-
-        {activeSection === "alljobs" && (
-
-          <div className="bg-white rounded-2xl shadow-soft p-6 mt-6">
-
-            <h2 className="text-2xl font-bold text-primary mb-6">
-              All Jobs
-            </h2>
-
-            <div className="grid grid-cols-2 gap-6">
-
-              {jobsData.map((job) => (
-
-                <div
-                  key={job.id}
-                  className="border border-borderColor rounded-xl p-5"
-                >
-                  <h3 className="font-bold text-primary">
-                    {job.role}
-                  </h3>
-
-                  <p>{job.company}</p>
-
-                  <p>{job.location}</p>
-
-                  <div className="flex gap-4 mt-4">
-
-                 <button
-  onClick={() => handleApply(job)}
-  disabled={appliedJobs.some(
-    (item) => item.id === job.id
-  )}
-  className={`px-4 py-2 rounded-xl text-white ${
-    appliedJobs.some(
-      (item) => item.id === job.id
-    )
-      ? "bg-green-500 cursor-not-allowed"
-      : "bg-primary"
-  }`}
->
-
-  {appliedJobs.some(
-    (item) => item.id === job.id
-  )
-    ? "Applied"
-    : "Apply"}
-
-</button>
-
-<button
-  onClick={() => handleSave(job)}
-  disabled={savedJobs.some(
-    (item) => item.id === job.id
-  )}
-  className={`px-4 py-2 rounded-xl border ${
-    savedJobs.some(
-      (item) => item.id === job.id
-    )
-      ? "bg-green-500 text-white border-green-500 cursor-not-allowed"
-      : "border-primary text-primary"
-  }`}
->
-
-  {savedJobs.some(
-    (item) => item.id === job.id
-  )
-    ? "Saved"
-    : "Save"}
-
-</button>
-
-                  </div>
-
-                </div>
-              ))}
-
-            </div>
-
-          </div>
-        )}
-
-        {/* RESUME */}
-
-        {activeSection === "resume" && (
-
-          <div className="bg-white rounded-2xl shadow-soft p-6 mt-6">
-
-            <h2 className="text-2xl font-bold text-primary mb-6">
-              My Resume
-            </h2>
-
-            <div className="grid grid-cols-2 gap-6">
-
-              {resumes.map((resume) => (
-
-                <div
-                  key={resume.id}
-                  onClick={() =>
-                    setSelectedResume(resume)
-                  }
-                  className="border border-borderColor rounded-xl p-5 cursor-pointer"
-                >
-                  <h3 className="font-bold text-primary">
-                    {resume.name}
-                  </h3>
-
-                  <p className="mt-2 text-gray-500">
-                    Skill : {resume.skill}
-                  </p>
-
-                </div>
-              ))}
-
-            </div>
-
-          </div>
-        )}
-
-        {/* RECOMMENDATION */}
-
-        {activeSection === "recommendation" && (
-
-          <div className="bg-white rounded-2xl shadow-soft p-6 mt-6">
-
-            <h2 className="text-2xl font-bold text-primary mb-6">
-              Resume Based Recommendation
-            </h2>
-
-            <p className="mb-6 text-gray-500">
-              Selected Resume :
-              {selectedResume.name}
-            </p>
-
-            <div className="grid grid-cols-2 gap-6">
-
-              {recommendedJobs.map((job) => (
-
-                <div
-                  key={job.id}
-                  className="border border-borderColor rounded-xl p-5"
-                >
-                  <h3 className="font-bold text-primary">
-                    {job.role}
-                  </h3>
-
-                  <p>{job.company}</p>
-
-                  <p>{job.location}</p>
-
-                </div>
-              ))}
-
-            </div>
-
-          </div>
-        )}
-        {/* CHAT BOX */}
-
-
-
-        {/* RECENT ACTIVITY */}
-
-        {activeSection === "activity" && (
-
-          <div className="bg-white rounded-2xl shadow-soft p-6 mt-6">
-
-            <h2 className="text-2xl font-bold text-primary mb-6">
-              Recent Activity
-            </h2>
-
-            {activities.length === 0 ? (
-
-              <p>No Recent Activity</p>
-
-            ) : (
-
-              activities.map((activity, index) => (
-
-                <div
-                  key={index}
-                  className="border border-borderColor rounded-xl p-4 mb-4"
-                >
-                  {activity}
-                </div>
-              ))
-            )}
-
-          </div>
-        )}
-
-      </div>
-
     </div>
   );
 };

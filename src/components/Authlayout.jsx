@@ -1,20 +1,16 @@
 function AuthLayout({ children, title, subtitle, activeTab = 'candidate', onTabChange }) {
   return (
-    <div className="min-h-screen bg-light flex items-center justify-center p-4 sm:p-8 font-body">
-      <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="min-h-screen bg-light flex items-start justify-center p-3 font-body sm:items-center sm:p-8">
+      <div className="w-full max-w-5xl grid grid-cols-1 gap-4 md:grid-cols-2">
 
         {/* Left Side */}
-        <div className="bg-hero-gradient rounded-[30px] p-6 sm:p-10 text-white shadow-soft flex flex-col justify-between">
+        <div className="bg-hero-gradient rounded-[24px] p-5 text-white shadow-soft flex flex-col justify-between sm:rounded-[30px] sm:p-10">
           <div>
-            <p className="uppercase tracking-[3px] text-xs font-bold text-white/90">
-              SkoolJobs Access
-            </p>
-
-            <h1 className="text-[38px] font-bold mt-4 leading-tight font-heading">
+            <h1 className="text-3xl font-bold leading-tight font-heading sm:text-[38px]">
               {title}
             </h1>
 
-            <p className="mt-4 text-[17px] leading-relaxed text-white/90">
+            <p className="mt-4 text-sm leading-relaxed text-white/90 sm:text-[17px]">
               {activeTab === 'candidate'
                 ? "Build your profile and discover roles that fit your subject and experience."
                 : "Post jobs, manage applications, and find the best educators for your school."}
@@ -22,7 +18,7 @@ function AuthLayout({ children, title, subtitle, activeTab = 'candidate', onTabC
 
             {/* Toggle */}
             {onTabChange && (
-              <div className="border border-white/40 mt-10 rounded-full p-[2px] flex items-center bg-white/5 backdrop-blur-sm">
+              <div className="border border-white/40 mt-8 rounded-full p-[2px] flex items-center bg-white/5 backdrop-blur-sm sm:mt-10">
                 <button 
                   onClick={() => onTabChange('candidate')}
                   className={`flex-1 py-2.5 rounded-full font-semibold text-sm transition-all ${
@@ -47,7 +43,7 @@ function AuthLayout({ children, title, subtitle, activeTab = 'candidate', onTabC
             )}
 
             {/* Info Box */}
-            <div className="border border-white/30 mt-8 rounded-[24px] p-6 bg-white/5 backdrop-blur-md">
+            <div className="border border-white/30 mt-6 rounded-[22px] p-4 bg-white/5 backdrop-blur-md sm:mt-8 sm:rounded-[24px] sm:p-6">
               <div className="flex items-center gap-4">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   {activeTab === 'candidate' ? (
@@ -72,11 +68,11 @@ function AuthLayout({ children, title, subtitle, activeTab = 'candidate', onTabC
                 </h2>
               </div>
 
-              <p className="mt-2 text-[15px] text-white/80 pl-[44px]">
+              <p className="mt-2 text-sm text-white/80 sm:pl-[44px] sm:text-[15px]">
                 {activeTab === 'candidate' ? "Dedicated workspace for educators" : "Streamlined hiring for schools & institutions"}
               </p>
 
-              <ul className="mt-6 space-y-4 text-[15px] text-white/90">
+              <ul className="mt-5 space-y-3 text-sm text-white/90 sm:mt-6 sm:space-y-4 sm:text-[15px]">
                 {activeTab === 'candidate' ? (
                   <>
                     <li className="flex items-start gap-3">
@@ -112,30 +108,11 @@ function AuthLayout({ children, title, subtitle, activeTab = 'candidate', onTabC
             </div>
           </div>
 
-          {/* Bottom Side Info / Stats */}
-          <div className="mt-8 border-t border-white/20 pt-8">
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div>
-                <p className="text-2xl font-bold text-white font-heading">10k+</p>
-                <p className="text-[11px] text-white/70 uppercase tracking-wider mt-1">Teachers</p>
-              </div>
-              <div className="border-x border-white/20">
-                <p className="text-2xl font-bold text-white font-heading">500+</p>
-                <p className="text-[11px] text-white/70 uppercase tracking-wider mt-1">Schools</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-white font-heading">98%</p>
-                <p className="text-[11px] text-white/70 uppercase tracking-wider mt-1">Placement</p>
-              </div>
-            </div>
-            <p className="text-center text-xs text-white/60 mt-6 tracking-wide font-medium">
-              Designed with ❤️ for Indian Educators
-            </p>
-          </div>
+          <div className="mt-8" />
         </div>
 
         {/* Right Side */}
-        <div className="bg-white rounded-[30px] p-6 sm:p-10 shadow-soft flex flex-col justify-center">
+        <div className="bg-white rounded-[24px] p-5 shadow-soft flex flex-col justify-center sm:rounded-[30px] sm:p-10">
           {children}
         </div>
 

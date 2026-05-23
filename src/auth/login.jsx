@@ -116,7 +116,7 @@ function Login() {
     <AuthLayout
       title={
         activeTab === "candidate"
-          ? "Login as a teacher"
+          ? "Login Teacher's"
           : "Login as a school"
       }
 
@@ -137,24 +137,15 @@ function Login() {
 
         <div className="flex items-end justify-between mt-2">
 
-          <h1 className="text-[28px] font-bold text-primary font-heading leading-none">
+          <h1 className="text-2xl font-bold text-primary font-heading leading-tight sm:text-[28px]">
 
             {
               activeTab === "candidate"
-                ? "Login as a teacher"
+                ? "Login Teacher's"
                 : "Login as a school"
             }
 
           </h1>
-
-          <Link
-            to="/"
-            className="text-primary font-bold text-[13px] flex items-center gap-1 hover:underline"
-          >
-
-            Back to Home <span>→</span>
-
-          </Link>
 
         </div>
 
@@ -204,7 +195,7 @@ function Login() {
 
         {/* REMEMBER */}
 
-        <div className="flex items-center justify-between pt-2">
+        <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
 
           <label className="flex items-center gap-2.5 cursor-pointer group select-none">
 
@@ -261,7 +252,7 @@ function Login() {
               className="text-primary font-bold hover:underline"
             >
 
-              signup
+              Sign up
 
             </Link>
 

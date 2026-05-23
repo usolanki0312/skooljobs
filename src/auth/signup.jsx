@@ -105,7 +105,7 @@ function Signup() {
       title={
         step === "otp" 
           ? "Verify your number" 
-          : "Sign up as a teacher"
+          : "Sign up as the Teacher's"
       }
       activeTab={activeTab}
     >
@@ -118,15 +118,11 @@ function Signup() {
         </p>
 
         <div className="flex items-end justify-between mt-2">
-          <h1 className="text-[28px] font-bold text-primary font-heading leading-none">
+          <h1 className="text-2xl font-bold text-primary font-heading leading-tight sm:text-[28px]">
             {step === "otp" 
               ? "OTP Verification" 
-              : "Sign up as a teacher"}
+              : "Sign up as the Teacher's"}
           </h1>
-
-          <Link to="/" className="text-primary font-bold text-[13px] flex items-center gap-1 hover:underline">
-            Back to Home <span>→</span>
-          </Link>
         </div>
       </div>
 
@@ -201,7 +197,7 @@ function Signup() {
             />
 
             {/* Downsized buttons side by side */}
-            <div className="flex items-center gap-2.5 pt-2">
+            <div className="flex flex-col gap-2.5 pt-2 sm:flex-row sm:items-center">
               <button
                 type="button"
                 onClick={() => setStep("details")}
@@ -288,7 +284,7 @@ function Signup() {
             />
 
             {/* Terms and Conditions Checkbox */}
-            <div className="flex items-center gap-2.5 mt-5 mb-3 cursor-pointer group select-none">
+            <div className="flex items-start gap-2.5 mt-5 mb-3 cursor-pointer group select-none">
               <input 
                 type="checkbox" 
                 id="terms"
