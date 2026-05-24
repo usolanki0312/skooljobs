@@ -75,6 +75,85 @@ const blankExperience = {
   details: "",
 };
 
+const blankResumeData = {
+  awardType: "",
+  awardName: "",
+  awardBy: "",
+  awardYear: "",
+  courseType: "",
+  courseName: "",
+  conductedBy: "",
+  courseYear: "",
+};
+
+const pinStateMap = {
+  11: "Delhi",
+  12: "Haryana",
+  13: "Haryana",
+  14: "Punjab",
+  16: "Chandigarh",
+  17: "Himachal Pradesh",
+  18: "Jammu and Kashmir",
+  19: "Jammu and Kashmir",
+  20: "Uttar Pradesh",
+  21: "Uttar Pradesh",
+  22: "Uttar Pradesh",
+  23: "Uttar Pradesh",
+  24: "Uttar Pradesh",
+  25: "Uttar Pradesh",
+  26: "Uttar Pradesh",
+  27: "Uttar Pradesh",
+  28: "Uttar Pradesh",
+  30: "Rajasthan",
+  31: "Rajasthan",
+  32: "Rajasthan",
+  33: "Rajasthan",
+  34: "Rajasthan",
+  36: "Gujarat",
+  37: "Gujarat",
+  38: "Gujarat",
+  39: "Gujarat",
+  40: "Maharashtra",
+  41: "Maharashtra",
+  42: "Maharashtra",
+  43: "Maharashtra",
+  44: "Maharashtra",
+  45: "Madhya Pradesh",
+  46: "Madhya Pradesh",
+  47: "Madhya Pradesh",
+  48: "Madhya Pradesh",
+  49: "Chhattisgarh",
+  50: "Telangana",
+  51: "Andhra Pradesh",
+  52: "Andhra Pradesh",
+  53: "Andhra Pradesh",
+  56: "Karnataka",
+  57: "Karnataka",
+  58: "Karnataka",
+  60: "Tamil Nadu",
+  61: "Tamil Nadu",
+  62: "Tamil Nadu",
+  63: "Tamil Nadu",
+  64: "Tamil Nadu",
+  67: "Kerala",
+  68: "Kerala",
+  69: "Kerala",
+  70: "West Bengal",
+  71: "West Bengal",
+  72: "West Bengal",
+  73: "West Bengal",
+  74: "West Bengal",
+  75: "Odisha",
+  76: "Odisha",
+  78: "Assam",
+  79: "North East",
+  80: "Bihar",
+  81: "Bihar",
+  82: "Jharkhand",
+  83: "Jharkhand",
+  84: "Bihar",
+};
+
 const hasValue = (item) =>
   Object.values(item).some((value) => {
     if (typeof value === "boolean") return value;
@@ -138,16 +217,9 @@ const TeacherProfile = () => {
   const [editingExperienceIndex, setEditingExperienceIndex] = useState(null);
   const experienceFormRef = useRef(null);
 
-  const [resumeData, setResumeData] = useState({
-    awardType: "",
-    awardName: "",
-    awardBy: "",
-    awardYear: "",
-    courseType: "",
-    courseName: "",
-    conductedBy: "",
-    courseYear: "",
-  });
+  const [resumeData, setResumeData] = useState(blankResumeData);
+  const [savedAwards, setSavedAwards] = useState([]);
+  const [savedCourses, setSavedCourses] = useState([]);
 
   const [resumeDraft, setResumeDraft] = useState({
     title: "",
@@ -179,11 +251,14 @@ const TeacherProfile = () => {
   const handleChange = (e) => {
     const { name, type, checked, value } = e.target;
     const nextValue = type === "checkbox" ? checked : value;
+    const nextState =
+      name === "pinCode" && value.length >= 2 ? pinStateMap[value.slice(0, 2)] || "" : undefined;
 
     setTeacherData((prev) => ({
       ...prev,
       [name]: nextValue,
       ...(name === "sameAsMobile" && checked ? { whatsapp: prev.mobile } : {}),
+      ...(nextState !== undefined ? { state: nextState } : {}),
     }));
   };
 
@@ -271,6 +346,25 @@ const TeacherProfile = () => {
       return false;
     }
 
+    if (experienceDraft.startDate && new Date(experienceDraft.startDate) > new Date()) {
+      alert("Start date cannot be in the future.");
+      return false;
+    }
+
+    if (
+      experienceDraft.startDate &&
+      experienceDraft.endDate &&
+      new Date(experienceDraft.endDate) < new Date(experienceDraft.startDate)
+    ) {
+      alert("End date cannot be before start date.");
+      return false;
+    }
+
+    if (experienceDraft.endDate && new Date(experienceDraft.endDate) > new Date()) {
+      alert("End date cannot be in the future.");
+      return false;
+    }
+
     setSavedExperiences((prev) => {
       if (editingExperienceIndex !== null) {
         return prev.map((item, index) =>
@@ -336,6 +430,62 @@ const TeacherProfile = () => {
       },
     ]);
     setResumeDraft({ title: "", format: "PDF", fileName: "", notes: "" });
+  };
+
+  const cancelQualificationEdit = () => {
+    setQualificationDraft(blankQualification);
+    setEditingQualificationIndex(null);
+  };
+
+  const cancelExperienceEdit = () => {
+    setExperienceDraft(blankExperience);
+    setEditingExperienceIndex(null);
+  };
+
+  const addAward = () => {
+    const award = {
+      type: resumeData.awardType,
+      name: resumeData.awardName,
+      by: resumeData.awardBy,
+      year: resumeData.awardYear,
+    };
+
+    if (!hasValue(award)) {
+      alert("Please enter award details before adding.");
+      return;
+    }
+
+    setSavedAwards((prev) => [...prev, award]);
+    setResumeData((prev) => ({
+      ...prev,
+      awardType: "",
+      awardName: "",
+      awardBy: "",
+      awardYear: "",
+    }));
+  };
+
+  const addCourse = () => {
+    const course = {
+      type: resumeData.courseType,
+      name: resumeData.courseName,
+      by: resumeData.conductedBy,
+      year: resumeData.courseYear,
+    };
+
+    if (!hasValue(course)) {
+      alert("Please enter course details before adding.");
+      return;
+    }
+
+    setSavedCourses((prev) => [...prev, course]);
+    setResumeData((prev) => ({
+      ...prev,
+      courseType: "",
+      courseName: "",
+      conductedBy: "",
+      courseYear: "",
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -405,7 +555,13 @@ const TeacherProfile = () => {
           <p className="mt-2 text-xs text-slate-500">If DOB not entered, user can enter age.</p>
         </Field>
         <Field label="Nationality">
-          <input name="nationality" value={teacherData.nationality} onChange={handleChange} className={inputClass} />
+          <select name="nationality" value={teacherData.nationality} onChange={handleChange} className={inputClass}>
+            <option value="">Select nationality</option>
+            <option>Indian</option>
+            <option>Nepalese</option>
+            <option>Bhutanese</option>
+            <option>Other</option>
+          </select>
         </Field>
       </div>
 
@@ -667,10 +823,18 @@ const TeacherProfile = () => {
                 </Field>
               </div>
             </div>
-          <div className="mt-7 flex justify-center">
+          <div className="mt-7 flex justify-end">
+            <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+              <button type="button" onClick={cancelQualificationEdit} className="rounded-xl border border-borderColor px-6 py-3 text-sm font-bold text-slate-500 hover:bg-light">
+                Cancel
+              </button>
+              <button type="button" onClick={saveQualificationDraft} className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
+                <Save size={17} /> Save Changes
+              </button>
             <button type="button" onClick={addQualification} className="inline-flex items-center gap-2 rounded-2xl border border-dashed border-primary/40 bg-white px-7 py-4 text-sm font-bold text-primary hover:bg-primary/5">
               <Plus size={18} /> Add Another Qualification
             </button>
+            </div>
           </div>
         </div>
 
@@ -757,10 +921,24 @@ const TeacherProfile = () => {
                 </select>
               </Field>
               <Field label="Start Date">
-                <input type="date" value={experienceDraft.startDate} onChange={(e) => updateExperience("startDate", e.target.value)} className={inputClass} />
+                <input
+                  type="date"
+                  value={experienceDraft.startDate}
+                  max={new Date().toISOString().split("T")[0]}
+                  onChange={(e) => updateExperience("startDate", e.target.value)}
+                  className={inputClass}
+                />
               </Field>
               <Field label="End Date">
-                <input type="date" value={experienceDraft.endDate} disabled={experienceDraft.currentEmployer} onChange={(e) => updateExperience("endDate", e.target.value)} className={inputClass} />
+                <input
+                  type="date"
+                  value={experienceDraft.endDate}
+                  min={experienceDraft.startDate || undefined}
+                  max={new Date().toISOString().split("T")[0]}
+                  disabled={experienceDraft.currentEmployer}
+                  onChange={(e) => updateExperience("endDate", e.target.value)}
+                  className={inputClass}
+                />
               </Field>
               <Field label="Subject Taught (Main)">
                 <select value={experienceDraft.mainSubject} onChange={(e) => updateExperience("mainSubject", e.target.value)} className={inputClass}>
@@ -772,7 +950,18 @@ const TeacherProfile = () => {
                 </select>
               </Field>
               <Field label="Other Subjects">
-                <textarea value={experienceDraft.otherSubjects} onChange={(e) => updateExperience("otherSubjects", e.target.value)} className={`${inputClass} min-h-24 resize-none`} placeholder="Mathematics&#10;Science&#10;English" />
+                <select value={experienceDraft.otherSubjects} onChange={(e) => updateExperience("otherSubjects", e.target.value)} className={inputClass}>
+                  <option value="">Select Other Subject</option>
+                  <option>Mathematics</option>
+                  <option>Science</option>
+                  <option>English</option>
+                  <option>History</option>
+                  <option>Geography</option>
+                  <option>Computer</option>
+                  <option>Hindi</option>
+                  <option>Art</option>
+                  <option>Music</option>
+                </select>
               </Field>
               <Field label="Post Held / Job Title">
                 <select value={experienceDraft.post} onChange={(e) => updateExperience("post", e.target.value)} className={inputClass}>
@@ -795,7 +984,13 @@ const TeacherProfile = () => {
                 </Field>
               </div>
             </div>
-          <div className="mt-7 flex justify-end">
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-end">
+            <button type="button" onClick={cancelExperienceEdit} className="rounded-xl border border-borderColor px-6 py-3 text-sm font-bold text-slate-500 hover:bg-light">
+              Cancel
+            </button>
+            <button type="button" onClick={saveExperienceDraft} className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
+              <Save size={17} /> Save Changes
+            </button>
             <button type="button" onClick={addExperience} className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
               <Plus size={17} /> Add Next
             </button>
@@ -882,9 +1077,29 @@ const TeacherProfile = () => {
               <input value={resumeData.awardYear} onChange={(e) => setResumeData((prev) => ({ ...prev, awardYear: e.target.value }))} className={inputClass} placeholder="Year" />
             </Field>
           </div>
-          <button type="button" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-primary">
+          <button type="button" onClick={addAward} className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-primary">
             <Plus size={16} /> Add Another Award
           </button>
+          <div className="mt-5 rounded-2xl bg-light p-4">
+            <h4 className="mb-3 font-bold text-primary">Saved Awards</h4>
+            {savedAwards.length === 0 ? (
+              <p className="text-sm text-slate-500">Saved award entries will appear here.</p>
+            ) : (
+              <div className="space-y-3">
+                {savedAwards.map((award, index) => (
+                  <div key={`award-${index}`} className="rounded-xl border border-borderColor bg-white p-4 text-sm text-slate-600">
+                    <p className="mb-2 font-bold text-slate-800">Award #{index + 1}</p>
+                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
+                      <p><span className="font-bold text-slate-800">Type:</span> {award.type || "Not added"}</p>
+                      <p><span className="font-bold text-slate-800">Name:</span> {award.name || "Not added"}</p>
+                      <p><span className="font-bold text-slate-800">Presented By:</span> {award.by || "Not added"}</p>
+                      <p><span className="font-bold text-slate-800">Year:</span> {award.year || "Not added"}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
         <div className="rounded-2xl border border-borderColor bg-white p-6 shadow-sm">
           <div className="mb-6 flex items-center gap-3 border-b border-borderColor pb-5">
@@ -910,9 +1125,29 @@ const TeacherProfile = () => {
               <input value={resumeData.courseYear} onChange={(e) => setResumeData((prev) => ({ ...prev, courseYear: e.target.value }))} className={inputClass} placeholder="Year" />
             </Field>
           </div>
-          <button type="button" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-primary">
+          <button type="button" onClick={addCourse} className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-primary">
             <Plus size={16} /> Add Another Course
           </button>
+          <div className="mt-5 rounded-2xl bg-light p-4">
+            <h4 className="mb-3 font-bold text-primary">Saved Courses</h4>
+            {savedCourses.length === 0 ? (
+              <p className="text-sm text-slate-500">Saved course entries will appear here.</p>
+            ) : (
+              <div className="space-y-3">
+                {savedCourses.map((course, index) => (
+                  <div key={`course-${index}`} className="rounded-xl border border-borderColor bg-white p-4 text-sm text-slate-600">
+                    <p className="mb-2 font-bold text-slate-800">Course #{index + 1}</p>
+                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
+                      <p><span className="font-bold text-slate-800">Type:</span> {course.type || "Not added"}</p>
+                      <p><span className="font-bold text-slate-800">Name:</span> {course.name || "Not added"}</p>
+                      <p><span className="font-bold text-slate-800">Conducted By:</span> {course.by || "Not added"}</p>
+                      <p><span className="font-bold text-slate-800">Year:</span> {course.year || "Not added"}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </>
@@ -1216,14 +1451,16 @@ const TeacherProfile = () => {
 
             <div className="rounded-3xl bg-white p-4 shadow-soft sm:p-6 lg:p-8">
             {renderActiveSection()}
-            <div className="mt-10 flex flex-col-reverse gap-3 border-t border-borderColor pt-6 sm:flex-row sm:justify-end">
-              <button type="button" className="rounded-xl border border-borderColor px-6 py-3 text-sm font-bold text-slate-500 hover:bg-light">
-                Cancel
-              </button>
-              <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
-                <Save size={17} /> Save Changes
-              </button>
-            </div>
+            {!["qualification", "experience"].includes(activeSection) && (
+              <div className="mt-10 flex flex-col-reverse gap-3 border-t border-borderColor pt-6 sm:flex-row sm:justify-end">
+                <button type="button" className="rounded-xl border border-borderColor px-6 py-3 text-sm font-bold text-slate-500 hover:bg-light">
+                  Cancel
+                </button>
+                <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
+                  <Save size={17} /> Save Changes
+                </button>
+              </div>
+            )}
             </div>
           </main>
         </form>
