@@ -70,6 +70,7 @@ const resumes = [
 ];
 
 const navItems = [
+  { id: "profile", label: "My Profile", icon: UserRound },
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "alljobs", label: "All Jobs", icon: BriefcaseBusiness },
   { id: "recommendation", label: "Recommendation", icon: Sparkles },
@@ -393,6 +394,16 @@ const Dashboard = () => {
             </div>
           </div>
 
+          <div className="mt-6 rounded-3xl bg-white/10 p-5">
+            <div className="mb-3 flex items-center justify-between text-sm font-bold text-white">
+              <span>Profile Score</span>
+              <span>86%</span>
+            </div>
+            <div className="h-2 overflow-hidden rounded-full bg-white/20">
+              <div className="h-full rounded-full bg-white" style={{ width: "86%" }} />
+            </div>
+          </div>
+
           <nav className="mt-8 space-y-2">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -400,7 +411,7 @@ const Dashboard = () => {
               const navButton = (
                 <button
                   key={item.id}
-                  onClick={() => setActiveSection(item.id)}
+                  onClick={() => (item.id === "profile" ? navigate("/teacher-profile") : setActiveSection(item.id))}
                   className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${
                     isActive ? "bg-white text-primary" : "text-white/80 hover:bg-white/10 hover:text-white"
                   }`}
@@ -410,22 +421,7 @@ const Dashboard = () => {
                 </button>
               );
 
-              if (item.id !== "dashboard") {
-                return navButton;
-              }
-
-              return (
-                <div key={item.id} className="space-y-2">
-                  {navButton}
-                  <button
-                    onClick={() => navigate("/teacher-profile")}
-                    className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold text-white/80 hover:bg-white/10 hover:text-white"
-                    type="button"
-                  >
-                    <UserRound size={18} /> My Profile
-                  </button>
-                </div>
-              );
+              return navButton;
             })}
           </nav>
 
@@ -447,7 +443,7 @@ const Dashboard = () => {
               const navButton = (
                 <button
                   key={item.id}
-                  onClick={() => setActiveSection(item.id)}
+                  onClick={() => (item.id === "profile" ? navigate("/teacher-profile") : setActiveSection(item.id))}
                   className={`flex shrink-0 items-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition ${
                     isActive
                       ? "bg-primary text-white"
@@ -460,23 +456,7 @@ const Dashboard = () => {
                 </button>
               );
 
-              if (item.id !== "dashboard") {
-                return navButton;
-              }
-
-              return (
-                <div key={item.id} className="flex shrink-0 gap-2">
-                  {navButton}
-                  <button
-                    onClick={() => navigate("/teacher-profile")}
-                    className="flex shrink-0 items-center gap-2 rounded-2xl bg-light px-4 py-3 text-sm font-bold text-primary"
-                    type="button"
-                  >
-                    <UserRound size={17} />
-                    My Profile
-                  </button>
-                </div>
-              );
+              return navButton;
             })}
           </div>
           <div className="mt-6">{renderContent()}</div>

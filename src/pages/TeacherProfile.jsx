@@ -20,12 +20,12 @@ import BackButton from "../components/backbutton";
 
 const navItems = [
   { id: "basic", label: "My Profile", icon: User },
+  { id: "viewProfile", label: "View Profile", icon: Eye },
   { id: "contact", label: "Contact Details", icon: Phone },
   { id: "qualification", label: "Qualification", icon: GraduationCap },
   { id: "experience", label: "Experience", icon: BriefcaseBusiness },
   { id: "achievements", label: "Achievements", icon: Award },
   { id: "resume", label: "Resume", icon: FileText },
-  { id: "viewProfile", label: "View Profile", icon: Eye },
 ];
 
 const inputClass =
@@ -39,7 +39,9 @@ const labelClass = "mb-2 block text-xs font-bold uppercase tracking-wide text-pr
 const SectionHeader = ({ title, description }) => (
   <div className="mb-7">
     <h2 className="text-2xl font-bold text-primary sm:text-3xl">{title}</h2>
-    <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">{description}</p>
+    {description && (
+      <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">{description}</p>
+    )}
   </div>
 );
 
@@ -51,12 +53,14 @@ const Field = ({ label, children }) => (
 );
 
 const blankQualification = {
+  classLevel: "",
   degree: "",
   course: "",
   year: "",
   medium: "",
   mode: "",
   percentage: "",
+  school: "",
   university: "",
   college: "",
 };
@@ -85,6 +89,173 @@ const blankResumeData = {
   conductedBy: "",
   courseYear: "",
 };
+
+const qualificationOptions = {
+  degrees: [
+    "Secondary (10th)",
+    "Senior Secondary (12th)",
+    "Bachelor's Degree",
+    "Master's Degree",
+    "MPhil",
+    "PhD / Doctorate",
+    "Post Doctorate",
+    "Professional Degree",
+    "Other",
+  ],
+  courses: [
+    "General Secondary Education",
+    "Science",
+    "Commerce",
+    "Arts / Humanities",
+    "Vocational",
+    "BA",
+    "BSc",
+    "BCom",
+    "BBA",
+    "BCA",
+    "BTech",
+    "BE",
+    "B.Ed",
+    "MA",
+    "MSc",
+    "MCom",
+    "MBA",
+    "MCA",
+    "MTech",
+    "M.Ed",
+    "Research Degree",
+    "Subject Specialization",
+    "Other",
+  ],
+  mediums: [
+    "English",
+    "Hindi",
+    "Bilingual (English + Hindi)",
+    "Urdu",
+    "Punjabi",
+    "Bengali",
+    "Tamil",
+    "Telugu",
+    "Marathi",
+    "Gujarati",
+    "Kannada",
+    "Malayalam",
+    "Odia",
+    "Other",
+  ],
+  modes: [
+    "Regular",
+    "Part Time",
+    "Distance Learning",
+    "Online",
+    "Correspondence",
+    "Open University",
+    "Hybrid",
+  ],
+  universities: [
+    "University of Delhi",
+    "Mumbai University",
+    "IIT Delhi",
+    "JNU",
+    "Lucknow University",
+    "Anna University",
+    "IGNOU",
+    "Other",
+  ],
+  colleges: [
+    "Hindu College",
+    "Miranda House",
+    "IIT Bombay",
+    "Amity University",
+    "Christ University",
+    "Other",
+  ],
+};
+
+const experienceOptions = {
+  boards: [
+    "CBSE",
+    "ICSE",
+    "ISC",
+    "State Board",
+    "IB (International Baccalaureate)",
+    "IGCSE / Cambridge",
+    "NIOS",
+    "Open School",
+    "International Board",
+    "Other",
+  ],
+  subjects: [
+    "Accountancy",
+    "Biology",
+    "Business Studies",
+    "Chemistry",
+    "Economics",
+    "English",
+    "Geography",
+    "History And Civics",
+    "Home Science",
+    "Maths",
+    "Philosophy",
+    "Physics",
+    "Pol.Science",
+    "Psychology",
+    "Science",
+    "Social Science",
+    "Sociology",
+    "Art & Painting",
+    "Hindi",
+  ],
+  posts: [
+    "PRT (Primary Teacher)",
+    "TGT (Trained Graduate Teacher)",
+    "PGT (Post Graduate Teacher)",
+    "Assistant Teacher",
+    "Subject Teacher",
+    "Class Teacher",
+    "Senior Teacher",
+    "Head Teacher",
+    "Vice Principal",
+    "Principal",
+    "Academic Coordinator",
+    "Curriculum Coordinator",
+    "Lecturer",
+    "Professor",
+    "Tutor",
+    "Special Educator",
+    "Lab Instructor",
+    "Counselor",
+    "Sports Coach",
+    "Music Teacher",
+    "Art Teacher",
+    "Computer Instructor",
+    "Teaching Assistant",
+    "Administrative Head",
+    "Other",
+  ],
+  reasons: [
+    "Career Growth",
+    "Better Opportunity",
+    "Higher Salary",
+    "Relocation",
+    "Personal Reasons",
+    "Contract Completed",
+    "School Closure",
+    "Family Reasons",
+    "Health Reasons",
+    "Higher Studies",
+    "Role Change",
+    "Work-Life Balance",
+    "Other",
+  ],
+};
+
+const renderOptions = (items) =>
+  items.map((item) => (
+    <option key={item} value={item}>
+      {item}
+    </option>
+  ));
 
 const pinStateMap = {
   11: "Delhi",
@@ -210,11 +381,13 @@ const TeacherProfile = () => {
   const [qualificationDraft, setQualificationDraft] = useState(blankQualification);
   const [savedQualifications, setSavedQualifications] = useState([]);
   const [editingQualificationIndex, setEditingQualificationIndex] = useState(null);
+  const [showQualificationForm, setShowQualificationForm] = useState(false);
   const qualificationFormRef = useRef(null);
 
   const [experienceDraft, setExperienceDraft] = useState(blankExperience);
   const [savedExperiences, setSavedExperiences] = useState([]);
   const [editingExperienceIndex, setEditingExperienceIndex] = useState(null);
+  const [showExperienceForm, setShowExperienceForm] = useState(false);
   const experienceFormRef = useRef(null);
 
   const [resumeData, setResumeData] = useState(blankResumeData);
@@ -227,26 +400,8 @@ const TeacherProfile = () => {
     fileName: "",
     notes: "",
   });
-  const [savedResumes, setSavedResumes] = useState([
-    {
-      title: "Modern Teacher Resume",
-      format: "PDF",
-      fileName: "modern-teacher-resume.pdf",
-      notes: "Clean one-page layout for quick school screening.",
-    },
-    {
-      title: "Academic CV Resume",
-      format: "PDF",
-      fileName: "academic-cv-resume.pdf",
-      notes: "Detailed format for qualification and teaching history.",
-    },
-    {
-      title: "Fresher Teacher Resume",
-      format: "Text",
-      fileName: "fresher-teacher-resume.txt",
-      notes: "Simple text format for new teaching applicants.",
-    },
-  ]);
+  const [savedResumes, setSavedResumes] = useState([]);
+  const [resumeMode, setResumeMode] = useState("upload");
 
   const handleChange = (e) => {
     const { name, type, checked, value } = e.target;
@@ -313,17 +468,36 @@ const TeacherProfile = () => {
     });
     setQualificationDraft(blankQualification);
     setEditingQualificationIndex(null);
+    setShowQualificationForm(false);
     return true;
   };
 
   const addQualification = () => {
-    if (hasValue(qualificationDraft)) {
-      saveQualificationDraft();
+    setQualificationDraft(blankQualification);
+    setEditingQualificationIndex(null);
+    setShowQualificationForm(true);
+    setTimeout(() => qualificationFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+  };
+
+  const saveAndAddQualification = () => {
+    if (!hasValue(qualificationDraft)) {
+      alert("Please enter qualification details before saving.");
       return;
     }
 
+    setSavedQualifications((prev) => {
+      if (editingQualificationIndex !== null) {
+        return prev.map((item, index) =>
+          index === editingQualificationIndex ? qualificationDraft : item
+        );
+      }
+
+      return [...prev, qualificationDraft];
+    });
     setQualificationDraft(blankQualification);
     setEditingQualificationIndex(null);
+    setShowQualificationForm(true);
+    setTimeout(() => qualificationFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
   };
 
   const removeQualification = (index) => {
@@ -331,12 +505,14 @@ const TeacherProfile = () => {
     if (editingQualificationIndex === index) {
       setQualificationDraft(blankQualification);
       setEditingQualificationIndex(null);
+      setShowQualificationForm(false);
     }
   };
 
   const editQualification = (index) => {
     setQualificationDraft(savedQualifications[index]);
     setEditingQualificationIndex(index);
+    setShowQualificationForm(true);
     qualificationFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -376,17 +552,23 @@ const TeacherProfile = () => {
     });
     setExperienceDraft(blankExperience);
     setEditingExperienceIndex(null);
+    setShowExperienceForm(false);
     return true;
   };
 
   const addExperience = () => {
-    if (hasValue(experienceDraft)) {
-      saveExperienceDraft();
-      return;
-    }
-
     setExperienceDraft(blankExperience);
     setEditingExperienceIndex(null);
+    setShowExperienceForm(true);
+    setTimeout(() => experienceFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+  };
+
+  const saveAndAddExperience = () => {
+    if (!saveExperienceDraft()) return;
+    setExperienceDraft(blankExperience);
+    setEditingExperienceIndex(null);
+    setShowExperienceForm(true);
+    setTimeout(() => experienceFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
   };
 
   const removeExperience = (index) => {
@@ -394,12 +576,14 @@ const TeacherProfile = () => {
     if (editingExperienceIndex === index) {
       setExperienceDraft(blankExperience);
       setEditingExperienceIndex(null);
+      setShowExperienceForm(false);
     }
   };
 
   const editExperience = (index) => {
     setExperienceDraft(savedExperiences[index]);
     setEditingExperienceIndex(index);
+    setShowExperienceForm(true);
     experienceFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -416,30 +600,29 @@ const TeacherProfile = () => {
   };
 
   const addResume = () => {
-    if (!resumeDraft.title.trim() && !resumeDraft.fileName.trim()) {
-      alert("Please add a resume title or upload a file.");
+    if (!resumeDraft.title.trim() && resumeMode === "create") {
+      alert("Please add a resume title.");
       return;
     }
+
+    if (!resumeDraft.fileName.trim() && resumeMode === "upload") {
+      alert("Please upload a resume file.");
+      return;
+    }
+
+    const extension = resumeDraft.format === "PDF" ? "pdf" : "txt";
+    const cleanTitle = resumeDraft.title.trim() || resumeDraft.fileName.replace(/\.[^/.]+$/, "") || "Teacher Resume";
 
     setSavedResumes((prev) => [
       ...prev,
       {
         ...resumeDraft,
-        title: resumeDraft.title || "New Resume",
-        fileName: resumeDraft.fileName || "Manual resume entry",
+        source: resumeMode === "upload" ? "Uploaded" : "Created",
+        title: cleanTitle,
+        fileName: resumeDraft.fileName || `${cleanTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}.${extension}`,
       },
     ]);
     setResumeDraft({ title: "", format: "PDF", fileName: "", notes: "" });
-  };
-
-  const cancelQualificationEdit = () => {
-    setQualificationDraft(blankQualification);
-    setEditingQualificationIndex(null);
-  };
-
-  const cancelExperienceEdit = () => {
-    setExperienceDraft(blankExperience);
-    setEditingExperienceIndex(null);
   };
 
   const addAward = () => {
@@ -490,12 +673,12 @@ const TeacherProfile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (activeSection === "qualification") {
+    if (activeSection === "qualification" && showQualificationForm) {
       if (saveQualificationDraft()) alert("Qualification saved successfully");
       return;
     }
 
-    if (activeSection === "experience") {
+    if (activeSection === "experience" && showExperienceForm) {
       if (saveExperienceDraft()) alert("Experience saved successfully");
       return;
     }
@@ -527,7 +710,9 @@ const TeacherProfile = () => {
             <option>Mr</option>
             <option>Mrs</option>
             <option>Miss</option>
+            <option>Ms</option>
             <option>Dr</option>
+            <option>Prof</option>
           </select>
         </Field>
         <Field label="First Name">
@@ -584,7 +769,7 @@ const TeacherProfile = () => {
             <option>English</option>
             <option>Computer</option>
           </select>
-            <p className="mt-2 text-xs text-slate-500">Only one can be selected.</p>
+          <p className="mt-2 text-xs text-slate-500">Only one can be selected.</p>
         </Field>
         <div>
           <Field label="Additional Subject(s)">
@@ -662,20 +847,12 @@ const TeacherProfile = () => {
             <span className="text-sm font-bold text-slate-500">Highest Qualification 1</span>
             <select name="highestQualificationOne" value={teacherData.highestQualificationOne} onChange={handleChange} className={inputClass}>
               <option value="">Select...</option>
-              <option>B.Ed</option>
-              <option>M.Ed</option>
-              <option>B.Sc</option>
-              <option>M.Sc</option>
-              <option>Ph.D</option>
+              {renderOptions(qualificationOptions.degrees)}
             </select>
             <span className="text-sm font-bold text-slate-500">Highest Qualification 2</span>
             <select name="highestQualificationTwo" value={teacherData.highestQualificationTwo} onChange={handleChange} className={inputClass}>
               <option value="">Select...</option>
-              <option>B.Ed</option>
-              <option>M.Ed</option>
-              <option>B.Sc</option>
-              <option>M.Sc</option>
-              <option>Ph.D</option>
+              {renderOptions(qualificationOptions.degrees)}
             </select>
           </div>
         </div>
@@ -760,125 +937,144 @@ const TeacherProfile = () => {
     <>
       <SectionHeader
         title="Academic Qualifications"
-        description="Enter one qualification at a time. Save it, then add another qualification whenever needed."
       />
       <div className="space-y-7">
-        <div ref={qualificationFormRef} className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm">
-          <div className="mb-5 flex items-center justify-between border-b border-borderColor pb-3">
-            <span className="text-xs font-bold uppercase tracking-[2px] text-slate-400">
-              {editingQualificationIndex !== null
-                ? `Editing Entry #${editingQualificationIndex + 1}`
-                : "New Qualification"}
-            </span>
-          </div>
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-              <Field label="Degree">
-                <select value={qualificationDraft.degree} onChange={(e) => updateQualification("degree", e.target.value)} className={inputClass}>
-                  <option value="">Select Degree</option>
-                  <option>B.Ed</option>
-                  <option>B.A</option>
-                  <option>B.Sc</option>
-                  <option>M.A</option>
-                  <option>M.Sc</option>
-                  <option>Ph.D</option>
-                </select>
-              </Field>
-              <Field label="Course Name">
-                <select value={qualificationDraft.course} onChange={(e) => updateQualification("course", e.target.value)} className={inputClass}>
-                  <option value="">Select Course</option>
-                  <option>Mathematics</option>
-                  <option>Science</option>
-                  <option>English</option>
-                  <option>Computer Science</option>
-                </select>
-              </Field>
-              <Field label="Year Passed">
-                <input value={qualificationDraft.year} onChange={(e) => updateQualification("year", e.target.value)} className={inputClass} placeholder="e.g. 2023" />
-              </Field>
-              <Field label="Medium of Instruction">
-                <select value={qualificationDraft.medium} onChange={(e) => updateQualification("medium", e.target.value)} className={inputClass}>
-                  <option value="">Select Medium</option>
-                  <option>English</option>
-                  <option>Hindi</option>
-                  <option>Regional Language</option>
-                </select>
-              </Field>
-              <Field label="Mode of Study">
-                <select value={qualificationDraft.mode} onChange={(e) => updateQualification("mode", e.target.value)} className={inputClass}>
-                  <option value="">Select Mode</option>
-                  <option>Regular</option>
-                  <option>Distance</option>
-                  <option>Online</option>
-                </select>
-              </Field>
-              <Field label="Percentage %">
-                <input value={qualificationDraft.percentage} onChange={(e) => updateQualification("percentage", e.target.value)} className={inputClass} placeholder="e.g. 76.2" />
-              </Field>
-              <Field label="University Name">
-                <input value={qualificationDraft.university} onChange={(e) => updateQualification("university", e.target.value)} className={inputClass} placeholder="Enter University" />
-              </Field>
-              <div className="lg:col-span-2">
-                <Field label="College Name">
-                  <input value={qualificationDraft.college} onChange={(e) => updateQualification("college", e.target.value)} className={inputClass} placeholder="Enter College / Institution" />
-                </Field>
-              </div>
-            </div>
-          <div className="mt-7 flex justify-end">
-            <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
-              <button type="button" onClick={cancelQualificationEdit} className="rounded-xl border border-borderColor px-6 py-3 text-sm font-bold text-slate-500 hover:bg-light">
-                Cancel
-              </button>
-              <button type="button" onClick={saveQualificationDraft} className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
-                <Save size={17} /> Save Changes
-              </button>
-            <button type="button" onClick={addQualification} className="inline-flex items-center gap-2 rounded-2xl border border-dashed border-primary/40 bg-white px-7 py-4 text-sm font-bold text-primary hover:bg-primary/5">
-              <Plus size={18} /> Add Another Qualification
-            </button>
-            </div>
-          </div>
-        </div>
+        {!showQualificationForm && (
+          <button type="button" onClick={addQualification} className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
+            <Plus size={17} /> Add Qualification
+          </button>
+        )}
 
-        <div className="rounded-2xl bg-light p-5">
+        {showQualificationForm && (
+          <div ref={qualificationFormRef} className="rounded-xl border border-borderColor bg-white p-5 shadow-sm">
+              <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+                <Field label="Class">
+                  <select
+                    value={qualificationDraft.classLevel}
+                    onChange={(e) => {
+                      const classLevel = e.target.value;
+                      setQualificationDraft((prev) => ({
+                        ...prev,
+                        classLevel,
+                        degree: classLevel === "Class 10" ? "Secondary (10th)" : classLevel === "Class 12" ? "Senior Secondary (12th)" : prev.degree,
+                      }));
+                    }}
+                    className={inputClass}
+                  >
+                    <option value="">Select Class</option>
+                    <option>Class 10</option>
+                    <option>Class 12</option>
+                  </select>
+                </Field>
+                {qualificationDraft.classLevel && (
+                  <Field label="School Name">
+                    <input value={qualificationDraft.school} onChange={(e) => updateQualification("school", e.target.value)} className={inputClass} placeholder="Enter school name" />
+                  </Field>
+                )}
+                {qualificationDraft.classLevel && (
+                  <Field label="Percentage %">
+                    <input value={qualificationDraft.percentage} onChange={(e) => updateQualification("percentage", e.target.value)} className={inputClass} placeholder="e.g. 76.2" />
+                  </Field>
+                )}
+                <Field label="Degree">
+                  <select value={qualificationDraft.degree} onChange={(e) => updateQualification("degree", e.target.value)} className={inputClass}>
+                    <option value="">Select Degree</option>
+                    {renderOptions(qualificationOptions.degrees)}
+                  </select>
+                </Field>
+                <Field label="Course Name">
+                  <select value={qualificationDraft.course} onChange={(e) => updateQualification("course", e.target.value)} className={inputClass}>
+                    <option value="">Select Course</option>
+                    {renderOptions(qualificationOptions.courses)}
+                  </select>
+                </Field>
+                <Field label="Year Passed">
+                  <input value={qualificationDraft.year} onChange={(e) => updateQualification("year", e.target.value)} className={inputClass} placeholder="e.g. 2023" />
+                </Field>
+                <Field label="Medium of Instruction">
+                  <select value={qualificationDraft.medium} onChange={(e) => updateQualification("medium", e.target.value)} className={inputClass}>
+                    <option value="">Select Medium</option>
+                    {renderOptions(qualificationOptions.mediums)}
+                  </select>
+                </Field>
+                <Field label="Mode of Study">
+                  <select value={qualificationDraft.mode} onChange={(e) => updateQualification("mode", e.target.value)} className={inputClass}>
+                    <option value="">Select Mode</option>
+                    {renderOptions(qualificationOptions.modes)}
+                  </select>
+                </Field>
+                {!qualificationDraft.classLevel && (
+                  <Field label="Percentage %">
+                    <input value={qualificationDraft.percentage} onChange={(e) => updateQualification("percentage", e.target.value)} className={inputClass} placeholder="e.g. 76.2" />
+                  </Field>
+                )}
+                <Field label="University Name">
+                  <select value={qualificationDraft.university} onChange={(e) => updateQualification("university", e.target.value)} className={inputClass}>
+                    <option value="">Select University</option>
+                    {renderOptions(qualificationOptions.universities)}
+                  </select>
+                </Field>
+                <div className="lg:col-span-2">
+                  <Field label="College Name">
+                    <select value={qualificationDraft.college} onChange={(e) => updateQualification("college", e.target.value)} className={inputClass}>
+                      <option value="">Select College / Institution</option>
+                      {renderOptions(qualificationOptions.colleges)}
+                    </select>
+                  </Field>
+                </div>
+              </div>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-end">
+              <button type="button" onClick={saveQualificationDraft} className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
+                <Save size={17} /> Save
+              </button>
+              <button type="button" onClick={saveAndAddQualification} className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary/30 bg-white px-6 py-3 text-sm font-bold text-primary hover:bg-primary/5">
+                <Plus size={17} /> Add Another
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="rounded-xl bg-light p-5">
           <h3 className="mb-4 text-lg font-bold text-primary">Saved Qualifications</h3>
           {savedQualifications.length === 0 ? (
             <p className="text-sm text-slate-500">Saved qualification entries will appear here.</p>
           ) : (
-            <div className="space-y-3">
-              {savedQualifications.map((item, index) => (
-                <div key={`${item.degree}-${index}`} className="rounded-xl border border-borderColor bg-white p-4">
-                  <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                    <div>
-                      <h4 className="font-bold text-slate-800">
-                        {item.degree || "Qualification"} {item.course ? `- ${item.course}` : ""}
-                      </h4>
-                      <p className="mt-1 text-sm text-slate-500">
-                        {item.university || "University not added"} {item.year ? `| ${item.year}` : ""}
-                      </p>
-                      <p className="mt-1 text-sm text-slate-500">
-                        {item.mode || "Mode not added"} {item.percentage ? `| ${item.percentage}%` : ""}
-                      </p>
-                      <div className="mt-4 grid grid-cols-1 gap-3 text-sm text-slate-600 sm:grid-cols-2 lg:grid-cols-4">
-                        <p><span className="font-bold text-slate-800">Degree:</span> {item.degree || "Not added"}</p>
-                        <p><span className="font-bold text-slate-800">Course:</span> {item.course || "Not added"}</p>
-                        <p><span className="font-bold text-slate-800">Year Passed:</span> {item.year || "Not added"}</p>
-                        <p><span className="font-bold text-slate-800">Medium:</span> {item.medium || "Not added"}</p>
-                        <p><span className="font-bold text-slate-800">Mode:</span> {item.mode || "Not added"}</p>
-                        <p><span className="font-bold text-slate-800">Percentage:</span> {item.percentage || "Not added"}</p>
-                        <p><span className="font-bold text-slate-800">University:</span> {item.university || "Not added"}</p>
-                        <p><span className="font-bold text-slate-800">College:</span> {item.college || "Not added"}</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <button type="button" onClick={() => editQualification(index)} className="rounded-lg border border-borderColor px-4 py-2 text-sm font-bold text-primary hover:bg-primary/5">
-                        Edit
-                      </button>
-                      <button type="button" onClick={() => removeQualification(index)} className="rounded-lg border border-red-100 px-4 py-2 text-sm font-bold text-red-500 hover:bg-red-50">
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <div className="overflow-x-auto rounded-xl border border-borderColor bg-white">
+              <table className="min-w-[980px] w-full text-left text-sm">
+                <thead className="bg-primary/5 text-xs uppercase tracking-wide text-primary">
+                  <tr>
+                    {["Class", "School", "%", "Degree", "Course", "Year", "Medium", "Mode", "University", "College", "Action"].map((heading) => (
+                      <th key={heading} className="px-4 py-3 font-bold">{heading}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-borderColor text-slate-600">
+                  {savedQualifications.map((item, index) => (
+                    <tr key={`${item.degree}-${index}`} className="align-top">
+                      <td className="px-4 py-3 font-bold text-slate-800">{item.classLevel || "Not added"}</td>
+                      <td className="px-4 py-3">{item.school || "Not added"}</td>
+                      <td className="px-4 py-3">{item.percentage || "Not added"}</td>
+                      <td className="px-4 py-3">{item.degree || "Not added"}</td>
+                      <td className="px-4 py-3">{item.course || "Not added"}</td>
+                      <td className="px-4 py-3">{item.year || "Not added"}</td>
+                      <td className="px-4 py-3">{item.medium || "Not added"}</td>
+                      <td className="px-4 py-3">{item.mode || "Not added"}</td>
+                      <td className="px-4 py-3">{item.university || "Not added"}</td>
+                      <td className="px-4 py-3">{item.college || "Not added"}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex gap-2">
+                          <button type="button" onClick={() => editQualification(index)} className="rounded-lg border border-borderColor px-3 py-2 text-xs font-bold text-primary hover:bg-primary/5">
+                            Edit
+                          </button>
+                          <button type="button" onClick={() => removeQualification(index)} className="rounded-lg border border-red-100 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50">
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
@@ -890,17 +1086,16 @@ const TeacherProfile = () => {
     <>
       <SectionHeader
         title="Teaching Experience"
-        description="Save one experience entry at a time, then add more roles without losing previous entries."
       />
       <div className="space-y-7">
-        <div ref={experienceFormRef} className="rounded-2xl border border-borderColor border-l-4 border-l-primary bg-white p-5 shadow-sm">
-          <div className="mb-5 flex items-center justify-between">
-            <h3 className="font-bold text-primary">
-              {editingExperienceIndex !== null
-                ? `Editing Experience #${editingExperienceIndex + 1}`
-                : "New Experience"}
-            </h3>
-          </div>
+        {!showExperienceForm && (
+          <button type="button" onClick={addExperience} className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
+            <Plus size={17} /> Add Experience
+          </button>
+        )}
+
+        {showExperienceForm && (
+          <div ref={experienceFormRef} className="rounded-xl border border-borderColor bg-white p-5 shadow-sm">
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
               <div className="lg:col-span-2">
                 <Field label="Name of the School">
@@ -914,10 +1109,7 @@ const TeacherProfile = () => {
               <Field label="Board">
                 <select value={experienceDraft.board} onChange={(e) => updateExperience("board", e.target.value)} className={inputClass}>
                   <option value="">Select Board</option>
-                  <option>CBSE</option>
-                  <option>ICSE</option>
-                  <option>State Board</option>
-                  <option>IB</option>
+                  {renderOptions(experienceOptions.boards)}
                 </select>
               </Field>
               <Field label="Start Date">
@@ -943,40 +1135,29 @@ const TeacherProfile = () => {
               <Field label="Subject Taught (Main)">
                 <select value={experienceDraft.mainSubject} onChange={(e) => updateExperience("mainSubject", e.target.value)} className={inputClass}>
                   <option value="">Select Main Subject</option>
-                  <option>Mathematics</option>
-                  <option>Science</option>
-                  <option>English</option>
-                  <option>History</option>
+                  {renderOptions(experienceOptions.subjects)}
                 </select>
               </Field>
               <Field label="Other Subjects">
                 <select value={experienceDraft.otherSubjects} onChange={(e) => updateExperience("otherSubjects", e.target.value)} className={inputClass}>
                   <option value="">Select Other Subject</option>
-                  <option>Mathematics</option>
-                  <option>Science</option>
-                  <option>English</option>
-                  <option>History</option>
-                  <option>Geography</option>
-                  <option>Computer</option>
-                  <option>Hindi</option>
-                  <option>Art</option>
-                  <option>Music</option>
+                  {renderOptions(experienceOptions.subjects)}
                 </select>
               </Field>
               <Field label="Post Held / Job Title">
                 <select value={experienceDraft.post} onChange={(e) => updateExperience("post", e.target.value)} className={inputClass}>
                   <option value="">Select Post</option>
-                  <option>Teacher</option>
-                  <option>Senior Teacher</option>
-                  <option>HOD</option>
-                  <option>Coordinator</option>
+                  {renderOptions(experienceOptions.posts)}
                 </select>
               </Field>
               <Field label="Salary Drawn (CTC)">
                 <input value={experienceDraft.salary} onChange={(e) => updateExperience("salary", e.target.value)} className={inputClass} placeholder="e.g. 600000" />
               </Field>
               <Field label="Reason for Leaving">
-                <input value={experienceDraft.reason} onChange={(e) => updateExperience("reason", e.target.value)} className={inputClass} placeholder="e.g. Career growth" />
+                <select value={experienceDraft.reason} onChange={(e) => updateExperience("reason", e.target.value)} className={inputClass}>
+                  <option value="">Select Reason</option>
+                  {renderOptions(experienceOptions.reasons)}
+                </select>
               </Field>
               <div className="lg:col-span-3">
                 <Field label="Any other details to be mentioned">
@@ -984,61 +1165,58 @@ const TeacherProfile = () => {
                 </Field>
               </div>
             </div>
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-end">
-            <button type="button" onClick={cancelExperienceEdit} className="rounded-xl border border-borderColor px-6 py-3 text-sm font-bold text-slate-500 hover:bg-light">
-              Cancel
-            </button>
-            <button type="button" onClick={saveExperienceDraft} className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
-              <Save size={17} /> Save Changes
-            </button>
-            <button type="button" onClick={addExperience} className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
-              <Plus size={17} /> Add Next
-            </button>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-end">
+              <button type="button" onClick={saveExperienceDraft} className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
+                <Save size={17} /> Save
+              </button>
+              <button type="button" onClick={saveAndAddExperience} className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary/30 bg-white px-6 py-3 text-sm font-bold text-primary hover:bg-primary/5">
+                <Plus size={17} /> Add Another
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="rounded-2xl bg-light p-5">
+        <div className="rounded-xl bg-light p-5">
           <h3 className="mb-4 text-lg font-bold text-primary">Saved Experience</h3>
           {savedExperiences.length === 0 ? (
             <p className="text-sm text-slate-500">Saved experience entries will appear here.</p>
           ) : (
-            <div className="space-y-3">
-              {savedExperiences.map((item, index) => (
-                <div key={`${item.school}-${index}`} className="rounded-xl border border-borderColor bg-white p-4">
-                  <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                    <div>
-                      <h4 className="font-bold text-slate-800">{item.school || "School not added"}</h4>
-                      <p className="mt-1 text-sm text-slate-500">
-                        {item.post || "Post not added"} {item.board ? `| ${item.board}` : ""}
-                      </p>
-                      <p className="mt-1 text-sm text-slate-500">
-                        {item.startDate || "Start date"} - {item.currentEmployer ? "Present" : item.endDate || "End date"}
-                      </p>
-                      <div className="mt-4 grid grid-cols-1 gap-3 text-sm text-slate-600 sm:grid-cols-2 lg:grid-cols-3">
-                        <p><span className="font-bold text-slate-800">School:</span> {item.school || "Not added"}</p>
-                        <p><span className="font-bold text-slate-800">Current Employer:</span> {item.currentEmployer ? "Yes" : "No"}</p>
-                        <p><span className="font-bold text-slate-800">Board:</span> {item.board || "Not added"}</p>
-                        <p><span className="font-bold text-slate-800">Start Date:</span> {item.startDate || "Not added"}</p>
-                        <p><span className="font-bold text-slate-800">End Date:</span> {item.currentEmployer ? "Present" : item.endDate || "Not added"}</p>
-                        <p><span className="font-bold text-slate-800">Main Subject:</span> {item.mainSubject || "Not added"}</p>
-                        <p><span className="font-bold text-slate-800">Other Subjects:</span> {item.otherSubjects || "Not added"}</p>
-                        <p><span className="font-bold text-slate-800">Post:</span> {item.post || "Not added"}</p>
-                        <p><span className="font-bold text-slate-800">Salary:</span> {item.salary || "Not added"}</p>
-                        <p><span className="font-bold text-slate-800">Reason:</span> {item.reason || "Not added"}</p>
-                        <p className="lg:col-span-2"><span className="font-bold text-slate-800">Details:</span> {item.details || "Not added"}</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <button type="button" onClick={() => editExperience(index)} className="rounded-lg border border-borderColor px-4 py-2 text-sm font-bold text-primary hover:bg-primary/5">
-                        Edit
-                      </button>
-                      <button type="button" onClick={() => removeExperience(index)} className="rounded-lg border border-red-100 px-4 py-2 text-sm font-bold text-red-500 hover:bg-red-50">
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <div className="overflow-x-auto rounded-xl border border-borderColor bg-white">
+              <table className="min-w-[1100px] w-full text-left text-sm">
+                <thead className="bg-primary/5 text-xs uppercase tracking-wide text-primary">
+                  <tr>
+                    {["School", "Current", "Board", "Start", "End", "Main Subject", "Other Subject", "Post", "Salary", "Reason", "Action"].map((heading) => (
+                      <th key={heading} className="px-4 py-3 font-bold">{heading}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-borderColor text-slate-600">
+                  {savedExperiences.map((item, index) => (
+                    <tr key={`${item.school}-${index}`} className="align-top">
+                      <td className="px-4 py-3 font-bold text-slate-800">{item.school || "Not added"}</td>
+                      <td className="px-4 py-3">{item.currentEmployer ? "Yes" : "No"}</td>
+                      <td className="px-4 py-3">{item.board || "Not added"}</td>
+                      <td className="px-4 py-3">{item.startDate || "Not added"}</td>
+                      <td className="px-4 py-3">{item.currentEmployer ? "Present" : item.endDate || "Not added"}</td>
+                      <td className="px-4 py-3">{item.mainSubject || "Not added"}</td>
+                      <td className="px-4 py-3">{item.otherSubjects || "Not added"}</td>
+                      <td className="px-4 py-3">{item.post || "Not added"}</td>
+                      <td className="px-4 py-3">{item.salary || "Not added"}</td>
+                      <td className="px-4 py-3">{item.reason || "Not added"}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex gap-2">
+                          <button type="button" onClick={() => editExperience(index)} className="rounded-lg border border-borderColor px-3 py-2 text-xs font-bold text-primary hover:bg-primary/5">
+                            Edit
+                          </button>
+                          <button type="button" onClick={() => removeExperience(index)} className="rounded-lg border border-red-100 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50">
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
@@ -1157,33 +1335,23 @@ const TeacherProfile = () => {
     <>
       <SectionHeader
         title="Resume"
-        description="Keep multiple resume formats ready for school applications."
+        description="Upload a resume or create a basic resume entry, then choose PDF or text format."
       />
       <div className="space-y-7">
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          {savedResumes.slice(0, 3).map((resume, index) => (
-            <div key={`${resume.title}-${index}`} className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm">
-              <div className="mb-4 flex items-center justify-between">
-                <span className="rounded-xl bg-primary/10 p-3 text-primary">
-                  <FileText size={22} />
-                </span>
-                <span className="rounded-full bg-light px-3 py-1 text-xs font-bold text-primary">
-                  {resume.format}
-                </span>
-              </div>
-              <h3 className="text-lg font-bold text-slate-800">{resume.title}</h3>
-              <p className="mt-2 text-sm text-slate-500">{resume.notes}</p>
-              <p className="mt-4 truncate text-xs font-bold uppercase tracking-wide text-slate-400">
-                {resume.fileName}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div className="rounded-2xl border border-borderColor bg-white p-6 shadow-sm">
-          <div className="mb-6 flex items-center gap-3 border-b border-borderColor pb-5">
+        <div className="rounded-xl border border-borderColor bg-white p-6 shadow-sm">
+          <div className="mb-6 flex flex-col gap-4 border-b border-borderColor pb-5 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-3">
             <span className="rounded-xl bg-primary/10 p-2 text-primary"><Upload size={20} /></span>
-            <h3 className="text-lg font-bold text-slate-800">Add New Resume</h3>
+              <h3 className="text-lg font-bold text-slate-800">{resumeMode === "upload" ? "Add Resume" : "Create Resume"}</h3>
+            </div>
+            <div className="grid grid-cols-2 rounded-xl border border-borderColor bg-light p-1 text-sm font-bold">
+              <button type="button" onClick={() => setResumeMode("upload")} className={`rounded-lg px-4 py-2 ${resumeMode === "upload" ? "bg-white text-primary shadow-sm" : "text-slate-500"}`}>
+                Add Resume
+              </button>
+              <button type="button" onClick={() => setResumeMode("create")} className={`rounded-lg px-4 py-2 ${resumeMode === "create" ? "bg-white text-primary shadow-sm" : "text-slate-500"}`}>
+                Create Resume
+              </button>
+            </div>
           </div>
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
             <Field label="Resume Title">
@@ -1204,12 +1372,14 @@ const TeacherProfile = () => {
                 <option>Text</option>
               </select>
             </Field>
-            <Field label="Upload File">
-              <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-primary/40 bg-light px-4 py-3 text-sm font-bold text-primary hover:bg-primary/5">
-                <Upload size={17} /> Choose PDF/Text
-                <input type="file" hidden accept=".pdf,.txt,text/plain,application/pdf" onChange={handleResumeFile} />
-              </label>
-            </Field>
+            {resumeMode === "upload" && (
+              <Field label="Upload File">
+                <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-primary/40 bg-light px-4 py-3 text-sm font-bold text-primary hover:bg-primary/5">
+                  <Upload size={17} /> Choose PDF/Text
+                  <input type="file" hidden accept=".pdf,.txt,text/plain,application/pdf" onChange={handleResumeFile} />
+                </label>
+              </Field>
+            )}
             <div className="lg:col-span-3">
               <Field label="Resume Notes">
                 <textarea
@@ -1225,25 +1395,43 @@ const TeacherProfile = () => {
             </div>
           </div>
           <button type="button" onClick={addResume} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
-            <Plus size={17} /> Add Resume
+            <Plus size={17} /> {resumeMode === "upload" ? "Add Resume" : "Create Resume"}
           </button>
         </div>
 
-        <div className="rounded-2xl bg-light p-5">
+        <div className="rounded-xl bg-light p-5">
           <h3 className="mb-4 text-lg font-bold text-primary">All Resumes</h3>
-          <div className="space-y-3">
-            {savedResumes.map((resume, index) => (
-              <div key={`${resume.fileName}-${index}`} className="flex flex-col gap-3 rounded-xl border border-borderColor bg-white p-4 md:flex-row md:items-center md:justify-between">
-                <div>
-                  <h4 className="font-bold text-slate-800">{resume.title}</h4>
-                  <p className="text-sm text-slate-500">{resume.fileName} | {resume.format}</p>
-                </div>
-                <button type="button" onClick={() => setSavedResumes((prev) => prev.filter((_, itemIndex) => itemIndex !== index))} className="self-start rounded-lg border border-red-100 px-4 py-2 text-sm font-bold text-red-500 hover:bg-red-50 md:self-auto">
-                  Delete
-                </button>
-              </div>
-            ))}
-          </div>
+          {savedResumes.length === 0 ? (
+            <p className="text-sm text-slate-500">Added or created resumes will appear here.</p>
+          ) : (
+            <div className="overflow-x-auto rounded-xl border border-borderColor bg-white">
+              <table className="min-w-[760px] w-full text-left text-sm">
+                <thead className="bg-primary/5 text-xs uppercase tracking-wide text-primary">
+                  <tr>
+                    {["Title", "Format", "Source", "File", "Notes", "Action"].map((heading) => (
+                      <th key={heading} className="px-4 py-3 font-bold">{heading}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-borderColor text-slate-600">
+                  {savedResumes.map((resume, index) => (
+                    <tr key={`${resume.fileName}-${index}`} className="align-top">
+                      <td className="px-4 py-3 font-bold text-slate-800">{resume.title}</td>
+                      <td className="px-4 py-3">{resume.format}</td>
+                      <td className="px-4 py-3">{resume.source}</td>
+                      <td className="px-4 py-3">{resume.fileName}</td>
+                      <td className="px-4 py-3">{resume.notes || "Not added"}</td>
+                      <td className="px-4 py-3">
+                        <button type="button" onClick={() => setSavedResumes((prev) => prev.filter((_, itemIndex) => itemIndex !== index))} className="rounded-lg border border-red-100 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50">
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </>
@@ -1251,96 +1439,19 @@ const TeacherProfile = () => {
 
   const renderViewProfile = () => (
     <>
-      <SectionHeader
-        title="View Profile"
-        description="Review all information entered across your profile sections."
-      />
-      <div className="space-y-6">
-        <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm">
-          <h3 className="mb-4 text-lg font-bold text-primary">Basic Details</h3>
-          <div className="grid grid-cols-1 gap-4 text-sm text-slate-600 md:grid-cols-2">
-            <p><span className="font-bold text-slate-800">Name:</span> {teacherData.title} {teacherData.firstName} {teacherData.middleName} {teacherData.lastName}</p>
-            <p><span className="font-bold text-slate-800">Age:</span> {teacherData.age || "Not added"}</p>
-            <p><span className="font-bold text-slate-800">Nationality:</span> {teacherData.nationality || "Not added"}</p>
-            <p><span className="font-bold text-slate-800">Current Job:</span> {teacherData.currentJob || "Not added"}</p>
-            <p><span className="font-bold text-slate-800">Main Subject:</span> {teacherData.mainSubject || "Not added"}</p>
-            <p><span className="font-bold text-slate-800">Classes:</span> {[teacherData.classTaughtOne, teacherData.classTaughtTwo].filter(Boolean).join(", ") || "Not added"}</p>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm">
-          <h3 className="mb-4 text-lg font-bold text-primary">Contact Details</h3>
-          <div className="grid grid-cols-1 gap-4 text-sm text-slate-600 md:grid-cols-2">
-            <p><span className="font-bold text-slate-800">Mobile:</span> {teacherData.mobile || "Not added"}</p>
-            <p><span className="font-bold text-slate-800">WhatsApp:</span> {teacherData.whatsapp || "Not added"}</p>
-            <p><span className="font-bold text-slate-800">Primary Email:</span> {teacherData.primaryEmail || "Not added"}</p>
-            <p><span className="font-bold text-slate-800">Secondary Email:</span> {teacherData.secondaryEmail || "Not added"}</p>
-            <p className="md:col-span-2"><span className="font-bold text-slate-800">Address:</span> {[teacherData.address, teacherData.city, teacherData.state, teacherData.pinCode].filter(Boolean).join(", ") || "Not added"}</p>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm">
-          <h3 className="mb-4 text-lg font-bold text-primary">Qualifications</h3>
-          {savedQualifications.length === 0 ? (
-            <p className="text-sm text-slate-500">No qualification saved yet.</p>
-          ) : (
-            <div className="space-y-3">
-              {savedQualifications.map((item, index) => (
-                <div key={`profile-qualification-${index}`} className="rounded-xl bg-light p-4 text-sm text-slate-600">
-                  <p className="mb-3 font-bold text-slate-800">Qualification #{index + 1}</p>
-                  <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
-                    <p><span className="font-bold text-slate-800">Degree:</span> {item.degree || "Not added"}</p>
-                    <p><span className="font-bold text-slate-800">Course:</span> {item.course || "Not added"}</p>
-                    <p><span className="font-bold text-slate-800">Year:</span> {item.year || "Not added"}</p>
-                    <p><span className="font-bold text-slate-800">Medium:</span> {item.medium || "Not added"}</p>
-                    <p><span className="font-bold text-slate-800">Mode:</span> {item.mode || "Not added"}</p>
-                    <p><span className="font-bold text-slate-800">Percentage:</span> {item.percentage || "Not added"}</p>
-                    <p><span className="font-bold text-slate-800">University:</span> {item.university || "Not added"}</p>
-                    <p><span className="font-bold text-slate-800">College:</span> {item.college || "Not added"}</p>
-                  </div>
-                </div>
-              ))}
+      <SectionHeader title="View Profile" />
+      <div className="rounded-xl border border-borderColor bg-white p-6 shadow-sm">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+          <img src={profileImage} alt="profile" className="h-28 w-28 rounded-xl border border-borderColor object-cover" />
+          <div className="min-w-0 flex-1">
+            <h3 className="text-2xl font-bold text-slate-900">
+              {teacherData.title} {teacherData.firstName} {teacherData.middleName} {teacherData.lastName}
+            </h3>
+            <div className="mt-5 grid grid-cols-1 gap-4 text-sm text-slate-600 md:grid-cols-3">
+              <p><span className="font-bold text-slate-800">Mobile:</span> {teacherData.mobile || "Not added"}</p>
+              <p><span className="font-bold text-slate-800">Email:</span> {teacherData.primaryEmail || "Not added"}</p>
+              <p><span className="font-bold text-slate-800">Nationality:</span> {teacherData.nationality || "Not added"}</p>
             </div>
-          )}
-        </div>
-
-        <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm">
-          <h3 className="mb-4 text-lg font-bold text-primary">Experience</h3>
-          {savedExperiences.length === 0 ? (
-            <p className="text-sm text-slate-500">No experience saved yet.</p>
-          ) : (
-            <div className="space-y-3">
-              {savedExperiences.map((item, index) => (
-                <div key={`profile-experience-${index}`} className="rounded-xl bg-light p-4 text-sm text-slate-600">
-                  <p className="mb-3 font-bold text-slate-800">Experience #{index + 1}</p>
-                  <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-                    <p><span className="font-bold text-slate-800">School:</span> {item.school || "Not added"}</p>
-                    <p><span className="font-bold text-slate-800">Current Employer:</span> {item.currentEmployer ? "Yes" : "No"}</p>
-                    <p><span className="font-bold text-slate-800">Board:</span> {item.board || "Not added"}</p>
-                    <p><span className="font-bold text-slate-800">Start Date:</span> {item.startDate || "Not added"}</p>
-                    <p><span className="font-bold text-slate-800">End Date:</span> {item.currentEmployer ? "Present" : item.endDate || "Not added"}</p>
-                    <p><span className="font-bold text-slate-800">Main Subject:</span> {item.mainSubject || "Not added"}</p>
-                    <p><span className="font-bold text-slate-800">Other Subjects:</span> {item.otherSubjects || "Not added"}</p>
-                    <p><span className="font-bold text-slate-800">Post:</span> {item.post || "Not added"}</p>
-                    <p><span className="font-bold text-slate-800">Salary:</span> {item.salary || "Not added"}</p>
-                    <p><span className="font-bold text-slate-800">Reason:</span> {item.reason || "Not added"}</p>
-                    <p className="lg:col-span-2"><span className="font-bold text-slate-800">Details:</span> {item.details || "Not added"}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm">
-          <h3 className="mb-4 text-lg font-bold text-primary">Resumes</h3>
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            {savedResumes.map((resume, index) => (
-              <div key={`profile-resume-${index}`} className="rounded-xl bg-light p-4">
-                <p className="font-bold text-slate-800">{resume.title}</p>
-                <p className="mt-1 text-sm text-slate-500">{resume.fileName} | {resume.format}</p>
-              </div>
-            ))}
           </div>
         </div>
       </div>
@@ -1411,6 +1522,7 @@ const TeacherProfile = () => {
                 );
               })}
             </nav>
+
         </aside>
 
           <main className="min-w-0 flex-1 p-4 sm:p-5 lg:p-8">
@@ -1451,7 +1563,7 @@ const TeacherProfile = () => {
 
             <div className="rounded-3xl bg-white p-4 shadow-soft sm:p-6 lg:p-8">
             {renderActiveSection()}
-            {!["qualification", "experience"].includes(activeSection) && (
+            {!["qualification", "experience", "viewProfile"].includes(activeSection) && (
               <div className="mt-10 flex flex-col-reverse gap-3 border-t border-borderColor pt-6 sm:flex-row sm:justify-end">
                 <button type="button" className="rounded-xl border border-borderColor px-6 py-3 text-sm font-bold text-slate-500 hover:bg-light">
                   Cancel

@@ -13,16 +13,32 @@ const Sidebar = () => {
   return (
     <div className="w-64 min-h-screen bg-primary text-white p-5 flex flex-col">
 
-      <div className="flex flex-col items-center mb-10">
+      {/* Profile Card */}
+      <div className="flex flex-col items-center mb-5">
         <div className="w-20 h-20 rounded-full border-4 border-white"></div>
+      </div>
 
-        <p className="mt-4 font-semibold">Profile : 75%</p>
+      {/* View Profile Button */}
+      <Link
+        to="/teacher-profile"
+        className="flex items-center justify-center gap-2 bg-white text-primary font-semibold p-3 rounded-xl transition hover:bg-white/90 mb-5"
+      >
+        <User size={20} />
+        View Profile
+      </Link>
+
+      {/* Profile Score */}
+      <div className="mb-10">
+        <p className="font-semibold text-center">
+          Profile : 75%
+        </p>
 
         <div className="w-full bg-white/30 rounded-full h-2 mt-2">
           <div className="bg-white h-2 rounded-full w-[75%]"></div>
         </div>
       </div>
 
+      {/* Navigation */}
       <nav className="flex flex-col gap-4">
 
         <Link
