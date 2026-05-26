@@ -1457,27 +1457,91 @@ const TeacherProfile = () => {
     </>
   );
 
-  const renderViewProfile = () => (
+ const renderViewProfile = () => {
+  const totalExperience = savedExperiences.length;
+
+  return (
     <>
       <SectionHeader title="View Profile" />
-      <div className="rounded-xl border border-borderColor bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
-          <img src={profileImage} alt="profile" className="h-28 w-28 rounded-xl border border-borderColor object-cover" />
-          <div className="min-w-0 flex-1">
-            <h3 className="text-2xl font-bold text-slate-900">
-              {teacherData.title} {teacherData.firstName} {teacherData.middleName} {teacherData.lastName}
-            </h3>
-            <div className="mt-5 grid grid-cols-1 gap-4 text-sm text-slate-600 md:grid-cols-3">
-              <p><span className="font-bold text-slate-800">Mobile:</span> {teacherData.mobile || "Not added"}</p>
-              <p><span className="font-bold text-slate-800">Email:</span> {teacherData.primaryEmail || "Not added"}</p>
-              <p><span className="font-bold text-slate-800">Nationality:</span> {teacherData.nationality || "Not added"}</p>
+
+      <div className="overflow-hidden rounded-3xl border border-borderColor bg-white shadow-soft">
+        {/* Top Header */}
+        <div className="h-28 bg-primary" />
+
+        <div className="relative px-6 pb-8">
+          {/* Profile Area */}
+          <div className="-mt-16 flex flex-col items-center gap-5 md:flex-row md:items-end">
+            <img
+              src={profileImage}
+              alt="profile"
+              className="h-32 w-32 rounded-3xl border-4 border-white object-cover shadow-md"
+            />
+
+            <div className="flex-1 text-center md:text-left">
+              <h2 className="text-3xl font-bold text-slate-900">
+                {teacherData.title} {teacherData.firstName}{" "}
+                {teacherData.lastName}
+              </h2>
+
+              <p className="mt-2 text-sm font-semibold text-primary">
+                {teacherData.currentJob || "Job title not added"}
+              </p>
+            </div>
+          </div>
+
+          {/* Details Cards */}
+          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="rounded-2xl border border-borderColor bg-light p-4">
+              <p className="text-xs font-bold uppercase text-slate-500">
+                Mobile Number
+              </p>
+              <p className="mt-1 text-sm font-semibold text-slate-800">
+                {teacherData.mobile || "Not added"}
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-borderColor bg-light p-4">
+              <p className="text-xs font-bold uppercase text-slate-500">
+                Email
+              </p>
+              <p className="mt-1 break-all text-sm font-semibold text-slate-800">
+                {teacherData.primaryEmail || "Not added"}
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-borderColor bg-light p-4">
+              <p className="text-xs font-bold uppercase text-slate-500">
+                Main Subject
+              </p>
+              <p className="mt-1 text-sm font-semibold text-slate-800">
+                {teacherData.mainSubject || "Not added"}
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-borderColor bg-light p-4">
+              <p className="text-xs font-bold uppercase text-slate-500">
+                Current Job Title
+              </p>
+              <p className="mt-1 text-sm font-semibold text-slate-800">
+                {teacherData.currentJob || "Not added"}
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-borderColor bg-light p-4">
+              <p className="text-xs font-bold uppercase text-slate-500">
+                Total Experience
+              </p>
+              <p className="mt-1 text-sm font-semibold text-slate-800">
+                {totalExperience}{" "}
+                {totalExperience === 1 ? "Experience" : "Experiences"}
+              </p>
             </div>
           </div>
         </div>
       </div>
     </>
   );
-
+};
   const renderActiveSection = () => {
     if (activeSection === "contact") return renderContact();
     if (activeSection === "qualification") return renderQualification();
