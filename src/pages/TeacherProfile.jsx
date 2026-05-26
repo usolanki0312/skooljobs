@@ -67,6 +67,7 @@ const blankQualification = {
 
 const blankExperience = {
   school: "",
+  monthlyTakeHome: "",
   currentEmployer: false,
   board: "",
   startDate: "",
@@ -947,82 +948,82 @@ const TeacherProfile = () => {
 
         {showQualificationForm && (
           <div ref={qualificationFormRef} className="rounded-xl border border-borderColor bg-white p-5 shadow-sm">
-              <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-                <Field label="Class">
-                  <select
-                    value={qualificationDraft.classLevel}
-                    onChange={(e) => {
-                      const classLevel = e.target.value;
-                      setQualificationDraft((prev) => ({
-                        ...prev,
-                        classLevel,
-                        degree: classLevel === "Class 10" ? "Secondary (10th)" : classLevel === "Class 12" ? "Senior Secondary (12th)" : prev.degree,
-                      }));
-                    }}
-                    className={inputClass}
-                  >
-                    <option value="">Select Class</option>
-                    <option>Class 10</option>
-                    <option>Class 12</option>
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+              <Field label="Class">
+                <select
+                  value={qualificationDraft.classLevel}
+                  onChange={(e) => {
+                    const classLevel = e.target.value;
+                    setQualificationDraft((prev) => ({
+                      ...prev,
+                      classLevel,
+                      degree: classLevel === "Class 10" ? "Secondary (10th)" : classLevel === "Class 12" ? "Senior Secondary (12th)" : prev.degree,
+                    }));
+                  }}
+                  className={inputClass}
+                >
+                  <option value="">Select Class</option>
+                  <option>Class 10</option>
+                  <option>Class 12</option>
+                </select>
+              </Field>
+              {qualificationDraft.classLevel && (
+                <Field label="School Name">
+                  <input value={qualificationDraft.school} onChange={(e) => updateQualification("school", e.target.value)} className={inputClass} placeholder="Enter school name" />
+                </Field>
+              )}
+              {qualificationDraft.classLevel && (
+                <Field label="Percentage %">
+                  <input value={qualificationDraft.percentage} onChange={(e) => updateQualification("percentage", e.target.value)} className={inputClass} placeholder="e.g. 76.2" />
+                </Field>
+              )}
+              <Field label="Degree">
+                <select value={qualificationDraft.degree} onChange={(e) => updateQualification("degree", e.target.value)} className={inputClass}>
+                  <option value="">Select Degree</option>
+                  {renderOptions(qualificationOptions.degrees)}
+                </select>
+              </Field>
+              <Field label="Course Name">
+                <select value={qualificationDraft.course} onChange={(e) => updateQualification("course", e.target.value)} className={inputClass}>
+                  <option value="">Select Course</option>
+                  {renderOptions(qualificationOptions.courses)}
+                </select>
+              </Field>
+              <Field label="Year Passed">
+                <input value={qualificationDraft.year} onChange={(e) => updateQualification("year", e.target.value)} className={inputClass} placeholder="e.g. 2023" />
+              </Field>
+              <Field label="Medium of Instruction">
+                <select value={qualificationDraft.medium} onChange={(e) => updateQualification("medium", e.target.value)} className={inputClass}>
+                  <option value="">Select Medium</option>
+                  {renderOptions(qualificationOptions.mediums)}
+                </select>
+              </Field>
+              <Field label="Mode of Study">
+                <select value={qualificationDraft.mode} onChange={(e) => updateQualification("mode", e.target.value)} className={inputClass}>
+                  <option value="">Select Mode</option>
+                  {renderOptions(qualificationOptions.modes)}
+                </select>
+              </Field>
+              {!qualificationDraft.classLevel && (
+                <Field label="Percentage %">
+                  <input value={qualificationDraft.percentage} onChange={(e) => updateQualification("percentage", e.target.value)} className={inputClass} placeholder="e.g. 76.2" />
+                </Field>
+              )}
+              <Field label="University Name">
+                <select value={qualificationDraft.university} onChange={(e) => updateQualification("university", e.target.value)} className={inputClass}>
+                  <option value="">Select University</option>
+                  {renderOptions(qualificationOptions.universities)}
+                </select>
+              </Field>
+              <div className="lg:col-span-2">
+                <Field label="College Name">
+                  <select value={qualificationDraft.college} onChange={(e) => updateQualification("college", e.target.value)} className={inputClass}>
+                    <option value="">Select College / Institution</option>
+                    {renderOptions(qualificationOptions.colleges)}
                   </select>
                 </Field>
-                {qualificationDraft.classLevel && (
-                  <Field label="School Name">
-                    <input value={qualificationDraft.school} onChange={(e) => updateQualification("school", e.target.value)} className={inputClass} placeholder="Enter school name" />
-                  </Field>
-                )}
-                {qualificationDraft.classLevel && (
-                  <Field label="Percentage %">
-                    <input value={qualificationDraft.percentage} onChange={(e) => updateQualification("percentage", e.target.value)} className={inputClass} placeholder="e.g. 76.2" />
-                  </Field>
-                )}
-                <Field label="Degree">
-                  <select value={qualificationDraft.degree} onChange={(e) => updateQualification("degree", e.target.value)} className={inputClass}>
-                    <option value="">Select Degree</option>
-                    {renderOptions(qualificationOptions.degrees)}
-                  </select>
-                </Field>
-                <Field label="Course Name">
-                  <select value={qualificationDraft.course} onChange={(e) => updateQualification("course", e.target.value)} className={inputClass}>
-                    <option value="">Select Course</option>
-                    {renderOptions(qualificationOptions.courses)}
-                  </select>
-                </Field>
-                <Field label="Year Passed">
-                  <input value={qualificationDraft.year} onChange={(e) => updateQualification("year", e.target.value)} className={inputClass} placeholder="e.g. 2023" />
-                </Field>
-                <Field label="Medium of Instruction">
-                  <select value={qualificationDraft.medium} onChange={(e) => updateQualification("medium", e.target.value)} className={inputClass}>
-                    <option value="">Select Medium</option>
-                    {renderOptions(qualificationOptions.mediums)}
-                  </select>
-                </Field>
-                <Field label="Mode of Study">
-                  <select value={qualificationDraft.mode} onChange={(e) => updateQualification("mode", e.target.value)} className={inputClass}>
-                    <option value="">Select Mode</option>
-                    {renderOptions(qualificationOptions.modes)}
-                  </select>
-                </Field>
-                {!qualificationDraft.classLevel && (
-                  <Field label="Percentage %">
-                    <input value={qualificationDraft.percentage} onChange={(e) => updateQualification("percentage", e.target.value)} className={inputClass} placeholder="e.g. 76.2" />
-                  </Field>
-                )}
-                <Field label="University Name">
-                  <select value={qualificationDraft.university} onChange={(e) => updateQualification("university", e.target.value)} className={inputClass}>
-                    <option value="">Select University</option>
-                    {renderOptions(qualificationOptions.universities)}
-                  </select>
-                </Field>
-                <div className="lg:col-span-2">
-                  <Field label="College Name">
-                    <select value={qualificationDraft.college} onChange={(e) => updateQualification("college", e.target.value)} className={inputClass}>
-                      <option value="">Select College / Institution</option>
-                      {renderOptions(qualificationOptions.colleges)}
-                    </select>
-                  </Field>
-                </div>
               </div>
+            </div>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-end">
               <button type="button" onClick={saveQualificationDraft} className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
                 <Save size={17} /> Save
@@ -1150,8 +1151,26 @@ const TeacherProfile = () => {
                   {renderOptions(experienceOptions.posts)}
                 </select>
               </Field>
-              <Field label="Salary Drawn (CTC)">
-                <input value={experienceDraft.salary} onChange={(e) => updateExperience("salary", e.target.value)} className={inputClass} placeholder="e.g. 600000" />
+              <Field label="Salary Drawn (CTC) per Year">
+                <input
+                  type="number"
+                  value={experienceDraft.salary}
+                  onChange={(e) => updateExperience("salary", e.target.value)}
+                  className={inputClass}
+                  placeholder="e.g. 600000"
+                />
+              </Field>
+
+              <Field label="Monthly Take Home">
+                <input
+                  type="number"
+                  value={experienceDraft.monthlyTakeHome}
+                  onChange={(e) =>
+                    updateExperience("monthlyTakeHome", e.target.value)
+                  }
+                  className={inputClass}
+                  placeholder="e.g. 50000"
+                />
               </Field>
               <Field label="Reason for Leaving">
                 <select value={experienceDraft.reason} onChange={(e) => updateExperience("reason", e.target.value)} className={inputClass}>
@@ -1185,7 +1204,7 @@ const TeacherProfile = () => {
               <table className="min-w-[1100px] w-full text-left text-sm">
                 <thead className="bg-primary/5 text-xs uppercase tracking-wide text-primary">
                   <tr>
-                    {["School", "Current", "Board", "Start", "End", "Main Subject", "Other Subject", "Post", "Salary", "Reason", "Action"].map((heading) => (
+                    {["School", "Current", "Board", "Start", "End", "Main Subject", "Other Subject", "Post", "Salary", "Monthly Take Home", "Reason", "Action"].map((heading) => (
                       <th key={heading} className="px-4 py-3 font-bold">{heading}</th>
                     ))}
                   </tr>
@@ -1202,6 +1221,7 @@ const TeacherProfile = () => {
                       <td className="px-4 py-3">{item.otherSubjects || "Not added"}</td>
                       <td className="px-4 py-3">{item.post || "Not added"}</td>
                       <td className="px-4 py-3">{item.salary || "Not added"}</td>
+                      <td className="px-4 py-3">{item.monthlyTakeHome || "Not added"}</td>
                       <td className="px-4 py-3">{item.reason || "Not added"}</td>
                       <td className="px-4 py-3">
                         <div className="flex gap-2">
@@ -1341,7 +1361,7 @@ const TeacherProfile = () => {
         <div className="rounded-xl border border-borderColor bg-white p-6 shadow-sm">
           <div className="mb-6 flex flex-col gap-4 border-b border-borderColor pb-5 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-3">
-            <span className="rounded-xl bg-primary/10 p-2 text-primary"><Upload size={20} /></span>
+              <span className="rounded-xl bg-primary/10 p-2 text-primary"><Upload size={20} /></span>
               <h3 className="text-lg font-bold text-slate-800">{resumeMode === "upload" ? "Add Resume" : "Create Resume"}</h3>
             </div>
             <div className="grid grid-cols-2 rounded-xl border border-borderColor bg-light p-1 text-sm font-bold">
@@ -1492,76 +1512,74 @@ const TeacherProfile = () => {
           </div>
 
           <div className="mt-6 rounded-3xl bg-white/10 p-5">
-              <div className="mb-3 flex items-center justify-between text-sm font-bold text-white">
-                <span>Profile Score</span>
-                <span>{completion}%</span>
-              </div>
-              <div className="h-2 overflow-hidden rounded-full bg-white/20">
-                <div className="h-full rounded-full bg-white" style={{ width: `${completion}%` }} />
-              </div>
+            <div className="mb-3 flex items-center justify-between text-sm font-bold text-white">
+              <span>Profile Score</span>
+              <span>{completion}%</span>
             </div>
+            <div className="h-2 overflow-hidden rounded-full bg-white/20">
+              <div className="h-full rounded-full bg-white" style={{ width: `${completion}%` }} />
+            </div>
+          </div>
 
-            <nav className="mt-8 space-y-2">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeSection === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setActiveSection(item.id)}
-                    className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${
-                      isActive
-                        ? "bg-white text-primary shadow-soft"
-                        : "text-white/80 hover:bg-white/10 hover:text-white"
+          <nav className="mt-8 space-y-2">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeSection === item.id;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setActiveSection(item.id)}
+                  className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${isActive
+                      ? "bg-white text-primary shadow-soft"
+                      : "text-white/80 hover:bg-white/10 hover:text-white"
                     }`}
-                  >
-                    <Icon size={18} />
-                    {item.label}
-                  </button>
-                );
-              })}
-            </nav>
+                >
+                  <Icon size={18} />
+                  {item.label}
+                </button>
+              );
+            })}
+          </nav>
 
         </aside>
 
-          <main className="min-w-0 flex-1 p-4 sm:p-5 lg:p-8">
-            <div className="mb-6 flex flex-col gap-4 rounded-3xl bg-white p-5 shadow-soft md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[2px] text-secondary">
-                  Profile Workspace
-                </p>
-                <h1 className="mt-1 text-2xl font-bold text-primary sm:text-3xl">Teacher Profile</h1>
-                <p className="mt-1 text-sm text-slate-500">
-                  Complete your profile sections so schools can evaluate you faster.
-                </p>
-              </div>
-              <BackButton />
+        <main className="min-w-0 flex-1 p-4 sm:p-5 lg:p-8">
+          <div className="mb-6 flex flex-col gap-4 rounded-3xl bg-white p-5 shadow-soft md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[2px] text-secondary">
+                Profile Workspace
+              </p>
+              <h1 className="mt-1 text-2xl font-bold text-primary sm:text-3xl">Teacher Profile</h1>
+              <p className="mt-1 text-sm text-slate-500">
+                Complete your profile sections so schools can evaluate you faster.
+              </p>
             </div>
+            <BackButton />
+          </div>
 
-            <div className="mb-6 flex gap-2 overflow-x-auto rounded-3xl bg-white p-3 shadow-soft lg:hidden">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeSection === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setActiveSection(item.id)}
-                    className={`flex shrink-0 items-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition ${
-                      isActive
-                        ? "bg-primary text-white"
-                        : "bg-light text-primary"
+          <div className="mb-6 flex gap-2 overflow-x-auto rounded-3xl bg-white p-3 shadow-soft lg:hidden">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeSection === item.id;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setActiveSection(item.id)}
+                  className={`flex shrink-0 items-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition ${isActive
+                      ? "bg-primary text-white"
+                      : "bg-light text-primary"
                     }`}
-                  >
-                    <Icon size={17} />
-                    {item.label}
-                  </button>
-                );
-              })}
-            </div>
+                >
+                  <Icon size={17} />
+                  {item.label}
+                </button>
+              );
+            })}
+          </div>
 
-            <div className="rounded-3xl bg-white p-4 shadow-soft sm:p-6 lg:p-8">
+          <div className="rounded-3xl bg-white p-4 shadow-soft sm:p-6 lg:p-8">
             {renderActiveSection()}
             {!["qualification", "experience", "viewProfile"].includes(activeSection) && (
               <div className="mt-10 flex flex-col-reverse gap-3 border-t border-borderColor pt-6 sm:flex-row sm:justify-end">
@@ -1573,9 +1591,9 @@ const TeacherProfile = () => {
                 </button>
               </div>
             )}
-            </div>
-          </main>
-        </form>
+          </div>
+        </main>
+      </form>
     </div>
   );
 };
