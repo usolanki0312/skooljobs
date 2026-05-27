@@ -95,9 +95,8 @@ function Signup() {
     
     // Auto login
     localStorage.setItem("currentUser", JSON.stringify(newUser));
-    
-    // Go directly to dashboard
-    navigate("/dashboard");
+
+    navigate("/select-role");
   };
 
   return (

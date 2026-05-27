@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+  ArrowLeft,
   Award,
   Bookmark,
   BriefcaseBusiness,
@@ -425,18 +426,34 @@ const Dashboard = () => {
             })}
           </nav>
 
-          <button
-            onClick={handleLogout}
-            className="mt-10 flex w-full items-center gap-3 rounded-2xl bg-red-500 px-4 py-3 text-left text-sm font-bold text-white"
-            type="button"
-          >
-            <LogOut size={18} /> Logout
-          </button>
+          <div className="mt-10 space-y-2">
+            <button
+              onClick={() => navigate("/select-role")}
+              className="flex w-full items-center gap-3 rounded-2xl border border-white/30 px-4 py-3 text-left text-sm font-bold text-white/80 hover:bg-white/10"
+              type="button"
+            >
+              <ArrowLeft size={18} /> Back to Home
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex w-full items-center gap-3 rounded-2xl bg-red-500 px-4 py-3 text-left text-sm font-bold text-white"
+              type="button"
+            >
+              <LogOut size={18} /> Logout
+            </button>
+          </div>
         </aside>
 
         <main className="flex-1 p-5 lg:p-8">
           <Topbar />
           <div className="mt-4 flex gap-2 overflow-x-auto rounded-3xl bg-white p-3 shadow-soft lg:hidden">
+            <button
+              type="button"
+              onClick={() => navigate("/select-role")}
+              className="flex shrink-0 items-center gap-2 rounded-2xl bg-light px-4 py-3 text-sm font-bold text-primary"
+            >
+              <ArrowLeft size={17} /> Home
+            </button>
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeSection === item.id;
