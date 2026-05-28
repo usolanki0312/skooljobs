@@ -58,7 +58,11 @@ function Login() {
 
     if (match) {
       localStorage.setItem("currentUser", JSON.stringify(match.user));
-      navigate("/select-role");
+      if (match.user.role === "employer") {
+        navigate("/school-dashboard");
+      } else {
+        navigate("/dashboard");
+      }
       return;
     }
 
