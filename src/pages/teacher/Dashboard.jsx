@@ -187,6 +187,11 @@ const Dashboard = () => {
 
   const renderDashboard = () => (
     <>
+      <div className="mb-6 rounded-3xl bg-primary px-6 py-5 text-white">
+        <p className="text-xs font-bold uppercase tracking-widest text-white/70">Welcome Back, {displayName.toUpperCase()}</p>
+        <h2 className="mt-1 text-2xl font-bold">Teacher Dashboard</h2>
+        <p className="mt-1 text-sm text-white/70">Find your next teaching opportunity today.</p>
+      </div>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
         {[
           { label: "Applied Jobs", value: appliedJobs.length, icon: CheckCircle2, id: "applied" },
@@ -236,8 +241,8 @@ const Dashboard = () => {
           <div className="rounded-3xl bg-white p-6 shadow-soft">
             <div className="flex items-center gap-4">
               <img src={profileImage} alt="profile" className="h-16 w-16 rounded-2xl object-cover" />
-              <div>
-                <h3 className="font-bold text-primary">{displayName}</h3>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-primary truncate">{displayName}</h3>
                 <p className="text-sm text-green-500">Available for jobs</p>
               </div>
             </div>

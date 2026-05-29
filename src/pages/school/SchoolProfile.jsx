@@ -5,22 +5,9 @@ import {
   industries, countries, indianStates, days, months, years,
 } from "../../lib/schooldata";
 import {
-  ArrowLeft,
-  BriefcaseBusiness,
-  Building2,
-  CreditCard,
-  Globe,
-  Heart,
-  ImageIcon,
-  KeyRound,
-  LayoutDashboard,
-  LogOut,
-  Package,
-  PlusCircle,
-  Save,
-  Trash2,
-  Upload,
-  Users,
+  ArrowLeft, BriefcaseBusiness, Building2, Bus, Camera, Clock,
+  CreditCard, Globe, Heart, ImageIcon, KeyRound, LayoutDashboard,
+  LogOut, Package, PlusCircle, Save, Settings, Upload, Users, X,
 } from "lucide-react";
 
 const sidebarItems = [
@@ -32,9 +19,20 @@ const sidebarItems = [
   { id: "savedCandidates", label: "Saved Candidates", icon: Heart, route: "/school-dashboard" },
   { id: "packages", label: "Packages", icon: Package, route: "/school-dashboard" },
   { id: "transactions", label: "Transactions", icon: CreditCard, route: "/school-dashboard" },
-  { id: "changePassword", label: "Change Password", icon: KeyRound, route: "/school-dashboard" },
+  { id: "settings", label: "Settings", icon: Settings, route: "/school-dashboard" },
 ];
 
+const establishmentYears = Array.from({ length: 76 }, (_, i) => String(2025 - i));
+
+const studentCountOptions = [
+  "Less than 100", "100 - 200", "200 - 300", "300 - 500",
+  "500 - 1000", "1000 - 2000", "2000+",
+];
+
+const studentsPerClassOptions = [
+  "10 - 20 students", "20 - 30 students", "30 - 40 students",
+  "40 - 50 students", "50+ students",
+];
 
 const inputClass =
   "w-full rounded-xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10";
@@ -44,30 +42,24 @@ const labelClass = "mb-2 block text-xs font-bold uppercase tracking-wide text-sl
 const Field = ({ label, required, children }) => (
   <div>
     <label className={labelClass}>
-      {label}
-      {required && <span className="ml-1 text-red-500">*</span>}
+      {label}{required && <span className="ml-1 text-red-500">*</span>}
     </label>
     {children}
   </div>
 );
-
 
 const SchoolProfile = () => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("basic");
   const [logoImage, setLogoImage] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
+  const [galleryImages, setGalleryImages] = useState([]);
 
   const currentUser = useMemo(() => {
-    try {
-      return JSON.parse(localStorage.getItem("currentUser") || "{}");
-    } catch {
-      return {};
-    }
+    try { return JSON.parse(localStorage.getItem("currentUser") || "{}"); } catch { return {}; }
   }, []);
 
-  const schoolName =
-    currentUser.companyName || currentUser.schoolName || currentUser.firstName || "Som Lalit School";
+  const schoolName = currentUser.companyName || currentUser.schoolName || currentUser.firstName || "Som Lalit School";
 
   const [formData, setFormData] = useState({
     firstName: currentUser.firstName || "Som Lalit School",
@@ -82,13 +74,16 @@ const SchoolProfile = () => {
     foundedDay: "12",
     foundedMonth: "12",
     foundedYear: "2023",
-    aboutCompany: "",
-    foundedSince: 2000,
+    aboutInstitute: "",
+    totalStudents: "",
+    studentsPerClass: "",
+    schoolTimings: "",
+    busService: "",
+    establishedYear: "2000",
     industry: "Schools & Institutions",
     medium: "English",
     level: "",
     board: "",
-    otherWebsite: "",
     alternateEmail: "",
     facebook: "",
     twitter: "",
@@ -115,10 +110,14 @@ const SchoolProfile = () => {
     if (file) setCoverImage(URL.createObjectURL(file));
   };
 
+  const handleGalleryUpload = (e) => {
+    const files = Array.from(e.target.files || []);
+    const urls = files.map((f) => URL.createObjectURL(f));
+    setGalleryImages((prev) => [...prev, ...urls].slice(0, 8));
+  };
+
   const handleNavClick = (item) => {
-    if (item.route) {
-      navigate(item.route);
-    }
+    if (item.route) navigate(item.route);
   };
 
   const handleLogout = () => {
@@ -128,8 +127,27 @@ const SchoolProfile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (activeSection === "address" && !formData.postalCode) {
+      alert("Postal Code is required for job location matching.");
+      return;
+    }
+    if (activeSection === "other" && !formData.level) {
+      alert("Level is required as it directly affects job matching.");
+      return;
+    }
     alert("Profile saved successfully!");
   };
+
+  // Profile completion calculation
+  const completionFields = [
+    formData.companyName, formData.email, formData.phone, formData.website,
+    formData.aboutInstitute, formData.level, formData.board, formData.medium,
+    formData.establishedYear, formData.city, formData.postalCode,
+    formData.totalStudents, formData.schoolTimings,
+  ];
+  const completionPct = Math.round((completionFields.filter(Boolean).length / completionFields.length) * 100);
+
+  // ─── Render Basic Info ─────────────────────────────────────────────────────
 
   const renderBasicInfo = () => (
     <div className="space-y-6">
@@ -138,8 +156,7 @@ const SchoolProfile = () => {
       {/* Cover photo upload */}
       <div>
         <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-borderColor bg-light px-5 py-2.5 text-sm font-bold text-primary hover:bg-primary/5">
-          <ImageIcon size={16} />
-          Upload Job Cover Photo
+          <ImageIcon size={16} /> Upload Job Cover Photo
           <input type="file" hidden accept="image/*" onChange={handleCoverUpload} />
         </label>
         {coverImage && (
@@ -170,9 +187,7 @@ const SchoolProfile = () => {
         <div className="flex items-center gap-3 rounded-xl border border-borderColor bg-light px-4 py-3">
           <Globe size={15} className="shrink-0 text-primary" />
           <span className="flex-1 truncate text-sm text-slate-600">{formData.profileUrl}</span>
-          <button type="button" className="text-xs font-bold text-primary underline underline-offset-2">
-            Edit
-          </button>
+          <button type="button" className="text-xs font-bold text-primary underline underline-offset-2">Edit</button>
         </div>
       </div>
 
@@ -192,9 +207,7 @@ const SchoolProfile = () => {
         <Field label="Sector" required>
           <select name="sector" value={formData.sector} onChange={handleChange} className={inputClass}>
             <option value="">Select Sector</option>
-            {sectors.map((s) => (
-              <option key={s} value={s}>{s}</option>
-            ))}
+            {sectors.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </Field>
       </div>
@@ -217,121 +230,164 @@ const SchoolProfile = () => {
         </div>
       </div>
 
-      {/* About the Company */}
+      {/* About the Institute (renamed from About the Company) */}
       <div>
-        <label className={labelClass}>About the Company</label>
+        <label className={labelClass}>About the Institute</label>
         <div className="overflow-hidden rounded-xl border border-borderColor">
           <div className="flex flex-wrap items-center gap-1 border-b border-borderColor bg-light px-3 py-2">
             {["B", "I", "U", "S", "≡", "≡", "≡", "⊞", "🔗", "↩", "↪"].map((btn, i) => (
-              <button
-                key={i}
-                type="button"
-                className="min-w-[28px] rounded px-2 py-1 text-xs font-bold text-slate-600 hover:bg-white hover:shadow-sm"
-              >
-                {btn}
-              </button>
+              <button key={i} type="button" className="min-w-[28px] rounded px-2 py-1 text-xs font-bold text-slate-600 hover:bg-white hover:shadow-sm">{btn}</button>
             ))}
             <div className="ml-auto flex gap-1">
-              <button type="button" className="rounded border border-primary/30 px-3 py-1 text-xs font-bold text-primary bg-white">
-                Visual
-              </button>
-              <button type="button" className="rounded px-3 py-1 text-xs font-bold text-slate-500 hover:bg-white">
-                Text
-              </button>
+              <button type="button" className="rounded border border-primary/30 px-3 py-1 text-xs font-bold text-primary bg-white">Visual</button>
+              <button type="button" className="rounded px-3 py-1 text-xs font-bold text-slate-500 hover:bg-white">Text</button>
             </div>
           </div>
           <textarea
-            name="aboutCompany"
-            value={formData.aboutCompany}
+            name="aboutInstitute"
+            value={formData.aboutInstitute}
             onChange={handleChange}
             className="min-h-32 w-full resize-none bg-white px-4 py-3 text-sm text-slate-800 outline-none"
-            placeholder="Write about your school..."
+            placeholder="Write about your school / institute..."
           />
         </div>
       </div>
-    </div>
-  );
 
-  const renderOtherInfo = () => (
-    <div className="space-y-6">
-      <h2 className="text-xl font-bold text-primary">Other Information</h2>
+      {/* School-specific fields */}
+      <div className="rounded-2xl border border-borderColor bg-light p-5 space-y-5">
+        <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wide">School Details for Candidate Matching</h3>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-        {/* Founded Since slider */}
-        <div>
-          <label className={labelClass}>
-            Founded Since <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="range"
-            name="foundedSince"
-            min={1950}
-            max={2025}
-            value={formData.foundedSince}
-            onChange={handleChange}
-            className="w-full accent-primary"
-          />
-          <div className="mt-1 flex items-center justify-between text-xs text-slate-500">
-            <span>1950</span>
-            <span className="font-bold text-primary">{formData.foundedSince}</span>
-            <span>2025</span>
-          </div>
-        </div>
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+          <Field label="Total Student Strength">
+            <select name="totalStudents" value={formData.totalStudents} onChange={handleChange} className={inputClass}>
+              <option value="">Select total students</option>
+              {studentCountOptions.map((o) => <option key={o} value={o}>{o}</option>)}
+            </select>
+          </Field>
 
-        <Field label="Industry">
-          <select name="industry" value={formData.industry} onChange={handleChange} className={inputClass}>
-            {industries.map((i) => (
-              <option key={i} value={i}>{i}</option>
-            ))}
-          </select>
-        </Field>
+          <Field label="Students Per Class">
+            <select name="studentsPerClass" value={formData.studentsPerClass} onChange={handleChange} className={inputClass}>
+              <option value="">Select students per class</option>
+              {studentsPerClassOptions.map((o) => <option key={o} value={o}>{o}</option>)}
+            </select>
+          </Field>
 
-        <Field label="Medium">
-          <select name="medium" value={formData.medium} onChange={handleChange} className={inputClass}>
-            <option value="">Select Medium</option>
-            {mediums.map((m) => <option key={m} value={m}>{m}</option>)}
-          </select>
-        </Field>
-
-        <Field label="Level">
-          <select name="level" value={formData.level} onChange={handleChange} className={inputClass}>
-            <option value="">Select the Level</option>
-            {levels.map((l) => <option key={l} value={l}>{l}</option>)}
-          </select>
-        </Field>
-
-        <Field label="Board">
-          <select name="board" value={formData.board} onChange={handleChange} className={inputClass}>
-            <option value="">Select the Board</option>
-            {boards.map((b) => <option key={b} value={b}>{b}</option>)}
-          </select>
-        </Field>
-
-        <Field label="Website">
-          <input
-            name="otherWebsite"
-            value={formData.otherWebsite}
-            onChange={handleChange}
-            className={inputClass}
-            placeholder="Paste your website URL"
-          />
-        </Field>
-
-        <div className="lg:col-span-2">
-          <Field label="Alternate Email">
+          <Field label="School Timings / Working Hours">
             <input
-              type="email"
-              name="alternateEmail"
-              value={formData.alternateEmail}
+              name="schoolTimings"
+              value={formData.schoolTimings}
               onChange={handleChange}
               className={inputClass}
-              placeholder="alternate-email"
+              placeholder="e.g. 8:00 AM – 2:30 PM, Mon–Sat"
             />
+          </Field>
+
+          <Field label="Bus / Transport Service Available">
+            <select name="busService" value={formData.busService} onChange={handleChange} className={inputClass}>
+              <option value="">Select option</option>
+              <option value="Yes">Yes — Bus service available for staff</option>
+              <option value="No">No — No transport service</option>
+              <option value="Partial">Partial — Available on selected routes</option>
+            </select>
           </Field>
         </div>
       </div>
+
+      {/* School Photo Gallery */}
+      <div>
+        <label className={labelClass}>School Photos / Gallery</label>
+        <p className="mb-3 text-xs text-slate-500">Upload up to 8 photos — a visual profile makes your school more attractive to candidates.</p>
+        <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-dashed border-primary/40 px-5 py-3 text-sm font-bold text-primary hover:bg-primary/5">
+          <Camera size={16} /> Upload Photos
+          <input type="file" hidden accept="image/*" multiple onChange={handleGalleryUpload} />
+        </label>
+        {galleryImages.length > 0 && (
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {galleryImages.map((url, i) => (
+              <div key={i} className="group relative overflow-hidden rounded-xl border border-borderColor">
+                <img src={url} alt={`gallery-${i}`} className="h-24 w-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => setGalleryImages((prev) => prev.filter((_, idx) => idx !== i))}
+                  className="absolute right-1 top-1 hidden rounded-full bg-red-500 p-1 text-white group-hover:flex"
+                >
+                  <X size={12} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
+
+  // ─── Render Other Info ─────────────────────────────────────────────────────
+
+  const renderOtherInfo = () => {
+    const currentYear = new Date().getFullYear();
+    const age = formData.establishedYear ? currentYear - parseInt(formData.establishedYear) : null;
+    return (
+      <div className="space-y-6">
+        <h2 className="text-xl font-bold text-primary">Other Information</h2>
+
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+          {/* Founded Since — replaced slider with dropdown */}
+          <div>
+            <Field label="Established / Founded Since *">
+              <select name="establishedYear" value={formData.establishedYear} onChange={handleChange} className={inputClass}>
+                <option value="">Select year of establishment</option>
+                {establishmentYears.map((y) => <option key={y} value={y}>{y}</option>)}
+              </select>
+            </Field>
+            {age !== null && age > 0 && (
+              <p className="mt-1.5 text-xs text-slate-500">School age: <span className="font-bold text-primary">{age} year{age !== 1 ? "s" : ""}</span></p>
+            )}
+          </div>
+
+          <Field label="Industry">
+            <select name="industry" value={formData.industry} onChange={handleChange} className={inputClass}>
+              {industries.map((i) => <option key={i} value={i}>{i}</option>)}
+            </select>
+          </Field>
+
+          <Field label="Medium">
+            <select name="medium" value={formData.medium} onChange={handleChange} className={inputClass}>
+              <option value="">Select Medium</option>
+              {mediums.map((m) => <option key={m} value={m}>{m}</option>)}
+            </select>
+          </Field>
+
+          {/* Level — made mandatory */}
+          <Field label="Level" required>
+            <select name="level" value={formData.level} onChange={handleChange} className={inputClass}>
+              <option value="">Select the Level</option>
+              {levels.map((l) => <option key={l} value={l}>{l}</option>)}
+            </select>
+            <p className="mt-1 text-xs text-slate-400">Mandatory — affects teacher matching.</p>
+          </Field>
+
+          {/* Board — visible prominently for matching */}
+          <Field label="Board">
+            <select name="board" value={formData.board} onChange={handleChange} className={inputClass}>
+              <option value="">Select the Board</option>
+              {boards.map((b) => <option key={b} value={b}>{b}</option>)}
+            </select>
+            <p className="mt-1 text-xs text-slate-400">Board helps match the right teachers for your curriculum.</p>
+          </Field>
+
+          {/* Website field REMOVED from Other Info — it's in Basic Information already */}
+
+          <div className="lg:col-span-2">
+            <Field label="Alternate Email">
+              <input type="email" name="alternateEmail" value={formData.alternateEmail} onChange={handleChange} className={inputClass} placeholder="alternate-email" />
+            </Field>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ─── Render Social Links ───────────────────────────────────────────────────
 
   const renderSocialLinks = () => (
     <div className="space-y-6">
@@ -339,37 +395,22 @@ const SchoolProfile = () => {
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Field label="Facebook">
-          <input
-            name="facebook"
-            value={formData.facebook}
-            onChange={handleChange}
-            className={inputClass}
-            placeholder="https://facebook.com/yourschool"
-          />
+          <input name="facebook" value={formData.facebook} onChange={handleChange} className={inputClass} placeholder="https://facebook.com/yourschool" />
         </Field>
-        <Field label="Twitter">
-          <input
-            name="twitter"
-            value={formData.twitter}
-            onChange={handleChange}
-            className={inputClass}
-            placeholder="https://twitter.com/yourschool"
-          />
+        {/* Twitter → renamed to X (Twitter) */}
+        <Field label="X (Twitter)">
+          <input name="twitter" value={formData.twitter} onChange={handleChange} className={inputClass} placeholder="https://x.com/yourschool" />
         </Field>
         <div className="lg:col-span-2">
           <Field label="LinkedIn">
-            <input
-              name="linkedin"
-              value={formData.linkedin}
-              onChange={handleChange}
-              className={inputClass}
-              placeholder="https://linkedin.com/school/yourschool"
-            />
+            <input name="linkedin" value={formData.linkedin} onChange={handleChange} className={inputClass} placeholder="https://linkedin.com/school/yourschool" />
           </Field>
         </div>
       </div>
     </div>
   );
+
+  // ─── Render Address ────────────────────────────────────────────────────────
 
   const renderAddress = () => (
     <div className="space-y-6">
@@ -388,32 +429,16 @@ const SchoolProfile = () => {
           </select>
         </Field>
         <Field label="City">
-          <input
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-            className={inputClass}
-            placeholder="Enter city"
-          />
+          <input name="city" value={formData.city} onChange={handleChange} className={inputClass} placeholder="Enter city" />
         </Field>
-        <Field label="Postal Code">
-          <input
-            name="postalCode"
-            value={formData.postalCode}
-            onChange={handleChange}
-            className={inputClass}
-            placeholder="Postal Code"
-          />
+        {/* Postal Code — made mandatory */}
+        <Field label="Postal Code" required>
+          <input name="postalCode" value={formData.postalCode} onChange={handleChange} className={inputClass} placeholder="Enter postal / PIN code" />
+          <p className="mt-1 text-xs text-slate-400">Required for accurate job location matching.</p>
         </Field>
         <div className="lg:col-span-2">
           <Field label="Full Address">
-            <textarea
-              name="fullAddress"
-              value={formData.fullAddress}
-              onChange={handleChange}
-              className={`${inputClass} min-h-24 resize-none`}
-              placeholder="Enter a location"
-            />
+            <textarea name="fullAddress" value={formData.fullAddress} onChange={handleChange} className={`${inputClass} min-h-24 resize-none`} placeholder="Flat No., Building Name, Street Name, Landmark..." />
           </Field>
         </div>
       </div>
@@ -427,23 +452,18 @@ const SchoolProfile = () => {
     return renderBasicInfo();
   };
 
+  // ─── Sidebar ───────────────────────────────────────────────────────────────
+
   const SidebarInner = () => (
     <div className="flex h-full flex-col">
-      {/* Logo upload */}
       <label className="mb-5 flex cursor-pointer items-center gap-2 self-start rounded-xl border border-dashed border-borderColor px-4 py-2 text-xs font-bold text-primary hover:bg-light">
-        <Upload size={13} />
-        Upload Institute Logo
+        <Upload size={13} /> Upload Institute Logo
         <input type="file" hidden accept="image/*" onChange={handleLogoUpload} />
       </label>
 
-      {/* School identity */}
-      <div className="mb-6 flex items-center gap-3">
+      <div className="mb-4 flex items-center gap-3">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-borderColor bg-light">
-          {logoImage ? (
-            <img src={logoImage} alt="logo" className="h-full w-full object-cover" />
-          ) : (
-            <Building2 size={22} className="text-primary" />
-          )}
+          {logoImage ? <img src={logoImage} alt="logo" className="h-full w-full object-cover" /> : <Building2 size={22} className="text-primary" />}
         </div>
         <div className="min-w-0">
           <p className="truncate text-sm font-bold text-slate-800">{schoolName}</p>
@@ -451,7 +471,20 @@ const SchoolProfile = () => {
         </div>
       </div>
 
-      {/* Navigation */}
+      {/* Profile completion indicator */}
+      <div className="mb-5 rounded-xl bg-light p-3 border border-borderColor">
+        <div className="flex items-center justify-between text-xs font-bold text-slate-600 mb-1.5">
+          <span>Profile Completion</span>
+          <span className="text-primary">{completionPct}%</span>
+        </div>
+        <div className="h-2 overflow-hidden rounded-full bg-white border border-borderColor/50">
+          <div className="h-full rounded-full bg-primary transition-all duration-500" style={{ width: `${completionPct}%` }} />
+        </div>
+        {completionPct < 100 && (
+          <p className="mt-1.5 text-xs text-slate-400">{100 - completionPct}% remaining to complete profile</p>
+        )}
+      </div>
+
       <nav className="flex-1 space-y-1">
         {sidebarItems.map((item) => {
           const Icon = item.icon;
@@ -461,11 +494,7 @@ const SchoolProfile = () => {
               key={item.id}
               type="button"
               onClick={() => handleNavClick(item)}
-              className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold transition ${
-                isActive
-                  ? "bg-primary text-white"
-                  : "text-slate-600 hover:bg-light hover:text-primary"
-              }`}
+              className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold transition ${isActive ? "bg-primary text-white" : "text-slate-600 hover:bg-light hover:text-primary"}`}
             >
               <Icon size={17} />
               {item.label}
@@ -474,31 +503,14 @@ const SchoolProfile = () => {
         })}
       </nav>
 
-      {/* Bottom actions */}
       <div className="mt-4 space-y-1 border-t border-borderColor pt-4">
-        <button
-          type="button"
-          onClick={() => navigate("/school-dashboard")}
-          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold text-slate-600 hover:bg-light"
-        >
-          <ArrowLeft size={17} />
-          Back to Dashboard
+        <button type="button" onClick={() => navigate("/school-dashboard")} className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold text-slate-600 hover:bg-light">
+          <ArrowLeft size={17} /> Back to Dashboard
         </button>
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold text-slate-600 hover:bg-light"
-        >
-          <LogOut size={17} />
-          Logout
+        <button type="button" onClick={handleLogout} className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold text-slate-600 hover:bg-light">
+          <LogOut size={17} /> Logout
         </button>
-        <button
-          type="button"
-          className="flex w-full items-center gap-3 rounded-xl bg-red-500 px-4 py-3 text-left text-sm font-bold text-white hover:bg-red-600"
-        >
-          <Trash2 size={17} />
-          Delete Profile
-        </button>
+        {/* Delete Profile moved to Settings page — no longer in sidebar */}
       </div>
     </div>
   );
@@ -506,25 +518,17 @@ const SchoolProfile = () => {
   return (
     <div className="min-h-screen bg-light">
       <form onSubmit={handleSubmit} className="flex min-h-screen">
-        {/* Desktop sidebar */}
         <aside className="hidden w-64 shrink-0 flex-col border-r border-borderColor bg-white p-5 lg:flex">
           <SidebarInner />
         </aside>
 
-        {/* Main content */}
         <main className="flex-1 p-5 lg:p-8">
-          {/* Page header */}
           <div className="mb-6 rounded-3xl bg-white p-5 shadow-soft">
-            <p className="text-xs font-bold uppercase tracking-[2px] text-secondary">
-              Employer Workspace
-            </p>
+            <p className="text-xs font-bold uppercase tracking-[2px] text-secondary">Employer Workspace</p>
             <h1 className="mt-1 text-2xl font-bold text-primary sm:text-3xl">School Profile</h1>
-            <p className="mt-1 text-sm text-slate-500">
-              Keep your school information up to date to attract the best candidates.
-            </p>
+            <p className="mt-1 text-sm text-slate-500">Keep your school information up to date to attract the best candidates.</p>
           </div>
 
-          {/* Section tabs */}
           <div className="mb-6 flex gap-2 overflow-x-auto rounded-3xl bg-white p-3 shadow-soft">
             {profileSections.map((section) => {
               const isActive = activeSection === section.id;
@@ -533,11 +537,7 @@ const SchoolProfile = () => {
                   key={section.id}
                   type="button"
                   onClick={() => setActiveSection(section.id)}
-                  className={`flex shrink-0 items-center rounded-2xl px-5 py-3 text-sm font-bold transition ${
-                    isActive
-                      ? "bg-primary text-white"
-                      : "bg-light text-primary hover:bg-primary/10"
-                  }`}
+                  className={`flex shrink-0 items-center rounded-2xl px-5 py-3 text-sm font-bold transition ${isActive ? "bg-primary text-white" : "bg-light text-primary hover:bg-primary/10"}`}
                 >
                   {section.label}
                 </button>
@@ -545,23 +545,15 @@ const SchoolProfile = () => {
             })}
           </div>
 
-          {/* Form card */}
           <div className="rounded-3xl bg-white p-6 shadow-soft lg:p-8">
             {renderActiveSection()}
 
             <div className="mt-8 flex flex-col-reverse gap-3 border-t border-borderColor pt-6 sm:flex-row sm:justify-end">
-              <button
-                type="button"
-                className="rounded-xl border border-borderColor px-6 py-3 text-sm font-bold text-slate-500 hover:bg-light"
-              >
+              <button type="button" className="rounded-xl border border-borderColor px-6 py-3 text-sm font-bold text-slate-500 hover:bg-light">
                 Cancel
               </button>
-              <button
-                type="submit"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95"
-              >
-                <Save size={17} />
-                Save Changes
+              <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
+                <Save size={17} /> Save Changes
               </button>
             </div>
           </div>

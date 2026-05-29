@@ -155,6 +155,7 @@ const TeacherProfile = () => {
     city: storedUser.city || "",
     state: "",
     address: "",
+    briefWriteUp: "",
   });
 
   const [qualificationDraft, setQualificationDraft] = useState(blankQualification);
@@ -577,26 +578,29 @@ const TeacherProfile = () => {
         </Field>
       </div>
 
-      <div className="mt-5 grid grid-cols-1 items-start gap-5 lg:grid-cols-3">
-        <Field label="DOB">
+      <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-3">
+        <div className="flex flex-col justify-start">
+          <label className={labelClass}>DOB</label>
           <div className="grid grid-cols-[72px_72px_1fr] gap-2">
             <input name="dobDay" value={teacherData.dobDay} onChange={handleDobChange} className={compactInputClass} placeholder="DD" />
             <input name="dobMonth" value={teacherData.dobMonth} onChange={handleDobChange} className={compactInputClass} placeholder="MM" />
             <input name="dobYear" value={teacherData.dobYear} onChange={handleDobChange} className={compactInputClass} placeholder="YYYY" />
           </div>
-        </Field>
-        <Field label="Age (Years Only)">
+        </div>
+        <div className="flex flex-col justify-start">
+          <label className={labelClass}>Age (Years Only)</label>
           <input name="age" value={teacherData.age} onChange={handleChange} className={inputClass} placeholder="Auto calculated" />
           <p className="mt-2 text-xs text-slate-500">If DOB not entered, user can enter age.</p>
-        </Field>
-        <Field label="Nationality">
+        </div>
+        <div className="flex flex-col justify-start">
+          <label className={labelClass}>Nationality</label>
           <select name="nationality" value={teacherData.nationality} onChange={handleChange} className={inputClass}>
             <option value="">Select nationality</option>
             {nationalities.map((n) => (
               <option key={n} value={n}>{n}</option>
             ))}
           </select>
-        </Field>
+        </div>
       </div>
 
       <div className="mt-5 grid grid-cols-1 items-start gap-5 lg:grid-cols-3">
@@ -771,6 +775,20 @@ const TeacherProfile = () => {
               {renderOptions(qualificationOptions.degrees)}
             </select>
           </div>
+        </div>
+        <div className="lg:col-span-3">
+          <Field label="Brief Professional Write-up (50–100 words)">
+            <textarea
+              name="briefWriteUp"
+              value={teacherData.briefWriteUp}
+              onChange={handleChange}
+              maxLength={600}
+              rows={4}
+              className={`${inputClass} resize-none`}
+              placeholder="Write a short professional summary about yourself — your teaching philosophy, key strengths, and what makes you stand out as an educator..."
+            />
+            <p className="mt-1 text-xs text-slate-400">{teacherData.briefWriteUp.split(/\s+/).filter(Boolean).length} / 100 words</p>
+          </Field>
         </div>
       </div>
     </>
@@ -1689,6 +1707,15 @@ const TeacherProfile = () => {
                 <p className="mt-1 text-sm font-semibold text-slate-800">{teacherData.city || "Not added"}</p>
               </div>
             </div>
+
+            {teacherData.briefWriteUp && (
+              <div className="mt-6">
+                <h4 className="mb-2 text-sm font-bold uppercase tracking-wide text-slate-500">Professional Summary</h4>
+                <p className="rounded-2xl border border-borderColor bg-light px-4 py-3 text-sm leading-relaxed text-slate-700">
+                  {teacherData.briefWriteUp}
+                </p>
+              </div>
+            )}
 
             {savedAwards.length > 0 && (
               <div className="mt-6">
