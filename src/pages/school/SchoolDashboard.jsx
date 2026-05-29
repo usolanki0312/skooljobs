@@ -22,7 +22,11 @@ import {
   Upload,
   Users,
 } from "lucide-react";
-import Topbar from "../components/topbar";
+import Topbar from "../../components/topbar";
+import {
+  subjects, schoolExperienceOptions as experienceOptions,
+  employmentTypes, initialJobs, initialApplicants, statusChipClass,
+} from "../../lib/schooldata";
 
 const sidebarItems = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -51,43 +55,9 @@ const Field = ({ label, required, children }) => (
   </div>
 );
 
-const subjects = [
-  "Mathematics", "Science", "English", "Hindi", "Social Science", "Computer",
-  "Physics", "Chemistry", "Biology", "Economics", "History", "Geography",
-  "Art", "Music", "Physical Education", "Other",
-];
-const experienceOptions = [
-  "0 - 1 Year (Fresher)", "1 - 3 Years", "3 - 5 Years", "5 - 8 Years", "8+ Years", "Any Experience",
-];
-const employmentTypes = ["Full Time", "Part Time", "Contract", "Hybrid", "Remote", "Internship"];
-
 const blankJobForm = {
   title: "", subject: "", experience: "", salary: "",
   location: "", employmentType: "", description: "", requirements: "", qualifications: "",
-};
-
-const initialJobs = [
-  { id: 1, title: "Math Teacher", applicants: 22, status: "Active", date: "12 May 2025" },
-  { id: 2, title: "Science Teacher", applicants: 12, status: "Closed", date: "10 May 2025" },
-  { id: 3, title: "English Teacher", applicants: 8, status: "Active", date: "8 May 2025" },
-  { id: 4, title: "Hindi Teacher", applicants: 3, status: "Draft", date: "6 May 2025" },
-];
-
-const initialApplicants = [
-  { id: 1, name: "Rahul Sharma", subject: "Mathematics", experience: "3 yrs", status: "Applied", avatar: "https://i.pravatar.cc/100?img=12" },
-  { id: 2, name: "Priya Singh", subject: "English", experience: "5 yrs", status: "Shortlisted", avatar: "https://i.pravatar.cc/100?img=16" },
-  { id: 3, name: "Amit Kumar", subject: "Science", experience: "2 yrs", status: "Applied", avatar: "https://i.pravatar.cc/100?img=11" },
-  { id: 4, name: "Neha Patel", subject: "Hindi", experience: "7 yrs", status: "Rejected", avatar: "https://i.pravatar.cc/100?img=25" },
-  { id: 5, name: "Suresh Verma", subject: "Mathematics", experience: "4 yrs", status: "Shortlisted", avatar: "https://i.pravatar.cc/100?img=30" },
-];
-
-const statusChipClass = {
-  Applied: "bg-blue-50 text-blue-600",
-  Shortlisted: "bg-green-50 text-green-600",
-  Rejected: "bg-red-50 text-red-500",
-  Active: "bg-green-50 text-green-600",
-  Closed: "bg-red-50 text-red-500",
-  Draft: "bg-slate-100 text-slate-500",
 };
 
 const SchoolDashboard = () => {

@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   Award,
+  Bell,
   Bookmark,
   BriefcaseBusiness,
   CheckCircle2,
   Clock3,
   FileText,
+  Filter,
   GraduationCap,
   LayoutDashboard,
   LogOut,
@@ -18,57 +20,10 @@ import {
   Star,
   UserRound,
 } from "lucide-react";
-import Topbar from "../components/topbar";
+import Topbar from "../../components/topbar";
+import { jobsData, resumesData } from "../../lib/teacherdata";
 
-const jobsData = [
-  {
-    id: 1,
-    school: "Green Valley School",
-    role: "Mathematics Teacher",
-    location: "Indore",
-    skill: "Mathematics",
-    salary: "4.8 LPA",
-    type: "Full time",
-    match: 96,
-  },
-  {
-    id: 2,
-    school: "Delhi Public Academy",
-    role: "Science Faculty",
-    location: "Bhopal",
-    skill: "Science",
-    salary: "5.2 LPA",
-    type: "Full time",
-    match: 91,
-  },
-  {
-    id: 3,
-    school: "St. Mary's International",
-    role: "English Teacher",
-    location: "Pune",
-    skill: "English",
-    salary: "4.4 LPA",
-    type: "Hybrid",
-    match: 86,
-  },
-  {
-    id: 4,
-    school: "Bright Future School",
-    role: "Computer Teacher",
-    location: "Bangalore",
-    skill: "Computer",
-    salary: "6.0 LPA",
-    type: "Full time",
-    match: 89,
-  },
-];
-
-const resumes = [
-  { id: 1, name: "Mathematics Teacher Resume.pdf", skill: "Mathematics", score: 88 },
-  { id: 2, name: "Science Faculty Resume.pdf", skill: "Science", score: 81 },
-  { id: 3, name: "English Teacher Resume.pdf", skill: "English", score: 76 },
-  { id: 4, name: "Computer Teacher Resume.pdf", skill: "Computer", score: 84 },
-];
+const resumes = resumesData;
 
 const navItems = [
   { id: "profile", label: "My Profile", icon: UserRound },
@@ -85,8 +40,17 @@ const Dashboard = () => {
   const [selectedResume, setSelectedResume] = useState(resumes[0]);
   const [appliedJobs, setAppliedJobs] = useState([]);
   const [savedJobs, setSavedJobs] = useState([]);
-  const [activities, setActivities] = useState(["Profile viewed by Green Valley School"]);
+  const [activities, setActivities] = useState([
+    { message: "Profile viewed by Green Valley School", date: new Date(Date.now() - 3600000).toISOString(), type: "view" },
+  ]);
   const [activeSection, setActiveSection] = useState("dashboard");
+  const [jobFilter, setJobFilter] = useState({ subject: "", type: "" });
+  const [notifPrefs, setNotifPrefs] = useState({
+    enabled: true,
+    subjects: [],
+    jobTitles: [],
+    newInput: "",
+  });
 
   const currentUser = useMemo(() => {
     try {
@@ -112,21 +76,21 @@ const Dashboard = () => {
   const displayName = currentUser.name || currentUser.firstName || "Gopal";
   const recommendedJobs = jobsData.filter((job) => job.skill === selectedResume.skill);
 
-  const addActivity = (message) => {
-    setActivities((prev) => [message, ...prev]);
+  const addActivity = (message, type = "action") => {
+    setActivities((prev) => [{ message, date: new Date().toISOString(), type }, ...prev]);
   };
 
   const handleApply = (job) => {
     if (!appliedJobs.some((item) => item.id === job.id)) {
-      setAppliedJobs((prev) => [...prev, job]);
-      addActivity(`Applied for ${job.role} at ${job.school}`);
+      setAppliedJobs((prev) => [...prev, { ...job, appliedDate: new Date().toISOString() }]);
+      addActivity(`Applied for ${job.role} at ${job.school}`, "apply");
     }
   };
 
   const handleSave = (job) => {
     if (!savedJobs.some((item) => item.id === job.id)) {
       setSavedJobs((prev) => [...prev, job]);
-      addActivity(`Saved ${job.role} at ${job.school}`);
+      addActivity(`Saved ${job.role} at ${job.school}`, "save");
     }
   };
 
@@ -134,8 +98,19 @@ const Dashboard = () => {
     const file = event.target.files[0];
     if (file) {
       setProfileImage(URL.createObjectURL(file));
-      addActivity("Updated profile photo");
+      addActivity("Updated profile photo", "profile");
     }
+  };
+
+  const formatRelativeTime = (isoDate) => {
+    const diff = Date.now() - new Date(isoDate).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return "just now";
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    const days = Math.floor(hrs / 24);
+    return `${days}d ago`;
   };
 
   const handleLogout = () => {
@@ -259,33 +234,25 @@ const Dashboard = () => {
 
         <aside className="space-y-6">
           <div className="rounded-3xl bg-white p-6 shadow-soft">
-            <div className="flex items-center gap-4 border-b border-borderColor pb-5">
+            <div className="flex items-center gap-4">
               <img src={profileImage} alt="profile" className="h-16 w-16 rounded-2xl object-cover" />
               <div>
                 <h3 className="font-bold text-primary">{displayName}</h3>
                 <p className="text-sm text-green-500">Available for jobs</p>
               </div>
             </div>
-            <label className="mt-5 inline-flex cursor-pointer rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white">
-              Upload Photo
-              <input type="file" hidden onChange={handleProfileImage} />
-            </label>
-            <button
-              onClick={() => navigate("/teacher-profile")}
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-primary px-4 py-3 text-sm font-bold text-primary hover:bg-primary/5"
-              type="button"
-            >
-              <UserRound size={17} /> Complete Profile
-            </button>
           </div>
 
           <div className="rounded-3xl bg-white p-6 shadow-soft">
             <h3 className="text-lg font-bold text-primary">Recent Activity</h3>
             <div className="mt-5 space-y-4">
               {activities.slice(0, 4).map((activity, index) => (
-                <div key={`${activity}-${index}`} className="flex gap-3 text-sm text-slate-600">
-                  <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
-                  <span>{activity}</span>
+                <div key={`${activity.message}-${index}`} className="flex gap-3 text-sm text-slate-600">
+                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
+                  <div className="flex-1">
+                    <span>{activity.message}</span>
+                    <span className="ml-2 text-xs text-slate-400">{formatRelativeTime(activity.date)}</span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -344,6 +311,150 @@ const Dashboard = () => {
     </section>
   );
 
+  const renderAllJobs = () => {
+    const twoYearsAgo = new Date();
+    twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
+    const appliedHistory = appliedJobs.filter(
+      (j) => j.appliedDate && new Date(j.appliedDate) >= twoYearsAgo
+    );
+
+    const filteredJobs = jobsData.filter((job) => {
+      if (jobFilter.subject && job.skill !== jobFilter.subject) return false;
+      if (jobFilter.type && job.type !== jobFilter.type) return false;
+      return true;
+    });
+
+    const subjectOptions = [...new Set(jobsData.map((j) => j.skill))];
+    const typeOptions = [...new Set(jobsData.map((j) => j.type))];
+
+    return (
+      <div className="space-y-6">
+        <section className="rounded-3xl bg-white p-6 shadow-soft">
+          <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className="text-2xl font-bold text-primary">All Teaching Jobs</h2>
+            <div className="flex items-center gap-3">
+              <Filter size={16} className="text-slate-400" />
+              <select
+                value={jobFilter.subject}
+                onChange={(e) => setJobFilter((p) => ({ ...p, subject: e.target.value }))}
+                className="rounded-xl border border-borderColor bg-light px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-primary"
+              >
+                <option value="">All Subjects</option>
+                {subjectOptions.map((s) => <option key={s}>{s}</option>)}
+              </select>
+              <select
+                value={jobFilter.type}
+                onChange={(e) => setJobFilter((p) => ({ ...p, type: e.target.value }))}
+                className="rounded-xl border border-borderColor bg-light px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-primary"
+              >
+                <option value="">All Types</option>
+                {typeOptions.map((t) => <option key={t}>{t}</option>)}
+              </select>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            {filteredJobs.length === 0 ? (
+              <p className="rounded-2xl bg-light p-5 text-sm text-slate-500">No jobs match your filter.</p>
+            ) : (
+              filteredJobs.map((job) => <JobCard key={job.id} job={job} />)
+            )}
+          </div>
+        </section>
+
+        {appliedHistory.length > 0 && (
+          <section className="rounded-3xl bg-white p-6 shadow-soft">
+            <h3 className="text-xl font-bold text-primary">Applied History (Last 2 Years)</h3>
+            <p className="mt-1 text-sm text-slate-500">Your job applications from the past 2 years.</p>
+            <div className="mt-5 space-y-3">
+              {appliedHistory.map((job) => (
+                <div key={job.id} className="flex items-center justify-between rounded-2xl border border-borderColor p-4">
+                  <div>
+                    <p className="font-bold text-primary">{job.role}</p>
+                    <p className="text-sm text-slate-500">{job.school} · {job.location}</p>
+                  </div>
+                  <div className="text-right">
+                    <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-600">Applied</span>
+                    <p className="mt-1 text-xs text-slate-400">{new Date(job.appliedDate).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <section className="rounded-3xl bg-white p-6 shadow-soft">
+          <div className="mb-5 flex items-center gap-3">
+            <span className="rounded-xl bg-primary/10 p-2 text-primary"><Bell size={19} /></span>
+            <div>
+              <h3 className="text-xl font-bold text-primary">Job Notification Preferences</h3>
+              <p className="text-sm text-slate-500">Get notified when similar jobs are posted.</p>
+            </div>
+          </div>
+          <label className="flex items-center gap-3 rounded-2xl border border-borderColor p-4">
+            <input
+              type="checkbox"
+              checked={notifPrefs.enabled}
+              onChange={(e) => setNotifPrefs((p) => ({ ...p, enabled: e.target.checked }))}
+              className="h-4 w-4 accent-primary"
+            />
+            <span className="text-sm font-bold text-slate-700">Enable job notifications</span>
+          </label>
+          {notifPrefs.enabled && (
+            <div className="mt-4 space-y-4">
+              <div>
+                <p className="mb-3 text-xs font-bold uppercase tracking-wide text-slate-500">Notify me for these subjects</p>
+                <div className="flex flex-wrap gap-2">
+                  {subjectOptions.map((s) => {
+                    const active = notifPrefs.subjects.includes(s);
+                    return (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setNotifPrefs((p) => ({
+                          ...p,
+                          subjects: active ? p.subjects.filter((x) => x !== s) : [...p.subjects, s],
+                        }))}
+                        className={`rounded-full px-4 py-2 text-sm font-bold transition ${active ? "bg-primary text-white" : "border border-borderColor bg-light text-slate-600 hover:border-primary"}`}
+                      >
+                        {s}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div>
+                <p className="mb-3 text-xs font-bold uppercase tracking-wide text-slate-500">Custom job title alerts</p>
+                <div className="flex gap-3">
+                  <input
+                    value={notifPrefs.newInput}
+                    onChange={(e) => setNotifPrefs((p) => ({ ...p, newInput: e.target.value }))}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && notifPrefs.newInput.trim()) {
+                        setNotifPrefs((p) => ({ ...p, jobTitles: [...p.jobTitles, p.newInput.trim()], newInput: "" }));
+                      }
+                    }}
+                    placeholder="e.g. Science Teacher (press Enter)"
+                    className="flex-1 rounded-xl border border-borderColor px-4 py-2 text-sm outline-none focus:border-primary"
+                  />
+                </div>
+                {notifPrefs.jobTitles.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {notifPrefs.jobTitles.map((title) => (
+                      <span key={title} className="flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm font-bold text-primary">
+                        {title}
+                        <button type="button" onClick={() => setNotifPrefs((p) => ({ ...p, jobTitles: p.jobTitles.filter((t) => t !== title) }))} className="text-primary/60 hover:text-primary">×</button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </section>
+      </div>
+    );
+  };
+
   const renderContent = () => {
     if (activeSection === "applied") {
       return renderJobsList("Applied Jobs", appliedJobs, "No applied jobs yet.");
@@ -352,7 +463,7 @@ const Dashboard = () => {
       return renderJobsList("Saved Jobs", savedJobs, "No saved jobs yet.");
     }
     if (activeSection === "alljobs") {
-      return renderJobsList("All Teaching Jobs", jobsData, "No jobs available.");
+      return renderAllJobs();
     }
     if (activeSection === "recommendation") {
       return renderJobsList(
@@ -365,16 +476,34 @@ const Dashboard = () => {
       return renderResume();
     }
     if (activeSection === "activity") {
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+      const recentActivities = activities
+        .filter((a) => new Date(a.date) >= thirtyDaysAgo)
+        .slice(0, 10);
       return (
         <section className="rounded-3xl bg-white p-6 shadow-soft">
-          <h2 className="text-2xl font-bold text-primary">Recent Activity</h2>
-          <div className="mt-6 space-y-4">
-            {activities.map((activity, index) => (
-              <div key={`${activity}-${index}`} className="rounded-2xl border border-borderColor p-4 text-sm text-slate-600">
-                {activity}
-              </div>
-            ))}
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-primary">Recent Activity</h2>
+              <p className="mt-1 text-sm text-slate-500">Jobs searched and applications submitted in the last 30 days (max 10 entries).</p>
+            </div>
+            <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-bold text-primary">{recentActivities.length} / 10</span>
           </div>
+          {recentActivities.length === 0 ? (
+            <p className="rounded-2xl bg-light p-5 text-sm text-slate-500">No activity in the last 30 days.</p>
+          ) : (
+            <div className="space-y-3">
+              {recentActivities.map((activity, index) => (
+                <div key={`${activity.message}-${index}`} className="flex items-start justify-between rounded-2xl border border-borderColor p-4 text-sm">
+                  <div className="flex gap-3">
+                    <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
+                    <span className="text-slate-700">{activity.message}</span>
+                  </div>
+                  <span className="ml-4 shrink-0 text-xs text-slate-400">{formatRelativeTime(activity.date)}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
       );
     }
@@ -398,7 +527,16 @@ const Dashboard = () => {
           <div className="mt-6 rounded-3xl bg-white/10 p-5">
             <div className="mb-3 flex items-center justify-between text-sm font-bold text-white">
               <span>Profile Score</span>
-              <span>86%</span>
+              <div className="flex items-center gap-2">
+                <span>86%</span>
+                <button
+                  type="button"
+                  onClick={() => navigate("/teacher-profile")}
+                  className="flex items-center gap-1 rounded-lg bg-white/20 px-2 py-1 text-xs font-bold text-white hover:bg-white/30"
+                >
+                  <UserRound size={11} /> Complete
+                </button>
+              </div>
             </div>
             <div className="h-2 overflow-hidden rounded-full bg-white/20">
               <div className="h-full rounded-full bg-white" style={{ width: "86%" }} />

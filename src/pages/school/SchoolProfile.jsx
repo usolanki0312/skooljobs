@@ -1,6 +1,10 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+  profileSections, sectors, schoolMediums as mediums, levels, boards,
+  industries, countries, indianStates, days, months, years,
+} from "../../lib/schooldata";
+import {
   ArrowLeft,
   BriefcaseBusiness,
   Building2,
@@ -31,12 +35,6 @@ const sidebarItems = [
   { id: "changePassword", label: "Change Password", icon: KeyRound, route: "/school-dashboard" },
 ];
 
-const profileSections = [
-  { id: "basic", label: "Basic Information" },
-  { id: "other", label: "Other Information" },
-  { id: "social", label: "Social Links" },
-  { id: "address", label: "Address / Location" },
-];
 
 const inputClass =
   "w-full rounded-xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10";
@@ -53,31 +51,6 @@ const Field = ({ label, required, children }) => (
   </div>
 );
 
-const days = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0"));
-const months = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0"));
-const years = Array.from({ length: 76 }, (_, i) => String(2025 - i));
-
-const sectors = [
-  "Schools & Institutions",
-  "Colleges & Universities",
-  "Coaching Centers",
-  "EdTech",
-  "Government",
-  "Private",
-  "Other",
-];
-
-const mediums = ["English", "Hindi", "Gujarati", "Marathi", "Telugu", "Tamil", "Bilingual", "Other"];
-const levels = ["Primary", "Middle", "Secondary", "Senior Secondary", "All Levels"];
-const boards = ["CBSE", "ICSE", "State Board", "IB (International Baccalaureate)", "IGCSE / Cambridge", "NIOS", "Other"];
-const industries = ["Schools & Institutions", "Colleges & Universities", "EdTech", "Coaching Centers", "Other"];
-const countries = ["India", "USA", "UK", "Canada", "Australia", "Other"];
-const indianStates = [
-  "Andhra Pradesh", "Assam", "Bihar", "Chhattisgarh", "Delhi", "Gujarat",
-  "Haryana", "Himachal Pradesh", "Jammu & Kashmir", "Jharkhand", "Karnataka",
-  "Kerala", "Madhya Pradesh", "Maharashtra", "Odisha", "Punjab", "Rajasthan",
-  "Tamil Nadu", "Telangana", "Uttar Pradesh", "Uttarakhand", "West Bengal",
-];
 
 const SchoolProfile = () => {
   const navigate = useNavigate();

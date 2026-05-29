@@ -4,7 +4,25 @@ import AuthInput from "../components/AuthInput";
 import AuthButton from "../components/AuthButton";
 import { Link, useNavigate } from "react-router-dom";
 
-const VALID_CREDENTIALS = [
+// ---------------------------------------------------------------------------
+// TODO: Replace hardcoded auth with backend API
+//
+// When real auth is ready, delete MOCK_CREDENTIALS entirely and replace the
+// matching logic in handleLogin with a POST /api/auth/login call:
+//
+//   const res = await fetch("/api/auth/login", {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify({ email, password }),
+//   });
+//   const data = await res.json();
+//   if (!res.ok) { setErrorMessage(data.message || "Invalid credentials."); return; }
+//   localStorage.setItem("currentUser", JSON.stringify(data.user));
+//   navigate(data.user.role === "employer" ? "/school-dashboard" : "/dashboard");
+// ---------------------------------------------------------------------------
+
+const MOCK_CREDENTIALS = [
+  // --- Teacher / Candidate accounts ---
   {
     email: "teacher@gmail.com",
     password: "123456",
@@ -22,6 +40,8 @@ const VALID_CREDENTIALS = [
       profilePhoto: "https://i.pravatar.cc/300?img=12",
     },
   },
+
+  // --- School / Recruiter accounts ---
   {
     email: "hr@school.in",
     password: "password",
@@ -37,36 +57,65 @@ const VALID_CREDENTIALS = [
       profilePhoto: "https://i.pravatar.cc/300?img=20",
     },
   },
+  {
+    email: "schooladmin@test.com",
+    password: "123456",
+    user: {
+      id: 3,
+      name: "Sunrise Public School",
+      companyName: "Sunrise Public School",
+      email: "schooladmin@test.com",
+      role: "employer",
+      city: "Mumbai",
+      phone: "9123456789",
+      totalTeachers: 120,
+      profilePhoto: "https://i.pravatar.cc/300?img=33",
+    },
+  },
+  {
+    email: "recruiter@test.com",
+    password: "recruiter123",
+    user: {
+      id: 4,
+      name: "EduHire Recruiters",
+      companyName: "EduHire Recruiters",
+      email: "recruiter@test.com",
+      role: "employer",
+      city: "Delhi",
+      phone: "9876001234",
+      totalTeachers: 0,
+      profilePhoto: "https://i.pravatar.cc/300?img=47",
+    },
+  },
 ];
 
 function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
+    setErrorMessage("");
 
     if (!email || !password) {
-      alert("Please enter email and password");
+      setErrorMessage("Please enter your email and password.");
       return;
     }
 
-    const match = VALID_CREDENTIALS.find(
+    // TODO: Replace hardcoded auth with backend API (see comment above MOCK_CREDENTIALS)
+    const match = MOCK_CREDENTIALS.find(
       (c) => c.email === email && c.password === password
     );
 
     if (match) {
       localStorage.setItem("currentUser", JSON.stringify(match.user));
-      if (match.user.role === "employer") {
-        navigate("/school-dashboard");
-      } else {
-        navigate("/dashboard");
-      }
+      navigate(match.user.role === "employer" ? "/school-dashboard" : "/dashboard");
       return;
     }
 
-    alert("Invalid credentials");
+    setErrorMessage("Invalid email or password. Please try again.");
   };
 
   return (
@@ -98,6 +147,12 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Enter your password"
         />
+
+        {errorMessage && (
+          <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
+            {errorMessage}
+          </p>
+        )}
 
         <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
           <label className="flex items-center gap-2.5 cursor-pointer select-none">

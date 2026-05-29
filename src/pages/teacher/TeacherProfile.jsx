@@ -15,8 +15,11 @@ import {
   Trophy,
   Upload,
   User,
+  X,
+  Wand2,
 } from "lucide-react";
-import BackButton from "../components/backbutton";
+import BackButton from "../../components/backbutton";
+import { qualificationOptions, experienceOptions, pinStateMap, languages as languageOptions, languageStatuses, nationalities } from "../../lib/teacherdata";
 
 const navItems = [
   { id: "basic", label: "My Profile", icon: User },
@@ -91,165 +94,7 @@ const blankResumeData = {
   courseYear: "",
 };
 
-const qualificationOptions = {
-  degrees: [
-    "Secondary (10th)",
-    "Senior Secondary (12th)",
-    "Bachelor's Degree",
-    "Master's Degree",
-    "MPhil",
-    "PhD / Doctorate",
-    "Post Doctorate",
-    "Professional Degree",
-    "Other",
-  ],
-  courses: [
-    "General Secondary Education",
-    "Science",
-    "Commerce",
-    "Arts / Humanities",
-    "Vocational",
-    "BA",
-    "BSc",
-    "BCom",
-    "BBA",
-    "BCA",
-    "BTech",
-    "BE",
-    "B.Ed",
-    "MA",
-    "MSc",
-    "MCom",
-    "MBA",
-    "MCA",
-    "MTech",
-    "M.Ed",
-    "Research Degree",
-    "Subject Specialization",
-    "Other",
-  ],
-  mediums: [
-    "English",
-    "Hindi",
-    "Bilingual (English + Hindi)",
-    "Urdu",
-    "Punjabi",
-    "Bengali",
-    "Tamil",
-    "Telugu",
-    "Marathi",
-    "Gujarati",
-    "Kannada",
-    "Malayalam",
-    "Odia",
-    "Other",
-  ],
-  modes: [
-    "Regular",
-    "Part Time",
-    "Distance Learning",
-    "Online",
-    "Correspondence",
-    "Open University",
-    "Hybrid",
-  ],
-  universities: [
-    "University of Delhi",
-    "Mumbai University",
-    "IIT Delhi",
-    "JNU",
-    "Lucknow University",
-    "Anna University",
-    "IGNOU",
-    "Other",
-  ],
-  colleges: [
-    "Hindu College",
-    "Miranda House",
-    "IIT Bombay",
-    "Amity University",
-    "Christ University",
-    "Other",
-  ],
-};
 
-const experienceOptions = {
-  boards: [
-    "CBSE",
-    "ICSE",
-    "ISC",
-    "State Board",
-    "IB (International Baccalaureate)",
-    "IGCSE / Cambridge",
-    "NIOS",
-    "Open School",
-    "International Board",
-    "Other",
-  ],
-  subjects: [
-    "Accountancy",
-    "Biology",
-    "Business Studies",
-    "Chemistry",
-    "Economics",
-    "English",
-    "Geography",
-    "History And Civics",
-    "Home Science",
-    "Maths",
-    "Philosophy",
-    "Physics",
-    "Pol.Science",
-    "Psychology",
-    "Science",
-    "Social Science",
-    "Sociology",
-    "Art & Painting",
-    "Hindi",
-  ],
-  posts: [
-    "PRT (Primary Teacher)",
-    "TGT (Trained Graduate Teacher)",
-    "PGT (Post Graduate Teacher)",
-    "Assistant Teacher",
-    "Subject Teacher",
-    "Class Teacher",
-    "Senior Teacher",
-    "Head Teacher",
-    "Vice Principal",
-    "Principal",
-    "Academic Coordinator",
-    "Curriculum Coordinator",
-    "Lecturer",
-    "Professor",
-    "Tutor",
-    "Special Educator",
-    "Lab Instructor",
-    "Counselor",
-    "Sports Coach",
-    "Music Teacher",
-    "Art Teacher",
-    "Computer Instructor",
-    "Teaching Assistant",
-    "Administrative Head",
-    "Other",
-  ],
-  reasons: [
-    "Career Growth",
-    "Better Opportunity",
-    "Higher Salary",
-    "Relocation",
-    "Personal Reasons",
-    "Contract Completed",
-    "School Closure",
-    "Family Reasons",
-    "Health Reasons",
-    "Higher Studies",
-    "Role Change",
-    "Work-Life Balance",
-    "Other",
-  ],
-};
 
 const renderOptions = (items) =>
   items.map((item) => (
@@ -258,73 +103,6 @@ const renderOptions = (items) =>
     </option>
   ));
 
-const pinStateMap = {
-  11: "Delhi",
-  12: "Haryana",
-  13: "Haryana",
-  14: "Punjab",
-  16: "Chandigarh",
-  17: "Himachal Pradesh",
-  18: "Jammu and Kashmir",
-  19: "Jammu and Kashmir",
-  20: "Uttar Pradesh",
-  21: "Uttar Pradesh",
-  22: "Uttar Pradesh",
-  23: "Uttar Pradesh",
-  24: "Uttar Pradesh",
-  25: "Uttar Pradesh",
-  26: "Uttar Pradesh",
-  27: "Uttar Pradesh",
-  28: "Uttar Pradesh",
-  30: "Rajasthan",
-  31: "Rajasthan",
-  32: "Rajasthan",
-  33: "Rajasthan",
-  34: "Rajasthan",
-  36: "Gujarat",
-  37: "Gujarat",
-  38: "Gujarat",
-  39: "Gujarat",
-  40: "Maharashtra",
-  41: "Maharashtra",
-  42: "Maharashtra",
-  43: "Maharashtra",
-  44: "Maharashtra",
-  45: "Madhya Pradesh",
-  46: "Madhya Pradesh",
-  47: "Madhya Pradesh",
-  48: "Madhya Pradesh",
-  49: "Chhattisgarh",
-  50: "Telangana",
-  51: "Andhra Pradesh",
-  52: "Andhra Pradesh",
-  53: "Andhra Pradesh",
-  56: "Karnataka",
-  57: "Karnataka",
-  58: "Karnataka",
-  60: "Tamil Nadu",
-  61: "Tamil Nadu",
-  62: "Tamil Nadu",
-  63: "Tamil Nadu",
-  64: "Tamil Nadu",
-  67: "Kerala",
-  68: "Kerala",
-  69: "Kerala",
-  70: "West Bengal",
-  71: "West Bengal",
-  72: "West Bengal",
-  73: "West Bengal",
-  74: "West Bengal",
-  75: "Odisha",
-  76: "Odisha",
-  78: "Assam",
-  79: "North East",
-  80: "Bihar",
-  81: "Bihar",
-  82: "Jharkhand",
-  83: "Jharkhand",
-  84: "Bihar",
-};
 
 const hasValue = (item) =>
   Object.values(item).some((value) => {
@@ -397,12 +175,38 @@ const TeacherProfile = () => {
 
   const [resumeDraft, setResumeDraft] = useState({
     title: "",
+    fullName: "",
+    email: "",
+    mobile: "",
+    address: "",
+    currentJobTitle: "",
+    summary: "",
+    skills: "",
+    education: "",
+    experience: "",
+    certifications: "",
+    languages: "",
+    achievements: "",
     format: "PDF",
     fileName: "",
     notes: "",
   });
   const [savedResumes, setSavedResumes] = useState([]);
   const [resumeMode, setResumeMode] = useState("upload");
+
+  const [dynamicLanguages, setDynamicLanguages] = useState([
+    { language: "English", status: "Fluency enough to teach" },
+  ]);
+
+  const ALL_ADDITIONAL_SUBJECTS = ["History", "Geography", "Art", "Music", "Hindi", "Social Science", "Computer", "Physics", "Chemistry", "Biology"];
+  const [selectedAdditionalSubjects, setSelectedAdditionalSubjects] = useState(["History", "Geography"]);
+
+  const [coverLetterState, setCoverLetterState] = useState({
+    selectedJob: "",
+    selectedResume: "",
+    generated: "",
+    loading: false,
+  });
 
   const handleChange = (e) => {
     const { name, type, checked, value } = e.target;
@@ -601,12 +405,15 @@ const TeacherProfile = () => {
   };
 
   const addResume = () => {
-    if (!resumeDraft.title.trim() && resumeMode === "create") {
-      alert("Please add a resume title.");
-      return;
+    if (resumeMode === "create") {
+      if (!resumeDraft.title.trim()) { alert("Please add a resume title."); return; }
+      if (!resumeDraft.fullName.trim()) { alert("Please add full name."); return; }
+      if (!resumeDraft.email.trim()) { alert("Please add email address."); return; }
+      if (!resumeDraft.mobile.trim()) { alert("Please add mobile number."); return; }
+      if (!resumeDraft.summary.trim()) { alert("Please add profile summary."); return; }
     }
 
-    if (!resumeDraft.fileName.trim() && resumeMode === "upload") {
+    if (resumeMode === "upload" && !resumeDraft.fileName.trim()) {
       alert("Please upload a resume file.");
       return;
     }
@@ -623,7 +430,50 @@ const TeacherProfile = () => {
         fileName: resumeDraft.fileName || `${cleanTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}.${extension}`,
       },
     ]);
-    setResumeDraft({ title: "", format: "PDF", fileName: "", notes: "" });
+    setResumeDraft({
+      title: "", fullName: "", email: "", mobile: "", address: "",
+      currentJobTitle: "", summary: "", skills: "", education: "",
+      experience: "", certifications: "", languages: "", achievements: "",
+      format: "PDF", fileName: "", notes: "",
+    });
+  };
+
+  const generateResumeContent = (resume) => {
+    const sep = "=".repeat(60);
+    const sec = "-".repeat(60);
+    const lines = [
+      sep, resume.title.toUpperCase(), sep, "",
+      "PERSONAL INFORMATION", sec,
+      `Name        : ${resume.fullName}`,
+      `Email       : ${resume.email}`,
+      `Mobile      : ${resume.mobile}`,
+      `Address     : ${resume.address || "Not provided"}`,
+      `Job Title   : ${resume.currentJobTitle || "Not provided"}`,
+      "",
+    ];
+    const addSection = (heading, value) => {
+      if (value?.trim()) lines.push(heading.toUpperCase(), sec, value.trim(), "");
+    };
+    addSection("Profile Summary", resume.summary);
+    addSection("Skills", resume.skills);
+    addSection("Education", resume.education);
+    addSection("Experience", resume.experience);
+    addSection("Certifications", resume.certifications);
+    addSection("Languages", resume.languages);
+    addSection("Achievements", resume.achievements);
+    return lines.join("\n");
+  };
+
+  const downloadResume = (resume) => {
+    const content = generateResumeContent(resume);
+    const isPdf = resume.format === "PDF";
+    const blob = new Blob([content], { type: isPdf ? "application/octet-stream" : "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = resume.fileName;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const addAward = () => {
@@ -727,31 +577,29 @@ const TeacherProfile = () => {
         </Field>
       </div>
 
-      <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-3">
-        <div>
-          <label className={labelClass}>DOB</label>
-          <div className="grid grid-cols-[72px_72px_96px] gap-2">
+      <div className="mt-5 grid grid-cols-1 items-start gap-5 lg:grid-cols-3">
+        <Field label="DOB">
+          <div className="grid grid-cols-[72px_72px_1fr] gap-2">
             <input name="dobDay" value={teacherData.dobDay} onChange={handleDobChange} className={compactInputClass} placeholder="DD" />
             <input name="dobMonth" value={teacherData.dobMonth} onChange={handleDobChange} className={compactInputClass} placeholder="MM" />
             <input name="dobYear" value={teacherData.dobYear} onChange={handleDobChange} className={compactInputClass} placeholder="YYYY" />
           </div>
-        </div>
+        </Field>
         <Field label="Age (Years Only)">
-          <input name="age" value={teacherData.age} readOnly className={inputClass} placeholder="Auto calculated" />
+          <input name="age" value={teacherData.age} onChange={handleChange} className={inputClass} placeholder="Auto calculated" />
           <p className="mt-2 text-xs text-slate-500">If DOB not entered, user can enter age.</p>
         </Field>
         <Field label="Nationality">
           <select name="nationality" value={teacherData.nationality} onChange={handleChange} className={inputClass}>
             <option value="">Select nationality</option>
-            <option>Indian</option>
-            <option>Nepalese</option>
-            <option>Bhutanese</option>
-            <option>Other</option>
+            {nationalities.map((n) => (
+              <option key={n} value={n}>{n}</option>
+            ))}
           </select>
         </Field>
       </div>
 
-      <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-3">
+      <div className="mt-5 grid grid-cols-1 items-start gap-5 lg:grid-cols-3">
         <Field label="Current Job Title">
           <select name="currentJob" value={teacherData.currentJob} onChange={handleChange} className={inputClass}>
             <option value="">Select...</option>
@@ -772,25 +620,77 @@ const TeacherProfile = () => {
           </select>
           <p className="mt-2 text-xs text-slate-500">Only one can be selected.</p>
         </Field>
-        <div>
-          <Field label="Additional Subject(s)">
+        <div className="lg:col-span-2">
+          <label className={labelClass}>Additional Subject(s)</label>
+          {/* Selected subjects as removable tags */}
+          {selectedAdditionalSubjects.length > 0 && (
+            <div className="mb-3 flex flex-wrap gap-2">
+              {selectedAdditionalSubjects.map((subject) => (
+                <span
+                  key={subject}
+                  className="flex items-center gap-1.5 rounded-xl bg-primary/10 px-3 py-1.5 text-sm font-bold text-primary"
+                >
+                  {subject}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedAdditionalSubjects((prev) => prev.filter((s) => s !== subject))}
+                    className="ml-0.5 rounded-full text-primary/60 hover:text-primary"
+                  >
+                    <X size={13} />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+          {/* Dropdown + manual input row */}
+          <div className="flex gap-2">
             <select
-              name="additionalSubjects"
-              value={teacherData.additionalSubjects}
-              onChange={handleChange}
-              className={inputClass}
+              value=""
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val && !selectedAdditionalSubjects.includes(val)) {
+                  setSelectedAdditionalSubjects((prev) => [...prev, val]);
+                }
+              }}
+              className={`${inputClass} flex-1`}
             >
-              <option value="">Select additional subject</option>
-              <option>History</option>
-              <option>Geography</option>
-              <option>Art</option>
-              <option>Music</option>
-              <option>Hindi</option>
-              <option>Social Science</option>
-              <option>Computer</option>
+              <option value="">Select additional subject...</option>
+              {ALL_ADDITIONAL_SUBJECTS.filter((s) => !selectedAdditionalSubjects.includes(s)).map((s) => (
+                <option key={s}>{s}</option>
+              ))}
             </select>
-            <p className="mt-2 text-xs text-slate-500">Choose one additional subject for now.</p>
-          </Field>
+            <input
+              type="text"
+              placeholder="Or type custom subject"
+              className={`${inputClass} flex-1`}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  const val = e.target.value.trim();
+                  if (val && !selectedAdditionalSubjects.includes(val)) {
+                    setSelectedAdditionalSubjects((prev) => [...prev, val]);
+                    e.target.value = "";
+                  }
+                }
+              }}
+            />
+            <button
+              type="button"
+              title="Add typed subject"
+              onClick={(e) => {
+                const input = e.currentTarget.previousSibling;
+                const val = input.value.trim();
+                if (val && !selectedAdditionalSubjects.includes(val)) {
+                  setSelectedAdditionalSubjects((prev) => [...prev, val]);
+                  input.value = "";
+                }
+              }}
+              className="flex items-center gap-1 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary/90"
+            >
+              <Plus size={15} /> Add
+            </button>
+          </div>
+          <p className="mt-2 text-xs text-slate-500">Select from dropdown or type a custom subject and press Enter / Add.</p>
         </div>
         <div className="lg:col-span-3">
           <label className={labelClass}>Classes Taught</label>
@@ -816,29 +716,44 @@ const TeacherProfile = () => {
           </div>
         </div>
         <div className="lg:col-span-3">
-          <label className={labelClass}>Language</label>
-          <div className="space-y-4">
-            {[
-              ["Language 1", "languageOne", "languageStatusOne"],
-              ["Language 2", "languageTwo", "languageStatusTwo"],
-              ["Language 3", "languageThree", "languageStatusThree"],
-            ].map(([label, languageKey, statusKey]) => (
-              <div key={languageKey} className="grid grid-cols-1 gap-3 lg:grid-cols-[160px_1fr_1fr] lg:items-center">
-                <span className="text-sm font-bold text-slate-500">{label}</span>
-                <select name={languageKey} value={teacherData[languageKey]} onChange={handleChange} className={inputClass}>
-                  <option value="">Select...</option>
-                  <option>English</option>
-                  <option>Hindi</option>
-                  <option>French</option>
-                  <option>Spanish</option>
+          <div className="mb-3 flex items-center justify-between">
+            <label className={labelClass}>Language</label>
+            <button
+              type="button"
+              onClick={() => setDynamicLanguages((prev) => [...prev, { language: "", status: "" }])}
+              className="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-3 py-1 text-xs font-bold text-primary hover:bg-primary/20"
+            >
+              <Plus size={13} /> Add Language
+            </button>
+          </div>
+          <div className="space-y-3">
+            {dynamicLanguages.map((lang, idx) => (
+              <div key={idx} className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_1fr_40px] lg:items-center">
+                <select
+                  value={lang.language}
+                  onChange={(e) => setDynamicLanguages((prev) => prev.map((l, i) => i === idx ? { ...l, language: e.target.value } : l))}
+                  className={inputClass}
+                >
+                  <option value="">Select language...</option>
+                  {languageOptions.map((l) => <option key={l}>{l}</option>)}
                 </select>
-                <select name={statusKey} value={teacherData[statusKey]} onChange={handleChange} className={inputClass}>
-                  <option value="">Select...</option>
-                  <option>Fluency enough to teach</option>
-                  <option>Native Speaker</option>
-                  <option>Basic Knowledge</option>
-                  <option>Professional Working Proficiency</option>
+                <select
+                  value={lang.status}
+                  onChange={(e) => setDynamicLanguages((prev) => prev.map((l, i) => i === idx ? { ...l, status: e.target.value } : l))}
+                  className={inputClass}
+                >
+                  <option value="">Select proficiency...</option>
+                  {languageStatuses.map((s) => <option key={s}>{s}</option>)}
                 </select>
+                {dynamicLanguages.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => setDynamicLanguages((prev) => prev.filter((_, i) => i !== idx))}
+                    className="flex h-10 w-10 items-center justify-center rounded-xl border border-red-100 text-red-400 hover:bg-red-50"
+                  >
+                    <X size={16} />
+                  </button>
+                )}
               </div>
             ))}
           </div>
@@ -1355,26 +1270,58 @@ const TeacherProfile = () => {
     <>
       <SectionHeader
         title="Resume"
-        description="Upload a resume or create a basic resume entry, then choose PDF or text format."
+        description="Upload your CV in Word (.docx) or PDF format, use the CV Builder to create one, or generate an AI-powered cover letter."
       />
       <div className="space-y-7">
         <div className="rounded-xl border border-borderColor bg-white p-6 shadow-sm">
           <div className="mb-6 flex flex-col gap-4 border-b border-borderColor pb-5 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-3">
               <span className="rounded-xl bg-primary/10 p-2 text-primary"><Upload size={20} /></span>
-              <h3 className="text-lg font-bold text-slate-800">{resumeMode === "upload" ? "Add Resume" : "Create Resume"}</h3>
+              <div>
+                <h3 className="text-lg font-bold text-slate-800">
+                  {resumeMode === "upload" ? "Add Resume" : resumeMode === "create" ? "Create Resume" : "Cover Letter"}
+                </h3>
+                {resumeMode === "upload" && (
+                  <p className="mt-0.5 text-xs text-slate-500">Accepted formats: <strong>PDF</strong> or <strong>Word (.docx)</strong> only.</p>
+                )}
+              </div>
             </div>
-            <div className="grid grid-cols-2 rounded-xl border border-borderColor bg-light p-1 text-sm font-bold">
+            <div className="grid grid-cols-3 rounded-xl border border-borderColor bg-light p-1 text-sm font-bold">
               <button type="button" onClick={() => setResumeMode("upload")} className={`rounded-lg px-4 py-2 ${resumeMode === "upload" ? "bg-white text-primary shadow-sm" : "text-slate-500"}`}>
                 Add Resume
               </button>
               <button type="button" onClick={() => setResumeMode("create")} className={`rounded-lg px-4 py-2 ${resumeMode === "create" ? "bg-white text-primary shadow-sm" : "text-slate-500"}`}>
                 Create Resume
               </button>
+              <button type="button" onClick={() => setResumeMode("coverletter")} className={`rounded-lg px-4 py-2 ${resumeMode === "coverletter" ? "bg-white text-primary shadow-sm" : "text-slate-500"}`}>
+                Cover Letter
+              </button>
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-            <Field label="Resume Title">
+          {/* Upload mode: show CV Builder callout */}
+          {resumeMode === "upload" && (
+            <div className="mb-5 flex items-start gap-4 rounded-2xl border border-blue-200 bg-blue-50 p-4">
+              <FileText size={20} className="mt-0.5 shrink-0 text-blue-600" />
+              <div>
+                <p className="text-sm font-bold text-blue-800">Don't have a CV ready?</p>
+                <p className="mt-1 text-xs text-blue-600">
+                  Use the <strong>Create Resume</strong> tab to build a formatted CV using our CV Builder — you can preview and download it as a PDF.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setResumeMode("create")}
+                  className="mt-2 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-blue-700"
+                >
+                  Open CV Builder →
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Top row: always visible for upload/create */}
+          {resumeMode !== "coverletter" && (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <Field label="Resume Title *">
               <input
                 value={resumeDraft.title}
                 onChange={(e) => setResumeDraft((prev) => ({ ...prev, title: e.target.value }))}
@@ -1394,13 +1341,217 @@ const TeacherProfile = () => {
             </Field>
             {resumeMode === "upload" && (
               <Field label="Upload File">
-                <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-primary/40 bg-light px-4 py-3 text-sm font-bold text-primary hover:bg-primary/5">
-                  <Upload size={17} /> Choose PDF/Text
-                  <input type="file" hidden accept=".pdf,.txt,text/plain,application/pdf" onChange={handleResumeFile} />
+                <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-primary/40 bg-light px-4 py-5 text-sm font-bold text-primary hover:bg-primary/5">
+                  <Upload size={22} />
+                  <span>Choose PDF or Word (.docx)</span>
+                  <span className="text-xs font-normal text-slate-400">Only PDF and .docx files are accepted</span>
+                  <input type="file" hidden accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={handleResumeFile} />
                 </label>
+                {resumeDraft.fileName && (
+                  <p className="mt-2 text-xs font-bold text-green-600">Selected: {resumeDraft.fileName}</p>
+                )}
               </Field>
             )}
-            <div className="lg:col-span-3">
+          </div>
+          )}
+
+          {/* Create mode: full resume form */}
+          {resumeMode === "create" && (
+            <div className="mt-6 space-y-5">
+              <div>
+                <p className="mb-4 text-xs font-bold uppercase tracking-wide text-slate-500">Personal Information</p>
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  <Field label="Full Name *">
+                    <input
+                      value={resumeDraft.fullName}
+                      onChange={(e) => setResumeDraft((prev) => ({ ...prev, fullName: e.target.value }))}
+                      className={inputClass}
+                      placeholder="e.g. Rahul Sharma"
+                    />
+                  </Field>
+                  <Field label="Email *">
+                    <input
+                      type="email"
+                      value={resumeDraft.email}
+                      onChange={(e) => setResumeDraft((prev) => ({ ...prev, email: e.target.value }))}
+                      className={inputClass}
+                      placeholder="e.g. rahul@gmail.com"
+                    />
+                  </Field>
+                  <Field label="Mobile Number *">
+                    <input
+                      value={resumeDraft.mobile}
+                      onChange={(e) => setResumeDraft((prev) => ({ ...prev, mobile: e.target.value }))}
+                      className={inputClass}
+                      placeholder="e.g. 9876543210"
+                    />
+                  </Field>
+                  <Field label="Current Job Title">
+                    <input
+                      value={resumeDraft.currentJobTitle}
+                      onChange={(e) => setResumeDraft((prev) => ({ ...prev, currentJobTitle: e.target.value }))}
+                      className={inputClass}
+                      placeholder="e.g. Senior Mathematics Teacher"
+                    />
+                  </Field>
+                  <div className="sm:col-span-2">
+                    <Field label="Address">
+                      <input
+                        value={resumeDraft.address}
+                        onChange={(e) => setResumeDraft((prev) => ({ ...prev, address: e.target.value }))}
+                        className={inputClass}
+                        placeholder="e.g. 123 Main Street, New Delhi"
+                      />
+                    </Field>
+                  </div>
+                </div>
+              </div>
+
+              <Field label="Profile Summary *">
+                <textarea
+                  value={resumeDraft.summary}
+                  onChange={(e) => setResumeDraft((prev) => ({ ...prev, summary: e.target.value }))}
+                  className={`${inputClass} min-h-28 resize-none`}
+                  placeholder="Write a brief professional summary highlighting your experience, skills, and teaching philosophy..."
+                />
+              </Field>
+
+              <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                <Field label="Skills">
+                  <textarea
+                    value={resumeDraft.skills}
+                    onChange={(e) => setResumeDraft((prev) => ({ ...prev, skills: e.target.value }))}
+                    className={`${inputClass} min-h-24 resize-none`}
+                    placeholder="e.g. Classroom Management, Curriculum Design, Digital Teaching..."
+                  />
+                </Field>
+                <Field label="Education">
+                  <textarea
+                    value={resumeDraft.education}
+                    onChange={(e) => setResumeDraft((prev) => ({ ...prev, education: e.target.value }))}
+                    className={`${inputClass} min-h-24 resize-none`}
+                    placeholder="e.g. B.Ed – Delhi University (2015), M.Sc Mathematics – JNU (2013)..."
+                  />
+                </Field>
+              </div>
+
+              <Field label="Experience">
+                <textarea
+                  value={resumeDraft.experience}
+                  onChange={(e) => setResumeDraft((prev) => ({ ...prev, experience: e.target.value }))}
+                  className={`${inputClass} min-h-28 resize-none`}
+                  placeholder="School name, role, duration, and key responsibilities..."
+                />
+              </Field>
+
+              <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                <Field label="Certifications">
+                  <textarea
+                    value={resumeDraft.certifications}
+                    onChange={(e) => setResumeDraft((prev) => ({ ...prev, certifications: e.target.value }))}
+                    className={`${inputClass} min-h-24 resize-none`}
+                    placeholder="e.g. CTET Certified, Google Certified Educator..."
+                  />
+                </Field>
+                <Field label="Languages">
+                  <textarea
+                    value={resumeDraft.languages}
+                    onChange={(e) => setResumeDraft((prev) => ({ ...prev, languages: e.target.value }))}
+                    className={`${inputClass} min-h-24 resize-none`}
+                    placeholder="e.g. English (Fluent), Hindi (Native), French (Basic)..."
+                  />
+                </Field>
+              </div>
+
+              <Field label="Achievements">
+                <textarea
+                  value={resumeDraft.achievements}
+                  onChange={(e) => setResumeDraft((prev) => ({ ...prev, achievements: e.target.value }))}
+                  className={`${inputClass} min-h-24 resize-none`}
+                  placeholder="e.g. Best Teacher Award 2022, Published research paper on modern pedagogy..."
+                />
+              </Field>
+            </div>
+          )}
+
+          {/* Cover Letter mode */}
+          {resumeMode === "coverletter" && (
+            <div className="space-y-5">
+              <p className="text-sm text-slate-600 leading-relaxed">
+                Select the job you are applying for and the CV you want to use. Our AI will generate a crisp, humanized cover letter tailored to the role.
+              </p>
+              <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                <Field label="Select Job Applying For">
+                  <select
+                    value={coverLetterState.selectedJob}
+                    onChange={(e) => setCoverLetterState((p) => ({ ...p, selectedJob: e.target.value, generated: "" }))}
+                    className={inputClass}
+                  >
+                    <option value="">Select a job...</option>
+                    <option value="Mathematics Teacher - Green Valley School">Mathematics Teacher - Green Valley School</option>
+                    <option value="Science Faculty - Delhi Public Academy">Science Faculty - Delhi Public Academy</option>
+                    <option value="English Teacher - St. Mary's International">English Teacher - St. Mary's International</option>
+                    <option value="Computer Teacher - Bright Future School">Computer Teacher - Bright Future School</option>
+                  </select>
+                </Field>
+                <Field label="Select CV / Resume">
+                  <select
+                    value={coverLetterState.selectedResume}
+                    onChange={(e) => setCoverLetterState((p) => ({ ...p, selectedResume: e.target.value, generated: "" }))}
+                    className={inputClass}
+                  >
+                    <option value="">Select a resume...</option>
+                    {savedResumes.map((r, i) => (
+                      <option key={i} value={r.title}>{r.title}</option>
+                    ))}
+                    {savedResumes.length === 0 && (
+                      <option disabled>No resumes saved yet — upload or create one first</option>
+                    )}
+                  </select>
+                </Field>
+              </div>
+              <button
+                type="button"
+                disabled={!coverLetterState.selectedJob || !coverLetterState.selectedResume || coverLetterState.loading}
+                onClick={() => {
+                  setCoverLetterState((p) => ({ ...p, loading: true, generated: "" }));
+                  setTimeout(() => {
+                    const name = `${teacherData.title} ${teacherData.firstName} ${teacherData.lastName}`.trim();
+                    setCoverLetterState((p) => ({
+                      ...p,
+                      loading: false,
+                      generated: `Dear Hiring Manager,\n\nI am writing to express my keen interest in the position of ${p.selectedJob}. With my background in ${teacherData.mainSubject || "teaching"} and ${savedExperiences.length > 0 ? `${savedExperiences.length} years of hands-on teaching experience` : "a strong passion for education"}, I am confident in my ability to contribute meaningfully to your institution.\n\nMy teaching philosophy centers on student-focused learning and I have consistently adapted curriculum to meet diverse learning needs. I am eager to bring this approach to your team.\n\nI would welcome the opportunity to discuss how my experience aligns with your requirements.\n\nWarm regards,\n${name}`,
+                    }));
+                  }, 1500);
+                }}
+                className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95 disabled:opacity-50"
+              >
+                <Wand2 size={17} /> {coverLetterState.loading ? "Generating..." : "Generate Cover Letter"}
+              </button>
+              {coverLetterState.generated && (
+                <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5">
+                  <div className="mb-3 flex items-center justify-between">
+                    <p className="text-sm font-bold text-primary">AI Generated Cover Letter</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(coverLetterState.generated);
+                        alert("Copied to clipboard!");
+                      }}
+                      className="rounded-lg border border-primary/30 px-3 py-1 text-xs font-bold text-primary hover:bg-primary/10"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre className="whitespace-pre-wrap text-sm text-slate-700 leading-relaxed font-sans">{coverLetterState.generated}</pre>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Notes: only visible for upload/create modes */}
+          {resumeMode !== "coverletter" && (
+            <div className="mt-5">
               <Field label="Resume Notes">
                 <textarea
                   value={resumeDraft.notes}
@@ -1409,14 +1560,14 @@ const TeacherProfile = () => {
                   placeholder="Short note about when to use this resume."
                 />
               </Field>
-              {resumeDraft.fileName && (
-                <p className="mt-2 text-xs font-bold text-slate-500">Selected file: {resumeDraft.fileName}</p>
-              )}
             </div>
-          </div>
-          <button type="button" onClick={addResume} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
-            <Plus size={17} /> {resumeMode === "upload" ? "Add Resume" : "Create Resume"}
-          </button>
+          )}
+
+          {resumeMode !== "coverletter" && (
+            <button type="button" onClick={addResume} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
+              <Plus size={17} /> {resumeMode === "upload" ? "Add Resume" : "Save Resume"}
+            </button>
+          )}
         </div>
 
         <div className="rounded-xl bg-light p-5">
@@ -1425,10 +1576,10 @@ const TeacherProfile = () => {
             <p className="text-sm text-slate-500">Added or created resumes will appear here.</p>
           ) : (
             <div className="overflow-x-auto rounded-xl border border-borderColor bg-white">
-              <table className="min-w-[760px] w-full text-left text-sm">
+              <table className="min-w-[1000px] w-full text-left text-sm">
                 <thead className="bg-primary/5 text-xs uppercase tracking-wide text-primary">
                   <tr>
-                    {["Title", "Format", "Source", "File", "Notes", "Action"].map((heading) => (
+                    {["Title", "Full Name", "Email", "Mobile", "Job Title", "Format", "Notes", "Actions"].map((heading) => (
                       <th key={heading} className="px-4 py-3 font-bold">{heading}</th>
                     ))}
                   </tr>
@@ -1437,14 +1588,31 @@ const TeacherProfile = () => {
                   {savedResumes.map((resume, index) => (
                     <tr key={`${resume.fileName}-${index}`} className="align-top">
                       <td className="px-4 py-3 font-bold text-slate-800">{resume.title}</td>
+                      <td className="px-4 py-3">{resume.fullName || "—"}</td>
+                      <td className="px-4 py-3">{resume.email || "—"}</td>
+                      <td className="px-4 py-3">{resume.mobile || "—"}</td>
+                      <td className="px-4 py-3">{resume.currentJobTitle || "—"}</td>
                       <td className="px-4 py-3">{resume.format}</td>
-                      <td className="px-4 py-3">{resume.source}</td>
-                      <td className="px-4 py-3">{resume.fileName}</td>
-                      <td className="px-4 py-3">{resume.notes || "Not added"}</td>
+                      <td className="max-w-[160px] truncate px-4 py-3">{resume.notes || "—"}</td>
                       <td className="px-4 py-3">
-                        <button type="button" onClick={() => setSavedResumes((prev) => prev.filter((_, itemIndex) => itemIndex !== index))} className="rounded-lg border border-red-100 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50">
-                          Delete
-                        </button>
+                        <div className="flex gap-2">
+                          {resume.source === "Created" && (
+                            <button
+                              type="button"
+                              onClick={() => downloadResume(resume)}
+                              className="rounded-lg border border-primary/30 px-3 py-2 text-xs font-bold text-primary hover:bg-primary/5"
+                            >
+                              Download
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => setSavedResumes((prev) => prev.filter((_, i) => i !== index))}
+                            className="rounded-lg border border-red-100 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -1457,91 +1625,97 @@ const TeacherProfile = () => {
     </>
   );
 
- const renderViewProfile = () => {
-  const totalExperience = savedExperiences.length;
+  const renderViewProfile = () => {
+    const totalExpYears = savedExperiences.reduce((sum, exp) => {
+      if (!exp.startDate) return sum;
+      const end = exp.currentEmployer ? new Date() : (exp.endDate ? new Date(exp.endDate) : new Date());
+      const start = new Date(exp.startDate);
+      return sum + Math.max(0, (end - start) / (1000 * 60 * 60 * 24 * 365));
+    }, 0);
+    const expDisplay = totalExpYears > 0 ? `${totalExpYears.toFixed(1)} years` : "Not added";
+    const highestDeg = savedQualifications[0]?.degree || teacherData.highestQualificationOne || "Not added";
+    const university = savedQualifications[0]?.university || "Not added";
 
-  return (
-    <>
-      <SectionHeader title="View Profile" />
+    return (
+      <>
+        <SectionHeader
+          title="View Profile"
+          description="This is how your profile appears to recruiters before you give consent to share full details."
+        />
 
-      <div className="overflow-hidden rounded-3xl border border-borderColor bg-white shadow-soft">
-        {/* Top Header */}
-        <div className="h-28 bg-primary" />
-
-        <div className="relative px-6 pb-8">
-          {/* Profile Area */}
-          <div className="-mt-16 flex flex-col items-center gap-5 md:flex-row md:items-end">
-            <img
-              src={profileImage}
-              alt="profile"
-              className="h-32 w-32 rounded-3xl border-4 border-white object-cover shadow-md"
-            />
-
-            <div className="flex-1 text-center md:text-left">
-              <h2 className="text-3xl font-bold text-slate-900">
-                {teacherData.title} {teacherData.firstName}{" "}
-                {teacherData.lastName}
-              </h2>
-
-              <p className="mt-2 text-sm font-semibold text-primary">
-                {teacherData.currentJob || "Job title not added"}
-              </p>
-            </div>
-          </div>
-
-          {/* Details Cards */}
-          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="rounded-2xl border border-borderColor bg-light p-4">
-              <p className="text-xs font-bold uppercase text-slate-500">
-                Mobile Number
-              </p>
-              <p className="mt-1 text-sm font-semibold text-slate-800">
-                {teacherData.mobile || "Not added"}
-              </p>
+        <div className="overflow-hidden rounded-3xl border border-borderColor bg-white shadow-soft">
+          <div className="h-28 bg-primary" />
+          <div className="relative px-6 pb-8">
+            <div className="-mt-16 flex flex-col items-center gap-5 md:flex-row md:items-end">
+              <div className="flex h-32 w-32 items-center justify-center rounded-3xl border-4 border-white bg-slate-200 shadow-md text-slate-400">
+                <User size={48} />
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <h2 className="text-2xl font-bold text-slate-900">
+                  {teacherData.title} {teacherData.firstName?.charAt(0)}. {teacherData.lastName?.charAt(0)}.
+                </h2>
+                <p className="mt-2 text-sm font-semibold text-primary">
+                  {teacherData.currentJob || "Teaching Professional"}
+                </p>
+                <p className="mt-1 text-sm text-slate-500">
+                  {teacherData.city ? `${teacherData.city}` : "Location not added"}
+                </p>
+              </div>
             </div>
 
-            <div className="rounded-2xl border border-borderColor bg-light p-4">
-              <p className="text-xs font-bold uppercase text-slate-500">
-                Email
-              </p>
-              <p className="mt-1 break-all text-sm font-semibold text-slate-800">
-                {teacherData.primaryEmail || "Not added"}
-              </p>
+            <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="rounded-2xl border border-borderColor bg-light p-4">
+                <p className="text-xs font-bold uppercase text-slate-500">Age</p>
+                <p className="mt-1 text-sm font-semibold text-slate-800">{teacherData.age || "Not added"}</p>
+              </div>
+              <div className="rounded-2xl border border-borderColor bg-light p-4">
+                <p className="text-xs font-bold uppercase text-slate-500">Main Subject</p>
+                <p className="mt-1 text-sm font-semibold text-slate-800">{teacherData.mainSubject || "Not added"}</p>
+              </div>
+              <div className="rounded-2xl border border-borderColor bg-light p-4">
+                <p className="text-xs font-bold uppercase text-slate-500">Total Experience</p>
+                <p className="mt-1 text-sm font-semibold text-slate-800">{expDisplay}</p>
+              </div>
+              <div className="rounded-2xl border border-borderColor bg-light p-4">
+                <p className="text-xs font-bold uppercase text-slate-500">Highest Qualification</p>
+                <p className="mt-1 text-sm font-semibold text-slate-800">{highestDeg}</p>
+              </div>
+              <div className="rounded-2xl border border-borderColor bg-light p-4">
+                <p className="text-xs font-bold uppercase text-slate-500">University</p>
+                <p className="mt-1 text-sm font-semibold text-slate-800">{university}</p>
+              </div>
+              <div className="rounded-2xl border border-borderColor bg-light p-4">
+                <p className="text-xs font-bold uppercase text-slate-500">Area / City</p>
+                <p className="mt-1 text-sm font-semibold text-slate-800">{teacherData.city || "Not added"}</p>
+              </div>
             </div>
 
-            <div className="rounded-2xl border border-borderColor bg-light p-4">
-              <p className="text-xs font-bold uppercase text-slate-500">
-                Main Subject
-              </p>
-              <p className="mt-1 text-sm font-semibold text-slate-800">
-                {teacherData.mainSubject || "Not added"}
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-borderColor bg-light p-4">
-              <p className="text-xs font-bold uppercase text-slate-500">
-                Current Job Title
-              </p>
-              <p className="mt-1 text-sm font-semibold text-slate-800">
-                {teacherData.currentJob || "Not added"}
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-borderColor bg-light p-4">
-              <p className="text-xs font-bold uppercase text-slate-500">
-                Total Experience
-              </p>
-              <p className="mt-1 text-sm font-semibold text-slate-800">
-                {totalExperience}{" "}
-                {totalExperience === 1 ? "Experience" : "Experiences"}
-              </p>
-            </div>
+            {savedAwards.length > 0 && (
+              <div className="mt-6">
+                <h4 className="mb-3 text-sm font-bold uppercase tracking-wide text-slate-500">Public Awards</h4>
+                <div className="flex flex-wrap gap-3">
+                  {savedAwards.map((award, i) => (
+                    <div key={i} className="rounded-2xl border border-borderColor bg-light px-4 py-3">
+                      <p className="text-sm font-bold text-slate-800">{award.name || "Unnamed Award"}</p>
+                      <p className="text-xs text-slate-500">{award.by} · {award.year}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      </div>
-    </>
-  );
-};
+
+        <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-800">
+          <p className="font-bold">Privacy Notice</p>
+          <p className="mt-1 leading-relaxed">
+            The above profile is what recruiters will see in the first instance — your photo, full name, mobile number, and email are kept private.
+            Once you apply for a job and give your consent, your complete CV and detailed profile will be shared with the recruiter.
+          </p>
+        </div>
+      </>
+    );
+  };
   const renderActiveSection = () => {
     if (activeSection === "contact") return renderContact();
     if (activeSection === "qualification") return renderQualification();
