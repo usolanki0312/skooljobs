@@ -1,6 +1,12 @@
 import { Bell, Search, Settings } from "lucide-react";
 
-const Topbar = ({ title = "Teacher Dashboard", subtitle = "Find your next teaching opportunity today." }) => {
+const Topbar = ({
+  title = "Teacher Dashboard",
+  subtitle = "Find your next teaching opportunity today.",
+  unreadCount = 0,
+  onNotificationClick,
+  notificationDropdown,
+}) => {
   let currentUser = {};
 
   try {
@@ -10,7 +16,8 @@ const Topbar = ({ title = "Teacher Dashboard", subtitle = "Find your next teachi
   }
 
   const displayName = currentUser.name || currentUser.firstName || "Gopal";
-  const profilePhoto = currentUser.profilePhoto || "https://i.pravatar.cc/300?img=12";
+  const profilePhoto =
+    currentUser.profilePhoto || "https://i.pravatar.cc/300?img=12";
 
   return (
     <div className="rounded-3xl bg-white p-4 shadow-soft sm:p-5">
@@ -19,7 +26,9 @@ const Topbar = ({ title = "Teacher Dashboard", subtitle = "Find your next teachi
           <p className="text-xs font-bold uppercase tracking-[2px] text-secondary">
             Welcome back, {displayName}
           </p>
-          <h2 className="mt-1 text-2xl font-bold text-primary sm:text-3xl">{title}</h2>
+          <h2 className="mt-1 text-2xl font-bold text-primary sm:text-3xl">
+            {title}
+          </h2>
           <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
         </div>
       </div>
@@ -33,13 +42,32 @@ const Topbar = ({ title = "Teacher Dashboard", subtitle = "Find your next teachi
             className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
           />
         </div>
-        <button className="rounded-2xl border border-borderColor p-3 text-primary hover:bg-light" type="button">
-          <Bell size={18} />
-        </button>
-        <button className="rounded-2xl border border-borderColor p-3 text-primary hover:bg-light" type="button">
+        <div className="relative">
+          <button
+            className="relative rounded-2xl border border-borderColor p-3 text-primary hover:bg-light"
+            type="button"
+            onClick={onNotificationClick}
+          >
+            <Bell size={18} />
+            {unreadCount > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
+                {unreadCount}
+              </span>
+            )}
+          </button>
+          {notificationDropdown}
+        </div>
+        <button
+          className="rounded-2xl border border-borderColor p-3 text-primary hover:bg-light"
+          type="button"
+        >
           <Settings size={18} />
         </button>
-        <img src={profilePhoto} alt="profile" className="h-11 w-11 rounded-2xl object-cover" />
+        <img
+          src={profilePhoto}
+          alt="profile"
+          className="h-11 w-11 rounded-2xl object-cover"
+        />
       </div>
     </div>
   );

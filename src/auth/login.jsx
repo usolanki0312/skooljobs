@@ -111,7 +111,7 @@ function Login() {
 
     if (match) {
       localStorage.setItem("currentUser", JSON.stringify(match.user));
-      navigate(match.user.role === "employer" ? "/school-dashboard" : "/dashboard");
+      navigate(match.user.role === "employer" ? "/school/dashboard" : "/teacher/dashboard");
       return;
     }
 

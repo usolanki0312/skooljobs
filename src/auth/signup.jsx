@@ -96,7 +96,7 @@ function Signup() {
     // Auto login
     localStorage.setItem("currentUser", JSON.stringify(newUser));
 
-    navigate("/dashboard");
+    navigate("/teacher/dashboard");
   };
 
   return (

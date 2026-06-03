@@ -1,48 +1,126 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  profileSections, sectors, schoolMediums as mediums, levels, boards,
-  industries, countries, indianStates, days, months, years,
+  profileSections,
+  sectors,
+  schoolMediums as mediums,
+  levels,
+  boards,
+  industries,
+  countries,
+  indianStates,
+  days,
+  months,
+  years,
 } from "../../lib/schooldata";
 import {
-  ArrowLeft, BriefcaseBusiness, Building2, Bus, Camera, Clock,
-  CreditCard, Globe, Heart, ImageIcon, KeyRound, LayoutDashboard,
-  LogOut, Package, PlusCircle, Save, Settings, Upload, Users, X,
+  ArrowLeft,
+  BriefcaseBusiness,
+  Building2,
+  Bus,
+  Camera,
+  Clock,
+  CreditCard,
+  Globe,
+  Heart,
+  ImageIcon,
+  KeyRound,
+  LayoutDashboard,
+  LogOut,
+  Package,
+  PlusCircle,
+  Save,
+  Settings,
+  Upload,
+  Users,
+  X,
 } from "lucide-react";
 
 const sidebarItems = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, route: "/school-dashboard" },
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    route: "/school/dashboard",
+  },
   { id: "companyProfile", label: "Institute Profile", icon: Building2 },
-  { id: "postJob", label: "Post a New Job", icon: PlusCircle, route: "/school-dashboard" },
-  { id: "manageJobs", label: "Manage Jobs", icon: BriefcaseBusiness, route: "/school-dashboard" },
-  { id: "allApplicants", label: "All Applicants", icon: Users, route: "/school-dashboard" },
-  { id: "savedCandidates", label: "Saved Candidates", icon: Heart, route: "/school-dashboard" },
-  { id: "packages", label: "Packages", icon: Package, route: "/school-dashboard" },
-  { id: "transactions", label: "Transactions", icon: CreditCard, route: "/school-dashboard" },
-  { id: "settings", label: "Settings", icon: Settings, route: "/school-dashboard" },
+  {
+    id: "postJob",
+    label: "Post a New Job",
+    icon: PlusCircle,
+    route: "/school/post-job",
+  },
+  {
+    id: "manageJobs",
+    label: "Manage Jobs",
+    icon: BriefcaseBusiness,
+    route: "/school/manage-jobs",
+  },
+  {
+    id: "allApplicants",
+    label: "All Applicants",
+    icon: Users,
+    route: "/school/all-applicants",
+  },
+  {
+    id: "savedCandidates",
+    label: "Saved Candidates",
+    icon: Heart,
+    route: "/school/saved-candidates",
+  },
+  {
+    id: "packages",
+    label: "Packages",
+    icon: Package,
+    route: "/school/packages",
+  },
+  {
+    id: "transactions",
+    label: "Transactions",
+    icon: CreditCard,
+    route: "/school/transactions",
+  },
+  {
+    id: "settings",
+    label: "Settings",
+    icon: Settings,
+    route: "/school/settings",
+  },
 ];
 
-const establishmentYears = Array.from({ length: 76 }, (_, i) => String(2025 - i));
+const establishmentYears = Array.from({ length: 76 }, (_, i) =>
+  String(2025 - i),
+);
 
 const studentCountOptions = [
-  "Less than 100", "100 - 200", "200 - 300", "300 - 500",
-  "500 - 1000", "1000 - 2000", "2000+",
+  "Less than 100",
+  "100 - 200",
+  "200 - 300",
+  "300 - 500",
+  "500 - 1000",
+  "1000 - 2000",
+  "2000+",
 ];
 
 const studentsPerClassOptions = [
-  "10 - 20 students", "20 - 30 students", "30 - 40 students",
-  "40 - 50 students", "50+ students",
+  "10 - 20 students",
+  "20 - 30 students",
+  "30 - 40 students",
+  "40 - 50 students",
+  "50+ students",
 ];
 
 const inputClass =
   "w-full rounded-xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10";
 
-const labelClass = "mb-2 block text-xs font-bold uppercase tracking-wide text-slate-600";
+const labelClass =
+  "mb-2 block text-xs font-bold uppercase tracking-wide text-slate-600";
 
 const Field = ({ label, required, children }) => (
   <div>
     <label className={labelClass}>
-      {label}{required && <span className="ml-1 text-red-500">*</span>}
+      {label}
+      {required && <span className="ml-1 text-red-500">*</span>}
     </label>
     {children}
   </div>
@@ -54,12 +132,22 @@ const SchoolProfile = () => {
   const [logoImage, setLogoImage] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
   const [galleryImages, setGalleryImages] = useState([]);
+  const [pincodeLoading, setPincodeLoading] = useState(false);
+  const [pincodeError, setPincodeError] = useState("");
 
   const currentUser = useMemo(() => {
-    try { return JSON.parse(localStorage.getItem("currentUser") || "{}"); } catch { return {}; }
+    try {
+      return JSON.parse(localStorage.getItem("currentUser") || "{}");
+    } catch {
+      return {};
+    }
   }, []);
 
-  const schoolName = currentUser.companyName || currentUser.schoolName || currentUser.firstName || "Som Lalit School";
+  const schoolName =
+    currentUser.companyName ||
+    currentUser.schoolName ||
+    currentUser.firstName ||
+    "Som Lalit School";
 
   const [formData, setFormData] = useState({
     firstName: currentUser.firstName || "Som Lalit School",
@@ -89,10 +177,12 @@ const SchoolProfile = () => {
     twitter: "",
     linkedin: "",
     country: "India",
-    state: "Gujarat",
-    city: "Ahmedabad",
+    state: "",
+    city: "",
+    area: "",
     postalCode: "",
-    fullAddress: "",
+    addressLane1: "",
+    addressLane2: "",
   });
 
   const handleChange = (e) => {
@@ -140,12 +230,23 @@ const SchoolProfile = () => {
 
   // Profile completion calculation
   const completionFields = [
-    formData.companyName, formData.email, formData.phone, formData.website,
-    formData.aboutInstitute, formData.level, formData.board, formData.medium,
-    formData.establishedYear, formData.city, formData.postalCode,
-    formData.totalStudents, formData.schoolTimings,
+    formData.companyName,
+    formData.email,
+    formData.phone,
+    formData.website,
+    formData.aboutInstitute,
+    formData.level,
+    formData.board,
+    formData.medium,
+    formData.establishedYear,
+    formData.city,
+    formData.postalCode,
+    formData.totalStudents,
+    formData.schoolTimings,
   ];
-  const completionPct = Math.round((completionFields.filter(Boolean).length / completionFields.length) * 100);
+  const completionPct = Math.round(
+    (completionFields.filter(Boolean).length / completionFields.length) * 100,
+  );
 
   // ─── Render Basic Info ─────────────────────────────────────────────────────
 
@@ -153,31 +254,71 @@ const SchoolProfile = () => {
     <div className="space-y-6">
       <h2 className="text-xl font-bold text-primary">Basic Information</h2>
 
-      {/* Cover photo upload */}
-      <div>
-        <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-borderColor bg-light px-5 py-2.5 text-sm font-bold text-primary hover:bg-primary/5">
-          <ImageIcon size={16} /> Upload Job Cover Photo
-          <input type="file" hidden accept="image/*" onChange={handleCoverUpload} />
-        </label>
-        {coverImage && (
-          <div className="mt-3 h-32 w-full overflow-hidden rounded-2xl border border-borderColor">
-            <img src={coverImage} alt="cover" className="h-full w-full object-cover" />
+      {/* Logo + Cover photo upload */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+        {/* Institute logo */}
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-borderColor bg-light">
+            {logoImage ? (
+              <img src={logoImage} alt="logo" className="h-full w-full object-cover" />
+            ) : (
+              <Building2 size={32} className="text-slate-300" />
+            )}
           </div>
-        )}
+          <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-borderColor bg-white px-3 py-2 text-xs font-bold text-primary hover:bg-primary/5">
+            <Upload size={13} /> {logoImage ? "Change Logo" : "Upload Logo"}
+            <input type="file" hidden accept="image/*" onChange={handleLogoUpload} />
+          </label>
+          <p className="text-xs text-slate-400">Recommended: 200×200px</p>
+        </div>
+
+        {/* Cover photo */}
+        <div className="flex-1">
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-borderColor bg-light px-5 py-2.5 text-sm font-bold text-primary hover:bg-primary/5">
+            <ImageIcon size={16} /> Upload Cover Photo
+            <input type="file" hidden accept="image/*" onChange={handleCoverUpload} />
+          </label>
+          {coverImage && (
+            <div className="mt-3 h-32 w-full overflow-hidden rounded-2xl border border-borderColor">
+              <img src={coverImage} alt="cover" className="h-full w-full object-cover" />
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Field label="First Name" required>
-          <input name="firstName" value={formData.firstName} onChange={handleChange} className={inputClass} />
+          <input
+            name="firstName"
+            value={formData.firstName}
+            onChange={handleChange}
+            className={inputClass}
+          />
         </Field>
         <Field label="Last Name" required>
-          <input name="lastName" value={formData.lastName} onChange={handleChange} className={inputClass} />
+          <input
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleChange}
+            className={inputClass}
+          />
         </Field>
         <Field label="Institute Name" required>
-          <input name="companyName" value={formData.companyName} onChange={handleChange} className={inputClass} />
+          <input
+            name="companyName"
+            value={formData.companyName}
+            onChange={handleChange}
+            className={inputClass}
+          />
         </Field>
         <Field label="Email" required>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} className={inputClass} />
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            className={inputClass}
+          />
         </Field>
       </div>
 
@@ -186,28 +327,61 @@ const SchoolProfile = () => {
         <label className={labelClass}>Profile URL</label>
         <div className="flex items-center gap-3 rounded-xl border border-borderColor bg-light px-4 py-3">
           <Globe size={15} className="shrink-0 text-primary" />
-          <span className="flex-1 truncate text-sm text-slate-600">{formData.profileUrl}</span>
-          <button type="button" className="text-xs font-bold text-primary underline underline-offset-2">Edit</button>
+          <span className="flex-1 truncate text-sm text-slate-600">
+            {formData.profileUrl}
+          </span>
+          <button
+            type="button"
+            className="text-xs font-bold text-primary underline underline-offset-2"
+          >
+            Edit
+          </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Field label="Profile for Public View">
-          <select name="publicView" value={formData.publicView} onChange={handleChange} className={inputClass}>
+          <select
+            name="publicView"
+            value={formData.publicView}
+            onChange={handleChange}
+            className={inputClass}
+          >
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
         </Field>
         <Field label="Phone">
-          <input name="phone" value={formData.phone} onChange={handleChange} className={inputClass} placeholder="Phone number" />
+          <input
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            className={inputClass}
+            placeholder="Phone number"
+          />
         </Field>
         <Field label="Website">
-          <input name="website" value={formData.website} onChange={handleChange} className={inputClass} placeholder="https://yourwebsite.com" />
+          <input
+            name="website"
+            value={formData.website}
+            onChange={handleChange}
+            className={inputClass}
+            placeholder="https://yourwebsite.com"
+          />
         </Field>
         <Field label="Sector" required>
-          <select name="sector" value={formData.sector} onChange={handleChange} className={inputClass}>
+          <select
+            name="sector"
+            value={formData.sector}
+            onChange={handleChange}
+            className={inputClass}
+          >
             <option value="">Select Sector</option>
-            {sectors.map((s) => <option key={s} value={s}>{s}</option>)}
+            {sectors.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
           </select>
         </Field>
       </div>
@@ -216,16 +390,43 @@ const SchoolProfile = () => {
       <div>
         <label className={labelClass}>Founded Date</label>
         <div className="flex items-center gap-2">
-          <select name="foundedDay" value={formData.foundedDay} onChange={handleChange} className={`${inputClass} w-24`}>
-            {days.map((d) => <option key={d} value={d}>{d}</option>)}
+          <select
+            name="foundedDay"
+            value={formData.foundedDay}
+            onChange={handleChange}
+            className={`${inputClass} w-24`}
+          >
+            {days.map((d) => (
+              <option key={d} value={d}>
+                {d}
+              </option>
+            ))}
           </select>
           <span className="text-slate-400">/</span>
-          <select name="foundedMonth" value={formData.foundedMonth} onChange={handleChange} className={`${inputClass} w-24`}>
-            {months.map((m) => <option key={m} value={m}>{m}</option>)}
+          <select
+            name="foundedMonth"
+            value={formData.foundedMonth}
+            onChange={handleChange}
+            className={`${inputClass} w-24`}
+          >
+            {months.map((m) => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
           </select>
           <span className="text-slate-400">/</span>
-          <select name="foundedYear" value={formData.foundedYear} onChange={handleChange} className={`${inputClass} w-32`}>
-            {years.map((y) => <option key={y} value={y}>{y}</option>)}
+          <select
+            name="foundedYear"
+            value={formData.foundedYear}
+            onChange={handleChange}
+            className={`${inputClass} w-32`}
+          >
+            {years.map((y) => (
+              <option key={y} value={y}>
+                {y}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -235,12 +436,30 @@ const SchoolProfile = () => {
         <label className={labelClass}>About the Institute</label>
         <div className="overflow-hidden rounded-xl border border-borderColor">
           <div className="flex flex-wrap items-center gap-1 border-b border-borderColor bg-light px-3 py-2">
-            {["B", "I", "U", "S", "≡", "≡", "≡", "⊞", "🔗", "↩", "↪"].map((btn, i) => (
-              <button key={i} type="button" className="min-w-[28px] rounded px-2 py-1 text-xs font-bold text-slate-600 hover:bg-white hover:shadow-sm">{btn}</button>
-            ))}
+            {["B", "I", "U", "S", "≡", "≡", "≡", "⊞", "🔗", "↩", "↪"].map(
+              (btn, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  className="min-w-7 rounded px-2 py-1 text-xs font-bold text-slate-600 hover:bg-white hover:shadow-sm"
+                >
+                  {btn}
+                </button>
+              ),
+            )}
             <div className="ml-auto flex gap-1">
-              <button type="button" className="rounded border border-primary/30 px-3 py-1 text-xs font-bold text-primary bg-white">Visual</button>
-              <button type="button" className="rounded px-3 py-1 text-xs font-bold text-slate-500 hover:bg-white">Text</button>
+              <button
+                type="button"
+                className="rounded border border-primary/30 px-3 py-1 text-xs font-bold text-primary bg-white"
+              >
+                Visual
+              </button>
+              <button
+                type="button"
+                className="rounded px-3 py-1 text-xs font-bold text-slate-500 hover:bg-white"
+              >
+                Text
+              </button>
             </div>
           </div>
           <textarea
@@ -255,20 +474,40 @@ const SchoolProfile = () => {
 
       {/* School-specific fields */}
       <div className="rounded-2xl border border-borderColor bg-light p-5 space-y-5">
-        <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wide">School Details for Candidate Matching</h3>
+        <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wide">
+          School Details for Candidate Matching
+        </h3>
 
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           <Field label="Total Student Strength">
-            <select name="totalStudents" value={formData.totalStudents} onChange={handleChange} className={inputClass}>
+            <select
+              name="totalStudents"
+              value={formData.totalStudents}
+              onChange={handleChange}
+              className={inputClass}
+            >
               <option value="">Select total students</option>
-              {studentCountOptions.map((o) => <option key={o} value={o}>{o}</option>)}
+              {studentCountOptions.map((o) => (
+                <option key={o} value={o}>
+                  {o}
+                </option>
+              ))}
             </select>
           </Field>
 
           <Field label="Students Per Class">
-            <select name="studentsPerClass" value={formData.studentsPerClass} onChange={handleChange} className={inputClass}>
+            <select
+              name="studentsPerClass"
+              value={formData.studentsPerClass}
+              onChange={handleChange}
+              className={inputClass}
+            >
               <option value="">Select students per class</option>
-              {studentsPerClassOptions.map((o) => <option key={o} value={o}>{o}</option>)}
+              {studentsPerClassOptions.map((o) => (
+                <option key={o} value={o}>
+                  {o}
+                </option>
+              ))}
             </select>
           </Field>
 
@@ -283,11 +522,18 @@ const SchoolProfile = () => {
           </Field>
 
           <Field label="Bus / Transport Service Available">
-            <select name="busService" value={formData.busService} onChange={handleChange} className={inputClass}>
+            <select
+              name="busService"
+              value={formData.busService}
+              onChange={handleChange}
+              className={inputClass}
+            >
               <option value="">Select option</option>
               <option value="Yes">Yes — Bus service available for staff</option>
               <option value="No">No — No transport service</option>
-              <option value="Partial">Partial — Available on selected routes</option>
+              <option value="Partial">
+                Partial — Available on selected routes
+              </option>
             </select>
           </Field>
         </div>
@@ -296,19 +542,39 @@ const SchoolProfile = () => {
       {/* School Photo Gallery */}
       <div>
         <label className={labelClass}>School Photos / Gallery</label>
-        <p className="mb-3 text-xs text-slate-500">Upload up to 8 photos — a visual profile makes your school more attractive to candidates.</p>
+        <p className="mb-3 text-xs text-slate-500">
+          Upload up to 8 photos — a visual profile makes your school more
+          attractive to candidates.
+        </p>
         <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-dashed border-primary/40 px-5 py-3 text-sm font-bold text-primary hover:bg-primary/5">
           <Camera size={16} /> Upload Photos
-          <input type="file" hidden accept="image/*" multiple onChange={handleGalleryUpload} />
+          <input
+            type="file"
+            hidden
+            accept="image/*"
+            multiple
+            onChange={handleGalleryUpload}
+          />
         </label>
         {galleryImages.length > 0 && (
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {galleryImages.map((url, i) => (
-              <div key={i} className="group relative overflow-hidden rounded-xl border border-borderColor">
-                <img src={url} alt={`gallery-${i}`} className="h-24 w-full object-cover" />
+              <div
+                key={i}
+                className="group relative overflow-hidden rounded-xl border border-borderColor"
+              >
+                <img
+                  src={url}
+                  alt={`gallery-${i}`}
+                  className="h-24 w-full object-cover"
+                />
                 <button
                   type="button"
-                  onClick={() => setGalleryImages((prev) => prev.filter((_, idx) => idx !== i))}
+                  onClick={() =>
+                    setGalleryImages((prev) =>
+                      prev.filter((_, idx) => idx !== i),
+                    )
+                  }
                   className="absolute right-1 top-1 hidden rounded-full bg-red-500 p-1 text-white group-hover:flex"
                 >
                   <X size={12} />
@@ -325,7 +591,9 @@ const SchoolProfile = () => {
 
   const renderOtherInfo = () => {
     const currentYear = new Date().getFullYear();
-    const age = formData.establishedYear ? currentYear - parseInt(formData.establishedYear) : null;
+    const age = formData.establishedYear
+      ? currentYear - parseInt(formData.establishedYear)
+      : null;
     return (
       <div className="space-y-6">
         <h2 className="text-xl font-bold text-primary">Other Information</h2>
@@ -334,52 +602,113 @@ const SchoolProfile = () => {
           {/* Founded Since — replaced slider with dropdown */}
           <div>
             <Field label="Established / Founded Since *">
-              <select name="establishedYear" value={formData.establishedYear} onChange={handleChange} className={inputClass}>
+              <select
+                name="establishedYear"
+                value={formData.establishedYear}
+                onChange={handleChange}
+                className={inputClass}
+              >
                 <option value="">Select year of establishment</option>
-                {establishmentYears.map((y) => <option key={y} value={y}>{y}</option>)}
+                {establishmentYears.map((y) => (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                ))}
               </select>
             </Field>
             {age !== null && age > 0 && (
-              <p className="mt-1.5 text-xs text-slate-500">School age: <span className="font-bold text-primary">{age} year{age !== 1 ? "s" : ""}</span></p>
+              <p className="mt-1.5 text-xs text-slate-500">
+                School age:{" "}
+                <span className="font-bold text-primary">
+                  {age} year{age !== 1 ? "s" : ""}
+                </span>
+              </p>
             )}
           </div>
 
           <Field label="Industry">
-            <select name="industry" value={formData.industry} onChange={handleChange} className={inputClass}>
-              {industries.map((i) => <option key={i} value={i}>{i}</option>)}
+            <select
+              name="industry"
+              value={formData.industry}
+              onChange={handleChange}
+              className={inputClass}
+            >
+              {industries.map((i) => (
+                <option key={i} value={i}>
+                  {i}
+                </option>
+              ))}
             </select>
           </Field>
 
           <Field label="Medium">
-            <select name="medium" value={formData.medium} onChange={handleChange} className={inputClass}>
+            <select
+              name="medium"
+              value={formData.medium}
+              onChange={handleChange}
+              className={inputClass}
+            >
               <option value="">Select Medium</option>
-              {mediums.map((m) => <option key={m} value={m}>{m}</option>)}
+              {mediums.map((m) => (
+                <option key={m} value={m}>
+                  {m}
+                </option>
+              ))}
             </select>
           </Field>
 
           {/* Level — made mandatory */}
           <Field label="Level" required>
-            <select name="level" value={formData.level} onChange={handleChange} className={inputClass}>
+            <select
+              name="level"
+              value={formData.level}
+              onChange={handleChange}
+              className={inputClass}
+            >
               <option value="">Select the Level</option>
-              {levels.map((l) => <option key={l} value={l}>{l}</option>)}
+              {levels.map((l) => (
+                <option key={l} value={l}>
+                  {l}
+                </option>
+              ))}
             </select>
-            <p className="mt-1 text-xs text-slate-400">Mandatory — affects teacher matching.</p>
+            <p className="mt-1 text-xs text-slate-400">
+              Mandatory — affects teacher matching.
+            </p>
           </Field>
 
           {/* Board — visible prominently for matching */}
           <Field label="Board">
-            <select name="board" value={formData.board} onChange={handleChange} className={inputClass}>
+            <select
+              name="board"
+              value={formData.board}
+              onChange={handleChange}
+              className={inputClass}
+            >
               <option value="">Select the Board</option>
-              {boards.map((b) => <option key={b} value={b}>{b}</option>)}
+              {boards.map((b) => (
+                <option key={b} value={b}>
+                  {b}
+                </option>
+              ))}
             </select>
-            <p className="mt-1 text-xs text-slate-400">Board helps match the right teachers for your curriculum.</p>
+            <p className="mt-1 text-xs text-slate-400">
+              Board helps match the right teachers for your curriculum.
+            </p>
           </Field>
 
           {/* Website field REMOVED from Other Info — it's in Basic Information already */}
 
           <div className="lg:col-span-2">
             <Field label="Alternate Email">
-              <input type="email" name="alternateEmail" value={formData.alternateEmail} onChange={handleChange} className={inputClass} placeholder="alternate-email" />
+              <input
+                type="email"
+                name="alternateEmail"
+                value={formData.alternateEmail}
+                onChange={handleChange}
+                className={inputClass}
+                placeholder="alternate-email"
+              />
             </Field>
           </div>
         </div>
@@ -395,20 +724,75 @@ const SchoolProfile = () => {
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Field label="Facebook">
-          <input name="facebook" value={formData.facebook} onChange={handleChange} className={inputClass} placeholder="https://facebook.com/yourschool" />
+          <input
+            name="facebook"
+            value={formData.facebook}
+            onChange={handleChange}
+            className={inputClass}
+            placeholder="https://facebook.com/yourschool"
+          />
         </Field>
         {/* Twitter → renamed to X (Twitter) */}
         <Field label="X (Twitter)">
-          <input name="twitter" value={formData.twitter} onChange={handleChange} className={inputClass} placeholder="https://x.com/yourschool" />
+          <input
+            name="twitter"
+            value={formData.twitter}
+            onChange={handleChange}
+            className={inputClass}
+            placeholder="https://x.com/yourschool"
+          />
         </Field>
         <div className="lg:col-span-2">
           <Field label="LinkedIn">
-            <input name="linkedin" value={formData.linkedin} onChange={handleChange} className={inputClass} placeholder="https://linkedin.com/school/yourschool" />
+            <input
+              name="linkedin"
+              value={formData.linkedin}
+              onChange={handleChange}
+              className={inputClass}
+              placeholder="https://linkedin.com/school/yourschool"
+            />
           </Field>
         </div>
       </div>
     </div>
   );
+
+  useEffect(() => {
+    const pin = formData.postalCode.trim();
+    if (!/^\d{6}$/.test(pin)) return;
+
+    let cancelled = false;
+    setPincodeLoading(true);
+    setPincodeError("");
+
+    fetch(`https://api.postalpincode.in/pincode/${pin}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return;
+        if (data[0].Status === "Success" && data[0].PostOffice?.length > 0) {
+          const po = data[0].PostOffice[0];
+          setFormData((p) => ({
+            ...p,
+            state: po.State,
+            city: po.District,
+            area: po.Name.replace(/\s*(S\.O|B\.O|H\.O)$/i, "").trim(),
+          }));
+        } else {
+          setPincodeError("PIN code not found. Enter state & city manually.");
+        }
+      })
+      .catch(() => {
+        if (!cancelled)
+          setPincodeError("Could not reach postal API. Enter manually.");
+      })
+      .finally(() => {
+        if (!cancelled) setPincodeLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [formData.postalCode]);
 
   // ─── Render Address ────────────────────────────────────────────────────────
 
@@ -418,27 +802,106 @@ const SchoolProfile = () => {
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Field label="Country">
-          <select name="country" value={formData.country} onChange={handleChange} className={inputClass}>
-            {countries.map((c) => <option key={c} value={c}>{c}</option>)}
+          <select
+            name="country"
+            value={formData.country}
+            onChange={handleChange}
+            className={inputClass}
+          >
+            {countries.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
           </select>
         </Field>
+
+        {/* Postal code — auto-fetches on 6 digits */}
+        <Field label="Postal / PIN Code" required>
+          <div className="relative">
+            <input
+              name="postalCode"
+              value={formData.postalCode}
+              onChange={(e) => {
+                setPincodeError("");
+                handleChange(e);
+              }}
+              className={inputClass}
+              placeholder="e.g. 452012"
+              maxLength={6}
+            />
+            {pincodeLoading && (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-primary animate-pulse">
+                Fetching…
+              </span>
+            )}
+          </div>
+          {pincodeError ? (
+            <p className="mt-1 text-xs text-red-500">{pincodeError}</p>
+          ) : (
+            <p className="mt-1 text-xs text-slate-400">
+              State, city &amp; area fill automatically once you type 6 digits.
+            </p>
+          )}
+        </Field>
+
         <Field label="State">
-          <select name="state" value={formData.state} onChange={handleChange} className={inputClass}>
+          <select
+            name="state"
+            value={formData.state}
+            onChange={handleChange}
+            className={inputClass}
+          >
             <option value="">Select State</option>
-            {indianStates.map((s) => <option key={s} value={s}>{s}</option>)}
+            {indianStates.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
           </select>
         </Field>
-        <Field label="City">
-          <input name="city" value={formData.city} onChange={handleChange} className={inputClass} placeholder="Enter city" />
+
+        <Field label="City / District">
+          <input
+            name="city"
+            value={formData.city}
+            onChange={handleChange}
+            className={inputClass}
+            placeholder="e.g. Indore"
+          />
         </Field>
-        {/* Postal Code — made mandatory */}
-        <Field label="Postal Code" required>
-          <input name="postalCode" value={formData.postalCode} onChange={handleChange} className={inputClass} placeholder="Enter postal / PIN code" />
-          <p className="mt-1 text-xs text-slate-400">Required for accurate job location matching.</p>
+
+        <Field label="Area / Locality">
+          <input
+            name="area"
+            value={formData.area}
+            onChange={handleChange}
+            className={inputClass}
+            placeholder="e.g. Rajendra Nagar"
+          />
         </Field>
+
         <div className="lg:col-span-2">
-          <Field label="Full Address">
-            <textarea name="fullAddress" value={formData.fullAddress} onChange={handleChange} className={`${inputClass} min-h-24 resize-none`} placeholder="Flat No., Building Name, Street Name, Landmark..." />
+          <Field label="Address Lane 1">
+            <input
+              name="addressLane1"
+              value={formData.addressLane1}
+              onChange={handleChange}
+              className={inputClass}
+              placeholder="Flat / Building No., Building Name, Street"
+            />
+          </Field>
+        </div>
+
+        <div className="lg:col-span-2">
+          <Field label="Address Lane 2">
+            <input
+              name="addressLane2"
+              value={formData.addressLane2}
+              onChange={handleChange}
+              className={inputClass}
+              placeholder="Area, Landmark (optional)"
+            />
           </Field>
         </div>
       </div>
@@ -456,17 +919,22 @@ const SchoolProfile = () => {
 
   const SidebarInner = () => (
     <div className="flex h-full flex-col">
-      <label className="mb-5 flex cursor-pointer items-center gap-2 self-start rounded-xl border border-dashed border-borderColor px-4 py-2 text-xs font-bold text-primary hover:bg-light">
-        <Upload size={13} /> Upload Institute Logo
-        <input type="file" hidden accept="image/*" onChange={handleLogoUpload} />
-      </label>
-
       <div className="mb-4 flex items-center gap-3">
         <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-borderColor bg-light">
-          {logoImage ? <img src={logoImage} alt="logo" className="h-full w-full object-cover" /> : <Building2 size={22} className="text-primary" />}
+          {logoImage ? (
+            <img
+              src={logoImage}
+              alt="logo"
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <Building2 size={22} className="text-primary" />
+          )}
         </div>
         <div className="min-w-0">
-          <p className="truncate text-sm font-bold text-slate-800">{schoolName}</p>
+          <p className="truncate text-sm font-bold text-slate-800">
+            {schoolName}
+          </p>
           <p className="text-xs text-slate-400">School Account</p>
         </div>
       </div>
@@ -478,10 +946,15 @@ const SchoolProfile = () => {
           <span className="text-primary">{completionPct}%</span>
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-white border border-borderColor/50">
-          <div className="h-full rounded-full bg-primary transition-all duration-500" style={{ width: `${completionPct}%` }} />
+          <div
+            className="h-full rounded-full bg-primary transition-all duration-500"
+            style={{ width: `${completionPct}%` }}
+          />
         </div>
         {completionPct < 100 && (
-          <p className="mt-1.5 text-xs text-slate-400">{100 - completionPct}% remaining to complete profile</p>
+          <p className="mt-1.5 text-xs text-slate-400">
+            {100 - completionPct}% remaining to complete profile
+          </p>
         )}
       </div>
 
@@ -504,10 +977,18 @@ const SchoolProfile = () => {
       </nav>
 
       <div className="mt-4 space-y-1 border-t border-borderColor pt-4">
-        <button type="button" onClick={() => navigate("/school-dashboard")} className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold text-slate-600 hover:bg-light">
+        <button
+          type="button"
+          onClick={() => navigate("/school/dashboard")}
+          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold text-slate-600 hover:bg-light"
+        >
           <ArrowLeft size={17} /> Back to Dashboard
         </button>
-        <button type="button" onClick={handleLogout} className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold text-slate-600 hover:bg-light">
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold text-slate-600 hover:bg-light"
+        >
           <LogOut size={17} /> Logout
         </button>
         {/* Delete Profile moved to Settings page — no longer in sidebar */}
@@ -524,9 +1005,16 @@ const SchoolProfile = () => {
 
         <main className="flex-1 p-5 lg:p-8">
           <div className="mb-6 rounded-3xl bg-white p-5 shadow-soft">
-            <p className="text-xs font-bold uppercase tracking-[2px] text-secondary">Employer Workspace</p>
-            <h1 className="mt-1 text-2xl font-bold text-primary sm:text-3xl">School Profile</h1>
-            <p className="mt-1 text-sm text-slate-500">Keep your school information up to date to attract the best candidates.</p>
+            <p className="text-xs font-bold uppercase tracking-[2px] text-secondary">
+              Employer Workspace
+            </p>
+            <h1 className="mt-1 text-2xl font-bold text-primary sm:text-3xl">
+              School Profile
+            </h1>
+            <p className="mt-1 text-sm text-slate-500">
+              Keep your school information up to date to attract the best
+              candidates.
+            </p>
           </div>
 
           <div className="mb-6 flex gap-2 overflow-x-auto rounded-3xl bg-white p-3 shadow-soft">
@@ -549,10 +1037,16 @@ const SchoolProfile = () => {
             {renderActiveSection()}
 
             <div className="mt-8 flex flex-col-reverse gap-3 border-t border-borderColor pt-6 sm:flex-row sm:justify-end">
-              <button type="button" className="rounded-xl border border-borderColor px-6 py-3 text-sm font-bold text-slate-500 hover:bg-light">
+              <button
+                type="button"
+                className="rounded-xl border border-borderColor px-6 py-3 text-sm font-bold text-slate-500 hover:bg-light"
+              >
                 Cancel
               </button>
-              <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95"
+              >
                 <Save size={17} /> Save Changes
               </button>
             </div>
