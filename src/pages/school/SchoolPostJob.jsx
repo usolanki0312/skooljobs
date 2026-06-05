@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { Save, Send } from "lucide-react";
+import { Eye, Save, Send } from "lucide-react";
 import RoleBasicInfo from "../../components/postjob/RoleBasicInfo";
 import LanguageRequirements from "../../components/postjob/LanguageRequirements";
 import QualificationsSection from "../../components/postjob/QualificationsSection";
@@ -8,6 +8,7 @@ import JobDescriptionSection from "../../components/postjob/JobDescriptionSectio
 import SkillsSection from "../../components/postjob/SkillsSection";
 import SalaryBenefits from "../../components/postjob/SalaryBenefits";
 import HiringPreferences from "../../components/postjob/HiringPreferences";
+import JobPreview from "../../components/postjob/JobPreview";
 
 const blankForm = {
   // Section 1 — Role & Basic Info
@@ -47,6 +48,7 @@ const blankForm = {
   // Full Time
   minAnnualCTC: "",
   maxAnnualCTC: "",
+  inHandPercentage: "75",
   minMonthlySalary: "",
   maxMonthlySalary: "",
   // Part Time
@@ -72,8 +74,9 @@ const blankForm = {
   // Section 7 — Hiring Preferences
   genderPreference: "Any",
   interviewMode: "",
-  hiringRounds: "",
-  publishSettings: ["Publish Immediately"],
+  publishOption: "Publish Immediately",
+  publishDate: "",
+  publishTime: "",
 };
 
 const SchoolPostJob = () => {
@@ -82,6 +85,7 @@ const SchoolPostJob = () => {
 
   const [form, setForm] = useState(blankForm);
   const [generating, setGenerating] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   const setField = (key, value) => setForm((p) => ({ ...p, [key]: value }));
 
@@ -141,9 +145,18 @@ const SchoolPostJob = () => {
       alert("Job Title, Location and Employment Type are required to publish.");
       return;
     }
-    setJobs((p) => [buildJob("Active"), ...p]);
+    const scheduled = form.publishOption === "Publish Later";
+    if (scheduled && (!form.publishDate || !form.publishTime)) {
+      alert("Please select a date and time to schedule the job.");
+      return;
+    }
+    setJobs((p) => [buildJob(scheduled ? "Scheduled" : "Active"), ...p]);
     setForm(blankForm);
-    alert("Job published successfully!");
+    alert(
+      scheduled
+        ? `Job scheduled to publish on ${form.publishDate} at ${form.publishTime}!`
+        : "Job published successfully!",
+    );
     navigate("/school/manage-jobs");
   };
 
@@ -183,6 +196,13 @@ const SchoolPostJob = () => {
         <div className="flex gap-3">
           <button
             type="button"
+            onClick={() => setShowPreview(true)}
+            className="inline-flex items-center gap-2 rounded-xl border border-primary px-6 py-2.5 text-sm font-bold text-primary hover:bg-primary/5 transition"
+          >
+            <Eye size={15} /> Preview
+          </button>
+          <button
+            type="button"
             onClick={handleSaveDraft}
             className="inline-flex items-center gap-2 rounded-xl border border-borderColor px-6 py-2.5 text-sm font-bold text-slate-600 hover:bg-light transition"
           >
@@ -193,10 +213,12 @@ const SchoolPostJob = () => {
             onClick={handlePublish}
             className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-white hover:bg-primary/90 transition"
           >
-            <Send size={15} /> Publish Job
+            <Send size={15} /> {form.publishOption === "Publish Later" ? "Schedule Job" : "Publish Job"}
           </button>
         </div>
       </div>
+
+      {showPreview && <JobPreview form={form} onClose={() => setShowPreview(false)} />}
     </div>
   );
 };

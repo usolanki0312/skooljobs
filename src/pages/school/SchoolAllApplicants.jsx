@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext, useSearchParams } from "react-router-dom";
 import {
   Bookmark, Calendar, ChevronRight, FileText, Search, X,
 } from "lucide-react";
@@ -9,12 +9,15 @@ const statusOptions = ["Applied", "Shortlisted", "Rejected"];
 
 const SchoolAllApplicants = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { applicants, setApplicants, handleSaveCandidate } = useOutletContext();
 
   const [applicantSearch, setApplicantSearch] = useState("");
   const [subjectFilter, setSubjectFilter] = useState("");
   const [expFilter, setExpFilter] = useState("");
   const [jobTitleFilter, setJobTitleFilter] = useState("");
+  // Pre-select status filter from the URL (e.g. ?status=Shortlisted from dashboard card)
+  const [statusFilter, setStatusFilter] = useState(searchParams.get("status") || "");
   const [selected, setSelected] = useState(null);
 
   const uniqueJobTitles = [...new Set(applicants.map((a) => a.jobTitle))];
@@ -25,13 +28,14 @@ const SchoolAllApplicants = () => {
       a.subject.toLowerCase().includes(applicantSearch.toLowerCase());
     const matchSubject = !subjectFilter || a.subject === subjectFilter;
     const matchJob = !jobTitleFilter || a.jobTitle === jobTitleFilter;
+    const matchStatus = !statusFilter || a.status === statusFilter;
     const expYears = parseInt(a.experience) || 0;
     const matchExp =
       !expFilter ||
       (expFilter === "0-3" && expYears <= 3) ||
       (expFilter === "3-6" && expYears > 3 && expYears <= 6) ||
       (expFilter === "6+" && expYears > 6);
-    return matchSearch && matchSubject && matchExp && matchJob;
+    return matchSearch && matchSubject && matchExp && matchJob && matchStatus;
   });
 
   const handleStatusChange = (id, status) => {
@@ -74,6 +78,10 @@ const SchoolAllApplicants = () => {
         <select value={subjectFilter} onChange={(e) => setSubjectFilter(e.target.value)} className="rounded-2xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-600 shadow-sm outline-none focus:border-primary">
           <option value="">All Subjects</option>
           {subjects.map((s) => <option key={s} value={s}>{s}</option>)}
+        </select>
+        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="rounded-2xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-600 shadow-sm outline-none focus:border-primary">
+          <option value="">All Status</option>
+          {statusOptions.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
         <select value={expFilter} onChange={(e) => setExpFilter(e.target.value)} className="rounded-2xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-600 shadow-sm outline-none focus:border-primary">
           <option value="">All Experience</option>

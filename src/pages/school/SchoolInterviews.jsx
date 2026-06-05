@@ -1,13 +1,28 @@
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import {
-  Calendar, CheckCircle, Clock, Link2, MapPin, Pencil,
+  Calendar, CheckCircle, Clock, Link2, MapPin, MessageCircle, Pencil,
   PhoneCall, Video, XCircle, X,
 } from "lucide-react";
 
 const DURATIONS = ["15 Minutes", "30 Minutes", "45 Minutes", "60 Minutes", "90 Minutes"];
 const ROUNDS = ["1st Round", "2nd Round", "Technical Round", "HR Round", "Final Round"];
 const STATUSES = ["Scheduled", "Confirmed", "Completed", "Cancelled"];
+
+// Online meeting platforms. WhatsApp Video Call uses the candidate's registered
+// number, so it does NOT need a meeting link.
+const ONLINE_PLATFORMS = [
+  { val: "Google Meet", needsLink: true, placeholder: "https://meet.google.com/abc-defg-hjk" },
+  { val: "Zoom", needsLink: true, placeholder: "https://zoom.us/j/1234567890" },
+  { val: "Microsoft Teams", needsLink: true, placeholder: "https://teams.microsoft.com/l/meetup-join/..." },
+  { val: "WhatsApp Video Call", needsLink: false, placeholder: "" },
+];
+
+const platformNeedsLink = (platform) =>
+  ONLINE_PLATFORMS.find((p) => p.val === platform)?.needsLink ?? true;
+
+// Reminders are only relevant for Online interviews
+const REMINDERS_ENABLED_MODES = ["Online"];
 
 const statusColor = {
   Scheduled: "bg-blue-50 text-blue-600",
@@ -22,6 +37,7 @@ const blankForm = {
   time: "",
   duration: "45 Minutes",
   mode: "Online",
+  onlinePlatform: "Google Meet",
   meetingLink: "",
   location: "",
   room: "",
@@ -70,7 +86,8 @@ const SchoolInterviews = () => {
     setSchedulingFor(applicant);
     setForm({
       round: iv.round, date: iv.date, time: iv.time, duration: iv.duration,
-      mode: iv.mode, meetingLink: iv.meetingLink || "", location: iv.location || "",
+      mode: iv.mode, onlinePlatform: iv.onlinePlatform || "Google Meet",
+      meetingLink: iv.meetingLink || "", location: iv.location || "",
       room: iv.room || "", interviewer: iv.interviewer,
       notesForCandidate: iv.notesForCandidate || "",
       internalNotes: iv.internalNotes || "",
@@ -83,7 +100,10 @@ const SchoolInterviews = () => {
 
   const handleSubmit = () => {
     if (!form.date || !form.time) { alert("Date and Time are required."); return; }
-    if (form.mode === "Online" && !form.meetingLink) { alert("Please add a Meeting Link for Online interviews."); return; }
+    if (form.mode === "Online" && platformNeedsLink(form.onlinePlatform) && !form.meetingLink) {
+      alert(`Please add a Meeting Link for ${form.onlinePlatform} interviews.`);
+      return;
+    }
 
     if (editingId) {
       setInterviews((p) => p.map((iv) => iv.id === editingId ? { ...iv, ...form } : iv));
@@ -209,10 +229,11 @@ const SchoolInterviews = () => {
                     </td>
                     <td className="px-5 py-3">
                       <span className="flex items-center gap-1.5 text-slate-600">
-                        {iv.mode === "Online" && <Video size={13} className="text-blue-500" />}
+                        {iv.mode === "Online" && iv.onlinePlatform === "WhatsApp Video Call" && <MessageCircle size={13} className="text-green-500" />}
+                        {iv.mode === "Online" && iv.onlinePlatform !== "WhatsApp Video Call" && <Video size={13} className="text-blue-500" />}
                         {iv.mode === "In-Person" && <MapPin size={13} className="text-orange-500" />}
                         {iv.mode === "Telephonic" && <PhoneCall size={13} className="text-green-500" />}
-                        {iv.mode}
+                        {iv.mode === "Online" ? iv.onlinePlatform || "Online" : iv.mode}
                       </span>
                     </td>
                     <td className="px-5 py-3 text-slate-600">{iv.round}</td>
@@ -350,17 +371,55 @@ const SchoolInterviews = () => {
                   ))}
 
                   {form.mode === "Online" && (
-                    <div className="mt-3">
-                      <Label required>Meeting Link</Label>
-                      <div className="flex items-center gap-2 rounded-xl border border-borderColor bg-white px-3 py-2.5 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
-                        <Link2 size={15} className="shrink-0 text-slate-400" />
-                        <input
-                          value={form.meetingLink}
-                          onChange={(e) => set("meetingLink", e.target.value)}
-                          placeholder="https://meet.google.com/abc-defg-hjk"
-                          className="flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
-                        />
+                    <div className="mt-3 space-y-3 rounded-xl border border-blue-100 bg-blue-50/50 p-4">
+                      <div>
+                        <Label required>Platform</Label>
+                        <div className="grid grid-cols-2 gap-2">
+                          {ONLINE_PLATFORMS.map((p) => {
+                            const isWhatsApp = p.val === "WhatsApp Video Call";
+                            return (
+                              <button
+                                key={p.val}
+                                type="button"
+                                onClick={() => set("onlinePlatform", p.val)}
+                                className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-bold transition ${
+                                  form.onlinePlatform === p.val
+                                    ? "border-primary bg-primary/10 text-primary"
+                                    : "border-borderColor bg-white text-slate-600 hover:border-primary"
+                                }`}
+                              >
+                                {isWhatsApp
+                                  ? <MessageCircle size={14} className="text-green-500" />
+                                  : <Video size={14} className="text-blue-500" />}
+                                {p.val}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
+
+                      {platformNeedsLink(form.onlinePlatform) ? (
+                        <div>
+                          <Label required>Meeting Link</Label>
+                          <div className="flex items-center gap-2 rounded-xl border border-borderColor bg-white px-3 py-2.5 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+                            <Link2 size={15} className="shrink-0 text-slate-400" />
+                            <input
+                              value={form.meetingLink}
+                              onChange={(e) => set("meetingLink", e.target.value)}
+                              placeholder={ONLINE_PLATFORMS.find((p) => p.val === form.onlinePlatform)?.placeholder}
+                              className="flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-start gap-2 rounded-xl border border-green-100 bg-green-50 p-3">
+                          <MessageCircle size={15} className="mt-0.5 shrink-0 text-green-500" />
+                          <p className="text-xs text-green-700">
+                            No meeting link needed. The interviewer will call the candidate on
+                            their registered WhatsApp number at the scheduled time.
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -380,33 +439,47 @@ const SchoolInterviews = () => {
                 </div>
               </div>
 
-              {/* ── 4. Actions & Status ──────────────────────────────────── */}
-              <div className="rounded-2xl border border-borderColor p-5">
-                <div className="mb-4 flex items-center gap-2">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">4</span>
-                  <h4 className="text-sm font-bold text-slate-700">Reminder Settings</h4>
-                </div>
-                <div className="space-y-3">
-                  {[
-                    { key: "remindConfirmation", label: "Send Confirmation to Candidate", sub: "Immediately after scheduling" },
-                    { key: "remind24h", label: "24 Hour Reminder", sub: "Before interview" },
-                    { key: "remind1h", label: "1 Hour Reminder", sub: "Before interview" },
-                  ].map(({ key, label, sub }) => (
-                    <label key={key} className="flex cursor-pointer items-start gap-3 rounded-xl border border-borderColor p-3 hover:bg-light">
-                      <input
-                        type="checkbox"
-                        checked={form[key]}
-                        onChange={(e) => set(key, e.target.checked)}
-                        className="mt-0.5 h-4 w-4 accent-primary"
-                      />
-                      <div>
-                        <p className="text-sm font-bold text-slate-700">{label}</p>
-                        <p className="text-xs text-slate-400">{sub}</p>
-                      </div>
-                    </label>
-                  ))}
-                </div>
-              </div>
+              {/* ── 4. Reminder Settings ─────────────────────────────────── */}
+              {(() => {
+                const remindersEnabled = REMINDERS_ENABLED_MODES.includes(form.mode);
+                return (
+                  <div className="rounded-2xl border border-borderColor p-5">
+                    <div className="mb-4 flex items-center gap-2">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">4</span>
+                      <h4 className="text-sm font-bold text-slate-700">Reminder Settings</h4>
+                    </div>
+
+                    {!remindersEnabled && (
+                      <p className="mb-3 rounded-xl bg-slate-50 px-3 py-2 text-xs text-slate-400">
+                        Automated reminders are only available for Online interviews.
+                        For {form.mode} interviews, please coordinate with the candidate directly.
+                      </p>
+                    )}
+
+                    <div className={`space-y-3 transition ${remindersEnabled ? "" : "pointer-events-none select-none opacity-40 blur-[1px]"}`}>
+                      {[
+                        { key: "remindConfirmation", label: "Send Confirmation to Candidate", sub: "Immediately after scheduling" },
+                        { key: "remind24h", label: "24 Hour Reminder", sub: "Before interview" },
+                        { key: "remind1h", label: "1 Hour Reminder", sub: "Before interview" },
+                      ].map(({ key, label, sub }) => (
+                        <label key={key} className="flex cursor-pointer items-start gap-3 rounded-xl border border-borderColor p-3 hover:bg-light">
+                          <input
+                            type="checkbox"
+                            checked={remindersEnabled && form[key]}
+                            disabled={!remindersEnabled}
+                            onChange={(e) => set(key, e.target.checked)}
+                            className="mt-0.5 h-4 w-4 accent-primary"
+                          />
+                          <div>
+                            <p className="text-sm font-bold text-slate-700">{label}</p>
+                            <p className="text-xs text-slate-400">{sub}</p>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* ── 5. Notes (full width) ────────────────────────────────── */}
               <div className="rounded-2xl border border-borderColor p-5 md:col-span-2">

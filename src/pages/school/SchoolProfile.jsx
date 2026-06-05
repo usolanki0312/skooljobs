@@ -135,6 +135,13 @@ const SchoolProfile = () => {
   const [pincodeLoading, setPincodeLoading] = useState(false);
   const [pincodeError, setPincodeError] = useState("");
 
+  // Area / locality search (India Post "postoffice" endpoint)
+  const [areaQuery, setAreaQuery] = useState("");
+  const [areaResults, setAreaResults] = useState([]);
+  const [areaLoading, setAreaLoading] = useState(false);
+  const [areaError, setAreaError] = useState("");
+  const [showAreaDropdown, setShowAreaDropdown] = useState(false);
+
   const currentUser = useMemo(() => {
     try {
       return JSON.parse(localStorage.getItem("currentUser") || "{}");
@@ -794,11 +801,122 @@ const SchoolProfile = () => {
     };
   }, [formData.postalCode]);
 
+  // Debounced area/locality search → India Post "postoffice" endpoint.
+  useEffect(() => {
+    const q = areaQuery.trim();
+    if (q.length < 3) {
+      setAreaResults([]);
+      setAreaError("");
+      return;
+    }
+
+    let cancelled = false;
+    setAreaLoading(true);
+    setAreaError("");
+
+    const timer = setTimeout(() => {
+      fetch(`https://api.postalpincode.in/postoffice/${encodeURIComponent(q)}`)
+        .then((r) => r.json())
+        .then((data) => {
+          if (cancelled) return;
+          if (data[0].Status === "Success" && data[0].PostOffice?.length > 0) {
+            setAreaResults(data[0].PostOffice.slice(0, 25));
+            setShowAreaDropdown(true);
+          } else {
+            setAreaResults([]);
+            setAreaError("No localities found. Try a different name.");
+          }
+        })
+        .catch(() => {
+          if (!cancelled) setAreaError("Could not reach postal API. Enter manually.");
+        })
+        .finally(() => {
+          if (!cancelled) setAreaLoading(false);
+        });
+    }, 500);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [areaQuery]);
+
+  const handleSelectLocality = (po) => {
+    const cleanName = po.Name.replace(/\s*(S\.O|B\.O|H\.O)$/i, "").trim();
+    setFormData((p) => ({
+      ...p,
+      area: cleanName,
+      city: po.District,
+      state: po.State,
+      postalCode: po.Pincode,
+    }));
+    setAreaQuery(cleanName);
+    setShowAreaDropdown(false);
+    setAreaResults([]);
+    setPincodeError("");
+  };
+
   // ─── Render Address ────────────────────────────────────────────────────────
 
   const renderAddress = () => (
     <div className="space-y-6">
       <h2 className="text-xl font-bold text-primary">Address / Location</h2>
+
+      {/* Locality search — type an area name, pick from results, everything fills */}
+      <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
+        <Field label="Search Area / Locality">
+          <div className="relative">
+            <input
+              value={areaQuery}
+              onChange={(e) => {
+                setAreaQuery(e.target.value);
+                setAreaError("");
+              }}
+              onFocus={() => areaResults.length > 0 && setShowAreaDropdown(true)}
+              className={inputClass}
+              placeholder="Type an area name, e.g. Rajendra Nagar (min 3 letters)"
+              autoComplete="off"
+            />
+            {areaLoading && (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-primary animate-pulse">
+                Searching…
+              </span>
+            )}
+
+            {showAreaDropdown && areaResults.length > 0 && (
+              <div className="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto rounded-xl border border-borderColor bg-white shadow-lg">
+                {areaResults.map((po, i) => (
+                  <button
+                    key={`${po.Name}-${po.Pincode}-${i}`}
+                    type="button"
+                    onClick={() => handleSelectLocality(po)}
+                    className="flex w-full items-start justify-between gap-3 border-b border-borderColor/60 px-4 py-2.5 text-left last:border-0 hover:bg-light"
+                  >
+                    <span>
+                      <span className="block text-sm font-semibold text-slate-800">
+                        {po.Name}
+                      </span>
+                      <span className="block text-xs text-slate-500">
+                        {po.District}, {po.State}
+                      </span>
+                    </span>
+                    <span className="shrink-0 rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary">
+                      {po.Pincode}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          {areaError ? (
+            <p className="mt-1 text-xs text-red-500">{areaError}</p>
+          ) : (
+            <p className="mt-1 text-xs text-slate-500">
+              Select a locality and the City/District, State &amp; PIN code fill in automatically.
+            </p>
+          )}
+        </Field>
+      </div>
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Field label="Country">
@@ -816,7 +934,43 @@ const SchoolProfile = () => {
           </select>
         </Field>
 
-        {/* Postal code — auto-fetches on 6 digits */}
+        <Field label="Area / Locality">
+          <input
+            name="area"
+            value={formData.area}
+            onChange={handleChange}
+            className={inputClass}
+            placeholder="e.g. Rajendra Nagar"
+          />
+        </Field>
+
+        <Field label="City / District">
+          <input
+            name="city"
+            value={formData.city}
+            onChange={handleChange}
+            className={inputClass}
+            placeholder="e.g. Indore"
+          />
+        </Field>
+
+        <Field label="State">
+          <select
+            name="state"
+            value={formData.state}
+            onChange={handleChange}
+            className={inputClass}
+          >
+            <option value="">Select State</option>
+            {indianStates.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </Field>
+
+        {/* Postal code — also supports reverse autofill if typed directly */}
         <Field label="Postal / PIN Code" required>
           <div className="relative">
             <input
@@ -840,45 +994,9 @@ const SchoolProfile = () => {
             <p className="mt-1 text-xs text-red-500">{pincodeError}</p>
           ) : (
             <p className="mt-1 text-xs text-slate-400">
-              State, city &amp; area fill automatically once you type 6 digits.
+              Auto-filled from locality search, or type a 6-digit PIN to fill the rest.
             </p>
           )}
-        </Field>
-
-        <Field label="State">
-          <select
-            name="state"
-            value={formData.state}
-            onChange={handleChange}
-            className={inputClass}
-          >
-            <option value="">Select State</option>
-            {indianStates.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-        </Field>
-
-        <Field label="City / District">
-          <input
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-            className={inputClass}
-            placeholder="e.g. Indore"
-          />
-        </Field>
-
-        <Field label="Area / Locality">
-          <input
-            name="area"
-            value={formData.area}
-            onChange={handleChange}
-            className={inputClass}
-            placeholder="e.g. Rajendra Nagar"
-          />
         </Field>
 
         <div className="lg:col-span-2">

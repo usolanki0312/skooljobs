@@ -7,6 +7,7 @@ const jobStatusChip = {
   Draft:  "bg-amber-50 text-amber-600",
   Closed: "bg-slate-100 text-slate-500",
   Paused: "bg-orange-50 text-orange-500",
+  Scheduled: "bg-blue-50 text-blue-600",
 };
 
 const SchoolManageJobs = () => {

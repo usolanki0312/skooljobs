@@ -3,6 +3,7 @@ import AuthLayout from "../components/Authlayout";
 import AuthInput from "../components/AuthInput";
 import AuthButton from "../components/AuthButton";
 import { Link, useNavigate } from "react-router-dom";
+import { Button } from "@cloudstrytech/ui-components";
 
 // ---------------------------------------------------------------------------
 // TODO: Replace hardcoded auth with backend API
@@ -106,12 +107,16 @@ function Login() {
 
     // TODO: Replace hardcoded auth with backend API (see comment above MOCK_CREDENTIALS)
     const match = MOCK_CREDENTIALS.find(
-      (c) => c.email === email && c.password === password
+      (c) => c.email === email && c.password === password,
     );
 
     if (match) {
       localStorage.setItem("currentUser", JSON.stringify(match.user));
-      navigate(match.user.role === "employer" ? "/school/dashboard" : "/teacher/dashboard");
+      navigate(
+        match.user.role === "employer"
+          ? "/school/dashboard"
+          : "/teacher/dashboard",
+      );
       return;
     }
 
