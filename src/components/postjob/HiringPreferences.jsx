@@ -1,6 +1,8 @@
-import { CalendarClock, Zap } from "lucide-react";
 import SectionCard from "./SectionCard";
-import { GENDER_PREFERENCES, INTERVIEW_MODES } from "../../lib/postjobOptions";
+import postjob from "../../../dropdown/School_module/postjob.json";
+import { PUBLISH_OPTIONS } from "../../lib/postjobOptions";
+
+const { Gender_preference: GENDER_PREFERENCES, Interview_mode: INTERVIEW_MODES } = postjob;
 
 const inputCls =
   "w-full rounded-xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10";
@@ -27,15 +29,9 @@ const PillGroup = ({ label, options, value, onSelect }) => (
   </div>
 );
 
-const PUBLISH_OPTIONS = [
-  { val: "Publish Immediately", icon: Zap, sub: "Job goes live right away" },
-  { val: "Publish Later", icon: CalendarClock, sub: "Schedule for a future date & time" },
-];
-
 const HiringPreferences = ({ form, setField }) => (
   <SectionCard number={7} title="Hiring Preferences">
     <div className="space-y-6">
-
       {/* Row 1: Gender + Interview Mode (both optional) */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <PillGroup
@@ -66,16 +62,22 @@ const HiringPreferences = ({ form, setField }) => (
                 type="button"
                 onClick={() => setField("publishOption", val)}
                 className={`flex items-center gap-3 rounded-xl border p-4 text-left transition ${
-                  active ? "border-primary bg-primary/5" : "border-borderColor hover:border-primary/40"
+                  active
+                    ? "border-primary bg-primary/5"
+                    : "border-borderColor hover:border-primary/40"
                 }`}
               >
-                <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-                  active ? "bg-primary text-white" : "bg-light text-slate-400"
-                }`}>
+                <span
+                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+                    active ? "bg-primary text-white" : "bg-light text-slate-400"
+                  }`}
+                >
                   <Icon size={18} />
                 </span>
                 <span>
-                  <span className="block text-sm font-bold text-slate-800">{val}</span>
+                  <span className="block text-sm font-bold text-slate-800">
+                    {val}
+                  </span>
                   <span className="block text-xs text-slate-400">{sub}</span>
                 </span>
               </button>

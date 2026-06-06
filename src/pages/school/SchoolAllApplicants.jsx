@@ -3,10 +3,13 @@ import { useNavigate, useOutletContext, useSearchParams } from "react-router-dom
 import {
   Bookmark, Calendar, ChevronRight, FileText, Search, X, CheckCircle2, XCircle, User,
 } from "lucide-react";
-import { subjects, statusChipClass } from "../../lib/schooldata";
+import { statusChipClass } from "../../lib/schooldata";
+import postjob from "../../../dropdown/School_module/postjob.json";
+import applicantsOptions from "../../../dropdown/School_module/applicants.json";
 import Select from "../../components/ui/Select";
 
-const statusOptions = ["Not Reviewed", "Reviewed", "Shortlisted", "Rejected"];
+const { Subject: subjects } = postjob;
+const { Applicant_status: statusOptions } = applicantsOptions;
 
 const filterPill =
   "min-w-44 rounded-2xl border border-borderColor bg-white px-4 py-3 text-sm shadow-sm focus:border-primary";

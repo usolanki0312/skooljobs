@@ -1,14 +1,18 @@
 import { MapPin } from "lucide-react";
 import SectionCard from "./SectionCard";
 import Select from "../ui/Select";
-import {
-  ROLE_CATEGORIES, JOB_TITLE_GROUPS, SUBJECTS_BY_JOB_TITLE, JOINING_TIMELINES,
-} from "../../lib/postjobOptions";
+import postjob from "../../../dropdown/School_module/postjob.json";
+
+const {
+  Role_category: ROLE_CATEGORIES,
+  Job_title_group: JOB_TITLE_GROUPS,
+  Subject_by_job_title: SUBJECTS_BY_JOB_TITLE,
+  Joining_timeline: JOINING_TIMELINES,
+  Employment_type: EMPLOYMENT_TYPES,
+} = postjob;
 
 const inputCls =
   "w-full rounded-xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10";
-
-const EMPLOYMENT_TYPES = ["Full Time", "Part Time", "Contract", "Hybrid", "Remote", "Internship"];
 
 const RoleBasicInfo = ({ form, setField }) => {
   const jobTitleList = form.roleCategory

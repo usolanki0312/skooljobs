@@ -1,12 +1,18 @@
 import { Wand2 } from "lucide-react";
 import SectionCard from "./SectionCard";
 
-const JobDescriptionSection = ({ form, setField, onGenerateJD, generating }) => (
+const JobDescriptionSection = ({
+  form,
+  setField,
+  onGenerateJD,
+  generating,
+}) => (
   <SectionCard number={4} title="Job Description">
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-sm text-slate-500">
-          Describe the role, responsibilities, and what you're looking for in an ideal candidate.
+          Describe the role, responsibilities, and what you're looking for in an
+          ideal candidate.
         </p>
         <button
           type="button"
@@ -25,7 +31,9 @@ const JobDescriptionSection = ({ form, setField, onGenerateJD, generating }) => 
         placeholder="Describe the role, responsibilities, and expectations. Click 'AI Generate JD' to auto-generate based on your job details."
         className="w-full resize-none rounded-xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10"
       />
-      <p className="text-right text-xs text-slate-400">{form.description.length} characters</p>
+      <p className="text-right text-xs text-slate-400">
+        {form.description.length} characters
+      </p>
     </div>
   </SectionCard>
 );

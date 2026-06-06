@@ -1,18 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  profileSections,
-  sectors,
-  schoolMediums as mediums,
-  levels,
-  boards,
-  industries,
-  countries,
-  indianStates,
-  days,
-  months,
-  years,
-} from "../../lib/schooldata";
+import { profileSections } from "../../lib/schooldata";
+import profileOptions from "../../../dropdown/School_module/profile.json";
+
+const {
+  Sector: sectors,
+  Medium: mediums,
+  Level: levels,
+  Board: boards,
+  Industry: industries,
+  Country: countries,
+  Indian_state: indianStates,
+  Student_count: studentCountOptions,
+  Students_per_class: studentsPerClassOptions,
+  Public_view: publicViewOptions,
+  Bus_service: busServiceOptions,
+} = profileOptions;
 import {
   ArrowLeft,
   BriefcaseBusiness,
@@ -93,24 +96,6 @@ const establishmentYears = Array.from({ length: 76 }, (_, i) =>
   String(2025 - i),
 );
 
-const studentCountOptions = [
-  "Less than 100",
-  "100 - 200",
-  "200 - 300",
-  "300 - 500",
-  "500 - 1000",
-  "1000 - 2000",
-  "2000+",
-];
-
-const studentsPerClassOptions = [
-  "10 - 20 students",
-  "20 - 30 students",
-  "30 - 40 students",
-  "40 - 50 students",
-  "50+ students",
-];
-
 const inputClass =
   "w-full rounded-xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10";
 
@@ -167,9 +152,6 @@ const SchoolProfile = () => {
     phone: currentUser.phone || "",
     website: "",
     sector: "Schools & Institutions",
-    foundedDay: "12",
-    foundedMonth: "12",
-    foundedYear: "2023",
     aboutInstitute: "",
     totalStudents: "",
     studentsPerClass: "",
@@ -355,7 +337,7 @@ const SchoolProfile = () => {
           <Select
             value={formData.publicView}
             onChange={(v) => setField("publicView", v)}
-            options={["Yes", "No"]}
+            options={publicViewOptions}
           />
         </Field>
         <Field label="Phone">
@@ -384,24 +366,6 @@ const SchoolProfile = () => {
             options={sectors}
           />
         </Field>
-      </div>
-
-      {/* Founded Date */}
-      <div>
-        <label className={labelClass}>Founded Date</label>
-        <div className="flex items-center gap-2">
-          <div className="w-24">
-            <Select value={formData.foundedDay} onChange={(v) => setField("foundedDay", v)} options={days} />
-          </div>
-          <span className="text-slate-400">/</span>
-          <div className="w-24">
-            <Select value={formData.foundedMonth} onChange={(v) => setField("foundedMonth", v)} options={months} />
-          </div>
-          <span className="text-slate-400">/</span>
-          <div className="w-32">
-            <Select value={formData.foundedYear} onChange={(v) => setField("foundedYear", v)} options={years} />
-          </div>
-        </div>
       </div>
 
       {/* About the Institute (renamed from About the Company) */}
@@ -485,11 +449,7 @@ const SchoolProfile = () => {
               value={formData.busService}
               onChange={(v) => setField("busService", v)}
               placeholder="Select option"
-              options={[
-                { label: "Yes — Bus service available for staff", value: "Yes" },
-                { label: "No — No transport service", value: "No" },
-                { label: "Partial — Available on selected routes", value: "Partial" },
-              ]}
+              options={busServiceOptions}
             />
           </Field>
         </div>
