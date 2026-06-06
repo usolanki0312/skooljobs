@@ -4,19 +4,18 @@ import {
   ArrowLeft, PauseCircle, Pencil, PlayCircle,
   Send, Trash2, X, XCircle, Share2,
 } from "lucide-react";
-import {
-  subjects, schoolExperienceOptions as experienceOptions,
-  employmentTypes, statusChipClass,
-} from "../../lib/schooldata";
+import { statusChipClass } from "../../lib/schooldata";
+import postjob from "../../../dropdown/School_module/postjob.json";
 import { inputClass, labelClass } from "../../lib/formStyles";
 import Select from "../../components/ui/Select";
- 
-const salaryRanges = [
-  "Less than 1 Lac", "1 Lac – 1.5 Lac", "1.5 Lac – 2 Lac", "2 Lac – 3 Lac",
-  "3 Lac – 4 Lac", "4 Lac – 5 Lac", "5 Lac – 7 Lac", "7 Lac – 10 Lac",
-  "10 Lac – 15 Lac", "15 Lac+",
-];
- 
+
+const {
+  Subject: subjects,
+  Experience_required: experienceOptions,
+  Employment_type: employmentTypes,
+  Salary_range: salaryRanges,
+} = postjob;
+
 const jobStatusChip = {
   Active: "bg-green-50 text-green-600",
   Draft:  "bg-amber-50 text-amber-600",

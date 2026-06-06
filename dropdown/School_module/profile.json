@@ -1,0 +1,137 @@
+{
+  "Sector": [
+    "Schools & Institutions",
+    "Colleges & Universities",
+    "Coaching Centers",
+    "EdTech",
+    "Government",
+    "Private",
+    "Other"
+  ],
+  "Medium": [
+    "English",
+    "Hindi",
+    "Gujarati",
+    "Marathi",
+    "Telugu",
+    "Tamil",
+    "Bilingual",
+    "Other"
+  ],
+  "Level": [
+    "Primary",
+    "Middle",
+    "Secondary",
+    "Senior Secondary",
+    "All Levels"
+  ],
+  "Board": [
+    "CBSE",
+    "ICSE",
+    "State Board",
+    "IB (International Baccalaureate)",
+    "IGCSE / Cambridge",
+    "NIOS",
+    "Other"
+  ],
+  "Industry": [
+    "Schools & Institutions",
+    "Colleges & Universities",
+    "EdTech",
+    "Coaching Centers",
+    "Other"
+  ],
+  "Country": [
+    "India",
+    "USA",
+    "UK",
+    "Canada",
+    "Australia",
+    "UAE",
+    "Singapore",
+    "Other"
+  ],
+  "Indian_state": [
+    "Andhra Pradesh",
+    "Arunachal Pradesh",
+    "Assam",
+    "Bihar",
+    "Chhattisgarh",
+    "Goa",
+    "Gujarat",
+    "Haryana",
+    "Himachal Pradesh",
+    "Jharkhand",
+    "Karnataka",
+    "Kerala",
+    "Madhya Pradesh",
+    "Maharashtra",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Odisha",
+    "Punjab",
+    "Rajasthan",
+    "Sikkim",
+    "Tamil Nadu",
+    "Telangana",
+    "Tripura",
+    "Uttar Pradesh",
+    "Uttarakhand",
+    "West Bengal",
+    "Delhi",
+    "Jammu & Kashmir",
+    "Ladakh",
+    "Andaman & Nicobar Islands",
+    "Chandigarh",
+    "Dadra & Nagar Haveli",
+    "Daman & Diu",
+    "Lakshadweep",
+    "Puducherry"
+  ],
+  "Student_count": [
+    "Less than 100",
+    "100 - 200",
+    "200 - 300",
+    "300 - 500",
+    "500 - 1000",
+    "1000 - 2000",
+    "2000+"
+  ],
+  "Students_per_class": [
+    "10 - 20 students",
+    "20 - 30 students",
+    "30 - 40 students",
+    "40 - 50 students",
+    "50+ students"
+  ],
+  "Public_view": ["Yes", "No"],
+  "Bus_service": [
+    { "label": "Yes — Bus service available for staff", "value": "Yes" },
+    { "label": "No — No transport service", "value": "No" },
+    { "label": "Partial — Available on selected routes", "value": "Partial" }
+  ],
+  "School_type": [
+    "Public School",
+    "Private School",
+    "International School",
+    "Boarding School",
+    "Day School",
+    "Co-Ed School",
+    "Girls School",
+    "Boys School",
+    "Special Education School",
+    "Other"
+  ],
+  "Affiliation_status": ["Affiliated", "Pending Affiliation", "Not Affiliated"],
+  "Staff_strength": ["1 - 10", "11 - 25", "26 - 50", "51 - 100", "101 - 200", "200+"],
+  "Student_strength": [
+    "Less than 100",
+    "100 - 500",
+    "500 - 1000",
+    "1000 - 2000",
+    "2000 - 5000",
+    "5000+"
+  ]
+}

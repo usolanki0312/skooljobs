@@ -1,6 +1,8 @@
 import { X } from "lucide-react";
 import SectionCard from "./SectionCard";
-import { REQUIRED_SKILLS, TECHNICAL_SKILLS } from "../../lib/postjobOptions";
+import postjob from "../../../dropdown/School_module/postjob.json";
+
+const { Required_skill: REQUIRED_SKILLS, Technical_skill: TECHNICAL_SKILLS } = postjob;
 
 const SkillPicker = ({ label, allSkills, selected, onToggle }) => (
   <div>

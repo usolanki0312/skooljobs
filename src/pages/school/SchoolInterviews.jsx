@@ -5,10 +5,9 @@ import {
   PhoneCall, Video, XCircle, X,
 } from "lucide-react";
 import Select from "../../components/ui/Select";
+import interviewsOptions from "../../../dropdown/School_module/interviews.json";
 
-const DURATIONS = ["15 Minutes", "30 Minutes", "45 Minutes", "60 Minutes", "90 Minutes"];
-const ROUNDS = ["1st Round", "2nd Round", "Technical Round", "HR Round", "Final Round"];
-const STATUSES = ["Scheduled", "Confirmed", "Completed", "Cancelled"];
+const { Duration: DURATIONS, Round: ROUNDS, Status: STATUSES } = interviewsOptions;
 
 // Online meeting platforms. WhatsApp Video Call uses the candidate's registered
 // number, so it does NOT need a meeting link.

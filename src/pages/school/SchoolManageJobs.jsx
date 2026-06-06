@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { ChevronRight, PlusCircle, Search, Share2 } from "lucide-react";
 import Select from "../../components/ui/Select";
+import managejobsOptions from "../../../dropdown/School_module/managejobs.json";
+
+const { Job_status: jobStatusOptions } = managejobsOptions;
 
 const jobStatusChip = {
   Active: "bg-green-50 text-green-600",
@@ -59,7 +62,7 @@ const SchoolManageJobs = () => {
           value={statusFilter}
           onChange={setStatusFilter}
           placeholder="All Status"
-          options={["Active", "Paused", "Draft", "Closed"]}
+          options={jobStatusOptions}
           className="min-w-44 rounded-2xl border border-borderColor bg-white px-4 py-3 text-sm shadow-sm outline-none focus:border-primary"
         />
       </div>

@@ -1,43 +1,17 @@
 import MinMaxInput from "./MinMaxInput";
 import SectionCard from "./SectionCard";
 import Select from "../ui/Select";
-import { COMPENSATION_STRUCTURES } from "../../lib/postjobOptions";
+import postjob from "../../../dropdown/School_module/postjob.json";
 
-const CONTRACT_DURATIONS = [
-  "3 Months",
-  "6 Months",
-  "9 Months",
-  "1 Year",
-  "2 Years",
-];
-const HOURS_PER_WEEK = [
-  "5-10 Hours",
-  "10-20 Hours",
-  "20-30 Hours",
-  "30-40 Hours",
-];
-const WFH_DAYS = ["1 Day/Week", "2-3 Days/Week", "3-4 Days/Week"];
-const OFFICE_DAYS = [
-  "1 Day/Week",
-  "2-3 Days/Week",
-  "3-4 Days/Week",
-  "5 Days/Week",
-];
-const TIMEZONES = [
-  "India (IST)",
-  "UK (GMT)",
-  "USA (EST)",
-  "USA (PST)",
-  "UAE (GST)",
-  "Singapore (SGT)",
-];
-const INTERNSHIP_DURATIONS = [
-  "1 Month",
-  "2 Months",
-  "3 Months",
-  "6 Months",
-  "1 Year",
-];
+const {
+  Compensation_structure: COMPENSATION_STRUCTURES,
+  Contract_duration: CONTRACT_DURATIONS,
+  Hours_per_week: HOURS_PER_WEEK,
+  Wfh_days: WFH_DAYS,
+  Office_days: OFFICE_DAYS,
+  Timezone: TIMEZONES,
+  Internship_duration: INTERNSHIP_DURATIONS,
+} = postjob;
 
 const selectCls =
   "w-full rounded-xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10";

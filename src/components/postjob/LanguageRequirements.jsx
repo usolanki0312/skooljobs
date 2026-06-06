@@ -2,9 +2,11 @@ import { Plus, Trash2, Info, HelpCircle } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import SectionCard from "./SectionCard";
 import Select from "../ui/Select";
-import {
-  INDIAN_LANGUAGES, FOREIGN_LANGUAGES, PROFICIENCY_LEVELS,
-} from "../../lib/postjobOptions";
+import common from "../../../dropdown/common/common.json";
+import postjob from "../../../dropdown/School_module/postjob.json";
+
+const { Indian_language: INDIAN_LANGUAGES, Foreign_language: FOREIGN_LANGUAGES } = common;
+const { Proficiency_level: PROFICIENCY_LEVELS } = postjob;
 
 const LanguageRequirements = ({ form, setField }) => {
   const [showPicker, setShowPicker] = useState(false);

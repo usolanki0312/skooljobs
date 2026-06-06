@@ -22,7 +22,24 @@ import {
 } from "lucide-react";
 import BackButton from "../../components/backbutton";
 import Select from "../../components/ui/Select";
-import { qualificationOptions, experienceOptions, pinStateMap, languages as languageOptions, languageStatuses, nationalities } from "../../lib/teacherdata";
+import { pinStateMap } from "../../lib/teacherdata";
+import qualificationOptions from "../../../dropdown/Teacher_module/qualifications.json";
+import experienceOptions from "../../../dropdown/Teacher_module/experience.json";
+import common from "../../../dropdown/common/common.json";
+import myprofile from "../../../dropdown/Teacher_module/myprofile.json";
+
+const { Language: languageOptions, Nationality: nationalities } = common;
+const {
+  Title: TITLES,
+  Current_job_title: CURRENT_JOB_TITLES,
+  Main_subject: MAIN_SUBJECTS,
+  Additional_subject: ALL_ADDITIONAL_SUBJECTS,
+  Class: CLASSES_TAUGHT,
+  Language_proficiency: languageStatuses,
+  Achievement_award_type: AWARD_TYPES,
+  Achievement_course_type: COURSE_TYPES,
+  Resume_format: RESUME_FORMATS,
+} = myprofile;
 
 const navItems = [
   { id: "basic", label: "My Profile", icon: User },
@@ -254,7 +271,6 @@ const TeacherProfile = () => {
     ];
   });
 
-  const ALL_ADDITIONAL_SUBJECTS = ["History", "Geography", "Art", "Music", "Hindi", "Social Science", "Computer", "Physics", "Chemistry", "Biology"];
   const [selectedAdditionalSubjects, setSelectedAdditionalSubjects] = useState(() => {
     const saved = localStorage.getItem("skooljobs_teacher_additional_subjects");
     if (saved) {
@@ -857,7 +873,7 @@ const TeacherProfile = () => {
           <Select
             value={teacherData.title}
             onChange={(v) => setField("title", v)}
-            options={["Mr", "Mrs", "Miss", "Ms", "Dr", "Prof"]}
+            options={TITLES}
             className={compactInputClass}
           />
         </Field>
@@ -903,7 +919,7 @@ const TeacherProfile = () => {
             value={teacherData.currentJob}
             onChange={(v) => setField("currentJob", v)}
             placeholder="Select..."
-            options={["Primary Teacher", "Mathematics Teacher", "Science Teacher", "English Teacher", "Coordinator"]}
+            options={CURRENT_JOB_TITLES}
           />
         </Field>
         <Field label="Main Subject">
@@ -911,7 +927,7 @@ const TeacherProfile = () => {
             value={teacherData.mainSubject}
             onChange={(v) => setField("mainSubject", v)}
             placeholder="Select Subject"
-            options={["Mathematics", "Science", "English", "Computer"]}
+            options={MAIN_SUBJECTS}
           />
           <p className="mt-2 text-xs text-slate-500">Only one can be selected.</p>
         </Field>
@@ -996,7 +1012,7 @@ const TeacherProfile = () => {
                 value={teacherData.classTaughtOne}
                 onChange={(v) => setField("classTaughtOne", v)}
                 placeholder="Select..."
-                options={["Class A", "Class B", "Class C", "Class 10", "Class 12"]}
+                options={CLASSES_TAUGHT}
               />
             </div>
             <span className="text-sm font-bold text-slate-500">(2)</span>
@@ -1005,7 +1021,7 @@ const TeacherProfile = () => {
                 value={teacherData.classTaughtTwo}
                 onChange={(v) => setField("classTaughtTwo", v)}
                 placeholder="Select..."
-                options={["Class A", "Class B", "Class C", "Class 10", "Class 12"]}
+                options={CLASSES_TAUGHT}
               />
             </div>
           </div>
@@ -1265,7 +1281,7 @@ const TeacherProfile = () => {
                     }));
                   }}
                   placeholder="Select Class"
-                  options={["Class 10", "Class 12"]}
+                  options={qualificationOptions.class_levels}
                 />
               </Field>
               {qualificationDraft.classLevel && (
@@ -1530,7 +1546,7 @@ const TeacherProfile = () => {
                 value={resumeData.awardType}
                 onChange={(v) => setResumeData((prev) => ({ ...prev, awardType: v }))}
                 placeholder="Select category"
-                options={["Award", "Recognition", "Publication"]}
+                options={AWARD_TYPES}
               />
             </Field>
             <Field label="Name of the Award">
@@ -1578,7 +1594,7 @@ const TeacherProfile = () => {
                 value={resumeData.courseType}
                 onChange={(v) => setResumeData((prev) => ({ ...prev, courseType: v }))}
                 placeholder="Select type"
-                options={["Workshop", "Certification", "Training"]}
+                options={COURSE_TYPES}
               />
             </Field>
             <Field label="Name of the Course">
@@ -1686,7 +1702,7 @@ const TeacherProfile = () => {
               <Select
                 value={resumeDraft.format}
                 onChange={(v) => setResumeDraft((prev) => ({ ...prev, format: v }))}
-                options={["PDF", "Text"]}
+                options={RESUME_FORMATS}
               />
             </Field>
             {resumeMode === "upload" && (
@@ -1800,7 +1816,7 @@ const TeacherProfile = () => {
                             }));
                           }}
                           placeholder="Select Class"
-                          options={["Class 10", "Class 12"]}
+                          options={qualificationOptions.class_levels}
                         />
                       </Field>
                       {qualificationDraft.classLevel && (
@@ -1969,7 +1985,7 @@ const TeacherProfile = () => {
                         value={resumeData.awardType}
                         onChange={(v) => setResumeData((prev) => ({ ...prev, awardType: v }))}
                         placeholder="Select category"
-                        options={["Award", "Recognition", "Publication"]}
+                        options={AWARD_TYPES}
                       />
                     </Field>
                     <Field label="Name of the Award">
@@ -2005,7 +2021,7 @@ const TeacherProfile = () => {
                         value={resumeData.courseType}
                         onChange={(v) => setResumeData((prev) => ({ ...prev, courseType: v }))}
                         placeholder="Select type"
-                        options={["Workshop", "Certification", "Training"]}
+                        options={COURSE_TYPES}
                       />
                     </Field>
                     <Field label="Name of the Course">

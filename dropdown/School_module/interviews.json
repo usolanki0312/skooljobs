@@ -1,0 +1,17 @@
+{
+  "Duration": [
+    "15 Minutes",
+    "30 Minutes",
+    "45 Minutes",
+    "60 Minutes",
+    "90 Minutes"
+  ],
+  "Round": [
+    "1st Round",
+    "2nd Round",
+    "Technical Round",
+    "HR Round",
+    "Final Round"
+  ],
+  "Status": ["Scheduled", "Confirmed", "Completed", "Cancelled"]
+}

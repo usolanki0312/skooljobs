@@ -1,10 +1,16 @@
 import { X } from "lucide-react";
 import SectionCard from "./SectionCard";
 import Select from "../ui/Select";
-import {
-  MIN_QUALIFICATIONS, ADDITIONAL_QUALIFICATIONS, CERTIFICATIONS,
-  EXPERIENCE_OPTIONS, PREFERRED_SCHOOL_TYPES, STUDENT_LEVELS,
-} from "../../lib/postjobOptions";
+import postjob from "../../../dropdown/School_module/postjob.json";
+
+const {
+  Min_qualification: MIN_QUALIFICATIONS,
+  Additional_qualification: ADDITIONAL_QUALIFICATIONS,
+  Certification: CERTIFICATIONS,
+  Experience: EXPERIENCE_OPTIONS,
+  Preferred_school_type: PREFERRED_SCHOOL_TYPES,
+  Student_level: STUDENT_LEVELS,
+} = postjob;
 
 const TagMultiSelect = ({ label, options, selected, onToggle }) => (
   <div>

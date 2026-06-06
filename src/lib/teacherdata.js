@@ -1,3 +1,8 @@
+// NOTE: Dropdown option lists have moved to /dropdown/Teacher_module/*.json and
+// /dropdown/common/common.json (see dropdown-migration-plan.md). This file now keeps
+// only helpers, mock data, the PIN→state lookup, and a few currently-unused dropdown
+// exports left in place pending review (see dropdown-cleanup-report.md).
+
 export const formatRelativeTime = (isoDate) => {
   const diff = Date.now() - new Date(isoDate).getTime();
   const mins = Math.floor(diff / 60000);
@@ -40,152 +45,7 @@ export const TeacherData = {
   ],
 };
 
-// ─── Personal Info options ───────────────────────────────────────────────────
-
-export const titles = ["Mr", "Ms", "Mrs", "Dr", "Prof"];
-export const nationalities = [
-  "Indian", "Afghan", "Albanian", "Algerian", "American", "Andorran", "Angolan",
-  "Anguillan", "Argentine", "Armenian", "Australian", "Austrian", "Azerbaijani",
-  "Bahamian", "Bahraini", "Bangladeshi", "Barbadian", "Belarusian", "Belgian",
-  "Belizean", "Beninese", "Bermudian", "Bhutanese", "Bolivian", "Botswanan",
-  "Brazilian", "British", "British Virgin Islander", "Bruneian", "Bulgarian",
-  "Burkinan", "Burmese", "Burundian", "Cambodian", "Cameroonian", "Canadian",
-  "Cape Verdean", "Cayman Islander", "Central African", "Chadian", "Chilean",
-  "Chinese", "Citizen of Antigua and Barbuda", "Citizen of Bosnia and Herzegovina",
-  "Citizen of Guinea-Bissau", "Citizen of Kiribati", "Citizen of Seychelles",
-  "Citizen of the Dominican Republic", "Citizen of Vanuatu", "Colombian", "Comoran",
-  "Congolese (Congo)", "Congolese (DRC)", "Cook Islander", "Costa Rican", "Croatian",
-  "Cuban", "Cymraes", "Cymro", "Cypriot", "Czech", "Danish", "Djiboutian",
-  "Dominican", "Dutch", "East Timorese", "Ecuadorean", "Egyptian", "Emirati",
-  "English", "Equatorial Guinean", "Eritrean", "Estonian", "Ethiopian", "Faroese",
-  "Fijian", "Filipino", "Finnish", "French", "Gabonese", "Gambian", "Georgian",
-  "German", "Ghanaian", "Gibraltarian", "Greek", "Greenlandic", "Grenadian",
-  "Guamanian", "Guatemalan", "Guinean", "Guyanese", "Haitian", "Honduran",
-  "Hong Konger", "Hungarian", "Icelandic", "Indonesian", "Iranian", "Iraqi",
-  "Irish", "Israeli", "Italian", "Ivorian", "Jamaican", "Japanese", "Jordanian",
-  "Kazakh", "Kenyan", "Kittitian", "Kosovan", "Kuwaiti", "Kyrgyz", "Lao",
-  "Latvian", "Lebanese", "Liberian", "Libyan", "Liechtenstein citizen", "Lithuanian",
-  "Luxembourger", "Macanese", "Macedonian", "Malagasy", "Malawian", "Malaysian",
-  "Maldivian", "Malian", "Maltese", "Marshallese", "Martiniquais", "Mauritanian",
-  "Mauritian", "Mexican", "Micronesian", "Moldovan", "Monegasque", "Mongolian",
-  "Montenegrin", "Montserratian", "Moroccan", "Mosotho", "Mozambican", "Namibian",
-  "Nauruan", "Nepalese", "New Zealander", "Nicaraguan", "Nigerian", "Nigerien",
-  "Niuean", "North Korean", "Northern Irish", "Norwegian", "Omani", "Pakistani",
-  "Palauan", "Palestinian", "Panamanian", "Papua New Guinean", "Paraguayan",
-  "Peruvian", "Pitcairn Islander", "Polish", "Portuguese", "Prydeinig",
-  "Puerto Rican", "Qatari", "Romanian", "Russian", "Rwandan", "Salvadorean",
-  "Sammarinese", "Samoan", "Sao Tomean", "Saudi Arabian", "Scottish", "Senegalese",
-  "Serbian", "Sierra Leonean", "Singaporean", "Slovak", "Slovenian",
-  "Solomon Islander", "Somali", "South African", "South Korean", "South Sudanese",
-  "Spanish", "Sri Lankan", "St Helenian", "St Lucian", "Stateless", "Sudanese",
-  "Surinamese", "Swazi", "Swedish", "Swiss", "Syrian", "Taiwanese", "Tajik",
-  "Tanzanian", "Thai", "Togolese", "Tongan", "Trinidadian", "Tristanian",
-  "Tunisian", "Turkish", "Turkmen", "Turks and Caicos Islander", "Tuvaluan",
-  "Ugandan", "Ukrainian", "Uruguayan", "Uzbek", "Vatican citizen", "Venezuelan",
-  "Vietnamese", "Vincentian", "Wallisian", "Welsh", "Yemeni", "Zambian", "Zimbabwean",
-];
-export const jobTypes = ["Full Time", "Part Time", "Freelance", "Online", "Temporary", "Any"];
-export const experienceYears = [
-  "Fresh", "1 yr", "2 yrs", "3 yrs", "4 yrs", "5 yrs",
-  "6 yrs", "7 yrs", "8 yrs", "9 yrs", "10+ yrs",
-];
-export const teachingMediums = ["English", "Hindi", "Local Language", "Foreign Language", "Others"];
-export const expectedSalaryRanges = ["10k-15k", "15k-25k", "25k-40k", "40k-60k", "60k+", "Negotiable"];
-export const languages = ["English", "Hindi", "French", "Spanish", "Urdu", "Bengali", "Tamil", "Telugu", "Marathi", "Other"];
-export const languageStatuses = [
-  "Fluency enough to teach",
-  "Native Speaker",
-  "Basic Knowledge",
-  "Professional Working Proficiency",
-];
-export const teachingSubjects = [
-  "Mathematics", "Science", "English", "Computer", "Hindi",
-  "Social Science", "History", "Geography", "Art", "Music",
-  "Physics", "Chemistry", "Biology", "Economics", "Other",
-];
-export const classesList = ["Class A", "Class B", "Class C", "Class 10", "Class 12"];
-
-// ─── Qualification options ───────────────────────────────────────────────────
-
-export const qualificationOptions = {
-  degrees: [
-    "Secondary (10th)",
-    "Senior Secondary (12th)",
-    "Bachelor's Degree",
-    "Master's Degree",
-    "MPhil",
-    "PhD / Doctorate",
-    "Post Doctorate",
-    "Professional Degree",
-    "Other",
-  ],
-  courses: [
-    "General Secondary Education",
-    "Science",
-    "Commerce",
-    "Arts / Humanities",
-    "Vocational",
-    "BA", "BSc", "BCom", "BBA", "BCA", "BTech", "BE", "B.Ed",
-    "MA", "MSc", "MCom", "MBA", "MCA", "MTech", "M.Ed",
-    "Research Degree",
-    "Subject Specialization",
-    "Other",
-  ],
-  mediums: [
-    "English",
-    "Hindi",
-    "Bilingual (English + Hindi)",
-    "Urdu", "Punjabi", "Bengali", "Tamil", "Telugu",
-    "Marathi", "Gujarati", "Kannada", "Malayalam", "Odia",
-    "Other",
-  ],
-  modes: ["Regular", "Part Time", "Distance Learning", "Online", "Correspondence", "Open University", "Hybrid"],
-  universities: [
-    "University of Delhi", "Mumbai University", "IIT Delhi", "JNU",
-    "Lucknow University", "Anna University", "IGNOU", "Other",
-  ],
-  colleges: [
-    "Hindu College", "Miranda House", "IIT Bombay",
-    "Amity University", "Christ University", "Other",
-  ],
-};
-
-// ─── Experience options ──────────────────────────────────────────────────────
-
-export const experienceOptions = {
-  boards: [
-    "CBSE", "ICSE", "ISC", "State Board",
-    "IB (International Baccalaureate)", "IGCSE / Cambridge",
-    "NIOS", "Open School", "International Board", "Other",
-  ],
-  subjects: [
-    "Accountancy", "Biology", "Business Studies", "Chemistry",
-    "Economics", "English", "Geography", "History And Civics",
-    "Home Science", "Maths", "Philosophy", "Physics",
-    "Pol.Science", "Psychology", "Science", "Social Science",
-    "Sociology", "Art & Painting", "Hindi",
-  ],
-  posts: [
-    "PRT (Primary Teacher)",
-    "TGT (Trained Graduate Teacher)",
-    "PGT (Post Graduate Teacher)",
-    "Assistant Teacher", "Subject Teacher", "Class Teacher",
-    "Senior Teacher", "Head Teacher", "Vice Principal", "Principal",
-    "Academic Coordinator", "Curriculum Coordinator",
-    "Lecturer", "Professor", "Tutor", "Special Educator",
-    "Lab Instructor", "Counselor", "Sports Coach",
-    "Music Teacher", "Art Teacher", "Computer Instructor",
-    "Teaching Assistant", "Administrative Head", "Other",
-  ],
-  reasons: [
-    "Career Growth", "Better Opportunity", "Higher Salary",
-    "Relocation", "Personal Reasons", "Contract Completed",
-    "School Closure", "Family Reasons", "Health Reasons",
-    "Higher Studies", "Role Change", "Work-Life Balance", "Other",
-  ],
-};
-
-// ─── PIN → State mapping ─────────────────────────────────────────────────────
+// ─── PIN → State mapping (lookup, not a dropdown) ────────────────────────────
 
 export const pinStateMap = {
   11: "Delhi", 12: "Haryana", 13: "Haryana", 14: "Punjab",

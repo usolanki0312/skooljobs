@@ -1,4 +1,9 @@
-// ─── School/Org Profile sections ────────────────────────────────────────────
+// NOTE: Dropdown option lists have moved to /dropdown/School_module/*.json and
+// /dropdown/common/common.json (see dropdown-migration-plan.md). This file now keeps
+// only computed pickers, mock/dashboard data, style maps, and a few currently-unused
+// dropdown exports left in place pending review (see dropdown-cleanup-report.md).
+
+// ─── School/Org Profile sections (section-tab config, not a dropdown) ─────────
 
 export const profileSections = [
   { id: "basic", label: "Basic Information" },
@@ -7,110 +12,11 @@ export const profileSections = [
   { id: "address", label: "Address / Location" },
 ];
 
-// ─── Basic info dropdowns ────────────────────────────────────────────────────
-
-export const sectors = [
-  "Schools & Institutions",
-  "Colleges & Universities",
-  "Coaching Centers",
-  "EdTech",
-  "Government",
-  "Private",
-  "Other",
-];
-
-export const schoolTypes = [
-  "Public School",
-  "Private School",
-  "International School",
-  "Boarding School",
-  "Day School",
-  "Co-Ed School",
-  "Girls School",
-  "Boys School",
-  "Special Education School",
-  "Other",
-];
-
-export const affiliationStatus = ["Affiliated", "Pending Affiliation", "Not Affiliated"];
-
-// ─── Other info dropdowns ────────────────────────────────────────────────────
-
-export const schoolMediums = ["English", "Hindi", "Gujarati", "Marathi", "Telugu", "Tamil", "Bilingual", "Other"];
-
-export const levels = ["Primary", "Middle", "Secondary", "Senior Secondary", "All Levels"];
-
-export const boards = [
-  "CBSE",
-  "ICSE",
-  "State Board",
-  "IB (International Baccalaureate)",
-  "IGCSE / Cambridge",
-  "NIOS",
-  "Other",
-];
-
-export const industries = [
-  "Schools & Institutions",
-  "Colleges & Universities",
-  "EdTech",
-  "Coaching Centers",
-  "Other",
-];
-
-export const staffStrength = [
-  "1 - 10",
-  "11 - 25",
-  "26 - 50",
-  "51 - 100",
-  "101 - 200",
-  "200+",
-];
-
-export const studentStrength = [
-  "Less than 100",
-  "100 - 500",
-  "500 - 1000",
-  "1000 - 2000",
-  "2000 - 5000",
-  "5000+",
-];
-
-// ─── Location dropdowns ──────────────────────────────────────────────────────
-
-export const countries = ["India", "USA", "UK", "Canada", "Australia", "Other"];
-
-export const indianStates = [
-  "Andhra Pradesh", "Assam", "Bihar", "Chhattisgarh", "Delhi", "Gujarat",
-  "Haryana", "Himachal Pradesh", "Jammu & Kashmir", "Jharkhand", "Karnataka",
-  "Kerala", "Madhya Pradesh", "Maharashtra", "Odisha", "Punjab", "Rajasthan",
-  "Tamil Nadu", "Telangana", "Uttar Pradesh", "Uttarakhand", "West Bengal",
-];
-
-// ─── Date picker arrays ──────────────────────────────────────────────────────
+// ─── Date picker arrays (computed) ───────────────────────────────────────────
 
 export const days = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0"));
 export const months = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0"));
 export const years = Array.from({ length: 76 }, (_, i) => String(2025 - i));
-
-// ─── Job posting dropdowns ───────────────────────────────────────────────────
-
-export const subjects = [
-  "Mathematics", "Science", "English", "Hindi", "Social Science", "Computer",
-  "Physics", "Chemistry", "Biology", "Economics", "History", "Geography",
-  "Art", "Music", "Physical Education", "Other",
-];
-
-export const schoolExperienceOptions = [
-  "0 - 1 Year (Fresher)",
-  "1 - 3 Years",
-  "3 - 5 Years",
-  "5 - 8 Years",
-  "8+ Years",
-  "Any Experience",
-];
-
-export const employmentTypes = ["Full Time", "Part Time", "Contract", "Hybrid", "Remote", "Internship"];
 
 // ─── Dashboard mock data ─────────────────────────────────────────────────────
 
