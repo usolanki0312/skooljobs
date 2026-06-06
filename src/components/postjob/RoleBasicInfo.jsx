@@ -1,5 +1,6 @@
 import { MapPin } from "lucide-react";
 import SectionCard from "./SectionCard";
+import Select from "../ui/Select";
 import {
   ROLE_CATEGORIES, JOB_TITLE_GROUPS, SUBJECTS_BY_JOB_TITLE, JOINING_TIMELINES,
 } from "../../lib/postjobOptions";
@@ -39,33 +40,25 @@ const RoleBasicInfo = ({ form, setField }) => {
             <label className="mb-1.5 block text-xs font-bold text-slate-600">
               Role Category <span className="text-red-500">*</span>
             </label>
-            <select
+            <Select
               value={form.roleCategory}
-              onChange={(e) => handleRoleChange(e.target.value)}
-              className={inputCls}
-            >
-              <option value="">Select Category</option>
-              {ROLE_CATEGORIES.map((r) => <option key={r}>{r}</option>)}
-            </select>
+              onChange={handleRoleChange}
+              placeholder="Select Category"
+              options={ROLE_CATEGORIES}
+            />
           </div>
 
           <div>
             <label className="mb-1.5 block text-xs font-bold text-slate-600">
               Job Title <span className="text-red-500">*</span>
             </label>
-            <select
+            <Select
               value={form.jobTitle}
-              onChange={(e) => handleJobTitleChange(e.target.value)}
-              className={inputCls}
+              onChange={handleJobTitleChange}
+              placeholder={form.roleCategory ? "Select Job Title" : "Select Role Category first"}
+              options={jobTitleList}
               disabled={!form.roleCategory}
-            >
-              <option value="">
-                {form.roleCategory ? "Select Job Title" : "Select Role Category first"}
-              </option>
-              {jobTitleList.map((t) => (
-                <option key={t} value={t}>{t}</option>
-              ))}
-            </select>
+            />
             {form.jobTitle === "Other" && (
               <input
                 type="text"
@@ -82,25 +75,21 @@ const RoleBasicInfo = ({ form, setField }) => {
             <label className="mb-1.5 block text-xs font-bold text-slate-600">
               Subject / Department <span className="text-red-500">*</span>
             </label>
-            <select
+            <Select
               value={form.subject}
-              onChange={(e) => setField("subject", e.target.value)}
-              className={inputCls}
-              disabled={!form.jobTitle || !subjectList.length}
-            >
-              <option value="">
-                {!form.roleCategory
+              onChange={(v) => setField("subject", v)}
+              placeholder={
+                !form.roleCategory
                   ? "Select Role Category first"
                   : !form.jobTitle
-                  ? "Select Job Title first"
-                  : subjectList.length
-                  ? "Select Subject / Department"
-                  : "No subjects available"}
-              </option>
-              {subjectList.map((s) => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
+                    ? "Select Job Title first"
+                    : subjectList.length
+                      ? "Select Subject / Department"
+                      : "No subjects available"
+              }
+              options={subjectList}
+              disabled={!form.jobTitle || !subjectList.length}
+            />
             {form.subject === "Other" && (
               <input
                 type="text"
@@ -158,14 +147,12 @@ const RoleBasicInfo = ({ form, setField }) => {
             <label className="mb-1.5 block text-xs font-bold text-slate-600">
               Joining Timeline <span className="text-red-500">*</span>
             </label>
-            <select
+            <Select
               value={form.joiningTimeline}
-              onChange={(e) => setField("joiningTimeline", e.target.value)}
-              className={inputCls}
-            >
-              <option value="">Select Timeline</option>
-              {JOINING_TIMELINES.map((t) => <option key={t}>{t}</option>)}
-            </select>
+              onChange={(v) => setField("joiningTimeline", v)}
+              placeholder="Select Timeline"
+              options={JOINING_TIMELINES}
+            />
           </div>
         </div>
 

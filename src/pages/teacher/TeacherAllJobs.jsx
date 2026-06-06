@@ -3,6 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import { Bell, Filter } from "lucide-react";
 import { jobsData } from "../../lib/teacherdata";
 import TeacherJobCard from "../../components/TeacherJobCard";
+import Select from "../../components/ui/Select";
 
 const TeacherAllJobs = () => {
   const { appliedJobs, savedJobs, handleApply, handleSave } = useOutletContext();
@@ -34,14 +35,20 @@ const TeacherAllJobs = () => {
           <h2 className="text-2xl font-bold text-primary">All Teaching Jobs</h2>
           <div className="flex items-center gap-3">
             <Filter size={16} className="text-slate-400" />
-            <select value={jobFilter.subject} onChange={(e) => setJobFilter((p) => ({ ...p, subject: e.target.value }))} className="rounded-xl border border-borderColor bg-light px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-primary">
-              <option value="">All Subjects</option>
-              {subjectOptions.map((s) => <option key={s}>{s}</option>)}
-            </select>
-            <select value={jobFilter.type} onChange={(e) => setJobFilter((p) => ({ ...p, type: e.target.value }))} className="rounded-xl border border-borderColor bg-light px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-primary">
-              <option value="">All Types</option>
-              {typeOptions.map((t) => <option key={t}>{t}</option>)}
-            </select>
+            <Select
+              value={jobFilter.subject}
+              onChange={(v) => setJobFilter((p) => ({ ...p, subject: v }))}
+              placeholder="All Subjects"
+              options={subjectOptions}
+              className="min-w-40 rounded-xl border border-borderColor bg-light px-3 py-2 text-sm font-bold focus:border-primary"
+            />
+            <Select
+              value={jobFilter.type}
+              onChange={(v) => setJobFilter((p) => ({ ...p, type: v }))}
+              placeholder="All Types"
+              options={typeOptions}
+              className="min-w-36 rounded-xl border border-borderColor bg-light px-3 py-2 text-sm font-bold focus:border-primary"
+            />
           </div>
         </div>
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">

@@ -92,7 +92,7 @@ const MOCK_CREDENTIALS = [
 
 function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -100,15 +100,51 @@ function Login() {
     e.preventDefault();
     setErrorMessage("");
 
-    if (!email || !password) {
-      setErrorMessage("Please enter your email and password.");
+    if (!emailOrPhone || !password) {
+      setErrorMessage("Please enter your email/mobile and password.");
       return;
     }
 
-    // TODO: Replace hardcoded auth with backend API (see comment above MOCK_CREDENTIALS)
-    const match = MOCK_CREDENTIALS.find(
-      (c) => c.email === email && c.password === password,
-    );
+    // Load registered users and members from localStorage
+    const usersStr = localStorage.getItem("skooljobs_users");
+    const membersStr = localStorage.getItem("skooljobs_members");
+    const customUsers = usersStr ? JSON.parse(usersStr) : [];
+    const customMembers = membersStr ? JSON.parse(membersStr) : [];
+
+    // Combine all mock and custom users for validation
+    const allCredentials = [
+      ...MOCK_CREDENTIALS,
+      ...customUsers.map((u) => ({
+        email: u.email,
+        password: u.password,
+        user: u,
+      })),
+      ...customMembers.map((m) => ({
+        email: m.email,
+        password: m.password,
+        user: {
+          ...m,
+          role: "employer", // Route to school dashboard
+          isMember: true,
+        },
+      })),
+    ];
+
+    const inputClean = emailOrPhone.trim();
+    const match = allCredentials.find((c) => {
+      const dbEmail = c.email ? c.email.toLowerCase() : "";
+      const dbPhone = c.user?.phone ? c.user.phone.replace(/[\s+-]/g, "") : "";
+      const queryClean = inputClean.replace(/[\s+-]/g, "");
+
+      const emailMatches = dbEmail === inputClean.toLowerCase();
+      const phoneMatches =
+        dbPhone &&
+        queryClean &&
+        dbPhone.replace(/[\s+-]/g, "").endsWith(queryClean.replace(/[\s+-]/g, "")) &&
+        queryClean.length >= 10;
+
+      return (emailMatches || phoneMatches) && c.password === password;
+    });
 
     if (match) {
       localStorage.setItem("currentUser", JSON.stringify(match.user));
@@ -120,11 +156,11 @@ function Login() {
       return;
     }
 
-    setErrorMessage("Invalid email or password. Please try again.");
+    setErrorMessage("Invalid email/mobile or password. Please try again.");
   };
 
   return (
-    <AuthLayout title="Welcome to SkoolJobs">
+    <AuthLayout title="Welcome to SkoolJobs" activeTab="combined">
       <div>
         <p className="uppercase tracking-[2px] text-secondary text-[11px] font-bold">
           Welcome Back
@@ -136,12 +172,12 @@ function Login() {
 
       <form onSubmit={handleLogin} className="mt-8 space-y-4">
         <AuthInput
-          label="Email Address"
-          type="email"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="teacher@gmail.com"
+          label="Email Address or Mobile Number"
+          type="text"
+          name="emailOrPhone"
+          value={emailOrPhone}
+          onChange={(e) => setEmailOrPhone(e.target.value)}
+          placeholder="teacher@gmail.com or 9876543210"
         />
 
         <AuthInput

@@ -35,6 +35,7 @@ import {
   Users,
   X,
 } from "lucide-react";
+import Select from "../../components/ui/Select";
 
 const sidebarItems = [
   {
@@ -197,6 +198,9 @@ const SchoolProfile = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const setField = (name, value) =>
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
   const handleLogoUpload = (e) => {
     const file = e.target.files[0];
     if (file) setLogoImage(URL.createObjectURL(file));
@@ -348,15 +352,11 @@ const SchoolProfile = () => {
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Field label="Profile for Public View">
-          <select
-            name="publicView"
+          <Select
             value={formData.publicView}
-            onChange={handleChange}
-            className={inputClass}
-          >
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
+            onChange={(v) => setField("publicView", v)}
+            options={["Yes", "No"]}
+          />
         </Field>
         <Field label="Phone">
           <input
@@ -377,19 +377,12 @@ const SchoolProfile = () => {
           />
         </Field>
         <Field label="Sector" required>
-          <select
-            name="sector"
+          <Select
             value={formData.sector}
-            onChange={handleChange}
-            className={inputClass}
-          >
-            <option value="">Select Sector</option>
-            {sectors.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
+            onChange={(v) => setField("sector", v)}
+            placeholder="Select Sector"
+            options={sectors}
+          />
         </Field>
       </div>
 
@@ -397,44 +390,17 @@ const SchoolProfile = () => {
       <div>
         <label className={labelClass}>Founded Date</label>
         <div className="flex items-center gap-2">
-          <select
-            name="foundedDay"
-            value={formData.foundedDay}
-            onChange={handleChange}
-            className={`${inputClass} w-24`}
-          >
-            {days.map((d) => (
-              <option key={d} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
+          <div className="w-24">
+            <Select value={formData.foundedDay} onChange={(v) => setField("foundedDay", v)} options={days} />
+          </div>
           <span className="text-slate-400">/</span>
-          <select
-            name="foundedMonth"
-            value={formData.foundedMonth}
-            onChange={handleChange}
-            className={`${inputClass} w-24`}
-          >
-            {months.map((m) => (
-              <option key={m} value={m}>
-                {m}
-              </option>
-            ))}
-          </select>
+          <div className="w-24">
+            <Select value={formData.foundedMonth} onChange={(v) => setField("foundedMonth", v)} options={months} />
+          </div>
           <span className="text-slate-400">/</span>
-          <select
-            name="foundedYear"
-            value={formData.foundedYear}
-            onChange={handleChange}
-            className={`${inputClass} w-32`}
-          >
-            {years.map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
-            ))}
-          </select>
+          <div className="w-32">
+            <Select value={formData.foundedYear} onChange={(v) => setField("foundedYear", v)} options={years} />
+          </div>
         </div>
       </div>
 
@@ -487,35 +453,21 @@ const SchoolProfile = () => {
 
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           <Field label="Total Student Strength">
-            <select
-              name="totalStudents"
+            <Select
               value={formData.totalStudents}
-              onChange={handleChange}
-              className={inputClass}
-            >
-              <option value="">Select total students</option>
-              {studentCountOptions.map((o) => (
-                <option key={o} value={o}>
-                  {o}
-                </option>
-              ))}
-            </select>
+              onChange={(v) => setField("totalStudents", v)}
+              placeholder="Select total students"
+              options={studentCountOptions}
+            />
           </Field>
 
           <Field label="Students Per Class">
-            <select
-              name="studentsPerClass"
+            <Select
               value={formData.studentsPerClass}
-              onChange={handleChange}
-              className={inputClass}
-            >
-              <option value="">Select students per class</option>
-              {studentsPerClassOptions.map((o) => (
-                <option key={o} value={o}>
-                  {o}
-                </option>
-              ))}
-            </select>
+              onChange={(v) => setField("studentsPerClass", v)}
+              placeholder="Select students per class"
+              options={studentsPerClassOptions}
+            />
           </Field>
 
           <Field label="School Timings / Working Hours">
@@ -529,19 +481,16 @@ const SchoolProfile = () => {
           </Field>
 
           <Field label="Bus / Transport Service Available">
-            <select
-              name="busService"
+            <Select
               value={formData.busService}
-              onChange={handleChange}
-              className={inputClass}
-            >
-              <option value="">Select option</option>
-              <option value="Yes">Yes — Bus service available for staff</option>
-              <option value="No">No — No transport service</option>
-              <option value="Partial">
-                Partial — Available on selected routes
-              </option>
-            </select>
+              onChange={(v) => setField("busService", v)}
+              placeholder="Select option"
+              options={[
+                { label: "Yes — Bus service available for staff", value: "Yes" },
+                { label: "No — No transport service", value: "No" },
+                { label: "Partial — Available on selected routes", value: "Partial" },
+              ]}
+            />
           </Field>
         </div>
       </div>
@@ -609,19 +558,12 @@ const SchoolProfile = () => {
           {/* Founded Since — replaced slider with dropdown */}
           <div>
             <Field label="Established / Founded Since *">
-              <select
-                name="establishedYear"
+              <Select
                 value={formData.establishedYear}
-                onChange={handleChange}
-                className={inputClass}
-              >
-                <option value="">Select year of establishment</option>
-                {establishmentYears.map((y) => (
-                  <option key={y} value={y}>
-                    {y}
-                  </option>
-                ))}
-              </select>
+                onChange={(v) => setField("establishedYear", v)}
+                placeholder="Select year of establishment"
+                options={establishmentYears}
+              />
             </Field>
             {age !== null && age > 0 && (
               <p className="mt-1.5 text-xs text-slate-500">
@@ -634,51 +576,30 @@ const SchoolProfile = () => {
           </div>
 
           <Field label="Industry">
-            <select
-              name="industry"
+            <Select
               value={formData.industry}
-              onChange={handleChange}
-              className={inputClass}
-            >
-              {industries.map((i) => (
-                <option key={i} value={i}>
-                  {i}
-                </option>
-              ))}
-            </select>
+              onChange={(v) => setField("industry", v)}
+              options={industries}
+            />
           </Field>
 
           <Field label="Medium">
-            <select
-              name="medium"
+            <Select
               value={formData.medium}
-              onChange={handleChange}
-              className={inputClass}
-            >
-              <option value="">Select Medium</option>
-              {mediums.map((m) => (
-                <option key={m} value={m}>
-                  {m}
-                </option>
-              ))}
-            </select>
+              onChange={(v) => setField("medium", v)}
+              placeholder="Select Medium"
+              options={mediums}
+            />
           </Field>
 
           {/* Level — made mandatory */}
           <Field label="Level" required>
-            <select
-              name="level"
+            <Select
               value={formData.level}
-              onChange={handleChange}
-              className={inputClass}
-            >
-              <option value="">Select the Level</option>
-              {levels.map((l) => (
-                <option key={l} value={l}>
-                  {l}
-                </option>
-              ))}
-            </select>
+              onChange={(v) => setField("level", v)}
+              placeholder="Select the Level"
+              options={levels}
+            />
             <p className="mt-1 text-xs text-slate-400">
               Mandatory — affects teacher matching.
             </p>
@@ -686,19 +607,12 @@ const SchoolProfile = () => {
 
           {/* Board — visible prominently for matching */}
           <Field label="Board">
-            <select
-              name="board"
+            <Select
               value={formData.board}
-              onChange={handleChange}
-              className={inputClass}
-            >
-              <option value="">Select the Board</option>
-              {boards.map((b) => (
-                <option key={b} value={b}>
-                  {b}
-                </option>
-              ))}
-            </select>
+              onChange={(v) => setField("board", v)}
+              placeholder="Select the Board"
+              options={boards}
+            />
             <p className="mt-1 text-xs text-slate-400">
               Board helps match the right teachers for your curriculum.
             </p>
@@ -920,18 +834,11 @@ const SchoolProfile = () => {
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Field label="Country">
-          <select
-            name="country"
+          <Select
             value={formData.country}
-            onChange={handleChange}
-            className={inputClass}
-          >
-            {countries.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
+            onChange={(v) => setField("country", v)}
+            options={countries}
+          />
         </Field>
 
         <Field label="Area / Locality">
@@ -955,19 +862,12 @@ const SchoolProfile = () => {
         </Field>
 
         <Field label="State">
-          <select
-            name="state"
+          <Select
             value={formData.state}
-            onChange={handleChange}
-            className={inputClass}
-          >
-            <option value="">Select State</option>
-            {indianStates.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
+            onChange={(v) => setField("state", v)}
+            placeholder="Select State"
+            options={indianStates}
+          />
         </Field>
 
         {/* Postal code — also supports reverse autofill if typed directly */}

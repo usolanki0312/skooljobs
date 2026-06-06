@@ -2,20 +2,21 @@ import { useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import {
   ArrowLeft, PauseCircle, Pencil, PlayCircle,
-  Send, Trash2, X, XCircle,
+  Send, Trash2, X, XCircle, Share2,
 } from "lucide-react";
 import {
   subjects, schoolExperienceOptions as experienceOptions,
   employmentTypes, statusChipClass,
 } from "../../lib/schooldata";
 import { inputClass, labelClass } from "../../lib/formStyles";
-
+import Select from "../../components/ui/Select";
+ 
 const salaryRanges = [
   "Less than 1 Lac", "1 Lac – 1.5 Lac", "1.5 Lac – 2 Lac", "2 Lac – 3 Lac",
   "3 Lac – 4 Lac", "4 Lac – 5 Lac", "5 Lac – 7 Lac", "7 Lac – 10 Lac",
   "10 Lac – 15 Lac", "15 Lac+",
 ];
-
+ 
 const jobStatusChip = {
   Active: "bg-green-50 text-green-600",
   Draft:  "bg-amber-50 text-amber-600",
@@ -23,17 +24,17 @@ const jobStatusChip = {
   Paused: "bg-orange-50 text-orange-500",
   Scheduled: "bg-blue-50 text-blue-600",
 };
-
+ 
 const SchoolJobDetail = () => {
-  const { jobId } = useParams();
+  const jobId = useParams();
   const navigate = useNavigate();
   const { jobs, setJobs, applicants, interviews } = useOutletContext();
-
+ 
   const [editOpen, setEditOpen] = useState(false);
   const [editForm, setEditForm] = useState({});
-
-  const job = jobs.find((j) => String(j.id) === String(jobId));
-
+ 
+  const job = jobs.find((j) => String(j.id) === String(jobId.jobId));
+ 
   if (!job) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
@@ -45,22 +46,22 @@ const SchoolJobDetail = () => {
       </div>
     );
   }
-
+ 
   const candidates  = applicants.filter((a) => a.jobTitle === job.title);
   const shortlisted = candidates.filter((a) => a.status === "Shortlisted").length;
   const rejected    = candidates.filter((a) => a.status === "Rejected").length;
   const ivCount     = interviews.filter((iv) => iv.jobTitle === job.title).length;
-
+ 
   const setJobStatus = (status) =>
     setJobs((p) => p.map((j) => (j.id === job.id ? { ...j, status } : j)));
-
+ 
   const handleDelete = () => {
     if (window.confirm("Permanently delete this job? This cannot be undone.")) {
       setJobs((p) => p.filter((j) => j.id !== job.id));
       navigate("/school/manage-jobs");
     }
   };
-
+ 
   const openEdit = () => {
     setEditForm({
       title:          job.title || "",
@@ -78,7 +79,7 @@ const SchoolJobDetail = () => {
     });
     setEditOpen(true);
   };
-
+ 
   const handleSaveEdit = () => {
     if (!editForm.title || !editForm.location || !editForm.employmentType) {
       alert("Job Title, Location and Employment Type are required.");
@@ -87,12 +88,12 @@ const SchoolJobDetail = () => {
     setJobs((p) => p.map((j) => (j.id === job.id ? { ...j, ...editForm } : j)));
     setEditOpen(false);
   };
-
+ 
   const setField = (k, v) => setEditForm((p) => ({ ...p, [k]: v }));
-
+ 
   return (
     <div className="space-y-6">
-
+ 
       {/* ── Back + header ─────────────────────────────────────────────────── */}
       <div>
         <button
@@ -102,7 +103,7 @@ const SchoolJobDetail = () => {
         >
           <ArrowLeft size={16} /> Back to Manage Jobs
         </button>
-
+ 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <div className="flex flex-wrap items-center gap-3">
@@ -117,9 +118,18 @@ const SchoolJobDetail = () => {
               {job.employmentType && <span>· {job.employmentType}</span>}
             </div>
           </div>
-
+ 
           {/* Quick actions */}
           <div className="flex flex-wrap gap-2 shrink-0">
+            <button type="button"
+              onClick={() => {
+                const shareLink = window.location.origin + "/public-job/" + job.id;
+                navigator.clipboard.writeText(shareLink);
+                alert(`Public sharing link copied to clipboard!\n${shareLink}`);
+              }}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-borderColor bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-light transition">
+              <Share2 size={14} /> Share Link
+            </button>
             <button type="button" onClick={openEdit}
               className="inline-flex items-center gap-1.5 rounded-xl border border-borderColor bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-light transition">
               <Pencil size={14} /> Edit
@@ -265,19 +275,13 @@ const SchoolJobDetail = () => {
               {(editForm.roleType === "Teaching" || editForm.roleType === "Teaching & Administrative") && (
                 <div>
                   <label className={labelClass}>Subject</label>
-                  <select value={editForm.subject} onChange={(e) => setField("subject", e.target.value)} className={inputClass}>
-                    <option value="">Select Subject</option>
-                    {subjects.map((s) => <option key={s}>{s}</option>)}
-                  </select>
+                  <Select value={editForm.subject} onChange={(v) => setField("subject", v)} placeholder="Select Subject" options={subjects} />
                 </div>
               )}
 
               <div>
                 <label className={labelClass}>Experience Required</label>
-                <select value={editForm.experience} onChange={(e) => setField("experience", e.target.value)} className={inputClass}>
-                  <option value="">Select</option>
-                  {experienceOptions.map((e) => <option key={e}>{e}</option>)}
-                </select>
+                <Select value={editForm.experience} onChange={(v) => setField("experience", v)} placeholder="Select" options={experienceOptions} />
               </div>
 
               <div>
@@ -287,10 +291,7 @@ const SchoolJobDetail = () => {
 
               <div>
                 <label className={labelClass}>Salary Range</label>
-                <select value={editForm.salaryRange} onChange={(e) => setField("salaryRange", e.target.value)} className={inputClass}>
-                  <option value="">Select</option>
-                  {salaryRanges.map((r) => <option key={r}>{r}</option>)}
-                </select>
+                <Select value={editForm.salaryRange} onChange={(v) => setField("salaryRange", v)} placeholder="Select" options={salaryRanges} />
               </div>
 
               <div>

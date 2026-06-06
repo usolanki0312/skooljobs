@@ -4,8 +4,12 @@ import {
   Bookmark, Calendar, ChevronRight, FileText, Search, X,
 } from "lucide-react";
 import { subjects, statusChipClass } from "../../lib/schooldata";
+import Select from "../../components/ui/Select";
 
 const statusOptions = ["Applied", "Shortlisted", "Rejected"];
+
+const filterPill =
+  "min-w-44 rounded-2xl border border-borderColor bg-white px-4 py-3 text-sm shadow-sm focus:border-primary";
 
 const SchoolAllApplicants = () => {
   const navigate = useNavigate();
@@ -71,24 +75,38 @@ const SchoolAllApplicants = () => {
             className="flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
           />
         </div>
-        <select value={jobTitleFilter} onChange={(e) => setJobTitleFilter(e.target.value)} className="rounded-2xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-600 shadow-sm outline-none focus:border-primary">
-          <option value="">All Job Titles</option>
-          {uniqueJobTitles.map((t) => <option key={t} value={t}>{t}</option>)}
-        </select>
-        <select value={subjectFilter} onChange={(e) => setSubjectFilter(e.target.value)} className="rounded-2xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-600 shadow-sm outline-none focus:border-primary">
-          <option value="">All Subjects</option>
-          {subjects.map((s) => <option key={s} value={s}>{s}</option>)}
-        </select>
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="rounded-2xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-600 shadow-sm outline-none focus:border-primary">
-          <option value="">All Status</option>
-          {statusOptions.map((s) => <option key={s} value={s}>{s}</option>)}
-        </select>
-        <select value={expFilter} onChange={(e) => setExpFilter(e.target.value)} className="rounded-2xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-600 shadow-sm outline-none focus:border-primary">
-          <option value="">All Experience</option>
-          <option value="0-3">0 – 3 yrs</option>
-          <option value="3-6">3 – 6 yrs</option>
-          <option value="6+">6+ yrs</option>
-        </select>
+        <Select
+          value={jobTitleFilter}
+          onChange={setJobTitleFilter}
+          placeholder="All Job Titles"
+          options={uniqueJobTitles}
+          className={filterPill}
+        />
+        <Select
+          value={subjectFilter}
+          onChange={setSubjectFilter}
+          placeholder="All Subjects"
+          options={subjects}
+          className={filterPill}
+        />
+        <Select
+          value={statusFilter}
+          onChange={setStatusFilter}
+          placeholder="All Status"
+          options={statusOptions}
+          className={filterPill}
+        />
+        <Select
+          value={expFilter}
+          onChange={setExpFilter}
+          placeholder="All Experience"
+          options={[
+            { label: "0 – 3 yrs", value: "0-3" },
+            { label: "3 – 6 yrs", value: "3-6" },
+            { label: "6+ yrs", value: "6+" },
+          ]}
+          className={filterPill}
+        />
       </div>
 
       {/* ── Table ─────────────────────────────────────────────────────────── */}

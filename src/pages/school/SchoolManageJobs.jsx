@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { ChevronRight, PlusCircle, Search } from "lucide-react";
+import { ChevronRight, PlusCircle, Search, Share2 } from "lucide-react";
+import Select from "../../components/ui/Select";
 
 const jobStatusChip = {
   Active: "bg-green-50 text-green-600",
@@ -54,17 +55,13 @@ const SchoolManageJobs = () => {
             className="flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
           />
         </div>
-        <select
+        <Select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-2xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-600 shadow-sm outline-none focus:border-primary"
-        >
-          <option value="">All Status</option>
-          <option value="Active">Active</option>
-          <option value="Paused">Paused</option>
-          <option value="Draft">Draft</option>
-          <option value="Closed">Closed</option>
-        </select>
+          onChange={setStatusFilter}
+          placeholder="All Status"
+          options={["Active", "Paused", "Draft", "Closed"]}
+          className="min-w-44 rounded-2xl border border-borderColor bg-white px-4 py-3 text-sm shadow-sm outline-none focus:border-primary"
+        />
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-borderColor bg-white shadow-sm">
@@ -78,7 +75,7 @@ const SchoolManageJobs = () => {
                 <th className="px-5 py-4">Status</th>
                 <th className="px-5 py-4">Posted</th>
                 <th className="px-5 py-4">Expiry</th>
-                <th className="px-5 py-4 w-8" />
+                <th className="px-5 py-4 w-24 text-right pr-6">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-borderColor">
@@ -111,8 +108,22 @@ const SchoolManageJobs = () => {
                       </td>
                       <td className="px-5 py-3.5 text-slate-500">{job.date}</td>
                       <td className="px-5 py-3.5 text-slate-500">{job.expiryDate || "—"}</td>
-                      <td className="px-4 py-3.5 text-slate-300">
-                        <ChevronRight size={16} />
+                      <td className="px-5 py-3.5 text-right pr-6" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const shareLink = window.location.origin + "/public-job/" + job.id;
+                              navigator.clipboard.writeText(shareLink);
+                              alert(`Public sharing link copied to clipboard!\n${shareLink}`);
+                            }}
+                            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-primary transition"
+                            title="Copy Share Link"
+                          >
+                            <Share2 size={15} />
+                          </button>
+                          <ChevronRight size={16} className="text-slate-300" />
+                        </div>
                       </td>
                     </tr>
                   );

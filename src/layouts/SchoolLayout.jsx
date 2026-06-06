@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   BriefcaseBusiness,
@@ -48,8 +48,29 @@ const SchoolLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [jobs, setJobs] = useState(augmentedJobs);
-  const [applicants, setApplicants] = useState(augmentedApplicants);
+  const [jobs, setJobs] = useState(() => {
+    const saved = localStorage.getItem("skooljobs_jobs");
+    if (saved) {
+      try { return JSON.parse(saved); } catch { return augmentedJobs; }
+    }
+    return augmentedJobs;
+  });
+  const [applicants, setApplicants] = useState(() => {
+    const saved = localStorage.getItem("skooljobs_applicants");
+    if (saved) {
+      try { return JSON.parse(saved); } catch { return augmentedApplicants; }
+    }
+    return augmentedApplicants;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("skooljobs_jobs", JSON.stringify(jobs));
+  }, [jobs]);
+
+  useEffect(() => {
+    localStorage.setItem("skooljobs_applicants", JSON.stringify(applicants));
+  }, [applicants]);
+
   const [logoImage, setLogoImage] = useState(null);
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   const [notifications, setNotifications] = useState([

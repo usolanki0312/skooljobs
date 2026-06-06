@@ -4,6 +4,7 @@ import {
   Calendar, CheckCircle, Clock, Link2, MapPin, MessageCircle, Pencil,
   PhoneCall, Video, XCircle, X,
 } from "lucide-react";
+import Select from "../../components/ui/Select";
 
 const DURATIONS = ["15 Minutes", "30 Minutes", "45 Minutes", "60 Minutes", "90 Minutes"];
 const ROUNDS = ["1st Round", "2nd Round", "Technical Round", "HR Round", "Final Round"];
@@ -238,13 +239,12 @@ const SchoolInterviews = () => {
                     </td>
                     <td className="px-5 py-3 text-slate-600">{iv.round}</td>
                     <td className="px-5 py-3">
-                      <select
+                      <Select
                         value={iv.status}
-                        onChange={(e) => updateStatus(iv.id, e.target.value)}
-                        className={`rounded-full border-0 px-3 py-1 text-xs font-bold outline-none cursor-pointer ${statusColor[iv.status] || "bg-slate-100 text-slate-600"}`}
-                      >
-                        {STATUSES.map((s) => <option key={s}>{s}</option>)}
-                      </select>
+                        onChange={(v) => updateStatus(iv.id, v)}
+                        options={STATUSES}
+                        className={`min-w-32 rounded-full border-0 px-3 py-1.5 text-xs font-bold ${statusColor[iv.status] || "bg-slate-100 text-slate-600"}`}
+                      />
                     </td>
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-2">
@@ -320,9 +320,7 @@ const SchoolInterviews = () => {
                   </div>
                   <div>
                     <Label required>Interview Round</Label>
-                    <select value={form.round} onChange={(e) => set("round", e.target.value)} className={inputCls}>
-                      {ROUNDS.map((r) => <option key={r}>{r}</option>)}
-                    </select>
+                    <Select value={form.round} onChange={(v) => set("round", v)} options={ROUNDS} className={inputCls} />
                   </div>
                 </div>
               </div>
@@ -344,9 +342,7 @@ const SchoolInterviews = () => {
                   </div>
                   <div>
                     <Label required>Duration</Label>
-                    <select value={form.duration} onChange={(e) => set("duration", e.target.value)} className={inputCls}>
-                      {DURATIONS.map((d) => <option key={d}>{d}</option>)}
-                    </select>
+                    <Select value={form.duration} onChange={(v) => set("duration", v)} options={DURATIONS} className={inputCls} />
                   </div>
                 </div>
               </div>

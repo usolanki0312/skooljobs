@@ -1,12 +1,10 @@
 import { X } from "lucide-react";
 import SectionCard from "./SectionCard";
+import Select from "../ui/Select";
 import {
   MIN_QUALIFICATIONS, ADDITIONAL_QUALIFICATIONS, CERTIFICATIONS,
   EXPERIENCE_OPTIONS, PREFERRED_SCHOOL_TYPES, STUDENT_LEVELS,
 } from "../../lib/postjobOptions";
-
-const inputCls =
-  "w-full rounded-xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10";
 
 const TagMultiSelect = ({ label, options, selected, onToggle }) => (
   <div>
@@ -69,18 +67,12 @@ const QualificationsSection = ({ form, setField }) => {
             <label className="mb-1.5 block text-xs font-bold text-slate-600">
               Minimum Qualification <span className="text-red-500">*</span>
             </label>
-            <select value={form.minQualification} onChange={(e) => setField("minQualification", e.target.value)} className={inputCls}>
-              <option value="">Select</option>
-              {MIN_QUALIFICATIONS.map((q) => <option key={q}>{q}</option>)}
-            </select>
+            <Select value={form.minQualification} onChange={(v) => setField("minQualification", v)} placeholder="Select" options={MIN_QUALIFICATIONS} />
           </div>
 
           <div>
             <label className="mb-1.5 block text-xs font-bold text-slate-600">Additional Qualification</label>
-            <select value={form.additionalQualification} onChange={(e) => setField("additionalQualification", e.target.value)} className={inputCls}>
-              <option value="">Select</option>
-              {ADDITIONAL_QUALIFICATIONS.map((q) => <option key={q}>{q}</option>)}
-            </select>
+            <Select value={form.additionalQualification} onChange={(v) => setField("additionalQualification", v)} placeholder="Select" options={ADDITIONAL_QUALIFICATIONS} />
           </div>
 
           <TagMultiSelect
@@ -97,10 +89,7 @@ const QualificationsSection = ({ form, setField }) => {
             <label className="mb-1.5 block text-xs font-bold text-slate-600">
               Experience Required <span className="text-red-500">*</span>
             </label>
-            <select value={form.experience} onChange={(e) => setField("experience", e.target.value)} className={inputCls}>
-              <option value="">Select Experience</option>
-              {EXPERIENCE_OPTIONS.map((e) => <option key={e}>{e}</option>)}
-            </select>
+            <Select value={form.experience} onChange={(v) => setField("experience", v)} placeholder="Select Experience" options={EXPERIENCE_OPTIONS} />
           </div>
 
           <TagMultiSelect

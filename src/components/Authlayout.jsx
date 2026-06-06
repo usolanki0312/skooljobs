@@ -11,7 +11,9 @@ function AuthLayout({ children, title, subtitle, activeTab = 'candidate', onTabC
             </h1>
 
             <p className="mt-4 text-sm leading-relaxed text-white/90 sm:text-[17px]">
-              {activeTab === 'candidate'
+              {activeTab === 'combined'
+                ? "Connecting passionate educators with leading schools and institutions."
+                : activeTab === 'candidate'
                 ? "Build your profile and discover roles that fit your subject and experience."
                 : "Post jobs, manage applications, and find the best educators for your school."}
             </p>
@@ -46,7 +48,13 @@ function AuthLayout({ children, title, subtitle, activeTab = 'candidate', onTabC
             <div className="border border-white/30 mt-6 rounded-[22px] p-4 bg-white/5 backdrop-blur-md sm:mt-8 sm:rounded-[24px] sm:p-6">
               <div className="flex items-center gap-4">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  {activeTab === 'candidate' ? (
+                  {activeTab === 'combined' ? (
+                    <>
+                      <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M2 17L12 22L22 17" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M2 12L12 17L22 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </>
+                  ) : activeTab === 'candidate' ? (
                     <>
                       <path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       <path d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -64,16 +72,35 @@ function AuthLayout({ children, title, subtitle, activeTab = 'candidate', onTabC
                   )}
                 </svg>
                 <h2 className="text-xl font-bold font-heading">
-                  {activeTab === 'candidate' ? "Teachers" : "Schools"}
+                  {activeTab === 'combined' ? "SkoolJobs Network" : activeTab === 'candidate' ? "Teachers" : "Schools"}
                 </h2>
               </div>
 
               <p className="mt-2 text-sm text-white/80 sm:pl-[44px] sm:text-[15px]">
-                {activeTab === 'candidate' ? "Dedicated workspace for educators" : "Streamlined hiring for schools & institutions"}
+                {activeTab === 'combined'
+                  ? "Unified platform for teaching careers and recruitment"
+                  : activeTab === 'candidate'
+                  ? "Dedicated workspace for educators"
+                  : "Streamlined hiring for schools & institutions"}
               </p>
 
               <ul className="mt-5 space-y-3 text-sm text-white/90 sm:mt-6 sm:space-y-4 sm:text-[15px]">
-                {activeTab === 'candidate' ? (
+                {activeTab === 'combined' ? (
+                  <>
+                    <li className="flex items-start gap-3">
+                      <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0"></span>
+                      <span><strong>For Teachers:</strong> Discover teaching roles & track your applications</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0"></span>
+                      <span><strong>For Schools:</strong> Post jobs, search resumes & hire top educators</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0"></span>
+                      <span>Secure, unified access with mobile & email support</span>
+                    </li>
+                  </>
+                ) : activeTab === 'candidate' ? (
                   <>
                     <li className="flex items-start gap-3">
                       <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0"></span>

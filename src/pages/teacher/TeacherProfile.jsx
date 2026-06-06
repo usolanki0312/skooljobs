@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import {
   Award,
   BookOpen,
@@ -19,6 +19,7 @@ import {
   Wand2,
 } from "lucide-react";
 import BackButton from "../../components/backbutton";
+import Select from "../../components/ui/Select";
 import { qualificationOptions, experienceOptions, pinStateMap, languages as languageOptions, languageStatuses, nationalities } from "../../lib/teacherdata";
 
 const navItems = [
@@ -95,13 +96,6 @@ const blankResumeData = {
 };
 
 
-
-const renderOptions = (items) =>
-  items.map((item) => (
-    <option key={item} value={item}>
-      {item}
-    </option>
-  ));
 
 
 const hasValue = (item) =>
@@ -221,6 +215,109 @@ const TeacherProfile = () => {
       ...(name === "sameAsMobile" && checked ? { whatsapp: prev.mobile } : {}),
       ...(nextState !== undefined ? { state: nextState } : {}),
     }));
+  };
+
+  const setField = (name, value) =>
+    setTeacherData((prev) => ({ ...prev, [name]: value }));
+
+  const [pincodeLoading, setPincodeLoading] = useState(false);
+  const [pincodeError, setPincodeError] = useState("");
+  const [areaQuery, setAreaQuery] = useState("");
+  const [areaResults, setAreaResults] = useState([]);
+  const [areaLoading, setAreaLoading] = useState(false);
+  const [areaError, setAreaError] = useState("");
+  const [showAreaDropdown, setShowAreaDropdown] = useState(false);
+
+  // Live PIN code lookup
+  useEffect(() => {
+    const pin = teacherData.pinCode.trim();
+    if (!/^\d{6}$/.test(pin)) return;
+
+    let cancelled = false;
+    setPincodeLoading(true);
+    setPincodeError("");
+
+    fetch(`https://api.postalpincode.in/pincode/${pin}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return;
+        if (data[0].Status === "Success" && data[0].PostOffice?.length > 0) {
+          const po = data[0].PostOffice[0];
+          setTeacherData((p) => ({
+            ...p,
+            state: po.State,
+            city: po.District,
+          }));
+        } else {
+          setPincodeError("PIN code not found. Enter state & city manually.");
+        }
+      })
+      .catch(() => {
+        if (!cancelled)
+          setPincodeError("Could not reach postal API. Enter manually.");
+      })
+      .finally(() => {
+        if (!cancelled) setPincodeLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [teacherData.pinCode]);
+
+  // Debounced area/locality search
+  useEffect(() => {
+    const q = areaQuery.trim();
+    if (q.length < 3) {
+      setAreaResults([]);
+      setAreaError("");
+      return;
+    }
+
+    let cancelled = false;
+    setAreaLoading(true);
+    setAreaError("");
+
+    const timer = setTimeout(() => {
+      fetch(`https://api.postalpincode.in/postoffice/${encodeURIComponent(q)}`)
+        .then((r) => r.json())
+        .then((data) => {
+          if (cancelled) return;
+          if (data[0].Status === "Success" && data[0].PostOffice?.length > 0) {
+            setAreaResults(data[0].PostOffice.slice(0, 25));
+            setShowAreaDropdown(true);
+          } else {
+            setAreaResults([]);
+            setAreaError("No localities found. Try a different name.");
+          }
+        })
+        .catch(() => {
+          if (!cancelled) setAreaError("Could not reach postal API. Enter manually.");
+        })
+        .finally(() => {
+          if (!cancelled) setAreaLoading(false);
+        });
+    }, 500);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [areaQuery]);
+
+  const handleSelectLocality = (po) => {
+    const cleanName = po.Name.replace(/\s*(S\.O|B\.O|H\.O)$/i, "").trim();
+    setTeacherData((p) => ({
+      ...p,
+      city: po.District,
+      state: po.State,
+      pinCode: po.Pincode,
+      address: p.address ? p.address : cleanName,
+    }));
+    setAreaQuery(cleanName);
+    setShowAreaDropdown(false);
+    setAreaResults([]);
+    setPincodeError("");
   };
 
   const handleDobChange = (e) => {
@@ -558,14 +655,12 @@ const TeacherProfile = () => {
       />
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[120px_1fr_1fr_1fr]">
         <Field label="Title">
-          <select name="title" value={teacherData.title} onChange={handleChange} className={compactInputClass}>
-            <option>Mr</option>
-            <option>Mrs</option>
-            <option>Miss</option>
-            <option>Ms</option>
-            <option>Dr</option>
-            <option>Prof</option>
-          </select>
+          <Select
+            value={teacherData.title}
+            onChange={(v) => setField("title", v)}
+            options={["Mr", "Mrs", "Miss", "Ms", "Dr", "Prof"]}
+            className={compactInputClass}
+          />
         </Field>
         <Field label="First Name">
           <input name="firstName" value={teacherData.firstName} onChange={handleChange} className={inputClass} />
@@ -594,34 +689,31 @@ const TeacherProfile = () => {
         </div>
         <div className="flex flex-col justify-start">
           <label className={labelClass}>Nationality</label>
-          <select name="nationality" value={teacherData.nationality} onChange={handleChange} className={inputClass}>
-            <option value="">Select nationality</option>
-            {nationalities.map((n) => (
-              <option key={n} value={n}>{n}</option>
-            ))}
-          </select>
+          <Select
+            value={teacherData.nationality}
+            onChange={(v) => setField("nationality", v)}
+            placeholder="Select nationality"
+            options={nationalities}
+          />
         </div>
       </div>
 
       <div className="mt-5 grid grid-cols-1 items-start gap-5 lg:grid-cols-3">
         <Field label="Current Job Title">
-          <select name="currentJob" value={teacherData.currentJob} onChange={handleChange} className={inputClass}>
-            <option value="">Select...</option>
-            <option>Primary Teacher</option>
-            <option>Mathematics Teacher</option>
-            <option>Science Teacher</option>
-            <option>English Teacher</option>
-            <option>Coordinator</option>
-          </select>
+          <Select
+            value={teacherData.currentJob}
+            onChange={(v) => setField("currentJob", v)}
+            placeholder="Select..."
+            options={["Primary Teacher", "Mathematics Teacher", "Science Teacher", "English Teacher", "Coordinator"]}
+          />
         </Field>
         <Field label="Main Subject">
-          <select name="mainSubject" value={teacherData.mainSubject} onChange={handleChange} className={inputClass}>
-            <option value="">Select Subject</option>
-            <option>Mathematics</option>
-            <option>Science</option>
-            <option>English</option>
-            <option>Computer</option>
-          </select>
+          <Select
+            value={teacherData.mainSubject}
+            onChange={(v) => setField("mainSubject", v)}
+            placeholder="Select Subject"
+            options={["Mathematics", "Science", "English", "Computer"]}
+          />
           <p className="mt-2 text-xs text-slate-500">Only one can be selected.</p>
         </Field>
         <div className="lg:col-span-2">
@@ -700,23 +792,23 @@ const TeacherProfile = () => {
           <label className={labelClass}>Classes Taught</label>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <span className="text-sm font-bold text-slate-500">(1)</span>
-            <select name="classTaughtOne" value={teacherData.classTaughtOne} onChange={handleChange} className={`${inputClass} sm:max-w-44`}>
-              <option value="">Select...</option>
-              <option>Class A</option>
-              <option>Class B</option>
-              <option>Class C</option>
-              <option>Class 10</option>
-              <option>Class 12</option>
-            </select>
+            <div className="sm:max-w-44 sm:flex-1">
+              <Select
+                value={teacherData.classTaughtOne}
+                onChange={(v) => setField("classTaughtOne", v)}
+                placeholder="Select..."
+                options={["Class A", "Class B", "Class C", "Class 10", "Class 12"]}
+              />
+            </div>
             <span className="text-sm font-bold text-slate-500">(2)</span>
-            <select name="classTaughtTwo" value={teacherData.classTaughtTwo} onChange={handleChange} className={`${inputClass} sm:max-w-44`}>
-              <option value="">Select...</option>
-              <option>Class A</option>
-              <option>Class B</option>
-              <option>Class C</option>
-              <option>Class 10</option>
-              <option>Class 12</option>
-            </select>
+            <div className="sm:max-w-44 sm:flex-1">
+              <Select
+                value={teacherData.classTaughtTwo}
+                onChange={(v) => setField("classTaughtTwo", v)}
+                placeholder="Select..."
+                options={["Class A", "Class B", "Class C", "Class 10", "Class 12"]}
+              />
+            </div>
           </div>
         </div>
         <div className="lg:col-span-3">
@@ -733,22 +825,18 @@ const TeacherProfile = () => {
           <div className="space-y-3">
             {dynamicLanguages.map((lang, idx) => (
               <div key={idx} className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_1fr_40px] lg:items-center">
-                <select
+                <Select
                   value={lang.language}
-                  onChange={(e) => setDynamicLanguages((prev) => prev.map((l, i) => i === idx ? { ...l, language: e.target.value } : l))}
-                  className={inputClass}
-                >
-                  <option value="">Select language...</option>
-                  {languageOptions.map((l) => <option key={l}>{l}</option>)}
-                </select>
-                <select
+                  onChange={(v) => setDynamicLanguages((prev) => prev.map((l, i) => i === idx ? { ...l, language: v } : l))}
+                  placeholder="Select language..."
+                  options={languageOptions}
+                />
+                <Select
                   value={lang.status}
-                  onChange={(e) => setDynamicLanguages((prev) => prev.map((l, i) => i === idx ? { ...l, status: e.target.value } : l))}
-                  className={inputClass}
-                >
-                  <option value="">Select proficiency...</option>
-                  {languageStatuses.map((s) => <option key={s}>{s}</option>)}
-                </select>
+                  onChange={(v) => setDynamicLanguages((prev) => prev.map((l, i) => i === idx ? { ...l, status: v } : l))}
+                  placeholder="Select proficiency..."
+                  options={languageStatuses}
+                />
                 {dynamicLanguages.length > 1 && (
                   <button
                     type="button"
@@ -765,15 +853,19 @@ const TeacherProfile = () => {
         <div className="lg:col-span-3">
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-[260px_1fr] lg:items-center">
             <span className="text-sm font-bold text-slate-500">Highest Qualification 1</span>
-            <select name="highestQualificationOne" value={teacherData.highestQualificationOne} onChange={handleChange} className={inputClass}>
-              <option value="">Select...</option>
-              {renderOptions(qualificationOptions.degrees)}
-            </select>
+            <Select
+              value={teacherData.highestQualificationOne}
+              onChange={(v) => setField("highestQualificationOne", v)}
+              placeholder="Select..."
+              options={qualificationOptions.degrees}
+            />
             <span className="text-sm font-bold text-slate-500">Highest Qualification 2</span>
-            <select name="highestQualificationTwo" value={teacherData.highestQualificationTwo} onChange={handleChange} className={inputClass}>
-              <option value="">Select...</option>
-              {renderOptions(qualificationOptions.degrees)}
-            </select>
+            <Select
+              value={teacherData.highestQualificationTwo}
+              onChange={(v) => setField("highestQualificationTwo", v)}
+              placeholder="Select..."
+              options={qualificationOptions.degrees}
+            />
           </div>
         </div>
         <div className="lg:col-span-3">
@@ -837,10 +929,91 @@ const TeacherProfile = () => {
               <Sparkles size={14} /> Smart Entry
             </span>
           </div>
+
+          {/* Locality search — type an area name, pick from results, everything fills */}
+          <div className="mb-5 rounded-2xl border border-primary/20 bg-primary/5 p-4">
+            <Field label="Search Area / Locality">
+              <div className="relative">
+                <input
+                  value={areaQuery}
+                  onChange={(e) => {
+                    setAreaQuery(e.target.value);
+                    setAreaError("");
+                  }}
+                  onFocus={() => areaResults.length > 0 && setShowAreaDropdown(true)}
+                  className={inputClass}
+                  placeholder="Type an area name, e.g. Rajendra Nagar (min 3 letters)"
+                  autoComplete="off"
+                />
+                {areaLoading && (
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-primary animate-pulse">
+                    Searching…
+                  </span>
+                )}
+
+                {showAreaDropdown && areaResults.length > 0 && (
+                  <div className="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto rounded-xl border border-borderColor bg-white shadow-lg">
+                    {areaResults.map((po, i) => (
+                      <button
+                        key={`${po.Name}-${po.Pincode}-${i}`}
+                        type="button"
+                        onClick={() => handleSelectLocality(po)}
+                        className="flex w-full items-start justify-between gap-3 border-b border-borderColor/60 px-4 py-2.5 text-left last:border-0 hover:bg-light"
+                      >
+                        <span>
+                          <span className="block text-sm font-semibold text-slate-800">
+                            {po.Name}
+                          </span>
+                          <span className="block text-xs text-slate-500">
+                            {po.District}, {po.State}
+                          </span>
+                        </span>
+                        <span className="shrink-0 rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary">
+                          {po.Pincode}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {areaError ? (
+                <p className="mt-1 text-xs text-red-500">{areaError}</p>
+              ) : (
+                <p className="mt-1 text-xs text-slate-500">
+                  Select a locality and the City, State &amp; PIN code fill in automatically.
+                </p>
+              )}
+            </Field>
+          </div>
+
           <div className="rounded-2xl bg-light p-5">
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
               <Field label="PIN Code *">
-                <input name="pinCode" value={teacherData.pinCode} onChange={handleChange} className={inputClass} placeholder="Enter PIN" />
+                <div className="relative">
+                  <input
+                    name="pinCode"
+                    value={teacherData.pinCode}
+                    onChange={(e) => {
+                      setPincodeError("");
+                      handleChange(e);
+                    }}
+                    className={inputClass}
+                    placeholder="Enter PIN"
+                    maxLength={6}
+                  />
+                  {pincodeLoading && (
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-primary animate-pulse">
+                      Fetching…
+                    </span>
+                  )}
+                </div>
+                {pincodeError ? (
+                  <p className="mt-1 text-xs text-red-500">{pincodeError}</p>
+                ) : (
+                  <p className="mt-1 text-xs text-slate-400">
+                    Auto-filled from locality search, or type a 6-digit PIN to fill the rest.
+                  </p>
+                )}
               </Field>
               <Field label="City *">
                 <input name="city" value={teacherData.city} onChange={handleChange} className={inputClass} placeholder="Type city" />
@@ -849,8 +1022,8 @@ const TeacherProfile = () => {
                 <input name="state" value={teacherData.state} onChange={handleChange} className={inputClass} placeholder="Auto-filled" />
               </Field>
             </div>
-            <p className="mt-2 text-xs text-slate-500">PIN code can help auto-populate city and state later.</p>
           </div>
+
           <div className="mt-5">
             <Field label="Full Address for Correspondence">
               <textarea
@@ -883,22 +1056,18 @@ const TeacherProfile = () => {
           <div ref={qualificationFormRef} className="rounded-xl border border-borderColor bg-white p-5 shadow-sm">
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
               <Field label="Class">
-                <select
+                <Select
                   value={qualificationDraft.classLevel}
-                  onChange={(e) => {
-                    const classLevel = e.target.value;
+                  onChange={(classLevel) => {
                     setQualificationDraft((prev) => ({
                       ...prev,
                       classLevel,
                       degree: classLevel === "Class 10" ? "Secondary (10th)" : classLevel === "Class 12" ? "Senior Secondary (12th)" : prev.degree,
                     }));
                   }}
-                  className={inputClass}
-                >
-                  <option value="">Select Class</option>
-                  <option>Class 10</option>
-                  <option>Class 12</option>
-                </select>
+                  placeholder="Select Class"
+                  options={["Class 10", "Class 12"]}
+                />
               </Field>
               {qualificationDraft.classLevel && (
                 <Field label="School Name">
@@ -911,31 +1080,19 @@ const TeacherProfile = () => {
                 </Field>
               )}
               <Field label="Degree">
-                <select value={qualificationDraft.degree} onChange={(e) => updateQualification("degree", e.target.value)} className={inputClass}>
-                  <option value="">Select Degree</option>
-                  {renderOptions(qualificationOptions.degrees)}
-                </select>
+                <Select value={qualificationDraft.degree} onChange={(v) => updateQualification("degree", v)} placeholder="Select Degree" options={qualificationOptions.degrees} />
               </Field>
               <Field label="Course Name">
-                <select value={qualificationDraft.course} onChange={(e) => updateQualification("course", e.target.value)} className={inputClass}>
-                  <option value="">Select Course</option>
-                  {renderOptions(qualificationOptions.courses)}
-                </select>
+                <Select value={qualificationDraft.course} onChange={(v) => updateQualification("course", v)} placeholder="Select Course" options={qualificationOptions.courses} />
               </Field>
               <Field label="Year Passed">
                 <input value={qualificationDraft.year} onChange={(e) => updateQualification("year", e.target.value)} className={inputClass} placeholder="e.g. 2023" />
               </Field>
               <Field label="Medium of Instruction">
-                <select value={qualificationDraft.medium} onChange={(e) => updateQualification("medium", e.target.value)} className={inputClass}>
-                  <option value="">Select Medium</option>
-                  {renderOptions(qualificationOptions.mediums)}
-                </select>
+                <Select value={qualificationDraft.medium} onChange={(v) => updateQualification("medium", v)} placeholder="Select Medium" options={qualificationOptions.mediums} />
               </Field>
               <Field label="Mode of Study">
-                <select value={qualificationDraft.mode} onChange={(e) => updateQualification("mode", e.target.value)} className={inputClass}>
-                  <option value="">Select Mode</option>
-                  {renderOptions(qualificationOptions.modes)}
-                </select>
+                <Select value={qualificationDraft.mode} onChange={(v) => updateQualification("mode", v)} placeholder="Select Mode" options={qualificationOptions.modes} />
               </Field>
               {!qualificationDraft.classLevel && (
                 <Field label="Percentage %">
@@ -943,17 +1100,11 @@ const TeacherProfile = () => {
                 </Field>
               )}
               <Field label="University Name">
-                <select value={qualificationDraft.university} onChange={(e) => updateQualification("university", e.target.value)} className={inputClass}>
-                  <option value="">Select University</option>
-                  {renderOptions(qualificationOptions.universities)}
-                </select>
+                <Select value={qualificationDraft.university} onChange={(v) => updateQualification("university", v)} placeholder="Select University" options={qualificationOptions.universities} />
               </Field>
               <div className="lg:col-span-2">
                 <Field label="College Name">
-                  <select value={qualificationDraft.college} onChange={(e) => updateQualification("college", e.target.value)} className={inputClass}>
-                    <option value="">Select College / Institution</option>
-                    {renderOptions(qualificationOptions.colleges)}
-                  </select>
+                  <Select value={qualificationDraft.college} onChange={(v) => updateQualification("college", v)} placeholder="Select College / Institution" options={qualificationOptions.colleges} />
                 </Field>
               </div>
             </div>
@@ -1041,10 +1192,7 @@ const TeacherProfile = () => {
                 Current Employer
               </label>
               <Field label="Board">
-                <select value={experienceDraft.board} onChange={(e) => updateExperience("board", e.target.value)} className={inputClass}>
-                  <option value="">Select Board</option>
-                  {renderOptions(experienceOptions.boards)}
-                </select>
+                <Select value={experienceDraft.board} onChange={(v) => updateExperience("board", v)} placeholder="Select Board" options={experienceOptions.boards} />
               </Field>
               <Field label="Start Date">
                 <input
@@ -1067,22 +1215,13 @@ const TeacherProfile = () => {
                 />
               </Field>
               <Field label="Subject Taught (Main)">
-                <select value={experienceDraft.mainSubject} onChange={(e) => updateExperience("mainSubject", e.target.value)} className={inputClass}>
-                  <option value="">Select Main Subject</option>
-                  {renderOptions(experienceOptions.subjects)}
-                </select>
+                <Select value={experienceDraft.mainSubject} onChange={(v) => updateExperience("mainSubject", v)} placeholder="Select Main Subject" options={experienceOptions.subjects} />
               </Field>
               <Field label="Other Subjects">
-                <select value={experienceDraft.otherSubjects} onChange={(e) => updateExperience("otherSubjects", e.target.value)} className={inputClass}>
-                  <option value="">Select Other Subject</option>
-                  {renderOptions(experienceOptions.subjects)}
-                </select>
+                <Select value={experienceDraft.otherSubjects} onChange={(v) => updateExperience("otherSubjects", v)} placeholder="Select Other Subject" options={experienceOptions.subjects} />
               </Field>
               <Field label="Post Held / Job Title">
-                <select value={experienceDraft.post} onChange={(e) => updateExperience("post", e.target.value)} className={inputClass}>
-                  <option value="">Select Post</option>
-                  {renderOptions(experienceOptions.posts)}
-                </select>
+                <Select value={experienceDraft.post} onChange={(v) => updateExperience("post", v)} placeholder="Select Post" options={experienceOptions.posts} />
               </Field>
               <Field label="Salary Drawn (CTC) per Year">
                 <input
@@ -1106,10 +1245,7 @@ const TeacherProfile = () => {
                 />
               </Field>
               <Field label="Reason for Leaving">
-                <select value={experienceDraft.reason} onChange={(e) => updateExperience("reason", e.target.value)} className={inputClass}>
-                  <option value="">Select Reason</option>
-                  {renderOptions(experienceOptions.reasons)}
-                </select>
+                <Select value={experienceDraft.reason} onChange={(v) => updateExperience("reason", v)} placeholder="Select Reason" options={experienceOptions.reasons} />
               </Field>
               <div className="lg:col-span-3">
                 <Field label="Any other details to be mentioned">
@@ -1191,12 +1327,12 @@ const TeacherProfile = () => {
           </div>
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-4">
             <Field label="Type">
-              <select value={resumeData.awardType} onChange={(e) => setResumeData((prev) => ({ ...prev, awardType: e.target.value }))} className={inputClass}>
-                <option value="">Select category</option>
-                <option>Award</option>
-                <option>Recognition</option>
-                <option>Publication</option>
-              </select>
+              <Select
+                value={resumeData.awardType}
+                onChange={(v) => setResumeData((prev) => ({ ...prev, awardType: v }))}
+                placeholder="Select category"
+                options={["Award", "Recognition", "Publication"]}
+              />
             </Field>
             <Field label="Name of the Award">
               <input value={resumeData.awardName} onChange={(e) => setResumeData((prev) => ({ ...prev, awardName: e.target.value }))} className={inputClass} placeholder="e.g. Best Educator Award" />
@@ -1239,12 +1375,12 @@ const TeacherProfile = () => {
           </div>
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-4">
             <Field label="Type">
-              <select value={resumeData.courseType} onChange={(e) => setResumeData((prev) => ({ ...prev, courseType: e.target.value }))} className={inputClass}>
-                <option value="">Select type</option>
-                <option>Workshop</option>
-                <option>Certification</option>
-                <option>Training</option>
-              </select>
+              <Select
+                value={resumeData.courseType}
+                onChange={(v) => setResumeData((prev) => ({ ...prev, courseType: v }))}
+                placeholder="Select type"
+                options={["Workshop", "Certification", "Training"]}
+              />
             </Field>
             <Field label="Name of the Course">
               <input value={resumeData.courseName} onChange={(e) => setResumeData((prev) => ({ ...prev, courseName: e.target.value }))} className={inputClass} placeholder="e.g. Advanced Pedagogy" />
@@ -1348,14 +1484,11 @@ const TeacherProfile = () => {
               />
             </Field>
             <Field label="Format">
-              <select
+              <Select
                 value={resumeDraft.format}
-                onChange={(e) => setResumeDraft((prev) => ({ ...prev, format: e.target.value }))}
-                className={inputClass}
-              >
-                <option>PDF</option>
-                <option>Text</option>
-              </select>
+                onChange={(v) => setResumeDraft((prev) => ({ ...prev, format: v }))}
+                options={["PDF", "Text"]}
+              />
             </Field>
             {resumeMode === "upload" && (
               <Field label="Upload File">
@@ -1500,32 +1633,25 @@ const TeacherProfile = () => {
               </p>
               <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
                 <Field label="Select Job Applying For">
-                  <select
+                  <Select
                     value={coverLetterState.selectedJob}
-                    onChange={(e) => setCoverLetterState((p) => ({ ...p, selectedJob: e.target.value, generated: "" }))}
-                    className={inputClass}
-                  >
-                    <option value="">Select a job...</option>
-                    <option value="Mathematics Teacher - Green Valley School">Mathematics Teacher - Green Valley School</option>
-                    <option value="Science Faculty - Delhi Public Academy">Science Faculty - Delhi Public Academy</option>
-                    <option value="English Teacher - St. Mary's International">English Teacher - St. Mary's International</option>
-                    <option value="Computer Teacher - Bright Future School">Computer Teacher - Bright Future School</option>
-                  </select>
+                    onChange={(v) => setCoverLetterState((p) => ({ ...p, selectedJob: v, generated: "" }))}
+                    placeholder="Select a job..."
+                    options={[
+                      "Mathematics Teacher - Green Valley School",
+                      "Science Faculty - Delhi Public Academy",
+                      "English Teacher - St. Mary's International",
+                      "Computer Teacher - Bright Future School",
+                    ]}
+                  />
                 </Field>
                 <Field label="Select CV / Resume">
-                  <select
+                  <Select
                     value={coverLetterState.selectedResume}
-                    onChange={(e) => setCoverLetterState((p) => ({ ...p, selectedResume: e.target.value, generated: "" }))}
-                    className={inputClass}
-                  >
-                    <option value="">Select a resume...</option>
-                    {savedResumes.map((r, i) => (
-                      <option key={i} value={r.title}>{r.title}</option>
-                    ))}
-                    {savedResumes.length === 0 && (
-                      <option disabled>No resumes saved yet — upload or create one first</option>
-                    )}
-                  </select>
+                    onChange={(v) => setCoverLetterState((p) => ({ ...p, selectedResume: v, generated: "" }))}
+                    placeholder={savedResumes.length === 0 ? "No resumes saved yet" : "Select a resume..."}
+                    options={savedResumes.map((r) => r.title)}
+                  />
                 </Field>
               </div>
               <button

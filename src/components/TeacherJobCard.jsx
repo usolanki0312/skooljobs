@@ -1,11 +1,21 @@
 import { Award, Bookmark, BriefcaseBusiness, GraduationCap, MapPin, Send } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const TeacherJobCard = ({ job, appliedJobs, savedJobs, onApply, onSave }) => {
+  const navigate = useNavigate();
   const isApplied = appliedJobs.some((item) => item.id === job.id);
   const isSaved = savedJobs.some((item) => item.id === job.id);
 
+  const handleCardClick = (e) => {
+    if (e.target.closest("button")) return;
+    navigate(`/teacher/jobs/${job.id}`);
+  };
+
   return (
-    <div className="rounded-3xl border border-borderColor bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft">
+    <div 
+      onClick={handleCardClick}
+      className="rounded-3xl border border-borderColor bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft cursor-pointer"
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">

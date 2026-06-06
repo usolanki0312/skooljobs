@@ -8,8 +8,10 @@ import {
   LogOut,
   Sparkles,
   UserRound,
+  Calendar,
+  ClipboardList,
+  Settings,
 } from "lucide-react";
-import Topbar from "../components/topbar";
 import { jobsData, resumesData } from "../lib/teacherdata";
 
 const resumes = resumesData;
@@ -18,6 +20,8 @@ const navItems = [
   { label: "My Profile", icon: UserRound, path: "/teacher/profile" },
   { label: "Dashboard", icon: LayoutDashboard, path: "/teacher/dashboard" },
   { label: "All Jobs", icon: BriefcaseBusiness, path: "/teacher/all-jobs" },
+  { label: "My Applications", icon: ClipboardList, path: "/teacher/applications" },
+  { label: "Interviews", icon: Calendar, path: "/teacher/interviews" },
   { label: "Recommendation", icon: Sparkles, path: "/teacher/recommendation" },
   { label: "Resume", icon: FileText, path: "/teacher/resume" },
   { label: "Recent Activity", icon: Clock3, path: "/teacher/activity" },
@@ -156,8 +160,17 @@ const TeacherLayout = () => {
 
           <div className="mt-10 space-y-2">
             <button
+              onClick={() => navigate("/teacher/settings")}
+              className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${
+                location.pathname === "/teacher/settings" ? "bg-white text-primary" : "text-white/80 hover:bg-white/10 hover:text-white"
+              }`}
+              type="button"
+            >
+              <Settings size={18} /> Settings
+            </button>
+            <button
               onClick={handleLogout}
-              className="flex w-full items-center gap-3 rounded-2xl bg-red-500 px-4 py-3 text-left text-sm font-bold text-white"
+              className="flex w-full items-center gap-3 rounded-2xl bg-red-500 px-4 py-3 text-left text-sm font-bold text-white hover:bg-red-600 transition"
               type="button"
             >
               <LogOut size={18} /> Logout
@@ -166,7 +179,6 @@ const TeacherLayout = () => {
         </aside>
 
         <main className="flex-1 p-5 lg:p-8">
-          <Topbar />
           <div className="mt-4 flex gap-2 overflow-x-auto rounded-3xl bg-white p-3 shadow-soft lg:hidden">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -185,6 +197,16 @@ const TeacherLayout = () => {
                 </button>
               );
             })}
+            <button
+              type="button"
+              onClick={() => navigate("/teacher/settings")}
+              className={`flex shrink-0 items-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition ${
+                location.pathname === "/teacher/settings" ? "bg-primary text-white" : "bg-light text-primary"
+              }`}
+            >
+              <Settings size={17} />
+              Settings
+            </button>
           </div>
           <div className="mt-6">
             <Outlet context={outletCtx} />

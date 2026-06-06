@@ -1,5 +1,6 @@
 import MinMaxInput from "./MinMaxInput";
 import SectionCard from "./SectionCard";
+import Select from "../ui/Select";
 import { COMPENSATION_STRUCTURES } from "../../lib/postjobOptions";
 
 const CONTRACT_DURATIONS = [
@@ -147,16 +148,7 @@ const PartTimeSalary = ({ form, setField }) => (
         <p className="mb-2 text-xs font-bold text-slate-600">
           Expected Hours Per Week
         </p>
-        <select
-          value={form.hoursPerWeek}
-          onChange={(e) => setField("hoursPerWeek", e.target.value)}
-          className={selectCls}
-        >
-          <option value="">Select</option>
-          {HOURS_PER_WEEK.map((h) => (
-            <option key={h}>{h}</option>
-          ))}
-        </select>
+        <Select value={form.hoursPerWeek} onChange={(v) => setField("hoursPerWeek", v)} placeholder="Select" options={HOURS_PER_WEEK} />
       </div>
     </div>
   </div>
@@ -170,16 +162,7 @@ const ContractSalary = ({ form, setField }) => (
         <p className="mb-2 text-xs font-bold text-slate-600">
           Contract Duration
         </p>
-        <select
-          value={form.contractDuration}
-          onChange={(e) => setField("contractDuration", e.target.value)}
-          className={selectCls}
-        >
-          <option value="">Select Duration</option>
-          {CONTRACT_DURATIONS.map((d) => (
-            <option key={d}>{d}</option>
-          ))}
-        </select>
+        <Select value={form.contractDuration} onChange={(v) => setField("contractDuration", v)} placeholder="Select Duration" options={CONTRACT_DURATIONS} />
       </div>
       <div>
         <p className="mb-2 text-xs font-bold text-slate-600">Payment Type</p>
@@ -247,29 +230,11 @@ const HybridSalary = ({ form, setField }) => (
           <p className="mb-2 text-xs font-bold text-slate-600">
             Work From Home Days
           </p>
-          <select
-            value={form.wfhDays}
-            onChange={(e) => setField("wfhDays", e.target.value)}
-            className={selectCls}
-          >
-            <option value="">Select</option>
-            {WFH_DAYS.map((d) => (
-              <option key={d}>{d}</option>
-            ))}
-          </select>
+          <Select value={form.wfhDays} onChange={(v) => setField("wfhDays", v)} placeholder="Select" options={WFH_DAYS} />
         </div>
         <div>
           <p className="mb-2 text-xs font-bold text-slate-600">Office Days</p>
-          <select
-            value={form.officeDays}
-            onChange={(e) => setField("officeDays", e.target.value)}
-            className={selectCls}
-          >
-            <option value="">Select</option>
-            {OFFICE_DAYS.map((d) => (
-              <option key={d}>{d}</option>
-            ))}
-          </select>
+          <Select value={form.officeDays} onChange={(v) => setField("officeDays", v)} placeholder="Select" options={OFFICE_DAYS} />
         </div>
       </div>
     </div>
@@ -291,16 +256,7 @@ const RemoteSalary = ({ form, setField }) => (
     <div className="grid grid-cols-2 gap-4">
       <div>
         <p className="mb-2 text-xs font-bold text-slate-600">Work Timezone</p>
-        <select
-          value={form.workTimezone}
-          onChange={(e) => setField("workTimezone", e.target.value)}
-          className={selectCls}
-        >
-          <option value="">Select Timezone</option>
-          {TIMEZONES.map((t) => (
-            <option key={t}>{t}</option>
-          ))}
-        </select>
+        <Select value={form.workTimezone} onChange={(v) => setField("workTimezone", v)} placeholder="Select Timezone" options={TIMEZONES} />
       </div>
       <div>
         <p className="mb-2 text-xs font-bold text-slate-600">
@@ -325,16 +281,7 @@ const InternshipSalary = ({ form, setField }) => (
         <p className="mb-2 text-xs font-bold text-slate-600">
           Internship Duration
         </p>
-        <select
-          value={form.internshipDuration}
-          onChange={(e) => setField("internshipDuration", e.target.value)}
-          className={selectCls}
-        >
-          <option value="">Select Duration</option>
-          {INTERNSHIP_DURATIONS.map((d) => (
-            <option key={d}>{d}</option>
-          ))}
-        </select>
+        <Select value={form.internshipDuration} onChange={(v) => setField("internshipDuration", v)} placeholder="Select Duration" options={INTERNSHIP_DURATIONS} />
       </div>
       <MinMaxInput
         label="Monthly Stipend (₹)"

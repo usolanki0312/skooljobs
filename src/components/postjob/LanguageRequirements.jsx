@@ -1,6 +1,7 @@
 import { Plus, Trash2, Info, HelpCircle } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import SectionCard from "./SectionCard";
+import Select from "../ui/Select";
 import {
   INDIAN_LANGUAGES, FOREIGN_LANGUAGES, PROFICIENCY_LEVELS,
 } from "../../lib/postjobOptions";
@@ -55,40 +56,35 @@ const LanguageRequirements = ({ form, setField }) => {
             <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-500">
               Language Type
             </label>
-            <select
+            <Select
               value={tempType}
-              onChange={(e) => {
-                setTempType(e.target.value);
-                setTempLang("");
-              }}
-              className="w-full rounded-xl border border-borderColor bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-primary"
-            >
-              <option value="">Select Type...</option>
-              <option value="Indian">Indian Languages</option>
-              <option value="Foreign">Foreign Languages</option>
-            </select>
+              onChange={(v) => { setTempType(v); setTempLang(""); }}
+              placeholder="Select Type..."
+              options={[
+                { label: "Indian Languages", value: "Indian" },
+                { label: "Foreign Languages", value: "Foreign" },
+              ]}
+              className="w-full rounded-xl border border-borderColor bg-white px-3 py-2 text-sm focus:border-primary"
+            />
           </div>
 
           <div>
             <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-500">
               Choose Language
             </label>
-            <select
+            <Select
               value={tempLang}
-              onChange={(e) => setTempLang(e.target.value)}
-              className="w-full rounded-xl border border-borderColor bg-white px-3 py-2 text-sm text-slate-700 outline-none focus:border-primary"
+              onChange={setTempLang}
               disabled={!tempType}
-            >
-              <option value="">
-                {tempType ? "Select Language..." : "Choose Type first"}
-              </option>
-              {tempType &&
-                (tempType === "Indian" ? INDIAN_LANGUAGES : FOREIGN_LANGUAGES)
-                  .filter((l) => !form.languages.some((fl) => fl.name === l))
-                  .map((l) => (
-                    <option key={l} value={l}>{l}</option>
-                  ))}
-            </select>
+              placeholder={tempType ? "Select Language..." : "Choose Type first"}
+              options={
+                tempType
+                  ? (tempType === "Indian" ? INDIAN_LANGUAGES : FOREIGN_LANGUAGES)
+                      .filter((l) => !form.languages.some((fl) => fl.name === l))
+                  : []
+              }
+              className="w-full rounded-xl border border-borderColor bg-white px-3 py-2 text-sm focus:border-primary"
+            />
           </div>
 
           <button
@@ -140,15 +136,12 @@ const LanguageRequirements = ({ form, setField }) => {
                     <tr key={l.name} className="hover:bg-slate-50/50 transition">
                       <td className="px-5 py-4 font-semibold text-slate-800">{l.name}</td>
                       <td className="px-5 py-4">
-                        <select
+                        <Select
                           value={l.proficiency}
-                          onChange={(e) => setProficiency(l.name, e.target.value)}
-                          className="w-full max-w-xs rounded-xl border border-borderColor bg-white px-4 py-2.5 text-sm text-slate-800 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10"
-                        >
-                          {PROFICIENCY_LEVELS.map((p) => (
-                            <option key={p} value={p}>{p}</option>
-                          ))}
-                        </select>
+                          onChange={(v) => setProficiency(l.name, v)}
+                          options={PROFICIENCY_LEVELS}
+                          className="w-full max-w-xs rounded-xl border border-borderColor bg-white px-4 py-2.5 text-sm focus:border-primary focus:ring-4 focus:ring-primary/10"
+                        />
                       </td>
                       <td className="px-5 py-4 text-center">
                         <button
