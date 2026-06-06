@@ -1,4 +1,4 @@
-import { Bell, Search, Settings } from "lucide-react";
+import { Bell, Settings } from "lucide-react";
 
 const Topbar = ({
   title = "Teacher Dashboard",
@@ -21,7 +21,7 @@ const Topbar = ({
 
   return (
     <div className="rounded-3xl bg-white p-4 shadow-soft sm:p-5">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <p className="text-xs font-bold uppercase tracking-[2px] text-secondary">
             Welcome back, {displayName}
@@ -31,43 +31,35 @@ const Topbar = ({
           </h2>
           <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
         </div>
-      </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-3">
-        <div className="flex min-w-[220px] flex-1 items-center gap-2 rounded-2xl border border-borderColor bg-light px-4 py-3">
-          <Search size={17} className="text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search jobs, schools..."
-            className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
+        <div className="flex items-center gap-3 self-end sm:self-center">
+          <div className="relative">
+            <button
+              className="relative rounded-2xl border border-borderColor p-3 text-primary hover:bg-light"
+              type="button"
+              onClick={onNotificationClick}
+            >
+              <Bell size={18} />
+              {unreadCount > 0 && (
+                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
+                  {unreadCount}
+                </span>
+              )}
+            </button>
+            {notificationDropdown}
+          </div>
+          <button
+            className="rounded-2xl border border-borderColor p-3 text-primary hover:bg-light"
+            type="button"
+          >
+            <Settings size={18} />
+          </button>
+          <img
+            src={profilePhoto}
+            alt="profile"
+            className="h-11 w-11 rounded-2xl object-cover"
           />
         </div>
-        <div className="relative">
-          <button
-            className="relative rounded-2xl border border-borderColor p-3 text-primary hover:bg-light"
-            type="button"
-            onClick={onNotificationClick}
-          >
-            <Bell size={18} />
-            {unreadCount > 0 && (
-              <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
-                {unreadCount}
-              </span>
-            )}
-          </button>
-          {notificationDropdown}
-        </div>
-        <button
-          className="rounded-2xl border border-borderColor p-3 text-primary hover:bg-light"
-          type="button"
-        >
-          <Settings size={18} />
-        </button>
-        <img
-          src={profilePhoto}
-          alt="profile"
-          className="h-11 w-11 rounded-2xl object-cover"
-        />
       </div>
     </div>
   );

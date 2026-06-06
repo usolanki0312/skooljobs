@@ -26,6 +26,8 @@ import TeacherApplications from "../pages/teacher/TeacherApplications";
 import TeacherInterviews from "../pages/teacher/TeacherInterviews";
 import TeacherJobDetail from "../pages/teacher/TeacherJobDetail";
 import TeacherSettings from "../pages/teacher/TeacherSettings";
+import TeacherSavedJobs from "../pages/teacher/TeacherSavedJobs";
+
 
 function AppRoutes() {
   return (
@@ -61,6 +63,7 @@ function AppRoutes() {
         <Route path="activity" element={<TeacherActivity />} />
         <Route path="applications" element={<TeacherApplications />} />
         <Route path="interviews" element={<TeacherInterviews />} />
+        <Route path="saved-jobs" element={<TeacherSavedJobs />} />
         <Route path="jobs/:jobId" element={<TeacherJobDetail />} />
         <Route path="settings" element={<TeacherSettings />} />
       </Route>

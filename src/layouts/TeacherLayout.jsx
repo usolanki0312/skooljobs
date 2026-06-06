@@ -11,6 +11,7 @@ import {
   Calendar,
   ClipboardList,
   Settings,
+  Bookmark,
 } from "lucide-react";
 import { jobsData, resumesData } from "../lib/teacherdata";
 
@@ -20,6 +21,7 @@ const navItems = [
   { label: "My Profile", icon: UserRound, path: "/teacher/profile" },
   { label: "Dashboard", icon: LayoutDashboard, path: "/teacher/dashboard" },
   { label: "All Jobs", icon: BriefcaseBusiness, path: "/teacher/all-jobs" },
+  { label: "Saved Jobs", icon: Bookmark, path: "/teacher/saved-jobs" },
   { label: "My Applications", icon: ClipboardList, path: "/teacher/applications" },
   { label: "Interviews", icon: Calendar, path: "/teacher/interviews" },
   { label: "Recommendation", icon: Sparkles, path: "/teacher/recommendation" },
@@ -32,31 +34,123 @@ const TeacherLayout = () => {
   const location = useLocation();
 
   const [profileImage, setProfileImage] = useState("https://i.pravatar.cc/300?img=12");
-  const [appliedJobs, setAppliedJobs] = useState([]);
-  const [savedJobs, setSavedJobs] = useState([]);
-  const [activities, setActivities] = useState([
-    {
-      message: "Profile viewed by Green Valley School",
-      date: new Date(Date.now() - 3600000).toISOString(),
-      type: "view",
-    },
-  ]);
-  const [selectedResume, setSelectedResume] = useState(resumes[0]);
+  const [appliedJobs, setAppliedJobs] = useState(() => {
+    const saved = localStorage.getItem("skooljobs_applied_jobs");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [savedJobs, setSavedJobs] = useState(() => {
+    const saved = localStorage.getItem("skooljobs_saved_jobs");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [activities, setActivities] = useState(() => {
+    const saved = localStorage.getItem("skooljobs_teacher_activities");
+    return saved ? JSON.parse(saved) : [
+      {
+        message: "Profile viewed by Green Valley School",
+        date: new Date(Date.now() - 3600000).toISOString(),
+        type: "view",
+      },
+    ];
+  });
 
-  const currentUser = useMemo(() => {
-    try { return JSON.parse(localStorage.getItem("currentUser") || "{}"); } catch { return {}; }
+  const allJobs = useMemo(() => {
+    const savedRecruiterJobsStr = localStorage.getItem("skooljobs_jobs");
+    const recruiterJobs = savedRecruiterJobsStr ? JSON.parse(savedRecruiterJobsStr) : [];
+    const normalizedRecruiter = recruiterJobs.map((j) => ({
+      id: j.id,
+      role: j.title || "Teaching Position",
+      school: j.companyName || "Green Valley School",
+      location: j.location || "Bhopal, MP",
+      type: j.employmentType || "Full Time",
+      salary: j.salaryRange || "Competitive",
+      skill: j.subject || "Teaching",
+      match: "98",
+      description: j.description,
+      requirements: j.requirements,
+      qualifications: j.qualifications,
+      expiryDate: j.expiryDate,
+      vacancies: j.vacancies,
+      roleType: j.roleType,
+    }));
+    return [...normalizedRecruiter, ...jobsData];
   }, []);
+
+  const [resumes, setResumes] = useState(() => {
+    const saved = localStorage.getItem("skooljobs_resumes");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return resumesData;
+      }
+    }
+    // Set default in localStorage
+    localStorage.setItem("skooljobs_resumes", JSON.stringify(resumesData));
+    return resumesData;
+  });
+
+  const [selectedResume, setSelectedResume] = useState(() => resumes[0] || null);
+
+  const [currentUser, setCurrentUser] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("currentUser") || "{}"); } catch { return {}; }
+  });
+
+  // Persist candidate states
+  useEffect(() => {
+    localStorage.setItem("skooljobs_applied_jobs", JSON.stringify(appliedJobs));
+  }, [appliedJobs]);
+
+  useEffect(() => {
+    localStorage.setItem("skooljobs_saved_jobs", JSON.stringify(savedJobs));
+  }, [savedJobs]);
+
+  useEffect(() => {
+    localStorage.setItem("skooljobs_teacher_activities", JSON.stringify(activities));
+  }, [activities]);
 
   useEffect(() => {
     if (currentUser.profilePhoto) setProfileImage(currentUser.profilePhoto);
   }, [currentUser.profilePhoto]);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      try {
+        const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+        setCurrentUser(user);
+        if (user.profilePhoto) setProfileImage(user.profilePhoto);
+      } catch {}
+
+      const saved = localStorage.getItem("skooljobs_resumes");
+      if (saved) {
+        try {
+          const list = JSON.parse(saved);
+          setResumes(list);
+          setSelectedResume((prev) => {
+            if (!prev) return list[0] || null;
+            const exists = list.find((r) => String(r.id) === String(prev.id));
+            return exists || list[0] || null;
+          });
+        } catch {}
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    handleStorageChange();
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [location.pathname]);
 
   if (!localStorage.getItem("currentUser")) {
     return <Navigate to="/" replace />;
   }
 
   const displayName = currentUser.name || currentUser.firstName || "Gopal";
-  const recommendedJobs = jobsData.filter((job) => job.skill === selectedResume.skill);
+
+  const recommendedJobs = useMemo(() => {
+    if (!selectedResume) return allJobs;
+    const skillFocus = selectedResume.skill || selectedResume.skills?.split(",")[0]?.trim() || "Teaching";
+    return allJobs.filter((job) => job.skill.toLowerCase() === skillFocus.toLowerCase());
+  }, [selectedResume, allJobs]);
 
   const addActivity = (message, type = "action") => {
     setActivities((prev) => [{ message, date: new Date().toISOString(), type }, ...prev]);
@@ -66,11 +160,41 @@ const TeacherLayout = () => {
     if (!appliedJobs.some((item) => item.id === job.id)) {
       setAppliedJobs((prev) => [...prev, { ...job, appliedDate: new Date().toISOString() }]);
       addActivity(`Applied for ${job.role} at ${job.school}`, "apply");
+
+      // Sync application to recruiter applicants list in localStorage
+      try {
+        const savedApplicantsStr = localStorage.getItem("skooljobs_applicants");
+        const currentApplicants = savedApplicantsStr ? JSON.parse(savedApplicantsStr) : [];
+        
+        const teacherProfile = JSON.parse(localStorage.getItem("skooljobs_teacher_data") || "{}");
+        const teacherQualifications = JSON.parse(localStorage.getItem("skooljobs_teacher_qualifications") || "[]");
+        const highestQual = teacherQualifications[0]?.degree || teacherProfile.highestQualificationOne || "B.Ed";
+
+        const newApplicant = {
+          id: Date.now(),
+          name: `${teacherProfile.firstName || currentUser.firstName || "Rahul"} ${teacherProfile.lastName || currentUser.lastName || "Sharma"}`.trim(),
+          subject: job.skill || "Mathematics",
+          experience: teacherProfile.age ? `${Math.max(1, parseInt(teacherProfile.age) - 22)} yrs` : "3 yrs",
+          status: "Applied",
+          avatar: teacherProfile.profilePhoto || profileImage || "https://i.pravatar.cc/100?img=12",
+          jobTitle: job.role,
+          qualification: highestQual,
+          saved: false,
+          candidateId: currentUser.id || 1,
+        };
+
+        localStorage.setItem("skooljobs_applicants", JSON.stringify([newApplicant, ...currentApplicants]));
+      } catch (err) {
+        console.error("Error syncing application:", err);
+      }
     }
   };
 
   const handleSave = (job) => {
-    if (!savedJobs.some((item) => item.id === job.id)) {
+    if (savedJobs.some((item) => item.id === job.id)) {
+      setSavedJobs((prev) => prev.filter((item) => item.id !== job.id));
+      addActivity(`Removed bookmark for ${job.role} at ${job.school}`, "unsave");
+    } else {
       setSavedJobs((prev) => [...prev, job]);
       addActivity(`Saved ${job.role} at ${job.school}`, "save");
     }
@@ -92,9 +216,12 @@ const TeacherLayout = () => {
     activities,
     setActivities,
     addActivity,
+    resumes,
+    setResumes,
     selectedResume,
     setSelectedResume,
     recommendedJobs,
+    allJobs,
     handleApply,
     handleSave,
     currentUser,

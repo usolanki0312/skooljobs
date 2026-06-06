@@ -122,14 +122,16 @@ export const initialJobs = [
 ];
 
 export const initialApplicants = [
-  { id: 1, name: "Rahul Sharma", subject: "Mathematics", experience: "3 yrs", status: "Applied", avatar: "https://i.pravatar.cc/100?img=12" },
+  { id: 1, name: "Rahul Sharma", subject: "Mathematics", experience: "3 yrs", status: "Not Reviewed", avatar: "https://i.pravatar.cc/100?img=12" },
   { id: 2, name: "Priya Singh", subject: "English", experience: "5 yrs", status: "Shortlisted", avatar: "https://i.pravatar.cc/100?img=16" },
-  { id: 3, name: "Amit Kumar", subject: "Science", experience: "2 yrs", status: "Applied", avatar: "https://i.pravatar.cc/100?img=11" },
+  { id: 3, name: "Amit Kumar", subject: "Science", experience: "2 yrs", status: "Not Reviewed", avatar: "https://i.pravatar.cc/100?img=11" },
   { id: 4, name: "Neha Patel", subject: "Hindi", experience: "7 yrs", status: "Rejected", avatar: "https://i.pravatar.cc/100?img=25" },
   { id: 5, name: "Suresh Verma", subject: "Mathematics", experience: "4 yrs", status: "Shortlisted", avatar: "https://i.pravatar.cc/100?img=30" },
 ];
 
 export const statusChipClass = {
+  "Not Reviewed": "bg-blue-50 text-blue-600",
+  Reviewed: "bg-purple-50 text-purple-600",
   Applied: "bg-blue-50 text-blue-600",
   Shortlisted: "bg-green-50 text-green-600",
   Rejected: "bg-red-50 text-red-500",

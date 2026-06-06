@@ -11,6 +11,25 @@ const TeacherApplications = () => {
       if (addActivity) {
         addActivity(`Withdrew application for ${jobRole} at ${school}`, "withdraw");
       }
+
+      // Sync withdrawal with recruiter's applicants database in localStorage
+      try {
+        const savedApplicantsStr = localStorage.getItem("skooljobs_applicants");
+        if (savedApplicantsStr) {
+          const currentApplicants = JSON.parse(savedApplicantsStr);
+          const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+          const teacherProfile = JSON.parse(localStorage.getItem("skooljobs_teacher_data") || "{}");
+          const candidateName = `${teacherProfile.firstName || currentUser.firstName || "Rahul"} ${teacherProfile.lastName || currentUser.lastName || "Sharma"}`.trim();
+
+          const updatedApplicants = currentApplicants.filter(
+            (a) => !(a.jobTitle === jobRole && (String(a.candidateId) === String(currentUser.id) || a.name.toLowerCase() === candidateName.toLowerCase()))
+          );
+          localStorage.setItem("skooljobs_applicants", JSON.stringify(updatedApplicants));
+        }
+      } catch (err) {
+        console.error("Error syncing withdrawal:", err);
+      }
+
       alert("Application withdrawn successfully.");
     }
   };
@@ -85,9 +104,9 @@ const TeacherApplications = () => {
                     <td className="px-5 py-4 text-right pr-6 space-x-2">
                       <button
                         type="button"
-                        onClick={() => navigate(`/public-job/${job.id}`)}
+                        onClick={() => navigate(`/teacher/jobs/${job.id}`)}
                         className="inline-flex items-center gap-1 rounded-lg border border-borderColor hover:bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-600 transition"
-                        title="View Public Job Details"
+                        title="View Job Details"
                       >
                         <Eye size={12} /> View Job
                       </button>

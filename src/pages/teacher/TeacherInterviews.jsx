@@ -40,22 +40,29 @@ const initialTeacherInterviews = [
 ];
 
 const TeacherInterviews = () => {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const teacherProfile = JSON.parse(localStorage.getItem("skooljobs_teacher_data") || "{}");
+  const candidateName = `${teacherProfile.firstName || currentUser.firstName || "Rahul"} ${teacherProfile.lastName || currentUser.lastName || "Sharma"}`.trim();
+
   const [interviews, setInterviews] = useState(() => {
-    const saved = localStorage.getItem("skooljobs_teacher_interviews");
-    return saved ? JSON.parse(saved) : initialTeacherInterviews;
+    const saved = localStorage.getItem("skooljobs_interviews");
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [activeTab, setActiveTab] = useState("upcoming");
 
   const saveInterviews = (data) => {
     setInterviews(data);
-    localStorage.setItem("skooljobs_teacher_interviews", JSON.stringify(data));
+    localStorage.setItem("skooljobs_interviews", JSON.stringify(data));
   };
 
   const handleCopyDetails = (iv) => {
+    const roleName = iv.role || iv.jobTitle || "Teacher";
+    const schoolName = iv.school || "School";
+    const meetingLink = iv.link || iv.meetingLink || "";
     const text = iv.mode === "Online" 
-      ? `Interview for ${iv.role} at ${iv.school}\nDate: ${iv.date} at ${iv.time}\nMode: Online (Zoom: ${iv.link})`
-      : `Interview for ${iv.role} at ${iv.school}\nDate: ${iv.date} at ${iv.time}\nMode: In-Person\nLocation: ${iv.location}`;
+      ? `Interview for ${roleName} at ${schoolName}\nDate: ${iv.date} at ${iv.time}\nMode: Online (Zoom: ${meetingLink})`
+      : `Interview for ${roleName} at ${schoolName}\nDate: ${iv.date} at ${iv.time}\nMode: In-Person\nLocation: ${iv.location}`;
     navigator.clipboard.writeText(text);
     alert("Interview invitation details copied to clipboard!");
   };
@@ -70,8 +77,13 @@ const TeacherInterviews = () => {
     }
   };
 
-  const upcomingInterviews = interviews.filter(iv => iv.status !== "Completed" && iv.status !== "Cancelled");
-  const pastInterviews = interviews.filter(iv => iv.status === "Completed" || iv.status === "Cancelled");
+  const myInterviews = interviews.filter(iv => 
+    String(iv.candidateId) === String(currentUser.id) || 
+    iv.candidateName?.toLowerCase() === candidateName.toLowerCase()
+  );
+
+  const upcomingInterviews = myInterviews.filter(iv => iv.status !== "Completed" && iv.status !== "Cancelled");
+  const pastInterviews = myInterviews.filter(iv => iv.status === "Completed" || iv.status === "Cancelled");
 
   const activeInterviews = activeTab === "upcoming" ? upcomingInterviews : pastInterviews;
 
@@ -123,8 +135,8 @@ const TeacherInterviews = () => {
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div>
-                  <h3 className="text-lg font-bold text-slate-800">{iv.role}</h3>
-                  <p className="text-sm font-semibold text-primary">{iv.school}</p>
+                  <h3 className="text-lg font-bold text-slate-800">{iv.role || iv.jobTitle}</h3>
+                  <p className="text-sm font-semibold text-primary">{iv.school || "School"}</p>
                   
                   <div className="mt-3 flex flex-wrap gap-4 text-xs text-slate-500">
                     <span className="flex items-center gap-1.5 font-medium">
@@ -164,13 +176,13 @@ const TeacherInterviews = () => {
                 </div>
               </div>
 
-              {iv.notes && (
+              {(iv.notes || iv.notesForCandidate) && (
                 <div className="rounded-xl bg-light p-4 text-xs text-slate-600 leading-relaxed border border-borderColor/60">
                   <p className="font-bold text-slate-700 mb-1">Recruiter Notes:</p>
-                  <p>{iv.notes}</p>
-                  {iv.mode === "Online" && iv.link && (
+                  <p>{iv.notes || iv.notesForCandidate}</p>
+                  {iv.mode === "Online" && (iv.link || iv.meetingLink) && (
                     <div className="mt-2 text-primary font-bold break-all">
-                      Meeting Link: <a href={iv.link} target="_blank" rel="noopener noreferrer" className="hover:underline">{iv.link}</a>
+                      Meeting Link: <a href={iv.link || iv.meetingLink} target="_blank" rel="noopener noreferrer" className="hover:underline">{iv.link || iv.meetingLink}</a>
                     </div>
                   )}
                   {iv.mode === "In-Person" && iv.location && (

@@ -52,7 +52,6 @@ const TeacherJobCard = ({ job, appliedJobs, savedJobs, onApply, onSave }) => {
         <button
           type="button"
           onClick={() => onSave(job)}
-          disabled={isSaved}
           className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-bold ${
             isSaved
               ? "border-green-500 bg-green-500 text-white"

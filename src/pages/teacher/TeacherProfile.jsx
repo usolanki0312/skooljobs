@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Award,
   BookOpen,
@@ -17,6 +18,7 @@ import {
   User,
   X,
   Wand2,
+  ArrowLeft,
 } from "lucide-react";
 import BackButton from "../../components/backbutton";
 import Select from "../../components/ui/Select";
@@ -105,6 +107,7 @@ const hasValue = (item) =>
   });
 
 const TeacherProfile = () => {
+  const navigate = useNavigate();
   const storedUser = useMemo(() => {
     try {
       return JSON.parse(localStorage.getItem("currentUser") || "{}");
@@ -117,56 +120,96 @@ const TeacherProfile = () => {
   const [profileImage, setProfileImage] = useState(
     storedUser.profilePhoto || "https://i.pravatar.cc/300?img=12"
   );
-  const [teacherData, setTeacherData] = useState({
-    title: "Mr",
-    firstName: storedUser.firstName || "Rahul",
-    middleName: "",
-    lastName: storedUser.lastName || "Sharma",
-    dobDay: "",
-    dobMonth: "",
-    dobYear: "",
-    age: "",
-    nationality: "Indian",
-    currentJob: "",
-    mainSubject: "Mathematics",
-    additionalSubjects: "History\nGeography\nArt\nMusic",
-    classTaughtOne: "Class A",
-    classTaughtTwo: "Class C",
-    languageOne: "English",
-    languageStatusOne: "Fluency enough to teach",
-    languageTwo: "",
-    languageStatusTwo: "",
-    languageThree: "",
-    languageStatusThree: "",
-    highestQualificationOne: "",
-    highestQualificationTwo: "",
-    mobile: storedUser.phone || "9876543210",
-    whatsapp: "",
-    sameAsMobile: false,
-    primaryEmail: storedUser.email || "teacher@gmail.com",
-    secondaryEmail: "",
-    pinCode: "",
-    city: storedUser.city || "",
-    state: "",
-    address: "",
-    briefWriteUp: "",
+  const [teacherData, setTeacherData] = useState(() => {
+    const saved = localStorage.getItem("skooljobs_teacher_data");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {}
+    }
+    return {
+      title: "Mr",
+      firstName: storedUser.firstName || "Rahul",
+      middleName: "",
+      lastName: storedUser.lastName || "Sharma",
+      dobDay: "",
+      dobMonth: "",
+      dobYear: "",
+      age: "",
+      nationality: "Indian",
+      currentJob: "",
+      mainSubject: "Mathematics",
+      additionalSubjects: "History\nGeography\nArt\nMusic",
+      classTaughtOne: "Class A",
+      classTaughtTwo: "Class C",
+      languageOne: "English",
+      languageStatusOne: "Fluency enough to teach",
+      languageTwo: "",
+      languageStatusTwo: "",
+      languageThree: "",
+      languageStatusThree: "",
+      highestQualificationOne: "",
+      highestQualificationTwo: "",
+      mobile: storedUser.phone || "9876543210",
+      whatsapp: "",
+      sameAsMobile: false,
+      primaryEmail: storedUser.email || "teacher@gmail.com",
+      secondaryEmail: "",
+      pinCode: "",
+      city: storedUser.city || "",
+      state: "",
+      address: "",
+      briefWriteUp: "",
+    };
   });
 
   const [qualificationDraft, setQualificationDraft] = useState(blankQualification);
-  const [savedQualifications, setSavedQualifications] = useState([]);
+  const [savedQualifications, setSavedQualifications] = useState(() => {
+    const saved = localStorage.getItem("skooljobs_teacher_qualifications");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {}
+    }
+    return [];
+  });
   const [editingQualificationIndex, setEditingQualificationIndex] = useState(null);
   const [showQualificationForm, setShowQualificationForm] = useState(false);
   const qualificationFormRef = useRef(null);
 
   const [experienceDraft, setExperienceDraft] = useState(blankExperience);
-  const [savedExperiences, setSavedExperiences] = useState([]);
+  const [savedExperiences, setSavedExperiences] = useState(() => {
+    const saved = localStorage.getItem("skooljobs_teacher_experiences");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {}
+    }
+    return [];
+  });
   const [editingExperienceIndex, setEditingExperienceIndex] = useState(null);
   const [showExperienceForm, setShowExperienceForm] = useState(false);
   const experienceFormRef = useRef(null);
 
   const [resumeData, setResumeData] = useState(blankResumeData);
-  const [savedAwards, setSavedAwards] = useState([]);
-  const [savedCourses, setSavedCourses] = useState([]);
+  const [savedAwards, setSavedAwards] = useState(() => {
+    const saved = localStorage.getItem("skooljobs_teacher_awards");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {}
+    }
+    return [];
+  });
+  const [savedCourses, setSavedCourses] = useState(() => {
+    const saved = localStorage.getItem("skooljobs_teacher_courses");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {}
+    }
+    return [];
+  });
 
   const [resumeDraft, setResumeDraft] = useState({
     title: "",
@@ -186,15 +229,41 @@ const TeacherProfile = () => {
     fileName: "",
     notes: "",
   });
-  const [savedResumes, setSavedResumes] = useState([]);
+  const [savedResumes, setSavedResumes] = useState(() => {
+    const saved = localStorage.getItem("skooljobs_resumes");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  });
   const [resumeMode, setResumeMode] = useState("upload");
 
-  const [dynamicLanguages, setDynamicLanguages] = useState([
-    { language: "English", status: "Fluency enough to teach" },
-  ]);
+  const [dynamicLanguages, setDynamicLanguages] = useState(() => {
+    const saved = localStorage.getItem("skooljobs_teacher_languages");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {}
+    }
+    return [
+      { language: "English", status: "Fluency enough to teach" },
+    ];
+  });
 
   const ALL_ADDITIONAL_SUBJECTS = ["History", "Geography", "Art", "Music", "Hindi", "Social Science", "Computer", "Physics", "Chemistry", "Biology"];
-  const [selectedAdditionalSubjects, setSelectedAdditionalSubjects] = useState(["History", "Geography"]);
+  const [selectedAdditionalSubjects, setSelectedAdditionalSubjects] = useState(() => {
+    const saved = localStorage.getItem("skooljobs_teacher_additional_subjects");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {}
+    }
+    return ["History", "Geography"];
+  });
 
   const [coverLetterState, setCoverLetterState] = useState({
     selectedJob: "",
@@ -202,6 +271,35 @@ const TeacherProfile = () => {
     generated: "",
     loading: false,
   });
+
+  // Persist all states on change
+  useEffect(() => {
+    localStorage.setItem("skooljobs_teacher_data", JSON.stringify(teacherData));
+  }, [teacherData]);
+
+  useEffect(() => {
+    localStorage.setItem("skooljobs_teacher_qualifications", JSON.stringify(savedQualifications));
+  }, [savedQualifications]);
+
+  useEffect(() => {
+    localStorage.setItem("skooljobs_teacher_experiences", JSON.stringify(savedExperiences));
+  }, [savedExperiences]);
+
+  useEffect(() => {
+    localStorage.setItem("skooljobs_teacher_awards", JSON.stringify(savedAwards));
+  }, [savedAwards]);
+
+  useEffect(() => {
+    localStorage.setItem("skooljobs_teacher_courses", JSON.stringify(savedCourses));
+  }, [savedCourses]);
+
+  useEffect(() => {
+    localStorage.setItem("skooljobs_teacher_languages", JSON.stringify(dynamicLanguages));
+  }, [dynamicLanguages]);
+
+  useEffect(() => {
+    localStorage.setItem("skooljobs_teacher_additional_subjects", JSON.stringify(selectedAdditionalSubjects));
+  }, [selectedAdditionalSubjects]);
 
   const handleChange = (e) => {
     const { name, type, checked, value } = e.target;
@@ -505,35 +603,118 @@ const TeacherProfile = () => {
   const addResume = () => {
     if (resumeMode === "create") {
       if (!resumeDraft.title.trim()) { alert("Please add a resume title."); return; }
-      if (!resumeDraft.fullName.trim()) { alert("Please add full name."); return; }
-      if (!resumeDraft.email.trim()) { alert("Please add email address."); return; }
-      if (!resumeDraft.mobile.trim()) { alert("Please add mobile number."); return; }
-      if (!resumeDraft.summary.trim()) { alert("Please add profile summary."); return; }
-    }
+      
+      const addressParts = [];
+      if (teacherData.address) addressParts.push(teacherData.address);
+      if (teacherData.city) addressParts.push(teacherData.city);
+      if (teacherData.state) addressParts.push(teacherData.state);
+      if (teacherData.pinCode) addressParts.push(teacherData.pinCode);
+      const fullAddress = addressParts.join(", ");
 
-    if (resumeMode === "upload" && !resumeDraft.fileName.trim()) {
-      alert("Please upload a resume file.");
-      return;
-    }
+      const educationStr = savedQualifications
+        .map((q) => `${q.degree || q.classLevel}${q.course ? " in " + q.course : ""} - ${q.college || q.school} (${q.year || "N/A"})`)
+        .join("\n");
 
-    const extension = resumeDraft.format === "PDF" ? "pdf" : "txt";
-    const cleanTitle = resumeDraft.title.trim() || resumeDraft.fileName.replace(/\.[^/.]+$/, "") || "Teacher Resume";
+      const experienceStr = savedExperiences
+        .map((e) => `${e.post} at ${e.school} (${e.startDate || "N/A"} to ${e.currentEmployer ? "Present" : e.endDate || "N/A"})`)
+        .join("\n\n");
 
-    setSavedResumes((prev) => [
-      ...prev,
-      {
-        ...resumeDraft,
-        source: resumeMode === "upload" ? "Uploaded" : "Created",
+      const certificationsStr = savedCourses
+        .map((c) => `${c.name || "Course"} by ${c.by || "N/A"} (${c.year || "N/A"})`)
+        .join("\n");
+
+      const achievementsStr = savedAwards
+        .map((a) => `${a.name || "Award"} by ${a.by || "N/A"} (${a.year || "N/A"})`)
+        .join("\n");
+
+      const languagesStr = dynamicLanguages
+        .map((l) => `${l.language} (${l.status})`)
+        .filter((l) => l.trim())
+        .join(", ");
+
+      const skillsStr = [teacherData.mainSubject, ...selectedAdditionalSubjects].filter(Boolean).join(", ");
+      
+      const extension = resumeDraft.format === "PDF" ? "pdf" : "txt";
+      const cleanTitle = resumeDraft.title.trim();
+
+      const newResume = {
+        id: Date.now(),
+        name: cleanTitle + "." + extension,
         title: cleanTitle,
-        fileName: resumeDraft.fileName || `${cleanTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}.${extension}`,
-      },
-    ]);
-    setResumeDraft({
-      title: "", fullName: "", email: "", mobile: "", address: "",
-      currentJobTitle: "", summary: "", skills: "", education: "",
-      experience: "", certifications: "", languages: "", achievements: "",
-      format: "PDF", fileName: "", notes: "",
-    });
+        fullName: `${teacherData.firstName} ${teacherData.lastName}`.trim(),
+        email: teacherData.primaryEmail,
+        mobile: teacherData.mobile,
+        address: fullAddress,
+        currentJobTitle: teacherData.currentJob || "Teaching Professional",
+        summary: teacherData.briefWriteUp,
+        skills: skillsStr,
+        education: educationStr,
+        experience: experienceStr,
+        certifications: certificationsStr,
+        languages: languagesStr,
+        achievements: achievementsStr,
+        format: resumeDraft.format,
+        fileName: `${cleanTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}.${extension}`,
+        notes: resumeDraft.notes,
+        source: "Created",
+        skill: teacherData.mainSubject || "Teaching",
+        score: 85
+      };
+
+      const updated = [...savedResumes, newResume];
+      setSavedResumes(updated);
+      localStorage.setItem("skooljobs_resumes", JSON.stringify(updated));
+
+      setResumeDraft({
+        title: "", fullName: "", email: "", mobile: "", address: "",
+        currentJobTitle: "", summary: "", skills: "", education: "",
+        experience: "", certifications: "", languages: "", achievements: "",
+        format: "PDF", fileName: "", notes: "",
+      });
+      alert("Resume created successfully!");
+    } else {
+      if (!resumeDraft.title.trim() && !resumeDraft.fileName.trim()) {
+        alert("Please enter a resume title or choose a file.");
+        return;
+      }
+      if (!resumeDraft.fileName.trim()) {
+        alert("Please choose a file to upload.");
+        return;
+      }
+      const cleanTitle = resumeDraft.title.trim() || resumeDraft.fileName.replace(/\.[^/.]+$/, "");
+      const newResume = {
+        id: Date.now(),
+        name: resumeDraft.fileName,
+        title: cleanTitle,
+        fullName: `${teacherData.firstName} ${teacherData.lastName}`.trim(),
+        email: teacherData.primaryEmail,
+        mobile: teacherData.mobile,
+        format: resumeDraft.format,
+        fileName: resumeDraft.fileName,
+        notes: resumeDraft.notes,
+        source: "Uploaded",
+        skill: teacherData.mainSubject || "Teaching",
+        score: 85
+      };
+
+      const updated = [...savedResumes, newResume];
+      setSavedResumes(updated);
+      localStorage.setItem("skooljobs_resumes", JSON.stringify(updated));
+
+      setResumeDraft({
+        title: "", fullName: "", email: "", mobile: "", address: "",
+        currentJobTitle: "", summary: "", skills: "", education: "",
+        experience: "", certifications: "", languages: "", achievements: "",
+        format: "PDF", fileName: "", notes: "",
+      });
+      alert("Resume uploaded successfully!");
+    }
+  };
+
+  const handleDeleteResume = (index) => {
+    const updated = savedResumes.filter((_, i) => i !== index);
+    setSavedResumes(updated);
+    localStorage.setItem("skooljobs_resumes", JSON.stringify(updated));
   };
 
   const generateResumeContent = (resume) => {
@@ -630,6 +811,24 @@ const TeacherProfile = () => {
     if (activeSection === "experience" && showExperienceForm) {
       if (saveExperienceDraft()) alert("Experience saved successfully");
       return;
+    }
+
+    try {
+      const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+      const updatedUser = {
+        ...user,
+        firstName: teacherData.firstName,
+        lastName: teacherData.lastName,
+        name: `${teacherData.firstName} ${teacherData.lastName}`.trim(),
+        phone: teacherData.mobile,
+        email: teacherData.primaryEmail,
+        city: teacherData.city,
+        profilePhoto: profileImage,
+      };
+      localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+      window.dispatchEvent(new Event("storage"));
+    } catch (err) {
+      console.error("Error saving profile to localStorage:", err);
     }
 
     alert("Profile saved successfully");
@@ -1506,122 +1705,371 @@ const TeacherProfile = () => {
           </div>
           )}
 
-          {/* Create mode: full resume form */}
+          {/* Create mode: full structured resume form */}
           {resumeMode === "create" && (
-            <div className="mt-6 space-y-5">
-              <div>
-                <p className="mb-4 text-xs font-bold uppercase tracking-wide text-slate-500">Personal Information</p>
+            <div className="mt-6 space-y-6">
+              {/* Section 1: Personal Info & Contact Details */}
+              <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm space-y-4">
+                <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide border-b border-borderColor pb-2">
+                  1. Personal &amp; Contact Information
+                </h4>
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  <Field label="Full Name *">
+                  <Field label="First Name *">
                     <input
-                      value={resumeDraft.fullName}
-                      onChange={(e) => setResumeDraft((prev) => ({ ...prev, fullName: e.target.value }))}
+                      value={teacherData.firstName}
+                      onChange={(e) => setTeacherData((prev) => ({ ...prev, firstName: e.target.value }))}
                       className={inputClass}
-                      placeholder="e.g. Rahul Sharma"
                     />
                   </Field>
-                  <Field label="Email *">
+                  <Field label="Last Name *">
+                    <input
+                      value={teacherData.lastName}
+                      onChange={(e) => setTeacherData((prev) => ({ ...prev, lastName: e.target.value }))}
+                      className={inputClass}
+                    />
+                  </Field>
+                  <Field label="Email Address *">
                     <input
                       type="email"
-                      value={resumeDraft.email}
-                      onChange={(e) => setResumeDraft((prev) => ({ ...prev, email: e.target.value }))}
+                      value={teacherData.primaryEmail}
+                      onChange={(e) => setTeacherData((prev) => ({ ...prev, primaryEmail: e.target.value }))}
                       className={inputClass}
-                      placeholder="e.g. rahul@gmail.com"
                     />
                   </Field>
                   <Field label="Mobile Number *">
                     <input
-                      value={resumeDraft.mobile}
-                      onChange={(e) => setResumeDraft((prev) => ({ ...prev, mobile: e.target.value }))}
+                      value={teacherData.mobile}
+                      onChange={(e) => setTeacherData((prev) => ({ ...prev, mobile: e.target.value }))}
                       className={inputClass}
-                      placeholder="e.g. 9876543210"
                     />
                   </Field>
                   <Field label="Current Job Title">
                     <input
-                      value={resumeDraft.currentJobTitle}
-                      onChange={(e) => setResumeDraft((prev) => ({ ...prev, currentJobTitle: e.target.value }))}
+                      value={teacherData.currentJob}
+                      onChange={(e) => setTeacherData((prev) => ({ ...prev, currentJob: e.target.value }))}
                       className={inputClass}
-                      placeholder="e.g. Senior Mathematics Teacher"
+                      placeholder="e.g. Mathematics Teacher"
                     />
                   </Field>
-                  <div className="sm:col-span-2">
-                    <Field label="Address">
-                      <input
-                        value={resumeDraft.address}
-                        onChange={(e) => setResumeDraft((prev) => ({ ...prev, address: e.target.value }))}
-                        className={inputClass}
-                        placeholder="e.g. 123 Main Street, New Delhi"
+                  <Field label="Full Address">
+                    <input
+                      value={teacherData.address}
+                      onChange={(e) => setTeacherData((prev) => ({ ...prev, address: e.target.value }))}
+                      className={inputClass}
+                    />
+                  </Field>
+                </div>
+                <Field label="Profile Professional Summary *">
+                  <textarea
+                    value={teacherData.briefWriteUp}
+                    onChange={(e) => setTeacherData((prev) => ({ ...prev, briefWriteUp: e.target.value }))}
+                    className={`${inputClass} min-h-24 resize-none`}
+                    placeholder="Describe your teaching philosophy and core pedagogical experience..."
+                  />
+                </Field>
+              </div>
+
+              {/* Section 2: Academic Qualifications */}
+              <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm space-y-4">
+                <div className="flex items-center justify-between border-b border-borderColor pb-2">
+                  <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide">
+                    2. Academic Qualifications
+                  </h4>
+                  {!showQualificationForm && (
+                    <button
+                      type="button"
+                      onClick={addQualification}
+                      className="rounded-xl bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary hover:bg-primary/15 transition"
+                    >
+                      + Add Qualification
+                    </button>
+                  )}
+                </div>
+
+                {showQualificationForm && (
+                  <div ref={qualificationFormRef} className="rounded-xl border border-borderColor bg-light p-4 space-y-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      <Field label="Class">
+                        <Select
+                          value={qualificationDraft.classLevel}
+                          onChange={(classLevel) => {
+                            setQualificationDraft((prev) => ({
+                              ...prev,
+                              classLevel,
+                              degree: classLevel === "Class 10" ? "Secondary (10th)" : classLevel === "Class 12" ? "Senior Secondary (12th)" : prev.degree,
+                            }));
+                          }}
+                          placeholder="Select Class"
+                          options={["Class 10", "Class 12"]}
+                        />
+                      </Field>
+                      {qualificationDraft.classLevel && (
+                        <Field label="School Name">
+                          <input value={qualificationDraft.school} onChange={(e) => updateQualification("school", e.target.value)} className={inputClass} placeholder="Enter school name" />
+                        </Field>
+                      )}
+                      {qualificationDraft.classLevel && (
+                        <Field label="Percentage %">
+                          <input value={qualificationDraft.percentage} onChange={(e) => updateQualification("percentage", e.target.value)} className={inputClass} placeholder="e.g. 76.2" />
+                        </Field>
+                      )}
+                      <Field label="Degree">
+                        <Select value={qualificationDraft.degree} onChange={(v) => updateQualification("degree", v)} placeholder="Select Degree" options={qualificationOptions.degrees} />
+                      </Field>
+                      <Field label="Course Name">
+                        <Select value={qualificationDraft.course} onChange={(v) => updateQualification("course", v)} placeholder="Select Course" options={qualificationOptions.courses} />
+                      </Field>
+                      <Field label="Year Passed">
+                        <input value={qualificationDraft.year} onChange={(e) => updateQualification("year", e.target.value)} className={inputClass} placeholder="e.g. 2023" />
+                      </Field>
+                      <Field label="Medium of Instruction">
+                        <Select value={qualificationDraft.medium} onChange={(v) => updateQualification("medium", v)} placeholder="Select Medium" options={qualificationOptions.mediums} />
+                      </Field>
+                      <Field label="Mode of Study">
+                        <Select value={qualificationDraft.mode} onChange={(v) => updateQualification("mode", v)} placeholder="Select Mode" options={qualificationOptions.modes} />
+                      </Field>
+                      {!qualificationDraft.classLevel && (
+                        <Field label="Percentage %">
+                          <input value={qualificationDraft.percentage} onChange={(e) => updateQualification("percentage", e.target.value)} className={inputClass} placeholder="e.g. 76.2" />
+                        </Field>
+                      )}
+                      <Field label="University Name">
+                        <Select value={qualificationDraft.university} onChange={(v) => updateQualification("university", v)} placeholder="Select University" options={qualificationOptions.universities} />
+                      </Field>
+                      <div className="lg:col-span-2">
+                        <Field label="College Name">
+                          <Select value={qualificationDraft.college} onChange={(v) => updateQualification("college", v)} placeholder="Select College / Institution" options={qualificationOptions.colleges} />
+                        </Field>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 justify-end">
+                      <button type="button" onClick={saveQualificationDraft} className="rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-white hover:bg-primary/95">Save</button>
+                      <button type="button" onClick={() => setShowQualificationForm(false)} className="rounded-lg border border-borderColor px-3 py-1.5 text-xs font-bold text-slate-500 hover:bg-light">Cancel</button>
+                    </div>
+                  </div>
+                )}
+
+                {savedQualifications.length === 0 ? (
+                  <p className="text-xs text-slate-500 italic">No qualifications added yet. Use the button above to add qualifications.</p>
+                ) : (
+                  <div className="space-y-2.5">
+                    {savedQualifications.map((q, idx) => (
+                      <div key={idx} className="flex justify-between items-center rounded-xl bg-light p-3 text-xs border border-borderColor/40">
+                        <div>
+                          <p className="font-bold text-slate-800">{q.degree || q.classLevel} {q.course ? `(${q.course})` : ""}</p>
+                          <p className="text-slate-500">{q.college || q.school} · Passed in {q.year} · Marks: {q.percentage ? `${q.percentage}%` : "—"}</p>
+                        </div>
+                        <div className="flex gap-2 shrink-0">
+                          <button type="button" onClick={() => editQualification(idx)} className="text-primary font-bold hover:underline">Edit</button>
+                          <button type="button" onClick={() => removeQualification(idx)} className="text-red-500 font-bold hover:underline">Delete</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Section 3: Employment History */}
+              <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm space-y-4">
+                <div className="flex items-center justify-between border-b border-borderColor pb-2">
+                  <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide">
+                    3. Employment History
+                  </h4>
+                  {!showExperienceForm && (
+                    <button
+                      type="button"
+                      onClick={addExperience}
+                      className="rounded-xl bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary hover:bg-primary/15 transition"
+                    >
+                      + Add Experience
+                    </button>
+                  )}
+                </div>
+
+                {showExperienceForm && (
+                  <div ref={experienceFormRef} className="rounded-xl border border-borderColor bg-light p-4 space-y-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      <Field label="School Name">
+                        <input value={experienceDraft.school} onChange={(e) => updateExperience("school", e.target.value)} className={inputClass} placeholder="Enter school/employer name" />
+                      </Field>
+                      <Field label="Salary / Take Home (Monthly)">
+                        <input value={experienceDraft.monthlyTakeHome} onChange={(e) => updateExperience("monthlyTakeHome", e.target.value)} className={inputClass} placeholder="e.g. 35,000" />
+                      </Field>
+                      <div className="flex items-center gap-2 pt-6">
+                        <input type="checkbox" checked={experienceDraft.currentEmployer} onChange={(e) => updateExperience("currentEmployer", e.target.checked)} className="h-4 w-4 accent-primary" />
+                        <span className="text-xs font-bold text-slate-600">Current Employer</span>
+                      </div>
+                      <Field label="Board">
+                        <Select value={experienceDraft.board} onChange={(v) => updateExperience("board", v)} placeholder="Select Board" options={experienceOptions.boards} />
+                      </Field>
+                      <Field label="Start Date">
+                        <input type="date" value={experienceDraft.startDate} onChange={(e) => updateExperience("startDate", e.target.value)} className={inputClass} />
+                      </Field>
+                      {!experienceDraft.currentEmployer && (
+                        <Field label="End Date">
+                          <input type="date" value={experienceDraft.endDate} onChange={(e) => updateExperience("endDate", e.target.value)} className={inputClass} />
+                        </Field>
+                      )}
+                      <Field label="Main Subject Taught">
+                        <Select value={experienceDraft.mainSubject} onChange={(v) => updateExperience("mainSubject", v)} placeholder="Select Subject" options={experienceOptions.subjects} />
+                      </Field>
+                      <Field label="Other Subjects Taught">
+                        <input value={experienceDraft.otherSubjects} onChange={(e) => updateExperience("otherSubjects", e.target.value)} className={inputClass} placeholder="e.g. Science, Hindi" />
+                      </Field>
+                      <Field label="Designation / Post">
+                        <Select value={experienceDraft.post} onChange={(v) => updateExperience("post", v)} placeholder="Select Designation" options={experienceOptions.posts} />
+                      </Field>
+                      <Field label="Reason for Leaving">
+                        <Select value={experienceDraft.reason} onChange={(v) => updateExperience("reason", v)} placeholder="Select Reason" options={experienceOptions.reasons} />
+                      </Field>
+                      <div className="lg:col-span-2">
+                        <Field label="Key Achievements / Work Details">
+                          <textarea value={experienceDraft.details} onChange={(e) => updateExperience("details", e.target.value)} className={`${inputClass} min-h-20 resize-none`} placeholder="Describe responsibilities and achievements..." />
+                        </Field>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 justify-end">
+                      <button type="button" onClick={saveExperienceDraft} className="rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-white hover:bg-primary/95">Save</button>
+                      <button type="button" onClick={() => setShowExperienceForm(false)} className="rounded-lg border border-borderColor px-3 py-1.5 text-xs font-bold text-slate-500 hover:bg-light">Cancel</button>
+                    </div>
+                  </div>
+                )}
+
+                {savedExperiences.length === 0 ? (
+                  <p className="text-xs text-slate-500 italic">No experience added yet. Use the button above to add experiences.</p>
+                ) : (
+                  <div className="space-y-2.5">
+                    {savedExperiences.map((exp, idx) => (
+                      <div key={idx} className="flex justify-between items-center rounded-xl bg-light p-3 text-xs border border-borderColor/40">
+                        <div>
+                          <p className="font-bold text-slate-800">{exp.post} at {exp.school}</p>
+                          <p className="text-slate-500">{exp.startDate} to {exp.currentEmployer ? "Present" : exp.endDate} · Subject: {exp.mainSubject} · Board: {exp.board}</p>
+                        </div>
+                        <div className="flex gap-2 shrink-0">
+                          <button type="button" onClick={() => editExperience(idx)} className="text-primary font-bold hover:underline">Edit</button>
+                          <button type="button" onClick={() => removeExperience(idx)} className="text-red-500 font-bold hover:underline">Delete</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Section 4: Achievements, Awards & Courses */}
+              <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm space-y-5">
+                <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide border-b border-borderColor pb-2">
+                  4. Achievements, Awards &amp; Courses
+                </h4>
+
+                <div>
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Awards &amp; Recognitions</p>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-4 items-end">
+                    <Field label="Type">
+                      <Select
+                        value={resumeData.awardType}
+                        onChange={(v) => setResumeData((prev) => ({ ...prev, awardType: v }))}
+                        placeholder="Select category"
+                        options={["Award", "Recognition", "Publication"]}
                       />
                     </Field>
+                    <Field label="Name of the Award">
+                      <input value={resumeData.awardName} onChange={(e) => setResumeData((prev) => ({ ...prev, awardName: e.target.value }))} className={inputClass} placeholder="e.g. Best Educator Award" />
+                    </Field>
+                    <Field label="Presented By">
+                      <input value={resumeData.awardBy} onChange={(e) => setResumeData((prev) => ({ ...prev, awardBy: e.target.value }))} className={inputClass} placeholder="Organization / Institute" />
+                    </Field>
+                    <Field label="Year">
+                      <input value={resumeData.awardYear} onChange={(e) => setResumeData((prev) => ({ ...prev, awardYear: e.target.value }))} className={inputClass} placeholder="Year" />
+                    </Field>
                   </div>
+                  <button type="button" onClick={addAward} className="mt-3 rounded-lg border border-primary text-primary px-3 py-1.5 text-xs font-bold hover:bg-primary/5 flex items-center gap-1">
+                    <Plus size={14} /> Add Award to Resume
+                  </button>
+                  {savedAwards.length > 0 && (
+                    <div className="mt-3 space-y-1.5">
+                      {savedAwards.map((award, index) => (
+                        <div key={index} className="flex justify-between items-center rounded-lg bg-light p-2.5 text-xs border border-borderColor/45">
+                          <span><strong>{award.name}</strong> by {award.by} ({award.year})</span>
+                          <button type="button" onClick={() => setSavedAwards((prev) => prev.filter((_, i) => i !== index))} className="text-red-500 font-bold hover:underline">Remove</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="border-t border-borderColor/50 pt-4">
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Additional Courses &amp; Certifications</p>
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-4 items-end">
+                    <Field label="Type">
+                      <Select
+                        value={resumeData.courseType}
+                        onChange={(v) => setResumeData((prev) => ({ ...prev, courseType: v }))}
+                        placeholder="Select type"
+                        options={["Workshop", "Certification", "Training"]}
+                      />
+                    </Field>
+                    <Field label="Name of the Course">
+                      <input value={resumeData.courseName} onChange={(e) => setResumeData((prev) => ({ ...prev, courseName: e.target.value }))} className={inputClass} placeholder="e.g. Advanced Pedagogy" />
+                    </Field>
+                    <Field label="Conducted By">
+                      <input value={resumeData.conductedBy} onChange={(e) => setResumeData((prev) => ({ ...prev, conductedBy: e.target.value }))} className={inputClass} placeholder="Organization / Institute" />
+                    </Field>
+                    <Field label="Year">
+                      <input value={resumeData.courseYear} onChange={(e) => setResumeData((prev) => ({ ...prev, courseYear: e.target.value }))} className={inputClass} placeholder="Year" />
+                    </Field>
+                  </div>
+                  <button type="button" onClick={addCourse} className="mt-3 rounded-lg border border-primary text-primary px-3 py-1.5 text-xs font-bold hover:bg-primary/5 flex items-center gap-1">
+                    <Plus size={14} /> Add Course to Resume
+                  </button>
+                  {savedCourses.length > 0 && (
+                    <div className="mt-3 space-y-1.5">
+                      {savedCourses.map((course, index) => (
+                        <div key={index} className="flex justify-between items-center rounded-lg bg-light p-2.5 text-xs border border-borderColor/45">
+                          <span><strong>{course.name}</strong> conducted by {course.by} ({course.year})</span>
+                          <button type="button" onClick={() => setSavedCourses((prev) => prev.filter((_, i) => i !== index))} className="text-red-500 font-bold hover:underline">Remove</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <Field label="Profile Summary *">
-                <textarea
-                  value={resumeDraft.summary}
-                  onChange={(e) => setResumeDraft((prev) => ({ ...prev, summary: e.target.value }))}
-                  className={`${inputClass} min-h-28 resize-none`}
-                  placeholder="Write a brief professional summary highlighting your experience, skills, and teaching philosophy..."
-                />
-              </Field>
-
-              <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-                <Field label="Skills">
-                  <textarea
-                    value={resumeDraft.skills}
-                    onChange={(e) => setResumeDraft((prev) => ({ ...prev, skills: e.target.value }))}
-                    className={`${inputClass} min-h-24 resize-none`}
-                    placeholder="e.g. Classroom Management, Curriculum Design, Digital Teaching..."
-                  />
-                </Field>
-                <Field label="Education">
-                  <textarea
-                    value={resumeDraft.education}
-                    onChange={(e) => setResumeDraft((prev) => ({ ...prev, education: e.target.value }))}
-                    className={`${inputClass} min-h-24 resize-none`}
-                    placeholder="e.g. B.Ed – Delhi University (2015), M.Sc Mathematics – JNU (2013)..."
-                  />
-                </Field>
+              {/* Section 5: Skills & Languages Information */}
+              <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm space-y-4">
+                <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide border-b border-borderColor pb-2">
+                  5. Skills &amp; Languages
+                </h4>
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                  <div>
+                    <label className={labelClass}>Subject Skills (Linked to Profile)</label>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {teacherData.mainSubject && (
+                        <span className="rounded-full bg-primary px-3 py-1 text-xs font-bold text-white shadow-sm">
+                          {teacherData.mainSubject} (Main)
+                        </span>
+                      )}
+                      {selectedAdditionalSubjects.map((subject) => (
+                        <span key={subject} className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+                          {subject}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className={labelClass}>Languages Spoken (Linked to Profile)</label>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {dynamicLanguages.map((lang, idx) => lang.language && (
+                        <span key={idx} className="rounded-full bg-green-50 border border-green-150 px-3 py-1 text-xs font-bold text-green-600">
+                          {lang.language} ({lang.status})
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <p className="text-[11px] text-slate-400 italic">
+                  * Note: Skills and Languages are kept in sync with the **My Profile** tab entries.
+                </p>
               </div>
-
-              <Field label="Experience">
-                <textarea
-                  value={resumeDraft.experience}
-                  onChange={(e) => setResumeDraft((prev) => ({ ...prev, experience: e.target.value }))}
-                  className={`${inputClass} min-h-28 resize-none`}
-                  placeholder="School name, role, duration, and key responsibilities..."
-                />
-              </Field>
-
-              <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-                <Field label="Certifications">
-                  <textarea
-                    value={resumeDraft.certifications}
-                    onChange={(e) => setResumeDraft((prev) => ({ ...prev, certifications: e.target.value }))}
-                    className={`${inputClass} min-h-24 resize-none`}
-                    placeholder="e.g. CTET Certified, Google Certified Educator..."
-                  />
-                </Field>
-                <Field label="Languages">
-                  <textarea
-                    value={resumeDraft.languages}
-                    onChange={(e) => setResumeDraft((prev) => ({ ...prev, languages: e.target.value }))}
-                    className={`${inputClass} min-h-24 resize-none`}
-                    placeholder="e.g. English (Fluent), Hindi (Native), French (Basic)..."
-                  />
-                </Field>
-              </div>
-
-              <Field label="Achievements">
-                <textarea
-                  value={resumeDraft.achievements}
-                  onChange={(e) => setResumeDraft((prev) => ({ ...prev, achievements: e.target.value }))}
-                  className={`${inputClass} min-h-24 resize-none`}
-                  placeholder="e.g. Best Teacher Award 2022, Published research paper on modern pedagogy..."
-                />
-              </Field>
             </div>
           )}
 
@@ -1751,7 +2199,7 @@ const TeacherProfile = () => {
                           )}
                           <button
                             type="button"
-                            onClick={() => setSavedResumes((prev) => prev.filter((_, i) => i !== index))}
+                            onClick={() => handleDeleteResume(index)}
                             className="rounded-lg border border-red-100 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50"
                           >
                             Delete
@@ -1933,6 +2381,16 @@ const TeacherProfile = () => {
             })}
           </nav>
 
+          <div className="mt-8 border-t border-white/20 pt-4">
+            <button
+              type="button"
+              onClick={() => navigate("/teacher/dashboard")}
+              className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold text-white/80 hover:bg-white/10 hover:text-white transition"
+            >
+              <ArrowLeft size={18} /> Back to Dashboard
+            </button>
+          </div>
+
         </aside>
 
         <main className="min-w-0 flex-1 p-4 sm:p-5 lg:p-8">
@@ -1974,7 +2432,7 @@ const TeacherProfile = () => {
             {renderActiveSection()}
             {!["qualification", "experience", "viewProfile"].includes(activeSection) && (
               <div className="mt-10 flex flex-col-reverse gap-3 border-t border-borderColor pt-6 sm:flex-row sm:justify-end">
-                <button type="button" className="rounded-xl border border-borderColor px-6 py-3 text-sm font-bold text-slate-500 hover:bg-light">
+                <button type="button" onClick={() => navigate(-1)} className="rounded-xl border border-borderColor px-6 py-3 text-sm font-bold text-slate-500 hover:bg-light">
                   Cancel
                 </button>
                 <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95">

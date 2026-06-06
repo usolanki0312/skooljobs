@@ -153,7 +153,7 @@ const TeacherHome = () => {
         {/* Card 1: Applications Sent */}
         <button
           type="button"
-          onClick={() => navigate("/teacher/all-jobs")}
+          onClick={() => navigate("/teacher/applications")}
           className="rounded-3xl bg-white border border-borderColor p-5 text-left shadow-soft transition hover:-translate-y-0.5 duration-150"
         >
           <div className="flex items-center justify-between">
@@ -165,7 +165,7 @@ const TeacherHome = () => {
             </span>
           </div>
           <p className="mt-4 text-3xl font-extrabold text-slate-800">
-            {appliedJobs.length || "24"}
+            {appliedJobs.length}
           </p>
           <p className="mt-2 text-xs font-semibold text-green-600">
             +12% Sent this week
@@ -175,7 +175,7 @@ const TeacherHome = () => {
         {/* Card 2: Interviews */}
         <button
           type="button"
-          onClick={() => navigate("/teacher/activity")}
+          onClick={() => navigate("/teacher/interviews")}
           className="rounded-3xl bg-white border border-borderColor p-5 text-left shadow-soft transition hover:-translate-y-0.5 duration-150"
         >
           <div className="flex items-center justify-between">
@@ -195,7 +195,7 @@ const TeacherHome = () => {
         {/* Card 3: Saved Jobs */}
         <button
           type="button"
-          onClick={() => navigate("/teacher/all-jobs")}
+          onClick={() => navigate("/teacher/saved-jobs")}
           className="rounded-3xl bg-white border border-borderColor p-5 text-left shadow-soft transition hover:-translate-y-0.5 duration-150"
         >
           <div className="flex items-center justify-between">
@@ -207,7 +207,7 @@ const TeacherHome = () => {
             </span>
           </div>
           <p className="mt-4 text-3xl font-extrabold text-slate-800">
-            {savedJobs.length || "18"}
+            {savedJobs.length}
           </p>
           <p className="mt-2 text-xs font-semibold text-slate-500">
             Across 12 categories
@@ -364,7 +364,7 @@ const TeacherHome = () => {
             </div>
 
             <button
-              onClick={() => navigate("/teacher/activity")}
+              onClick={() => navigate("/teacher/interviews")}
               className="w-full rounded-xl bg-primary py-2.5 text-xs font-bold text-white shadow-md hover:bg-primary/95 transition flex items-center justify-center gap-1.5 active:scale-[0.98]"
             >
               View Interview Details <ChevronRight size={14} />

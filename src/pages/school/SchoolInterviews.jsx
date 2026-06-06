@@ -60,7 +60,7 @@ const inputCls =
   "w-full rounded-xl border border-borderColor bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10";
 
 const SchoolInterviews = () => {
-  const { applicants, interviews, setInterviews } = useOutletContext();
+  const { applicants, interviews, setInterviews, schoolName } = useOutletContext();
 
   const shortlisted = applicants.filter((a) => a.status === "Shortlisted");
 
@@ -115,6 +115,7 @@ const SchoolInterviews = () => {
         candidateName: schedulingFor.name,
         jobTitle: schedulingFor.jobTitle,
         subject: schedulingFor.subject,
+        school: schoolName || "Green Valley School",
         status: "Scheduled",
         ...form,
       }]);

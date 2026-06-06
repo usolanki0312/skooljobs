@@ -216,7 +216,6 @@ const SharedJobDetail = ({
                 <button
                   type="button"
                   onClick={onSave}
-                  disabled={isSaved}
                   className={`w-full rounded-xl border py-3 text-sm font-bold transition flex items-center justify-center gap-1.5 ${
                     isSaved
                       ? "border-green-500 bg-green-500 text-white shadow-sm"

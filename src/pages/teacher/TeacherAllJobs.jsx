@@ -1,22 +1,21 @@
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { Bell, Filter } from "lucide-react";
-import { jobsData } from "../../lib/teacherdata";
 import TeacherJobCard from "../../components/TeacherJobCard";
 import Select from "../../components/ui/Select";
 
 const TeacherAllJobs = () => {
-  const { appliedJobs, savedJobs, handleApply, handleSave } = useOutletContext();
+  const { allJobs = [], appliedJobs, savedJobs, handleApply, handleSave } = useOutletContext();
 
   const [jobFilter, setJobFilter] = useState({ subject: "", type: "" });
   const [notifPrefs, setNotifPrefs] = useState({
     enabled: true, subjects: [], jobTitles: [], newInput: "",
   });
 
-  const subjectOptions = [...new Set(jobsData.map((j) => j.skill))];
-  const typeOptions = [...new Set(jobsData.map((j) => j.type))];
+  const subjectOptions = [...new Set(allJobs.map((j) => j.skill))];
+  const typeOptions = [...new Set(allJobs.map((j) => j.type))];
 
-  const filteredJobs = jobsData.filter((job) => {
+  const filteredJobs = allJobs.filter((job) => {
     if (jobFilter.subject && job.skill !== jobFilter.subject) return false;
     if (jobFilter.type && job.type !== jobFilter.type) return false;
     return true;

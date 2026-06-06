@@ -58,7 +58,12 @@ const SchoolLayout = () => {
   const [applicants, setApplicants] = useState(() => {
     const saved = localStorage.getItem("skooljobs_applicants");
     if (saved) {
-      try { return JSON.parse(saved); } catch { return augmentedApplicants; }
+      try {
+        const parsed = JSON.parse(saved);
+        return parsed.map((a) => a.status === "Applied" ? { ...a, status: "Not Reviewed" } : a);
+      } catch {
+        return augmentedApplicants;
+      }
     }
     return augmentedApplicants;
   });
@@ -79,18 +84,100 @@ const SchoolLayout = () => {
     { id: 3, msg: "English Teacher job post is now live", time: "1d ago", read: true },
     { id: 4, msg: "Profile viewed by 3 candidates today", time: "2d ago", read: true },
   ]);
-  const [interviews, setInterviews] = useState([
-    {
-      id: 1, candidateName: "Priya Singh", jobTitle: "English Teacher", subject: "English",
-      date: "2026-06-02", time: "10:00", mode: "Online",
-      round: "1st Round", interviewer: "", notes: "", status: "Confirmed",
-    },
-    {
-      id: 2, candidateName: "Suresh Verma", jobTitle: "Math Teacher", subject: "Mathematics",
-      date: "2026-06-03", time: "14:00", mode: "In-Person",
-      round: "1st Round", interviewer: "", notes: "", status: "Pending",
-    },
-  ]);
+  const [interviews, setInterviews] = useState(() => {
+    const saved = localStorage.getItem("skooljobs_interviews");
+    if (saved) {
+      try { return JSON.parse(saved); } catch { }
+    }
+    const initial = [
+      {
+        id: 1,
+        candidateId: 1,
+        candidateName: "Rahul Sharma",
+        jobTitle: "Math Teacher",
+        school: "Sunrise Public School",
+        date: "2026-06-06",
+        time: "10:00",
+        duration: "60 Minutes",
+        mode: "Online",
+        onlinePlatform: "Zoom",
+        meetingLink: "https://zoom.us/j/1234567890",
+        round: "1st Round",
+        notesForCandidate: "Interview will cover algebra, calculus curriculum design, and mock classroom demo. Please join the link 5 mins early.",
+        status: "Scheduled",
+      },
+      {
+        id: 2,
+        candidateId: 1,
+        candidateName: "Rahul Sharma",
+        jobTitle: "Science Teacher",
+        school: "Green Valley School",
+        date: "2026-06-12",
+        time: "14:00",
+        duration: "60 Minutes",
+        mode: "In-Person",
+        round: "Final Round",
+        notesForCandidate: "Management round. Please carry printed copies of your B.Ed certificates, resume, and experience letters to the school front desk.",
+        location: "Sector 12, Kolar Road, Bhopal",
+        status: "Scheduled",
+      },
+      {
+        id: 3,
+        candidateId: 1,
+        candidateName: "Rahul Sharma",
+        jobTitle: "English Teacher",
+        school: "EduHire Recruiters",
+        date: "2026-05-28",
+        time: "11:30",
+        duration: "45 Minutes",
+        mode: "Online",
+        onlinePlatform: "Google Meet",
+        meetingLink: "https://meet.google.com/abc-defg-hjk",
+        round: "HR Round",
+        notesForCandidate: "Basic communication and background screening.",
+        status: "Completed",
+      },
+      {
+        id: 101,
+        candidateId: 999,
+        candidateName: "Priya Singh",
+        jobTitle: "English Teacher",
+        school: "Green Valley School",
+        date: "2026-06-02",
+        time: "10:00",
+        duration: "45 Minutes",
+        mode: "Online",
+        onlinePlatform: "Google Meet",
+        meetingLink: "https://meet.google.com/abc-defg-hjk",
+        round: "1st Round",
+        interviewer: "",
+        notesForCandidate: "",
+        status: "Confirmed",
+      },
+      {
+        id: 102,
+        candidateId: 998,
+        candidateName: "Suresh Verma",
+        jobTitle: "Math Teacher",
+        school: "Green Valley School",
+        date: "2026-06-03",
+        time: "14:00",
+        duration: "45 Minutes",
+        mode: "In-Person",
+        location: "Sector 12, Kolar Road, Bhopal",
+        round: "1st Round",
+        interviewer: "",
+        notesForCandidate: "",
+        status: "Pending",
+      },
+    ];
+    localStorage.setItem("skooljobs_interviews", JSON.stringify(initial));
+    return initial;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("skooljobs_interviews", JSON.stringify(interviews));
+  }, [interviews]);
 
   const currentUser = useMemo(() => {
     try { return JSON.parse(localStorage.getItem("currentUser") || "{}"); } catch { return {}; }
