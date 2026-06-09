@@ -4,253 +4,326 @@
   "collections": {
     "users": {
       "_schema": {
-        "_id": "ObjectId — MongoDB primary key (auto-generated)",
-        "user_id": "string — e.g. USR-0001. Stable human-readable ID used as cross-collection reference.",
-        "email": "string — Unique login email",
-        "password_hash": "string — bcrypt hashed password",
-        "role": "enum — ['teacher', 'school_principal', 'school_admin', 'school_hr', 'skooljobs_admin', 'skooljobs_superadmin']",
-        "school_id": "string — e.g. SCH-0001. Set for all school-side roles; null for teacher and platform admin.",
-        "profile_id": "string — user_id (teachers) or school_id (school roles). Null until profile is created.",
-        "phone": "string",
-        "is_active": "boolean — Platform-level enable/disable (controlled by skooljobs_admin)",
-        "is_email_verified": "boolean",
-        "is_phone_verified": "boolean",
-        "last_login": "Date | null",
-        "password_reset_token": "string | null",
-        "password_reset_expires": "Date | null",
-        "created_at": "Date",
-        "updated_at": "Date"
+        "user_id": "uuid - user id, other docs ref this",
+        "first_name": "string - first name",
+        "last_name": "string - last name",
+        "email": "string - login email, keep unique",
+        "password_hash": "string - bcrypt hashed pwd, never store plain",
+        "user_scope": "enum - user role, one of sj_admin/sj_superadmin/teacher/sch_admin/sch_member",
+        "school_id": "uuid|null - which school this user belongs to, null for teacher n platform admins",
+        "profile_id": "uuid|null - linked profile id (teacher_profile_id or school_profile_id), null till profile made",
+        "phone": "string - mobile no, otp goes here too",
+        "is_active": "bool - acc on/off, sj admin controls",
+        "is_email_verified": "bool - email verified or not (via otp)",
+        "is_phone_verified": "bool - phone verified or not (via otp)",
+        "last_login": "date|null - last login time",
+        "password_reset_token": "string|null - token for reset pwd req",
+        "password_reset_expires": "date|null - when that token expires",
+        "created_by_user_id": "uuid|null - which owner made this member, for member limit check",
+        "created_at": "date - acc created",
+        "updated_at": "date - last update"
       },
       "_indexes": [
-        { "fields": { "email": 1 }, "options": { "unique": true } },
         { "fields": { "user_id": 1 }, "options": { "unique": true } },
+        { "fields": { "email": 1 }, "options": { "unique": true } },
         { "fields": { "school_id": 1 } }
       ]
     },
 
     "teacher_profiles": {
       "_schema": {
-        "_id": "ObjectId",
-        "user_id": "string — e.g. USR-0001",
-        "title": "enum — ['Mr','Mrs','Miss','Ms','Dr','Prof']",
-        "first_name": "string",
-        "middle_name": "string | null",
-        "last_name": "string",
-        "dob": "object — { day: string, month: string, year: string }",
-        "age": "number | null — Auto-calculated from DOB",
-        "nationality": "string",
-        "current_job_title": "string | null — e.g. 'Mathematics Teacher'",
-        "main_subject": "string — e.g. 'Mathematics'",
-        "additional_subjects": "string[] — e.g. ['History','Geography']",
-        "classes_taught": "string[] — e.g. ['Class 10','Class 12']",
-        "languages": "object[] — [{ language: string, proficiency: string }]",
-        "highest_qualification_1": "string | null",
-        "highest_qualification_2": "string | null",
-        "profile_photo_url": "string | null",
-        "profile_score": "number — 0–100, computed from filled sections",
-        "is_available": "boolean — Teacher is actively looking for jobs",
-        "profile_status": "enum — ['active','inactive','suspended','pending_verification']",
-        "admin_verified": "boolean — Profile reviewed and cleared by SkoolJobs admin",
-        "created_at": "Date",
-        "updated_at": "Date",
+        "teacher_profile_id": "uuid - profile id, this goes into users.profile_id",
+        "title": "enum - Mr/Mrs/Miss/Ms/Dr/Prof",
+        "first_name": "string - first name",
+        "middle_name": "string|null - middle name if any",
+        "last_name": "string - last name",
+        "dob": "object - dob { day, month, year }",
+        "age": "number|null - age in yrs, auto from dob else manual",
+        "nationality": "string - nationality",
+        "current_job_title": "string|null - current role",
+        "main_subject": "string - main subject",
+        "additional_subjects": "string[] - other subjects he can teach",
+        "classes_taught": "string[] - classes taught",
+        "languages": "object[] - langs [{ language, proficiency }]",
+        "highest_qualification_1": "string|null - top qualification 1",
+        "highest_qualification_2": "string|null - top qualification 2",
+        "profile_photo_url": "string|null - profile pic url",
+        "summary": "string|null - short about (50-100 words), shown on profile/resume",
+        "profile_score": "number - 0-100 completeness score",
+        "is_profile_visible": "bool - if on, schools can see n contact teacher",
+        "profile_verified": "bool - admin checked profile or not",
+        "contact": {
+          "mobile": "string - mobile no",
+          "whatsapp": "string|null - whatsapp no, for interview stuff",
+          "same_as_mobile": "bool - whatsapp same as mobile or not",
+          "primary_email": "string - main email",
+          "secondary_email": "string|null - backup email"
+        },
+        "address": {
+          "pin_code": "string|null - pincode, auto fills city/state",
+          "city": "string|null - city",
+          "state": "string|null - state",
+          "full_address": "string|null - full address"
+        },
+        "notification_preferences": {
+          "email": "bool - email notif on/off (default on)",
+          "sms": "bool - sms on/off (default off)",
+          "push": "bool - push on/off (default on)"
+        },
+        "created_at": "date - profile created",
+        "updated_at": "date - last update",
 
         "qualifications": {
           "_type": "object[]",
           "_item_schema": {
-            "_id": "ObjectId",
-            "class_level": "enum | null — ['Class 10','Class 12']",
-            "school_name": "string | null",
-            "degree": "string — e.g. 'B.Ed', 'M.Sc'",
-            "course": "string | null",
-            "year_passed": "string",
-            "medium": "string | null",
-            "mode": "enum | null — ['Regular','Distance','Part-time','Online','Correspondence','Open University','Hybrid']",
-            "percentage": "string | null",
-            "university": "string | null",
-            "college": "string | null",
-            "created_at": "Date",
-            "updated_at": "Date"
+            "class_level": "enum|null - Class 10 / Class 12",
+            "school_name": "string|null - school/board name",
+            "degree": "string - degree like B.Ed, M.Sc",
+            "course": "string|null - course/specialization",
+            "year_passed": "string - passing year",
+            "medium": "string|null - medium",
+            "mode": "enum|null - Regular/Distance/Part-time/Online/Correspondence/Open University/Hybrid",
+            "percentage": "string|null - marks/percent or cgpa",
+            "university": "string|null - university",
+            "college": "string|null - college",
+            "created_at": "date - added",
+            "updated_at": "date - edited"
           }
         },
 
         "experiences": {
           "_type": "object[]",
           "_item_schema": {
-            "_id": "ObjectId",
-            "school_name": "string",
-            "is_current_employer": "boolean",
-            "board": "string | null",
-            "start_date": "Date",
-            "end_date": "Date | null",
-            "main_subject": "string",
-            "other_subjects": "string | null",
-            "post_held": "string",
-            "salary_ctc_annual": "number | null",
-            "monthly_take_home": "number | null",
-            "reason_for_leaving": "string | null",
-            "details": "string | null",
-            "created_at": "Date",
-            "updated_at": "Date"
+            "school_name": "string - school/employer name",
+            "is_current_employer": "bool - currently working here or not",
+            "board": "string|null - school board",
+            "start_date": "date - join date",
+            "end_date": "date|null - leave date, null if current",
+            "main_subject": "string - main subject in this job",
+            "other_subjects": "string|null - other subjects",
+            "post_held": "string - post/designation",
+            "salary_ctc_annual": "number|null - yearly ctc here",
+            "monthly_take_home": "number|null - monthly in hand",
+            "reason_for_leaving": "string|null - why left",
+            "details": "string|null - extra notes",
+            "created_at": "date - added",
+            "updated_at": "date - edited"
           }
         },
 
         "achievements": {
           "_type": "object[]",
           "_item_schema": {
-            "_id": "ObjectId",
-            "category": "enum — ['award','course']",
-            "type": "string — 'Award','Recognition','Publication' | 'Workshop','Certification','Training'",
-            "name": "string",
-            "issued_by": "string",
-            "year": "string",
-            "created_at": "Date"
+            "category": "enum - award or course",
+            "type": "string - type like Award/Recognition/Publication/Workshop/Certification/Training",
+            "name": "string - award/course name",
+            "issued_by": "string - who gave it",
+            "year": "string - year",
+            "created_at": "date - added",
+            "updated_at": "date - edited"
           }
         },
 
         "resumes": {
           "_type": "object[]",
           "_item_schema": {
-            "_id": "ObjectId",
-            "resume_id": "string — e.g. RES-0001",
-            "source": "enum — ['uploaded','created']",
-            "title": "string",
-            "file_name": "string",
-            "file_url": "string | null",
-            "format": "enum — ['PDF','DOCX','Text']",
-            "skill": "string | null — used for job-match recommendation",
-            "score": "number — 0–100",
-            "full_name": "string | null",
-            "email": "string | null",
-            "mobile": "string | null",
-            "address": "string | null",
-            "current_job_title": "string | null",
-            "summary": "string | null",
-            "skills": "string | null",
-            "education": "string | null",
-            "experience": "string | null",
-            "certifications": "string | null",
-            "languages": "string | null",
-            "resume_achievements": "string | null",
-            "notes": "string | null",
-            "is_active": "boolean",
-            "created_at": "Date",
-            "updated_at": "Date"
+            "resume_id": "uuid - resume id, applications.resume_id refs this",
+            "source": "enum - uploaded or created",
+            "title": "string - resume title",
+            "file_name": "string - file name",
+            "file_url": "string|null - file download url",
+            "format": "enum - PDF/DOCX/Text",
+            "skill": "string|null - main skill, for job match",
+            "score": "number - 0-100 resume score",
+            "full_name": "string|null - name on resume",
+            "email": "string|null - email on resume",
+            "mobile": "string|null - mobile on resume",
+            "address": "string|null - address on resume",
+            "current_job_title": "string|null - job title on resume",
+            "summary": "string|null - summary section",
+            "skills": "string|null - skills section",
+            "education": "string|null - education section",
+            "experience": "string|null - experience section",
+            "certifications": "string|null - certs section",
+            "languages": "string|null - languages section",
+            "resume_achievements": "string|null - achievements section",
+            "notes": "string|null - private notes, dont share",
+            "is_active": "bool - is this the selected resume",
+            "created_at": "date - added",
+            "updated_at": "date - edited"
           }
         },
 
         "cover_letters": {
           "_type": "object[]",
           "_item_schema": {
-            "_id": "ObjectId",
-            "cover_letter_id": "string — e.g. CL-0001",
-            "job_id": "string | null — e.g. JOB-0001",
-            "resume_id": "string | null — e.g. RES-0001",
-            "source": "enum — ['ai_generated','uploaded','manual']",
-            "content": "string",
-            "file_name": "string | null",
-            "file_url": "string | null",
-            "created_at": "Date"
+            "cover_letter_id": "uuid - cover letter id",
+            "title": "string - display title of the cover letter",
+            "source": "enum - ai_generated/uploaded/manual",
+            "content": "string - cover letter text",
+            "resume_id": "uuid|null - which resume this was made for (resumes.resume_id)",
+            "job_id": "uuid|null - which job this targets (jobs.job_id)",
+            "file_name": "string|null - file name if uploaded",
+            "file_url": "string|null - file url if uploaded",
+            "created_at": "date - created"
           }
         },
 
         "saved_jobs": {
           "_type": "object[]",
           "_item_schema": {
-            "_id": "ObjectId",
-            "job_id": "string — e.g. JOB-0001",
-            "saved_at": "Date"
+            "job_id": "uuid - saved job id",
+            "saved_at": "date - when saved"
           }
         }
       },
       "_indexes": [
-        { "fields": { "user_id": 1 }, "options": { "unique": true } },
-        { "fields": { "profile_status": 1 } },
+        {
+          "fields": { "teacher_profile_id": 1 },
+          "options": { "unique": true }
+        },
         {
           "fields": { "resumes.skill": 1 },
-          "comment": "Multikey index for job-match recommendation queries"
+          "comment": "multikey idx for job match query"
         }
       ]
     },
 
     "school_profiles": {
       "_schema": {
-        "_id": "ObjectId",
-        "school_id": "string — e.g. SCH-0001",
-        "primary_user_id": "string — user_id of the user who first registered the school (e.g. USR-0001)",
-        "school_name": "string",
-        "sector": "enum — ['Schools & Institutions','Colleges & Universities','Coaching Centers','EdTech','Government','Private','Other']",
-        "school_type": "enum — ['Public School','Private School','International School','Boarding School','Co-Ed School','Girls School','Boys School','Special Education School','Other']",
-        "affiliation_status": "enum — ['Affiliated','Pending Affiliation','Not Affiliated']",
-        "board": "enum — ['CBSE','ICSE','State Board','IB','IGCSE / Cambridge','NIOS','Other']",
-        "medium": "string — Medium of instruction (English/Hindi/etc.)",
-        "level": "enum — ['Primary','Middle','Secondary','Senior Secondary','All Levels']",
-        "industry": "string",
-        "total_teachers": "number | null",
-        "established_year": "number | null",
-        "description": "string | null",
-        "logo_url": "string | null",
-        "cover_image_url": "string | null",
+        "school_profile_id": "uuid - school/institute id",
+        "school_admin_id": "uuid - first user who registered as school admin (users.user_id)",
+        "school_name": "string - institute name",
+        "sector": "enum - sector: Schools & Institutions/Colleges & Universities/Coaching Centers/EdTech/Government/Private/Other",
+        "school_type": "enum - Public/Private/International/Boarding/Co-Ed/Girls/Boys/Special Education/Other School",
+        "affiliation_status": "enum - Affiliated/Pending Affiliation/Not Affiliated",
+        "board": "enum - CBSE/ICSE/State Board/IB/IGCSE-Cambridge/NIOS/Other",
+        "medium": "string - medium of teaching (English/Hindi/etc)",
+        "level": "enum - Primary/Middle/Secondary/Senior Secondary/All Levels",
+        "industry": "string - industry label",
+        "total_teachers": "number|null - approx teacher count",
+        "established_year": "number|null - founding year",
+        "description": "string|null - about school text, on public profile",
+        "logo_url": "string|null - logo url",
+        "cover_image_url": "string|null - cover img url",
+        "gallery_image_urls": "string[] - extra photo urls",
         "contact": {
-          "email": "string",
-          "phone": "string",
-          "website": "string | null"
+          "email": "string - school contact email",
+          "phone": "string - school contact phone",
+          "website": "string|null - website url"
         },
         "address": {
-          "pin_code": "string",
-          "city": "string",
-          "state": "string",
-          "country": "string",
-          "full_address": "string | null"
+          "pin_code": "string - pincode",
+          "city": "string - city",
+          "state": "string - state",
+          "country": "string - country",
+          "full_address": "string|null - full address"
         },
         "social_links": {
-          "linkedin": "string | null",
-          "facebook": "string | null",
-          "twitter": "string | null",
-          "instagram": "string | null"
+          "linkedin": "string|null - linkedin url",
+          "facebook": "string|null - fb url",
+          "twitter": "string|null - twitter/x url",
+          "instagram": "string|null - insta url"
         },
-        "profile_status": "enum — ['active','pending_verification','suspended','rejected']",
-        "admin_verified": "boolean — School KYC cleared by SkoolJobs admin",
-        "admin_notes": "string | null — Internal notes from admin review",
-        "created_at": "Date",
-        "updated_at": "Date"
+        "school_profile_status": "enum - active/pending_verification/suspended/rejected",
+        "profile_verified": "bool - school kyc cleared by admin or not",
+        "created_at": "date - created",
+        "updated_at": "date - last update",
+
+        "saved_candidates": {
+          "_type": "object[]",
+          "_item_schema": {
+            "teacher_profile_id": "uuid - saved candidate (teacher_profiles.teacher_profile_id); school-level bookmark, lifelong, not tied to any job or application",
+            "saved_by_user_id": "uuid - which staff saved (users.user_id)",
+            "note": "string|null - school private note about candidate",
+            "created_at": "date - when saved",
+            "updated_at": "date - note last update"
+          }
+        }
       },
       "_indexes": [
-        { "fields": { "school_id": 1 }, "options": { "unique": true } },
+        { "fields": { "school_profile_id": 1 }, "options": { "unique": true } },
         { "fields": { "school_name": 1 } },
-        { "fields": { "profile_status": 1 } },
-        { "fields": { "address.city": 1 } }
+        { "fields": { "school_profile_status": 1 } },
+        { "fields": { "address.city": 1 } },
+        {
+          "fields": { "saved_candidates.teacher_profile_id": 1 },
+          "comment": "lookup/dedupe saved candidates inside a school; uniqueness enforced app-side"
+        }
       ]
     },
 
     "jobs": {
       "_schema": {
-        "_id": "ObjectId",
-        "job_id": "string — e.g. JOB-0001",
-        "school_id": "string — e.g. SCH-0001",
-        "posted_by_user_id": "string — user_id of HR/Admin who created the job (e.g. USR-0002)",
-        "title": "string — e.g. 'Mathematics Teacher'",
-        "subject": "string — Subject to teach",
-        "experience_required": "string — e.g. '2-5 Years'",
-        "CTC_per_year": "String | null",
-        "Monthly Take Home": "String | null",
-        "location": "string",
-        "employment_type": "enum — ['Full-time','Part-time','Contract','Visiting','Internship']",
-        "description": "string | null — Full job description",
-        "requirements": "string | null — Key requirements",
-        "qualifications_required": "string | null",
-        "vacancies": "number — Number of open positions",
-        "admin_review_status": "enum — ['pending_review','published','rejected','unpublished']",
-        "status": "enum — ['draft','active','closed','expired']",
-        "admin_rejection_reason": "string | null",
-        "applicants_count": "number — Denormalized counter, incremented on each new application",
-        "posted_date": "Date | null — Set when admin publishes the job",
-        "expiry_date": "Date | null — Auto-close date",
-        "created_at": "Date",
-        "updated_at": "Date"
+        "job_id": "uuid - job posting id",
+        "school_profile_id": "uuid - which school owns job, kept here for fast queries",
+        "posted_by_user_id": "uuid - which staff made the job (users.user_id)",
+        "title": "string - job title (like Mathematics Teacher)",
+        "subject": "string - which subject to teach",
+        "role_category": "string|null - role grouping, from post-job form",
+        "employment_type": "enum - Full-time/Part-time/Contract/Visiting/Internship/Hybrid/Remote, decides which salary fields apply",
+        "joining_timeline": "string|null - join by when",
+        "location": "string - job location",
+        "language_type": "string|null - language grouping (Indian/Foreign)",
+        "language_requirements": {
+          "_type": "object[]",
+          "_item_schema": {
+            "language": "string - which language needed",
+            "proficiency": "string - proficiency needed"
+          }
+        },
+        "min_qualification": "string|null - min qualification",
+        "additional_qualification": "string|null - extra qualification (preferred)",
+        "certifications": "string[] - certs needed",
+        "experience_required": "string|null - exp needed (like 2-5 Years)",
+        "qualifications_required": "string|null - free text qualification summary (legacy/fallback)",
+        "student_levels": "string[] - which student levels to handle",
+        "preferred_school_types": "string[] - candidate prev school type preferred",
+        "description": "string|null - full job description",
+        "requirements": "string|null - free text requirements (legacy/fallback)",
+        "required_skills": "string[] - core skills",
+        "technical_skills": "string[] - technical/tooling skills",
+        "compensation": {
+          "structure": "string - Monthly or Annual, decides primary salary fields",
+          "in_hand_percentage": "string|null - how much of ctc is in-hand",
+          "min_annual_ctc": "string|null - min yearly ctc (full-time)",
+          "max_annual_ctc": "string|null - max yearly ctc (full-time)",
+          "min_monthly_salary": "string|null - min monthly salary",
+          "max_monthly_salary": "string|null - max monthly salary",
+          "min_hourly_rate": "string|null - min hourly rate (part-time)",
+          "max_hourly_rate": "string|null - max hourly rate (part-time)",
+          "hours_per_week": "string|null - hours per week (part-time)",
+          "contract_duration": "string|null - contract length",
+          "contract_payment_type": "string|null - how contract is paid (monthly vs total)",
+          "contract_monthly_payment": "string|null - contract monthly payment",
+          "contract_total_value": "string|null - contract total value",
+          "wfh_days": "string|null - wfh days per week (hybrid)",
+          "office_days": "string|null - office days per week (hybrid)",
+          "work_timezone": "string|null - timezone needed (remote)",
+          "remote_location": "string|null - allowed remote location (remote)",
+          "internship_duration": "string|null - internship length",
+          "min_stipend": "string|null - min stipend (internship)",
+          "max_stipend": "string|null - max stipend (internship)",
+          "monthly_benefits": "string[] - benefits for monthly comp",
+          "annual_benefits": "string[] - benefits for annual comp"
+        },
+        "vacancies": "number - how many positions open",
+        "gender_preference": "enum - Any/Male/Female",
+        "interview_mode": "string|null - preferred interview mode for this role",
+        "publish_option": "enum - Publish Immediately or Publish Later",
+        "publish_at": "date|null - when to publish if Publish Later",
+        "admin_review_status": "enum - pending_review/published/rejected/unpublished",
+        "status": "enum - draft/scheduled/active/closed/expired",
+        "admin_rejection_reason": "string|null - reason if rejected in review",
+        "applicants_count": "number - how many applied, bumps on each application",
+        "posted_date": "date|null - set when job goes live",
+        "expiry_date": "date|null - auto close date",
+        "created_at": "date - created",
+        "updated_at": "date - last update"
       },
       "_indexes": [
         { "fields": { "job_id": 1 }, "options": { "unique": true } },
-        { "fields": { "school_id": 1 } },
+        { "fields": { "school_profile_id": 1 } },
         { "fields": { "status": 1 } },
         { "fields": { "location": 1 } },
         { "fields": { "employment_type": 1 } }
@@ -259,23 +332,52 @@
 
     "applications": {
       "_schema": {
-        "_id": "ObjectId",
-        "application_id": "string — e.g. APP-0001",
-        "job_id": "string — e.g. JOB-0001",
-        "teacher_user_id": "string — user_id of the applying teacher (e.g. USR-0001)",
-        "school_id": "string — e.g. SCH-0001 (denormalized for fast school-side queries)",
-        "resume_id": "string | null — e.g. RES-0001",
-        "cover_letter_id": "string | null",
-        "status": "enum — ['submitted','viewed_by_school','shortlisted','rejected_by_school','hired','withdrawn']",
-        "school_notes": "string | null — Private note by school HR",
-        "admin_override": {
-          "action": "enum | null — ['approved','rejected','flagged']",
-          "admin_user_id": "string | null — user_id of the admin who actioned (e.g. USR-0004)",
-          "notes": "string | null",
-          "actioned_at": "Date | null"
+        "application_id": "uuid - this application id",
+        "job_id": "uuid - which job applied to (jobs.job_id)",
+        "teacher_user_id": "uuid - applying teacher user id (users.user_id)",
+        "school_id": "uuid - job school id, kept here for fast school-side queries",
+        "resume_id": "uuid|null - which resume submitted (resumes.resume_id)",
+        "cover_letter_id": "uuid|null - which cover letter submitted (cover_letters.cover_letter_id)",
+        "status": "enum - submitted (pending sj_admin review)/admin_approved/admin_rejected/shortlisted/rejected_by_school/hired/withdrawn",
+        "school_notes": "string|null - school hr private note",
+        "admin_review": {
+          "action": "enum|null - sj_admin gate before school sees the app: approve/reject",
+          "admin_user_id": "uuid|null - which admin acted (users.user_id)",
+          "notes": "string|null - admin notes, internal (never shown to teacher)",
+          "actioned_at": "date|null - when admin acted"
         },
-        "submitted_at": "Date",
-        "updated_at": "Date"
+        "applied_date": "date - when teacher applied (shown in My Applications)",
+        "reviewed_at": "date|null - when school first opened resume/profile (submitted -> reviewed)",
+        "submitted_at": "date - application created",
+        "updated_at": "date - last update",
+
+        "interviews": {
+          "_type": "object[]",
+          "_item_schema": {
+            "interview_id": "uuid - this interview round id (used to update its status)",
+            "round": "enum - 1st Round/2nd Round/Technical Round/HR Round/Final Round",
+            "scheduled_date": "date - interview date",
+            "scheduled_time": "string - interview time",
+            "duration": "enum - 15/30/45/60/90 Minutes",
+            "mode": "enum - Online/In-Person/Telephonic",
+            "online_platform": "enum|null - if Online: Google Meet/Zoom/Microsoft Teams/WhatsApp Video Call",
+            "meeting_link": "string|null - meeting url, needed for online except WhatsApp Video Call",
+            "location": "string|null - in-person address",
+            "room": "string|null - in-person room/venue",
+            "interviewer": "string|null - interviewer names",
+            "notes_for_candidate": "string|null - notes shown to candidate",
+            "internal_notes": "string|null - notes for school hr only",
+            "reminders": {
+              "confirmation": "bool - send confirmation to candidate right after scheduling",
+              "remind_24h": "bool - reminder 24 hrs before",
+              "remind_1h": "bool - reminder 1 hr before"
+            },
+            "status": "enum - Scheduled (default)/Confirmed/Completed/Cancelled",
+            "scheduled_by_user_id": "uuid|null - which staff scheduled (users.user_id)",
+            "created_at": "date - created",
+            "updated_at": "date - last update"
+          }
+        }
       },
       "_indexes": [
         { "fields": { "application_id": 1 }, "options": { "unique": true } },
@@ -283,36 +385,14 @@
         { "fields": { "teacher_user_id": 1 } },
         { "fields": { "school_id": 1 } },
         { "fields": { "status": 1 } },
+        { "fields": { "interviews.status": 1 } },
         {
           "fields": { "job_id": 1, "teacher_user_id": 1 },
           "options": {
             "unique": true,
-            "comment": "Prevent duplicate applications"
+            "comment": "stop same teacher applying to same job twice"
           }
         }
-      ]
-    },
-
-    "activity_logs": {
-      "_schema": {
-        "_id": "ObjectId",
-        "user_id": "string — user_id of the actor (e.g. USR-0001)",
-        "role": "string — Role at time of action",
-        "action_type": "enum — ['applied','saved_job','viewed_job','unsaved_job','profile_updated','profile_photo_updated','resume_uploaded','resume_created','resume_deleted','cover_letter_generated','logged_in','logged_out','job_posted','job_draft_saved','job_published','applicant_shortlisted','applicant_rejected','candidate_saved','subscription_purchased']",
-        "description": "string — e.g. 'Applied for Mathematics Teacher at Green Valley School'",
-        "metadata": {
-          "job_id": "string | null",
-          "application_id": "string | null",
-          "school_id": "string | null",
-          "teacher_user_id": "string | null",
-          "resume_id": "string | null"
-        },
-        "created_at": "Date"
-      },
-      "_indexes": [
-        { "fields": { "user_id": 1 } },
-        { "fields": { "action_type": 1 } },
-        { "fields": { "created_at": -1 } }
       ]
     }
   }

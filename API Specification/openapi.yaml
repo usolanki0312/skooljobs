@@ -1,246 +1,203 @@
 openapi: 3.0.3
 
+# ═══════════════════════════════════════════════════════════════════════════
+#  SkoolJobs API — mirrors API Specification/api.md (all 5 services).
+#  Protected routes need a Bearer JWT (Authorization: Bearer <token>).
+# ═══════════════════════════════════════════════════════════════════════════
+
 info:
-  title: SkoolJobs API
+  title: SkoolJobs API Documentation
   version: 1.0.0
   description: |
-    REST API specification for the SkoolJobs platform.
-    Covers 5 services: Auth & Users, Teacher Profiles, School Profiles, Jobs, and Applications.
-    All protected routes require a Bearer JWT token.
+    REST API for the SkoolJobs platform. Kept in sync with api.md and Datamodel/datamodel.json.
 
 servers:
   - url: http://localhost:5000
     description: Local development server
 
 tags:
-  - name: Auth & Users
-    description: Authentication, registration, OTP, and user account management (skooljobs_user service)
-  - name: Teacher Profiles
-    description: Teacher profile, qualifications, experiences, achievements, resumes, cover letters, saved jobs
-  - name: School Profiles
-    description: School/institution profile management
+  - name: Users
+    description: Registration, OTP, login, password reset, and user account management.
+  - name: TeacherProfiles
+    description: Teacher profile, qualifications, experiences, achievements, resumes, cover letters, saved jobs.
+  - name: SchoolProfiles
+    description: School profile, branding/images, saved candidates.
   - name: Jobs
-    description: Job posting, search, admin review, and recommendations
+    description: Job posting, admin review/publish, browse, recommendations.
   - name: Applications
-    description: Teacher job applications and school applicant management
+    description: Teacher applications, admin gate, school pipeline, interviews.
 
-# ─── Security ────────────────────────────────────────────────────────────────
+# ───────────────────────────────────────────────────────────────────────────
+#  COMPONENTS
+# ───────────────────────────────────────────────────────────────────────────
 components:
+
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
 
-  # ─── Reusable Schemas ──────────────────────────────────────────────────────
   schemas:
 
-    # --- Common ---
+    # ── Common wrappers ──────────────────────────────────────────────────
     SuccessResponse:
       type: object
       properties:
-        success:
-          type: boolean
-          example: true
-        data:
-          type: object
-
-    PaginatedResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          example: true
-        data:
-          type: array
-          items:
-            type: object
-        total:
-          type: integer
-          example: 100
-        page:
-          type: integer
-          example: 1
-        limit:
-          type: integer
-          example: 20
+        success: { type: boolean, example: true }
+        data: { type: object }
 
     ErrorResponse:
       type: object
       properties:
-        success:
-          type: boolean
-          example: false
-        message:
-          type: string
-          example: "Resource not found"
-        code:
-          type: string
-          example: "NOT_FOUND"
+        success: { type: boolean, example: false }
+        message: { type: string, example: "Invalid request" }
+        code: { type: string, example: "BAD_REQUEST" }
 
-    # --- Auth ---
-    RegisterRequest:
-      type: object
-      required: [first_name, email, phone]
-      properties:
-        first_name:
-          type: string
-          example: "Rahul"
-        last_name:
-          type: string
-          example: "Sharma"
-        email:
-          type: string
-          format: email
-          example: "rahul@gmail.com"
-        phone:
-          type: string
-          example: "9876543210"
-
-    OtpSendRequest:
-      type: object
-      required: [identifier, purpose]
-      properties:
-        identifier:
-          type: string
-          example: "9876543210"
-        purpose:
-          type: string
-          enum: [registration, phone_verification, email_verification, password_reset]
-
-    OtpVerifyRequest:
-      type: object
-      required: [identifier, otp, purpose]
-      properties:
-        identifier:
-          type: string
-          example: "9876543210"
-        otp:
-          type: string
-          example: "123456"
-        purpose:
-          type: string
-          enum: [registration, phone_verification, email_verification, password_reset]
-
-    CompleteRegistrationRequest:
-      type: object
-      required: [user_id, password, confirm_password, agree_terms]
-      properties:
-        user_id:
-          type: string
-          example: "USR-0001"
-        password:
-          type: string
-          format: password
-        confirm_password:
-          type: string
-          format: password
-        agree_terms:
-          type: boolean
-          example: true
-
-    LoginRequest:
-      type: object
-      required: [email, password]
-      properties:
-        email:
-          type: string
-          format: email
-          example: "rahul@gmail.com"
-        password:
-          type: string
-          format: password
-
-    AuthResponse:
+    PaginatedResponse:
       type: object
       properties:
-        success:
-          type: boolean
-          example: true
-        data:
-          type: object
-          properties:
-            token:
-              type: string
-              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-            user:
-              $ref: '#/components/schemas/User'
+        success: { type: boolean, example: true }
+        data: { type: array, items: { type: object } }
+        total: { type: integer, example: 100 }
+        page: { type: integer, example: 1 }
+        limit: { type: integer, example: 20 }
 
+    # ── User ─────────────────────────────────────────────────────────────
     User:
       type: object
       properties:
-        user_id:
+        user_id: { type: string, format: uuid }
+        first_name: { type: string }
+        last_name: { type: string }
+        email: { type: string, format: email }
+        user_scope:
           type: string
-          example: "USR-0001"
-        email:
-          type: string
-          example: "rahul@gmail.com"
-        role:
-          type: string
-          enum: [teacher, school_principal, school_admin, school_hr, skooljobs_admin, skooljobs_superadmin]
-        school_id:
-          type: string
-          nullable: true
-          example: null
-        profile_id:
-          type: string
-          nullable: true
-          example: "USR-0001"
-        phone:
-          type: string
-          example: "9876543210"
-        is_active:
-          type: boolean
-        is_email_verified:
-          type: boolean
-        is_phone_verified:
-          type: boolean
-        last_login:
-          type: string
-          format: date-time
-          nullable: true
+          enum: [sj_admin, sj_superadmin, teacher, sch_admin, sch_member]
+        school_id: { type: string, format: uuid, nullable: true }
+        profile_id: { type: string, format: uuid, nullable: true }
+        phone: { type: string }
+        is_active: { type: boolean }
+        is_email_verified: { type: boolean }
+        is_phone_verified: { type: boolean }
+        last_login: { type: string, format: date-time, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
 
-    # --- Teacher Profile ---
+    # ── Teacher embedded items ───────────────────────────────────────────
+    Qualification:
+      type: object
+      properties:
+        class_level: { type: string, nullable: true, enum: [Class 10, Class 12] }
+        school_name: { type: string, nullable: true }
+        degree: { type: string, example: "B.Ed" }
+        course: { type: string, nullable: true }
+        year_passed: { type: string, example: "2015" }
+        medium: { type: string, nullable: true }
+        mode: { type: string, nullable: true, enum: [Regular, Distance, Part-time, Online, Correspondence, Open University, Hybrid] }
+        percentage: { type: string, nullable: true }
+        university: { type: string, nullable: true }
+        college: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    Experience:
+      type: object
+      properties:
+        school_name: { type: string }
+        is_current_employer: { type: boolean }
+        board: { type: string, nullable: true }
+        start_date: { type: string, format: date }
+        end_date: { type: string, format: date, nullable: true }
+        main_subject: { type: string }
+        other_subjects: { type: string, nullable: true }
+        post_held: { type: string }
+        salary_ctc_annual: { type: integer, nullable: true }
+        monthly_take_home: { type: integer, nullable: true }
+        reason_for_leaving: { type: string, nullable: true }
+        details: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    Achievement:
+      type: object
+      properties:
+        category: { type: string, enum: [award, course] }
+        type: { type: string, example: "Award" }
+        name: { type: string }
+        issued_by: { type: string }
+        year: { type: string }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    Resume:
+      type: object
+      properties:
+        resume_id: { type: string, format: uuid }
+        source: { type: string, enum: [uploaded, created] }
+        title: { type: string }
+        file_name: { type: string }
+        file_url: { type: string, nullable: true }
+        format: { type: string, enum: [PDF, DOCX, Text] }
+        skill: { type: string, nullable: true }
+        score: { type: integer }
+        full_name: { type: string, nullable: true }
+        email: { type: string, nullable: true }
+        mobile: { type: string, nullable: true }
+        address: { type: string, nullable: true }
+        current_job_title: { type: string, nullable: true }
+        summary: { type: string, nullable: true }
+        skills: { type: string, nullable: true }
+        education: { type: string, nullable: true }
+        experience: { type: string, nullable: true }
+        certifications: { type: string, nullable: true }
+        languages: { type: string, nullable: true }
+        resume_achievements: { type: string, nullable: true }
+        notes: { type: string, nullable: true }
+        is_active: { type: boolean }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    CoverLetter:
+      type: object
+      properties:
+        cover_letter_id: { type: string, format: uuid }
+        title: { type: string }
+        source: { type: string, enum: [ai_generated, uploaded, manual] }
+        content: { type: string }
+        resume_id: { type: string, format: uuid, nullable: true }
+        job_id: { type: string, format: uuid, nullable: true }
+        file_name: { type: string, nullable: true }
+        file_url: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+
+    SavedJob:
+      type: object
+      properties:
+        job_id: { type: string, format: uuid }
+        saved_at: { type: string, format: date-time }
+
+    # ── Teacher profile ──────────────────────────────────────────────────
     TeacherProfileBasic:
       type: object
       properties:
-        user_id:
-          type: string
-          example: "USR-0001"
-        title:
-          type: string
-          enum: [Mr, Mrs, Miss, Ms, Dr, Prof]
-        first_name:
-          type: string
-        middle_name:
-          type: string
-          nullable: true
-        last_name:
-          type: string
+        teacher_profile_id: { type: string, format: uuid }
+        title: { type: string, enum: [Mr, Mrs, Miss, Ms, Dr, Prof] }
+        first_name: { type: string }
+        middle_name: { type: string, nullable: true }
+        last_name: { type: string }
         dob:
           type: object
           properties:
             day: { type: string }
             month: { type: string }
             year: { type: string }
-        age:
-          type: integer
-          nullable: true
-        nationality:
-          type: string
-          example: "Indian"
-        current_job_title:
-          type: string
-          nullable: true
-        main_subject:
-          type: string
-          example: "Mathematics"
-        additional_subjects:
-          type: array
-          items: { type: string }
-        classes_taught:
-          type: array
-          items: { type: string }
+        age: { type: integer, nullable: true }
+        nationality: { type: string }
+        current_job_title: { type: string, nullable: true }
+        main_subject: { type: string }
+        additional_subjects: { type: array, items: { type: string } }
+        classes_taught: { type: array, items: { type: string } }
         languages:
           type: array
           items:
@@ -248,312 +205,78 @@ components:
             properties:
               language: { type: string }
               proficiency: { type: string }
-        highest_qualification_1:
-          type: string
-          nullable: true
-        highest_qualification_2:
-          type: string
-          nullable: true
-        profile_photo_url:
-          type: string
-          nullable: true
-        profile_score:
-          type: integer
-          example: 86
-        is_available:
-          type: boolean
-        profile_status:
-          type: string
-          enum: [active, inactive, suspended, pending_verification]
-        admin_verified:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
+        highest_qualification_1: { type: string, nullable: true }
+        highest_qualification_2: { type: string, nullable: true }
+        profile_photo_url: { type: string, nullable: true }
+        summary: { type: string, nullable: true }
+        profile_score: { type: integer }
+        is_profile_visible: { type: boolean }
+        profile_verified: { type: boolean }
+        contact:
+          type: object
+          properties:
+            mobile: { type: string }
+            whatsapp: { type: string, nullable: true }
+            same_as_mobile: { type: boolean }
+            primary_email: { type: string, format: email }
+            secondary_email: { type: string, nullable: true }
+        address:
+          type: object
+          properties:
+            pin_code: { type: string, nullable: true }
+            city: { type: string, nullable: true }
+            state: { type: string, nullable: true }
+            full_address: { type: string, nullable: true }
+        notification_preferences:
+          type: object
+          properties:
+            email: { type: boolean }
+            sms: { type: boolean }
+            push: { type: boolean }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
 
     TeacherProfileFull:
       allOf:
         - $ref: '#/components/schemas/TeacherProfileBasic'
         - type: object
           properties:
-            qualifications:
-              type: array
-              items: { $ref: '#/components/schemas/Qualification' }
-            experiences:
-              type: array
-              items: { $ref: '#/components/schemas/Experience' }
-            achievements:
-              type: array
-              items: { $ref: '#/components/schemas/Achievement' }
-            resumes:
-              type: array
-              items: { $ref: '#/components/schemas/Resume' }
-            cover_letters:
-              type: array
-              items: { $ref: '#/components/schemas/CoverLetter' }
-            saved_jobs:
-              type: array
-              items: { $ref: '#/components/schemas/SavedJob' }
+            qualifications: { type: array, items: { $ref: '#/components/schemas/Qualification' } }
+            experiences: { type: array, items: { $ref: '#/components/schemas/Experience' } }
+            achievements: { type: array, items: { $ref: '#/components/schemas/Achievement' } }
+            resumes: { type: array, items: { $ref: '#/components/schemas/Resume' } }
+            cover_letters: { type: array, items: { $ref: '#/components/schemas/CoverLetter' } }
+            saved_jobs: { type: array, items: { $ref: '#/components/schemas/SavedJob' } }
 
-    Qualification:
+    # ── School profile ───────────────────────────────────────────────────
+    SavedCandidate:
       type: object
       properties:
-        _id:
-          type: string
-          example: "64e300000000000000000001"
-        class_level:
-          type: string
-          nullable: true
-          enum: [Class 10, Class 12]
-        school_name:
-          type: string
-          nullable: true
-        degree:
-          type: string
-          example: "B.Ed"
-        course:
-          type: string
-          nullable: true
-        year_passed:
-          type: string
-          example: "2015"
-        medium:
-          type: string
-          nullable: true
-        mode:
-          type: string
-          nullable: true
-          enum: [Regular, Distance, Part-time, Online, Correspondence, Open University, Hybrid]
-        percentage:
-          type: string
-          nullable: true
-          example: "72.5"
-        university:
-          type: string
-          nullable: true
-        college:
-          type: string
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
+        teacher_profile_id: { type: string, format: uuid }
+        saved_by_user_id: { type: string, format: uuid }
+        note: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
 
-    Experience:
-      type: object
-      properties:
-        _id:
-          type: string
-        school_name:
-          type: string
-        is_current_employer:
-          type: boolean
-        board:
-          type: string
-          nullable: true
-          example: "CBSE"
-        start_date:
-          type: string
-          format: date
-        end_date:
-          type: string
-          format: date
-          nullable: true
-        main_subject:
-          type: string
-        other_subjects:
-          type: string
-          nullable: true
-        post_held:
-          type: string
-          example: "Senior Teacher"
-        salary_ctc_annual:
-          type: integer
-          nullable: true
-        monthly_take_home:
-          type: integer
-          nullable: true
-        reason_for_leaving:
-          type: string
-          nullable: true
-        details:
-          type: string
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-
-    Achievement:
-      type: object
-      properties:
-        _id:
-          type: string
-        category:
-          type: string
-          enum: [award, course]
-        type:
-          type: string
-          example: "Award"
-        name:
-          type: string
-          example: "Best Teacher of the Year"
-        issued_by:
-          type: string
-        year:
-          type: string
-          example: "2022"
-        created_at:
-          type: string
-          format: date-time
-
-    Resume:
-      type: object
-      properties:
-        _id:
-          type: string
-        resume_id:
-          type: string
-          example: "RES-0001"
-        source:
-          type: string
-          enum: [uploaded, created]
-        title:
-          type: string
-        file_name:
-          type: string
-        file_url:
-          type: string
-          nullable: true
-        format:
-          type: string
-          enum: [PDF, DOCX, Text]
-        skill:
-          type: string
-          nullable: true
-          example: "Mathematics"
-        score:
-          type: integer
-          example: 88
-        full_name:
-          type: string
-          nullable: true
-        email:
-          type: string
-          nullable: true
-        mobile:
-          type: string
-          nullable: true
-        summary:
-          type: string
-          nullable: true
-        skills:
-          type: string
-          nullable: true
-        education:
-          type: string
-          nullable: true
-        experience:
-          type: string
-          nullable: true
-        is_active:
-          type: boolean
-        created_at:
-          type: string
-          format: date-time
-
-    CoverLetter:
-      type: object
-      properties:
-        _id:
-          type: string
-        cover_letter_id:
-          type: string
-          example: "CL-0001"
-        job_id:
-          type: string
-          nullable: true
-          example: "JOB-0001"
-        resume_id:
-          type: string
-          nullable: true
-          example: "RES-0001"
-        source:
-          type: string
-          enum: [ai_generated, uploaded, manual]
-        content:
-          type: string
-        file_name:
-          type: string
-          nullable: true
-        file_url:
-          type: string
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-
-    SavedJob:
-      type: object
-      properties:
-        _id:
-          type: string
-        job_id:
-          type: string
-          example: "JOB-0001"
-        saved_at:
-          type: string
-          format: date-time
-
-    # --- School Profile ---
     SchoolProfile:
       type: object
       properties:
-        school_id:
-          type: string
-          example: "SCH-0001"
-        primary_user_id:
-          type: string
-          example: "USR-0002"
-        school_name:
-          type: string
-          example: "Green Valley School"
-        sector:
-          type: string
-          enum: [Schools & Institutions, Colleges & Universities, Coaching Centers, EdTech, Government, Private, Other]
-        school_type:
-          type: string
-          enum: [Public School, Private School, International School, Boarding School, Day School, Co-Ed School, Girls School, Boys School, Special Education School, Other]
-        affiliation_status:
-          type: string
-          enum: [Affiliated, Pending Affiliation, Not Affiliated]
-        board:
-          type: string
-          enum: [CBSE, ICSE, State Board, IB, "IGCSE / Cambridge", NIOS, Other]
-        medium:
-          type: string
-          example: "English"
-        level:
-          type: string
-          enum: [Primary, Middle, Secondary, Senior Secondary, All Levels]
-        industry:
-          type: string
-        total_teachers:
-          type: integer
-          nullable: true
-        established_year:
-          type: integer
-          nullable: true
-        description:
-          type: string
-          nullable: true
-        logo_url:
-          type: string
-          nullable: true
-        cover_image_url:
-          type: string
-          nullable: true
+        school_profile_id: { type: string, format: uuid }
+        school_admin_id: { type: string, format: uuid }
+        school_name: { type: string }
+        sector: { type: string, enum: [Schools & Institutions, Colleges & Universities, Coaching Centers, EdTech, Government, Private, Other] }
+        school_type: { type: string, enum: [Public School, Private School, International School, Boarding School, Co-Ed School, Girls School, Boys School, Special Education School, Other] }
+        affiliation_status: { type: string, enum: [Affiliated, Pending Affiliation, Not Affiliated] }
+        board: { type: string, enum: [CBSE, ICSE, State Board, IB, "IGCSE-Cambridge", NIOS, Other] }
+        medium: { type: string }
+        level: { type: string, enum: [Primary, Middle, Secondary, Senior Secondary, All Levels] }
+        industry: { type: string }
+        total_teachers: { type: integer, nullable: true }
+        established_year: { type: integer, nullable: true }
+        description: { type: string, nullable: true }
+        logo_url: { type: string, nullable: true }
+        cover_image_url: { type: string, nullable: true }
+        gallery_image_urls: { type: array, items: { type: string } }
         contact:
           type: object
           properties:
@@ -575,365 +298,349 @@ components:
             facebook: { type: string, nullable: true }
             twitter: { type: string, nullable: true }
             instagram: { type: string, nullable: true }
-        profile_status:
-          type: string
-          enum: [active, pending_verification, suspended, rejected]
-        admin_verified:
-          type: boolean
-        admin_notes:
-          type: string
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
+        school_profile_status: { type: string, enum: [active, pending_verification, suspended, rejected] }
+        profile_verified: { type: boolean }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+        saved_candidates: { type: array, items: { $ref: '#/components/schemas/SavedCandidate' } }
 
-    # --- Job ---
+    # ── Job ──────────────────────────────────────────────────────────────
+    LanguageRequirement:
+      type: object
+      properties:
+        language: { type: string }
+        proficiency: { type: string }
+
+    Compensation:
+      type: object
+      properties:
+        structure: { type: string, enum: [Monthly, Annual] }
+        in_hand_percentage: { type: string, nullable: true }
+        min_annual_ctc: { type: string, nullable: true }
+        max_annual_ctc: { type: string, nullable: true }
+        min_monthly_salary: { type: string, nullable: true }
+        max_monthly_salary: { type: string, nullable: true }
+        min_hourly_rate: { type: string, nullable: true }
+        max_hourly_rate: { type: string, nullable: true }
+        hours_per_week: { type: string, nullable: true }
+        contract_duration: { type: string, nullable: true }
+        contract_payment_type: { type: string, nullable: true }
+        contract_monthly_payment: { type: string, nullable: true }
+        contract_total_value: { type: string, nullable: true }
+        wfh_days: { type: string, nullable: true }
+        office_days: { type: string, nullable: true }
+        work_timezone: { type: string, nullable: true }
+        remote_location: { type: string, nullable: true }
+        internship_duration: { type: string, nullable: true }
+        min_stipend: { type: string, nullable: true }
+        max_stipend: { type: string, nullable: true }
+        monthly_benefits: { type: array, items: { type: string } }
+        annual_benefits: { type: array, items: { type: string } }
+
     Job:
       type: object
       properties:
-        job_id:
-          type: string
-          example: "JOB-0001"
-        school_id:
-          type: string
-          example: "SCH-0001"
-        posted_by_user_id:
-          type: string
-          example: "USR-0002"
-        title:
-          type: string
-          example: "Mathematics Teacher"
-        subject:
-          type: string
-          example: "Mathematics"
-        experience_required:
-          type: string
-          example: "2-5 Years"
-        CTC_per_year:
-          type: string
-          nullable: true
-          example: "480000"
-        Monthly Take Home:
-          type: string
-          nullable: true
-          example: "35000"
-        location:
-          type: string
-          example: "Bhopal"
-        employment_type:
-          type: string
-          enum: [Full-time, Part-time, Contract, Visiting, Internship]
-        description:
-          type: string
-          nullable: true
-        requirements:
-          type: string
-          nullable: true
-        qualifications_required:
-          type: string
-          nullable: true
-        vacancies:
-          type: integer
-          example: 2
-        admin_review_status:
-          type: string
-          enum: [pending_review, published, rejected, unpublished]
-        status:
-          type: string
-          enum: [draft, active, closed, expired]
-        admin_rejection_reason:
-          type: string
-          nullable: true
-        applicants_count:
-          type: integer
-          example: 7
-        posted_date:
-          type: string
-          format: date-time
-          nullable: true
-        expiry_date:
-          type: string
-          format: date-time
-          nullable: true
-        created_at:
-          type: string
-          format: date-time
+        job_id: { type: string, format: uuid }
+        school_profile_id: { type: string, format: uuid }
+        posted_by_user_id: { type: string, format: uuid }
+        title: { type: string }
+        subject: { type: string }
+        role_category: { type: string, nullable: true }
+        employment_type: { type: string, enum: [Full-time, Part-time, Contract, Visiting, Internship, Hybrid, Remote] }
+        joining_timeline: { type: string, nullable: true }
+        location: { type: string }
+        language_type: { type: string, nullable: true }
+        language_requirements: { type: array, items: { $ref: '#/components/schemas/LanguageRequirement' } }
+        min_qualification: { type: string, nullable: true }
+        additional_qualification: { type: string, nullable: true }
+        certifications: { type: array, items: { type: string } }
+        experience_required: { type: string, nullable: true }
+        qualifications_required: { type: string, nullable: true }
+        student_levels: { type: array, items: { type: string } }
+        preferred_school_types: { type: array, items: { type: string } }
+        description: { type: string, nullable: true }
+        requirements: { type: string, nullable: true }
+        required_skills: { type: array, items: { type: string } }
+        technical_skills: { type: array, items: { type: string } }
+        compensation: { $ref: '#/components/schemas/Compensation' }
+        vacancies: { type: integer }
+        gender_preference: { type: string, enum: [Any, Male, Female] }
+        interview_mode: { type: string, nullable: true }
+        publish_option: { type: string, enum: [Publish Immediately, Publish Later] }
+        publish_at: { type: string, format: date-time, nullable: true }
+        admin_review_status: { type: string, enum: [pending_review, published, rejected, unpublished] }
+        status: { type: string, enum: [draft, scheduled, active, closed, expired] }
+        admin_rejection_reason: { type: string, nullable: true }
+        applicants_count: { type: integer }
+        posted_date: { type: string, format: date-time, nullable: true }
+        expiry_date: { type: string, format: date-time, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
 
-    # --- Application ---
+    # ── Application ──────────────────────────────────────────────────────
+    AdminReview:
+      type: object
+      properties:
+        action: { type: string, nullable: true, enum: [approve, reject] }
+        admin_user_id: { type: string, format: uuid, nullable: true }
+        notes: { type: string, nullable: true }
+        actioned_at: { type: string, format: date-time, nullable: true }
+
+    Interview:
+      type: object
+      properties:
+        interview_id: { type: string, format: uuid }
+        round: { type: string, enum: [1st Round, 2nd Round, Technical Round, HR Round, Final Round] }
+        scheduled_date: { type: string, format: date }
+        scheduled_time: { type: string }
+        duration: { type: string, enum: [15 Minutes, 30 Minutes, 45 Minutes, 60 Minutes, 90 Minutes] }
+        mode: { type: string, enum: [Online, In-Person, Telephonic] }
+        online_platform: { type: string, nullable: true, enum: [Google Meet, Zoom, Microsoft Teams, WhatsApp Video Call] }
+        meeting_link: { type: string, nullable: true }
+        location: { type: string, nullable: true }
+        room: { type: string, nullable: true }
+        interviewer: { type: string, nullable: true }
+        notes_for_candidate: { type: string, nullable: true }
+        internal_notes: { type: string, nullable: true }
+        reminders:
+          type: object
+          properties:
+            confirmation: { type: boolean }
+            remind_24h: { type: boolean }
+            remind_1h: { type: boolean }
+        status: { type: string, enum: [Scheduled, Confirmed, Completed, Cancelled] }
+        scheduled_by_user_id: { type: string, format: uuid, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
     Application:
       type: object
       properties:
-        application_id:
-          type: string
-          example: "APP-0001"
-        job_id:
-          type: string
-          example: "JOB-0001"
-        teacher_user_id:
-          type: string
-          example: "USR-0001"
-        school_id:
-          type: string
-          example: "SCH-0001"
-        resume_id:
-          type: string
-          nullable: true
-          example: "RES-0001"
-        cover_letter_id:
-          type: string
-          nullable: true
-        status:
-          type: string
-          enum: [submitted, viewed_by_school, shortlisted, rejected_by_school, hired, withdrawn]
-        school_notes:
-          type: string
-          nullable: true
-        admin_override:
-          type: object
-          properties:
-            action:
-              type: string
-              nullable: true
-              enum: [approved, rejected, flagged]
-            admin_user_id:
-              type: string
-              nullable: true
-            notes:
-              type: string
-              nullable: true
-            actioned_at:
-              type: string
-              format: date-time
-              nullable: true
-        status_history:
-          type: array
-          items:
-            type: object
-            properties:
-              status: { type: string }
-              changed_by_user_id: { type: string }
-              changed_by_role: { type: string }
-              notes: { type: string, nullable: true }
-              changed_at: { type: string, format: date-time }
-        submitted_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
+        application_id: { type: string, format: uuid }
+        job_id: { type: string, format: uuid }
+        teacher_user_id: { type: string, format: uuid }
+        school_id: { type: string, format: uuid }
+        resume_id: { type: string, format: uuid, nullable: true }
+        cover_letter_id: { type: string, format: uuid, nullable: true }
+        status: { type: string, enum: [submitted, admin_approved, admin_rejected, shortlisted, rejected_by_school, hired, withdrawn] }
+        school_notes: { type: string, nullable: true }
+        admin_review: { $ref: '#/components/schemas/AdminReview' }
+        applied_date: { type: string, format: date }
+        reviewed_at: { type: string, format: date-time, nullable: true }
+        submitted_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+        interviews: { type: array, items: { $ref: '#/components/schemas/Interview' } }
 
-# ─── Paths ───────────────────────────────────────────────────────────────────
+# ───────────────────────────────────────────────────────────────────────────
+#  PATHS
+# ───────────────────────────────────────────────────────────────────────────
 paths:
 
-  # ── Auth & Users ─────────────────────────────────────────────────────────
+  # ═══ Users ═════════════════════════════════════════════════════════════
 
-  /api/auth/register:
+  /api/auth/registerUser:
     post:
-      tags: [Auth & Users]
-      summary: Register new teacher (Step 1 — submit details)
+      tags: [Users]
+      operationId: registerUser
+      summary: Step 1 — submit signup details, OTP is triggered
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/RegisterRequest' }
+            schema:
+              type: object
+              required: [first_name, email, phone, user_scope]
+              properties:
+                first_name: { type: string }
+                last_name: { type: string }
+                email: { type: string, format: email }
+                phone: { type: string }
+                user_scope: { type: string, enum: [teacher] }
       responses:
         '201':
-          description: Details saved, OTP sent
+          description: Created, OTP sent
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  success: { type: boolean, example: true }
+                  success: { type: boolean }
                   data:
                     type: object
                     properties:
-                      user_id: { type: string, example: "USR-0001" }
-                      message: { type: string, example: "OTP sent to phone and email" }
+                      user_id: { type: string, format: uuid }
+                      message: { type: string }
         '409':
           description: Email already registered
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorResponse' } } }
 
-  /api/auth/send-otp:
+  /api/auth/requestOtp:
     post:
-      tags: [Auth & Users]
-      summary: Send or resend OTP
+      tags: [Users]
+      operationId: requestOtp
+      summary: Send / resend an OTP
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/OtpSendRequest' }
+            schema:
+              type: object
+              required: [identifier, purpose]
+              properties:
+                identifier: { type: string }
+                purpose: { type: string, enum: [registration, phone_verification, email_verification, password_reset] }
       responses:
         '200':
           description: OTP sent
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success: { type: boolean, example: true }
-                  data:
-                    type: object
-                    properties:
-                      message: { type: string }
-                      expires_in: { type: integer, example: 600 }
+          content: { application/json: { schema: { $ref: '#/components/schemas/SuccessResponse' } } }
         '429':
-          description: Too many OTP requests
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
+          description: Too many requests
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorResponse' } } }
 
-  /api/auth/verify-otp:
+  /api/auth/verifyOtp:
     post:
-      tags: [Auth & Users]
-      summary: Verify OTP (Step 2)
+      tags: [Users]
+      operationId: verifyOtp
+      summary: Step 2 — verify the OTP
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/OtpVerifyRequest' }
+            schema:
+              type: object
+              required: [identifier, otp, purpose]
+              properties:
+                identifier: { type: string }
+                otp: { type: string }
+                purpose: { type: string, enum: [registration, phone_verification, email_verification, password_reset] }
       responses:
         '200':
-          description: OTP verified
+          description: Verified
+          content: { application/json: { schema: { $ref: '#/components/schemas/SuccessResponse' } } }
+        '400':
+          description: Invalid or expired OTP
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorResponse' } } }
+
+  /api/auth/completeRegistration:
+    post:
+      tags: [Users]
+      operationId: completeRegistration
+      summary: Step 3 — set password, account created, JWT returned
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [user_id, password, confirm_password, agree_terms]
+              properties:
+                user_id: { type: string, format: uuid }
+                password: { type: string, format: password }
+                confirm_password: { type: string, format: password }
+                agree_terms: { type: boolean }
+      responses:
+        '201':
+          description: Account created
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  success: { type: boolean, example: true }
+                  success: { type: boolean }
                   data:
                     type: object
                     properties:
-                      verified: { type: boolean, example: true }
-        '400':
-          description: Invalid or expired OTP
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
-
-  /api/auth/complete-registration:
-    post:
-      tags: [Auth & Users]
-      summary: Set password and complete account (Step 3)
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/CompleteRegistrationRequest' }
-      responses:
-        '201':
-          description: Account created, JWT returned
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/AuthResponse' }
+                      token: { type: string }
+                      user: { $ref: '#/components/schemas/User' }
         '422':
-          description: Passwords do not match or terms not agreed
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
+          description: Passwords mismatch or terms not agreed
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorResponse' } } }
 
   /api/auth/login:
     post:
-      tags: [Auth & Users]
-      summary: Login (all roles)
+      tags: [Users]
+      operationId: login
+      summary: Login (any user_scope)
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/LoginRequest' }
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, format: password }
       responses:
         '200':
-          description: Login successful
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/AuthResponse' }
-        '401':
-          description: Invalid credentials
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
-
-  /api/auth/logout:
-    post:
-      tags: [Auth & Users]
-      summary: Logout current session
-      security:
-        - BearerAuth: []
-      responses:
-        '200':
-          description: Logged out
+          description: Login success
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  success: { type: boolean, example: true }
+                  success: { type: boolean }
                   data:
                     type: object
                     properties:
-                      message: { type: string, example: "Logged out successfully" }
+                      token: { type: string }
+                      user: { $ref: '#/components/schemas/User' }
+        '401':
+          description: Invalid credentials
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorResponse' } } }
 
-  /api/auth/forgot-password:
+  /api/auth/logout:
     post:
-      tags: [Auth & Users]
-      summary: Send password reset email
+      tags: [Users]
+      operationId: logout
+      summary: Logout current session
+      security: [ { BearerAuth: [] } ]
+      responses:
+        '200':
+          description: Logged out
+          content: { application/json: { schema: { $ref: '#/components/schemas/SuccessResponse' } } }
+
+  /api/auth/setPassword:
+    patch:
+      tags: [Users]
+      operationId: setPassword
+      summary: Set a new password (logged-in change OR forgot/reset via OTP)
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required: [email]
-              properties:
-                email: { type: string, format: email }
+              oneOf:
+                - type: object
+                  required: [current_password, new_password, confirm_password]
+                  properties:
+                    current_password: { type: string, format: password }
+                    new_password: { type: string, format: password }
+                    confirm_password: { type: string, format: password }
+                - type: object
+                  required: [identifier, otp, new_password, confirm_password]
+                  properties:
+                    identifier: { type: string }
+                    otp: { type: string }
+                    new_password: { type: string, format: password }
+                    confirm_password: { type: string, format: password }
       responses:
         '200':
-          description: Reset email sent
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/auth/reset-password:
-    post:
-      tags: [Auth & Users]
-      summary: Reset password using token from email
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [token, password, confirm_password]
-              properties:
-                token: { type: string }
-                password: { type: string, format: password }
-                confirm_password: { type: string, format: password }
-      responses:
-        '200':
-          description: Password reset
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
+          description: Password updated
+          content: { application/json: { schema: { $ref: '#/components/schemas/SuccessResponse' } } }
         '400':
-          description: Token expired or invalid
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
+          description: Bad current password / OTP / mismatch
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorResponse' } } }
 
-  /api/users/me:
+  /api/users/getLoggedinUser:
     get:
-      tags: [Auth & Users]
-      summary: Get current logged-in user
-      security:
-        - BearerAuth: []
+      tags: [Users]
+      operationId: getLoggedinUser
+      summary: Get the logged-in user's account
+      security: [ { BearerAuth: [] } ]
       responses:
         '200':
-          description: Current user details
+          description: Current user
           content:
             application/json:
               schema:
@@ -943,164 +650,63 @@ paths:
                   data: { $ref: '#/components/schemas/User' }
         '401':
           description: Unauthorized
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorResponse' } } }
 
-  /api/users/me/password:
-    patch:
-      tags: [Auth & Users]
-      summary: Change password for logged-in user
-      security:
-        - BearerAuth: []
+  # ═══ TeacherProfiles ═══════════════════════════════════════════════════
+
+  /api/teacherProfiles/saveTeacherProfile:
+    post:
+      tags: [TeacherProfiles]
+      operationId: saveTeacherProfile
+      summary: Create/update (upsert) the logged-in teacher's profile + embedded arrays
+      security: [ { BearerAuth: [] } ]
       requestBody:
         required: true
         content:
           application/json:
-            schema:
-              type: object
-              required: [current_password, new_password, confirm_password]
-              properties:
-                current_password: { type: string, format: password }
-                new_password: { type: string, format: password }
-                confirm_password: { type: string, format: password }
+            schema: { $ref: '#/components/schemas/TeacherProfileFull' }
       responses:
         '200':
-          description: Password changed
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/users/{user_id}:
-    get:
-      tags: [Auth & Users]
-      summary: Get user by ID (Admin only)
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string, example: "USR-0001" }
-      responses:
-        '200':
-          description: User details
+          description: Saved
           content:
             application/json:
               schema:
                 type: object
                 properties:
                   success: { type: boolean }
-                  data: { $ref: '#/components/schemas/User' }
-        '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
-        '404':
-          description: User not found
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
+                  data:
+                    type: object
+                    properties:
+                      teacher_profile_id: { type: string, format: uuid }
 
-  /api/users/{user_id}/status:
-    patch:
-      tags: [Auth & Users]
-      summary: Activate or deactivate a user (Admin only)
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [is_active]
-              properties:
-                is_active: { type: boolean }
-      responses:
-        '200':
-          description: Status updated
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  # ── Teacher Profiles ──────────────────────────────────────────────────────
-
-  /api/teacher-profiles:
-    post:
-      tags: [Teacher Profiles]
-      summary: Create teacher profile
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [user_id, first_name, main_subject]
-              properties:
-                user_id: { type: string }
-                title: { type: string, enum: [Mr, Mrs, Miss, Ms, Dr, Prof] }
-                first_name: { type: string }
-                last_name: { type: string }
-                nationality: { type: string }
-                main_subject: { type: string }
-      responses:
-        '201':
-          description: Profile created
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
+  /api/teacherProfiles/getTeacherProfile:
     get:
-      tags: [Teacher Profiles]
-      summary: Search and list teachers (Admin / School HR)
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: subject
-          in: query
-          schema: { type: string }
-        - name: location
-          in: query
-          schema: { type: string }
-        - name: is_available
-          in: query
-          schema: { type: boolean }
-        - name: page
-          in: query
-          schema: { type: integer, default: 1 }
-        - name: limit
-          in: query
-          schema: { type: integer, default: 20 }
+      tags: [TeacherProfiles]
+      operationId: getMyTeacherProfile
+      summary: Get the logged-in teacher's full profile
+      security: [ { BearerAuth: [] } ]
       responses:
         '200':
-          description: Paginated teacher list
+          description: Full profile
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/PaginatedResponse' }
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data: { $ref: '#/components/schemas/TeacherProfileFull' }
 
-  /api/teacher-profiles/{user_id}:
+  /api/teacherProfiles/getTeacherProfile/{teacher_profile_id}:
     get:
-      tags: [Teacher Profiles]
-      summary: Get full teacher profile (includes all embedded arrays)
-      security:
-        - BearerAuth: []
+      tags: [TeacherProfiles]
+      operationId: getTeacherProfileById
+      summary: Get a specific teacher's full profile (school / admin)
+      security: [ { BearerAuth: [] } ]
       parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string, example: "USR-0001" }
+        - { name: teacher_profile_id, in: path, required: true, schema: { type: string, format: uuid } }
       responses:
         '200':
-          description: Full teacher profile
+          description: Full profile
           content:
             application/json:
               schema:
@@ -1109,44 +715,15 @@ paths:
                   success: { type: boolean }
                   data: { $ref: '#/components/schemas/TeacherProfileFull' }
         '404':
-          description: Profile not found
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
+          description: Not found
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorResponse' } } }
 
-    patch:
-      tags: [Teacher Profiles]
-      summary: Update basic teacher profile fields
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/TeacherProfileBasic' }
-      responses:
-        '200':
-          description: Profile updated
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/teacher-profiles/{user_id}/photo:
+  /api/teacherProfiles/uploadProfilePhoto:
     post:
-      tags: [Teacher Profiles]
-      summary: Upload profile photo
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
+      tags: [TeacherProfiles]
+      operationId: uploadProfilePhoto
+      summary: Upload profile photo, returns its URL
+      security: [ { BearerAuth: [] } ]
       requestBody:
         required: true
         content:
@@ -1154,12 +731,10 @@ paths:
             schema:
               type: object
               properties:
-                photo:
-                  type: string
-                  format: binary
+                photo: { type: string, format: binary }
       responses:
         '200':
-          description: Photo uploaded
+          description: Uploaded
           content:
             application/json:
               schema:
@@ -1171,204 +746,12 @@ paths:
                     properties:
                       profile_photo_url: { type: string }
 
-  /api/teacher-profiles/{user_id}/qualifications:
+  /api/teacherProfiles/addResume:
     post:
-      tags: [Teacher Profiles]
-      summary: Add a qualification entry
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/Qualification' }
-      responses:
-        '201':
-          description: Qualification added
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/teacher-profiles/{user_id}/qualifications/{id}:
-    patch:
-      tags: [Teacher Profiles]
-      summary: Update a qualification entry
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
-        - name: id
-          in: path
-          required: true
-          schema: { type: string }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/Qualification' }
-      responses:
-        '200':
-          description: Updated
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-    delete:
-      tags: [Teacher Profiles]
-      summary: Remove a qualification entry
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
-        - name: id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        '200':
-          description: Deleted
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/teacher-profiles/{user_id}/experiences:
-    post:
-      tags: [Teacher Profiles]
-      summary: Add a teaching experience entry
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/Experience' }
-      responses:
-        '201':
-          description: Experience added
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/teacher-profiles/{user_id}/experiences/{id}:
-    patch:
-      tags: [Teacher Profiles]
-      summary: Update a teaching experience entry
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
-        - name: id
-          in: path
-          required: true
-          schema: { type: string }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/Experience' }
-      responses:
-        '200':
-          description: Updated
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-    delete:
-      tags: [Teacher Profiles]
-      summary: Remove a teaching experience entry
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
-        - name: id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        '200':
-          description: Deleted
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/teacher-profiles/{user_id}/achievements:
-    post:
-      tags: [Teacher Profiles]
-      summary: Add an award or course
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/Achievement' }
-      responses:
-        '201':
-          description: Achievement added
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/teacher-profiles/{user_id}/achievements/{id}:
-    delete:
-      tags: [Teacher Profiles]
-      summary: Remove an achievement
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
-        - name: id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        '200':
-          description: Deleted
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/teacher-profiles/{user_id}/resumes:
-    post:
-      tags: [Teacher Profiles]
-      summary: Upload or create a resume
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
+      tags: [TeacherProfiles]
+      operationId: addResume
+      summary: Add a resume (upload file or create from form)
+      security: [ { BearerAuth: [] } ]
       requestBody:
         required: true
         content:
@@ -1387,168 +770,50 @@ paths:
           description: Resume added
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/teacher-profiles/{user_id}/resumes/{id}:
-    delete:
-      tags: [Teacher Profiles]
-      summary: Delete a resume
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
-        - name: id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        '200':
-          description: Deleted
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/teacher-profiles/{user_id}/cover-letters:
-    post:
-      tags: [Teacher Profiles]
-      summary: Add a cover letter
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/CoverLetter' }
-      responses:
-        '201':
-          description: Cover letter added
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/teacher-profiles/{user_id}/cover-letters/{id}:
-    delete:
-      tags: [Teacher Profiles]
-      summary: Delete a cover letter
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
-        - name: id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        '200':
-          description: Deleted
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/teacher-profiles/{user_id}/saved-jobs:
-    get:
-      tags: [Teacher Profiles]
-      summary: List saved jobs
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        '200':
-          description: Saved jobs list
-          content:
-            application/json:
               schema:
                 type: object
                 properties:
                   success: { type: boolean }
                   data:
-                    type: array
-                    items: { $ref: '#/components/schemas/SavedJob' }
+                    type: object
+                    properties:
+                      resume_id: { type: string, format: uuid }
 
-    post:
-      tags: [Teacher Profiles]
-      summary: Save a job
-      security:
-        - BearerAuth: []
+  /api/teacherProfiles/deleteResume/{resume_id}:
+    delete:
+      tags: [TeacherProfiles]
+      operationId: deleteResume
+      summary: Delete a resume
+      security: [ { BearerAuth: [] } ]
       parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
+        - { name: resume_id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Deleted
+          content: { application/json: { schema: { $ref: '#/components/schemas/SuccessResponse' } } }
+
+  /api/teacherProfiles/addCoverLetter:
+    post:
+      tags: [TeacherProfiles]
+      operationId: addCoverLetter
+      summary: Save a cover letter (optionally linked to a resume / job)
+      security: [ { BearerAuth: [] } ]
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [job_id]
+              required: [content]
               properties:
-                job_id: { type: string, example: "JOB-0001" }
+                title: { type: string }
+                source: { type: string, enum: [ai_generated, uploaded, manual] }
+                content: { type: string }
+                resume_id: { type: string, format: uuid, nullable: true }
+                job_id: { type: string, format: uuid, nullable: true }
       responses:
         '201':
-          description: Job saved
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-        '409':
-          description: Job already saved
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
-
-  /api/teacher-profiles/{user_id}/saved-jobs/{job_id}:
-    delete:
-      tags: [Teacher Profiles]
-      summary: Unsave a job
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: user_id
-          in: path
-          required: true
-          schema: { type: string }
-        - name: job_id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        '200':
-          description: Job unsaved
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  # ── School Profiles ───────────────────────────────────────────────────────
-
-  /api/school-profiles:
-    post:
-      tags: [School Profiles]
-      summary: Create school profile
-      security:
-        - BearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/SchoolProfile' }
-      responses:
-        '201':
-          description: Profile created
+          description: Cover letter added
           content:
             application/json:
               schema:
@@ -1558,47 +823,90 @@ paths:
                   data:
                     type: object
                     properties:
-                      school_id: { type: string, example: "SCH-0001" }
+                      cover_letter_id: { type: string, format: uuid }
 
-    get:
-      tags: [School Profiles]
-      summary: List all schools (Admin only)
-      security:
-        - BearerAuth: []
+  /api/teacherProfiles/deleteCoverLetter/{cover_letter_id}:
+    delete:
+      tags: [TeacherProfiles]
+      operationId: deleteCoverLetter
+      summary: Delete a cover letter
+      security: [ { BearerAuth: [] } ]
       parameters:
-        - name: profile_status
-          in: query
-          schema: { type: string, enum: [active, pending_verification, suspended, rejected] }
-        - name: board
-          in: query
-          schema: { type: string }
-        - name: city
-          in: query
-          schema: { type: string }
-        - name: page
-          in: query
-          schema: { type: integer, default: 1 }
-        - name: limit
-          in: query
-          schema: { type: integer, default: 20 }
+        - { name: cover_letter_id, in: path, required: true, schema: { type: string, format: uuid } }
       responses:
         '200':
-          description: Paginated school list
+          description: Deleted
+          content: { application/json: { schema: { $ref: '#/components/schemas/SuccessResponse' } } }
+
+  /api/teacherProfiles/saveJob:
+    post:
+      tags: [TeacherProfiles]
+      operationId: saveJob
+      summary: Bookmark a job
+      security: [ { BearerAuth: [] } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [job_id]
+              properties:
+                job_id: { type: string, format: uuid }
+      responses:
+        '201':
+          description: Job saved
+          content: { application/json: { schema: { $ref: '#/components/schemas/SuccessResponse' } } }
+        '409':
+          description: Already saved
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorResponse' } } }
+
+  /api/teacherProfiles/unsaveJob/{job_id}:
+    delete:
+      tags: [TeacherProfiles]
+      operationId: unsaveJob
+      summary: Remove a bookmarked job
+      security: [ { BearerAuth: [] } ]
+      parameters:
+        - { name: job_id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Unsaved
+          content: { application/json: { schema: { $ref: '#/components/schemas/SuccessResponse' } } }
+
+  # ═══ SchoolProfiles ════════════════════════════════════════════════════
+
+  /api/schoolProfiles/saveSchoolProfile:
+    post:
+      tags: [SchoolProfiles]
+      operationId: saveSchoolProfile
+      summary: Create/update (upsert) the logged-in staff's school profile
+      security: [ { BearerAuth: [] } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SchoolProfile' }
+      responses:
+        '200':
+          description: Saved
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/PaginatedResponse' }
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data:
+                    type: object
+                    properties:
+                      school_profile_id: { type: string, format: uuid }
 
-  /api/school-profiles/{school_id}:
+  /api/schoolProfiles/getSchoolProfile:
     get:
-      tags: [School Profiles]
-      summary: Get school profile
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: school_id
-          in: path
-          required: true
-          schema: { type: string, example: "SCH-0001" }
+      tags: [SchoolProfiles]
+      operationId: getMySchoolProfile
+      summary: Get the logged-in staff's full school profile
+      security: [ { BearerAuth: [] } ]
       responses:
         '200':
           description: School profile
@@ -1610,191 +918,116 @@ paths:
                   success: { type: boolean }
                   data: { $ref: '#/components/schemas/SchoolProfile' }
 
-    patch:
-      tags: [School Profiles]
-      summary: Update school profile
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: school_id
-          in: path
-          required: true
-          schema: { type: string }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/SchoolProfile' }
-      responses:
-        '200':
-          description: Updated
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/school-profiles/{school_id}/logo:
-    post:
-      tags: [School Profiles]
-      summary: Upload school logo
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: school_id
-          in: path
-          required: true
-          schema: { type: string }
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                logo: { type: string, format: binary }
-      responses:
-        '200':
-          description: Logo uploaded
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success: { type: boolean }
-                  data:
-                    type: object
-                    properties:
-                      logo_url: { type: string }
-
-  /api/school-profiles/{school_id}/cover:
-    post:
-      tags: [School Profiles]
-      summary: Upload school cover image
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: school_id
-          in: path
-          required: true
-          schema: { type: string }
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                cover: { type: string, format: binary }
-      responses:
-        '200':
-          description: Cover uploaded
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/school-profiles/{school_id}/verify:
-    patch:
-      tags: [School Profiles]
-      summary: Admin — verify school KYC
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: school_id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        '200':
-          description: School verified
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success: { type: boolean }
-                  data:
-                    type: object
-                    properties:
-                      school_id: { type: string }
-                      admin_verified: { type: boolean, example: true }
-                      profile_status: { type: string, example: "active" }
-
-  /api/school-profiles/{school_id}/status:
-    patch:
-      tags: [School Profiles]
-      summary: Admin — suspend or restore a school
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: school_id
-          in: path
-          required: true
-          schema: { type: string }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [profile_status]
-              properties:
-                profile_status:
-                  type: string
-                  enum: [active, suspended]
-                admin_notes:
-                  type: string
-                  nullable: true
-      responses:
-        '200':
-          description: Status updated
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  # ── Jobs ─────────────────────────────────────────────────────────────────
-
-  /api/jobs:
+  /api/schoolProfiles/getSchoolProfile/{school_profile_id}:
     get:
-      tags: [Jobs]
-      summary: List all published/active jobs
+      tags: [SchoolProfiles]
+      operationId: getSchoolProfileById
+      summary: Get a school's public profile by id (teacher / public)
       parameters:
-        - name: subject
-          in: query
-          schema: { type: string }
-        - name: location
-          in: query
-          schema: { type: string }
-        - name: employment_type
-          in: query
-          schema: { type: string }
-        - name: experience_required
-          in: query
-          schema: { type: string }
-        - name: page
-          in: query
-          schema: { type: integer, default: 1 }
-        - name: limit
-          in: query
-          schema: { type: integer, default: 20 }
+        - { name: school_profile_id, in: path, required: true, schema: { type: string, format: uuid } }
       responses:
         '200':
-          description: Paginated job list
+          description: Public school profile
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/PaginatedResponse' }
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data: { $ref: '#/components/schemas/SchoolProfile' }
 
+  /api/schoolProfiles/uploadSchoolImage:
     post:
-      tags: [Jobs]
-      summary: Create a new job (saved as draft)
-      security:
-        - BearerAuth: []
+      tags: [SchoolProfiles]
+      operationId: uploadSchoolImage
+      summary: Upload logo / cover / gallery image(s), returns URLs
+      security: [ { BearerAuth: [] } ]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                type: { type: string, enum: [logo, cover, gallery] }
+                images:
+                  type: array
+                  items: { type: string, format: binary }
+      responses:
+        '200':
+          description: Uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data:
+                    type: object
+                    properties:
+                      urls: { type: array, items: { type: string } }
+
+  /api/schoolProfiles/saveCandidate:
+    post:
+      tags: [SchoolProfiles]
+      operationId: saveCandidate
+      summary: Bookmark a teacher into the school's saved_candidates (max ~50)
+      security: [ { BearerAuth: [] } ]
       requestBody:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/Job' }
+            schema:
+              type: object
+              required: [teacher_profile_id]
+              properties:
+                teacher_profile_id: { type: string, format: uuid }
+                note: { type: string }
       responses:
         '201':
-          description: Job created as draft
+          description: Saved
+          content: { application/json: { schema: { $ref: '#/components/schemas/SuccessResponse' } } }
+        '409':
+          description: Already saved
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorResponse' } } }
+        '422':
+          description: Cap reached
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorResponse' } } }
+
+  /api/schoolProfiles/unsaveCandidate/{teacher_profile_id}:
+    delete:
+      tags: [SchoolProfiles]
+      operationId: unsaveCandidate
+      summary: Remove a saved candidate
+      security: [ { BearerAuth: [] } ]
+      parameters:
+        - { name: teacher_profile_id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Removed
+          content: { application/json: { schema: { $ref: '#/components/schemas/SuccessResponse' } } }
+
+  # ═══ Jobs ══════════════════════════════════════════════════════════════
+
+  /api/jobs/createJob:
+    post:
+      tags: [Jobs]
+      operationId: createJob
+      summary: Create/edit a draft, or submit it for admin review
+      security: [ { BearerAuth: [] } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - type: object
+                  properties:
+                    action: { type: string, enum: [save_draft, submit] }
+                - $ref: '#/components/schemas/Job'
+      responses:
+        '200':
+          description: Saved
           content:
             application/json:
               schema:
@@ -1804,70 +1037,37 @@ paths:
                   data:
                     type: object
                     properties:
-                      job_id: { type: string }
+                      job_id: { type: string, format: uuid }
                       status: { type: string, example: "draft" }
 
-  /api/jobs/recommendations:
+  /api/jobs/listJobs:
     get:
       tags: [Jobs]
-      summary: Get job recommendations for a teacher based on resume skill
-      security:
-        - BearerAuth: []
+      operationId: listJobs
+      summary: Browse/list jobs (filters; school filters its own)
       parameters:
-        - name: user_id
-          in: query
-          required: true
-          schema: { type: string }
-        - name: skill
-          in: query
-          required: true
-          schema: { type: string, example: "Mathematics" }
+        - { name: subject, in: query, schema: { type: string } }
+        - { name: location, in: query, schema: { type: string } }
+        - { name: employment_type, in: query, schema: { type: string } }
+        - { name: school_profile_id, in: query, schema: { type: string, format: uuid } }
+        - { name: status, in: query, schema: { type: string } }
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: limit, in: query, schema: { type: integer, default: 20 } }
       responses:
         '200':
-          description: Recommended jobs
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/PaginatedResponse' }
+          description: Paginated jobs
+          content: { application/json: { schema: { $ref: '#/components/schemas/PaginatedResponse' } } }
 
-  /api/jobs/school/{school_id}:
+  /api/jobs/getJob/{job_id}:
     get:
       tags: [Jobs]
-      summary: Get all jobs posted by a school
-      security:
-        - BearerAuth: []
+      operationId: getJob
+      summary: Get full job details
       parameters:
-        - name: school_id
-          in: path
-          required: true
-          schema: { type: string }
-        - name: status
-          in: query
-          schema: { type: string, enum: [draft, active, closed, expired] }
-        - name: page
-          in: query
-          schema: { type: integer, default: 1 }
-        - name: limit
-          in: query
-          schema: { type: integer, default: 20 }
+        - { name: job_id, in: path, required: true, schema: { type: string, format: uuid } }
       responses:
         '200':
-          description: School's job list
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/PaginatedResponse' }
-
-  /api/jobs/{job_id}:
-    get:
-      tags: [Jobs]
-      summary: Get job details
-      parameters:
-        - name: job_id
-          in: path
-          required: true
-          schema: { type: string, example: "JOB-0001" }
-      responses:
-        '200':
-          description: Job details
+          description: Job
           content:
             application/json:
               schema:
@@ -1876,123 +1076,17 @@ paths:
                   success: { type: boolean }
                   data: { $ref: '#/components/schemas/Job' }
         '404':
-          description: Job not found
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
+          description: Not found
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorResponse' } } }
 
+  /api/jobs/reviewJob/{job_id}:
     patch:
       tags: [Jobs]
-      summary: Update job details
-      security:
-        - BearerAuth: []
+      operationId: reviewJob
+      summary: Admin — publish or reject a job (only step that makes it live)
+      security: [ { BearerAuth: [] } ]
       parameters:
-        - name: job_id
-          in: path
-          required: true
-          schema: { type: string }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/Job' }
-      responses:
-        '200':
-          description: Job updated
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-    delete:
-      tags: [Jobs]
-      summary: Delete a job
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: job_id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        '200':
-          description: Deleted
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/jobs/{job_id}/submit:
-    patch:
-      tags: [Jobs]
-      summary: Submit job for admin review
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: job_id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        '200':
-          description: Submitted for review
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success: { type: boolean }
-                  data:
-                    type: object
-                    properties:
-                      job_id: { type: string }
-                      admin_review_status: { type: string, example: "pending_review" }
-
-  /api/jobs/{job_id}/close:
-    patch:
-      tags: [Jobs]
-      summary: Close an active job
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: job_id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        '200':
-          description: Job closed
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/jobs/{job_id}/repost:
-    patch:
-      tags: [Jobs]
-      summary: Repost a closed job
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: job_id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        '200':
-          description: Job reposted
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/SuccessResponse' }
-
-  /api/jobs/{job_id}/review:
-    patch:
-      tags: [Jobs]
-      summary: Admin — publish or reject a job
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: job_id
-          in: path
-          required: true
-          schema: { type: string }
+        - { name: job_id, in: path, required: true, schema: { type: string, format: uuid } }
       requestBody:
         required: true
         content:
@@ -2001,15 +1095,11 @@ paths:
               type: object
               required: [action]
               properties:
-                action:
-                  type: string
-                  enum: [publish, reject]
-                admin_rejection_reason:
-                  type: string
-                  nullable: true
+                action: { type: string, enum: [publish, reject] }
+                admin_rejection_reason: { type: string }
       responses:
         '200':
-          description: Review actioned
+          description: Reviewed
           content:
             application/json:
               schema:
@@ -2019,18 +1109,67 @@ paths:
                   data:
                     type: object
                     properties:
-                      job_id: { type: string }
+                      job_id: { type: string, format: uuid }
                       admin_review_status: { type: string }
                       status: { type: string }
 
-  # ── Applications ──────────────────────────────────────────────────────────
+  /api/jobs/setJobStatus/{job_id}:
+    patch:
+      tags: [Jobs]
+      operationId: setJobStatus
+      summary: School — close / reopen a job
+      security: [ { BearerAuth: [] } ]
+      parameters:
+        - { name: job_id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [active, closed] }
+      responses:
+        '200':
+          description: Updated
+          content: { application/json: { schema: { $ref: '#/components/schemas/SuccessResponse' } } }
 
-  /api/applications:
+  /api/jobs/deleteJob/{job_id}:
+    delete:
+      tags: [Jobs]
+      operationId: deleteJob
+      summary: Delete a job (usually a draft)
+      security: [ { BearerAuth: [] } ]
+      parameters:
+        - { name: job_id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Deleted
+          content: { application/json: { schema: { $ref: '#/components/schemas/SuccessResponse' } } }
+
+  /api/jobs/getRecommendedJobs:
+    get:
+      tags: [Jobs]
+      operationId: getRecommendedJobs
+      summary: Teacher — jobs recommended on resume skill / main_subject
+      security: [ { BearerAuth: [] } ]
+      parameters:
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: limit, in: query, schema: { type: integer, default: 20 } }
+      responses:
+        '200':
+          description: Paginated jobs
+          content: { application/json: { schema: { $ref: '#/components/schemas/PaginatedResponse' } } }
+
+  # ═══ Applications ══════════════════════════════════════════════════════
+
+  /api/applications/applyToJob:
     post:
       tags: [Applications]
-      summary: Teacher submits a job application
-      security:
-        - BearerAuth: []
+      operationId: applyToJob
+      summary: Teacher applies to a job (status submitted → pending admin review)
+      security: [ { BearerAuth: [] } ]
       requestBody:
         required: true
         content:
@@ -2039,9 +1178,9 @@ paths:
               type: object
               required: [job_id]
               properties:
-                job_id: { type: string, example: "JOB-0001" }
-                resume_id: { type: string, nullable: true, example: "RES-0001" }
-                cover_letter_id: { type: string, nullable: true }
+                job_id: { type: string, format: uuid }
+                resume_id: { type: string, format: uuid }
+                cover_letter_id: { type: string, format: uuid, nullable: true }
       responses:
         '201':
           description: Application submitted
@@ -2054,66 +1193,53 @@ paths:
                   data:
                     type: object
                     properties:
-                      application_id: { type: string, example: "APP-0001" }
+                      application_id: { type: string, format: uuid }
                       status: { type: string, example: "submitted" }
-                      submitted_at: { type: string, format: date-time }
         '409':
-          description: Already applied to this job
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
+          description: Already applied
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorResponse' } } }
 
-    get:
+  /api/applications/withdrawApplication/{application_id}:
+    patch:
       tags: [Applications]
-      summary: List applications (filtered by role context)
-      security:
-        - BearerAuth: []
+      operationId: withdrawApplication
+      summary: Teacher withdraws their application
+      security: [ { BearerAuth: [] } ]
       parameters:
-        - name: teacher_user_id
-          in: query
-          schema: { type: string }
-          description: Teacher fetches their own applications
-        - name: job_id
-          in: query
-          schema: { type: string }
-          description: School fetches applicants for a specific job
-        - name: school_id
-          in: query
-          schema: { type: string }
-          description: School fetches all applicants across their jobs
-        - name: status
-          in: query
-          schema: { type: string, enum: [submitted, viewed_by_school, shortlisted, rejected_by_school, hired, withdrawn] }
-        - name: subject
-          in: query
-          schema: { type: string }
-        - name: page
-          in: query
-          schema: { type: integer, default: 1 }
-        - name: limit
-          in: query
-          schema: { type: integer, default: 20 }
+        - { name: application_id, in: path, required: true, schema: { type: string, format: uuid } }
       responses:
         '200':
-          description: Paginated application list
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/PaginatedResponse' }
+          description: Withdrawn
+          content: { application/json: { schema: { $ref: '#/components/schemas/SuccessResponse' } } }
 
-  /api/applications/{application_id}:
+  /api/applications/listApplications:
     get:
       tags: [Applications]
-      summary: Get a single application with full status history
-      security:
-        - BearerAuth: []
+      operationId: listApplications
+      summary: List applications (role-aware; school sees only admin-approved+)
+      security: [ { BearerAuth: [] } ]
       parameters:
-        - name: application_id
-          in: path
-          required: true
-          schema: { type: string, example: "APP-0001" }
+        - { name: job_id, in: query, schema: { type: string, format: uuid } }
+        - { name: status, in: query, schema: { type: string } }
+        - { name: subject, in: query, schema: { type: string } }
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: limit, in: query, schema: { type: integer, default: 20 } }
       responses:
         '200':
-          description: Application details
+          description: Paginated applications
+          content: { application/json: { schema: { $ref: '#/components/schemas/PaginatedResponse' } } }
+
+  /api/applications/getApplication/{application_id}:
+    get:
+      tags: [Applications]
+      operationId: getApplication
+      summary: Get one application (with embedded interviews)
+      security: [ { BearerAuth: [] } ]
+      parameters:
+        - { name: application_id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Application
           content:
             application/json:
               schema:
@@ -2123,31 +1249,29 @@ paths:
                   data: { $ref: '#/components/schemas/Application' }
         '404':
           description: Not found
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/ErrorResponse' }
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorResponse' } } }
 
-  /api/applications/{application_id}/shortlist:
+  /api/applications/setApplicationStatus/{application_id}:
     patch:
       tags: [Applications]
-      summary: School — shortlist an applicant
-      security:
-        - BearerAuth: []
+      operationId: setApplicationStatus
+      summary: School — shortlist / reject / hire an admin-approved applicant
+      security: [ { BearerAuth: [] } ]
       parameters:
-        - name: application_id
-          in: path
-          required: true
-          schema: { type: string }
+        - { name: application_id, in: path, required: true, schema: { type: string, format: uuid } }
       requestBody:
+        required: true
         content:
           application/json:
             schema:
               type: object
+              required: [status]
               properties:
-                school_notes: { type: string, nullable: true }
+                status: { type: string, enum: [shortlisted, rejected_by_school, hired] }
+                school_notes: { type: string }
       responses:
         '200':
-          description: Shortlisted
+          description: Updated
           content:
             application/json:
               schema:
@@ -2157,105 +1281,17 @@ paths:
                   data:
                     type: object
                     properties:
-                      application_id: { type: string }
-                      status: { type: string, example: "shortlisted" }
+                      application_id: { type: string, format: uuid }
+                      status: { type: string }
 
-  /api/applications/{application_id}/reject:
+  /api/applications/reviewApplication/{application_id}:
     patch:
       tags: [Applications]
-      summary: School — reject an applicant
-      security:
-        - BearerAuth: []
+      operationId: reviewApplication
+      summary: Admin gate — approve (school sees it) or reject (blocked)
+      security: [ { BearerAuth: [] } ]
       parameters:
-        - name: application_id
-          in: path
-          required: true
-          schema: { type: string }
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                school_notes: { type: string, nullable: true }
-      responses:
-        '200':
-          description: Rejected
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success: { type: boolean }
-                  data:
-                    type: object
-                    properties:
-                      application_id: { type: string }
-                      status: { type: string, example: "rejected_by_school" }
-
-  /api/applications/{application_id}/hire:
-    patch:
-      tags: [Applications]
-      summary: School — mark applicant as hired
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: application_id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        '200':
-          description: Marked as hired
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success: { type: boolean }
-                  data:
-                    type: object
-                    properties:
-                      application_id: { type: string }
-                      status: { type: string, example: "hired" }
-
-  /api/applications/{application_id}/withdraw:
-    patch:
-      tags: [Applications]
-      summary: Teacher — withdraw their application
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: application_id
-          in: path
-          required: true
-          schema: { type: string }
-      responses:
-        '200':
-          description: Withdrawn
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success: { type: boolean }
-                  data:
-                    type: object
-                    properties:
-                      application_id: { type: string }
-                      status: { type: string, example: "withdrawn" }
-
-  /api/applications/{application_id}/admin-override:
-    patch:
-      tags: [Applications]
-      summary: Admin — override application status
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: application_id
-          in: path
-          required: true
-          schema: { type: string }
+        - { name: application_id, in: path, required: true, schema: { type: string, format: uuid } }
       requestBody:
         required: true
         content:
@@ -2264,15 +1300,11 @@ paths:
               type: object
               required: [action]
               properties:
-                action:
-                  type: string
-                  enum: [approved, rejected, flagged]
-                notes:
-                  type: string
-                  nullable: true
+                action: { type: string, enum: [approve, reject] }
+                notes: { type: string }
       responses:
         '200':
-          description: Override applied
+          description: Reviewed
           content:
             application/json:
               schema:
@@ -2282,11 +1314,62 @@ paths:
                   data:
                     type: object
                     properties:
-                      application_id: { type: string }
-                      admin_override:
-                        type: object
-                        properties:
-                          action: { type: string }
-                          admin_user_id: { type: string }
-                          notes: { type: string, nullable: true }
-                          actioned_at: { type: string, format: date-time }
+                      application_id: { type: string, format: uuid }
+                      status: { type: string, enum: [admin_approved, admin_rejected] }
+
+  /api/applications/scheduleInterview/{application_id}:
+    post:
+      tags: [Applications]
+      operationId: scheduleInterview
+      summary: School — add an interview round to a shortlisted application
+      security: [ { BearerAuth: [] } ]
+      parameters:
+        - { name: application_id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Interview' }
+      responses:
+        '201':
+          description: Scheduled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data:
+                    type: object
+                    properties:
+                      interview_id: { type: string, format: uuid }
+                      status: { type: string, example: "Scheduled" }
+
+  /api/applications/updateInterview/{application_id}/{interview_id}:
+    patch:
+      tags: [Applications]
+      operationId: updateInterview
+      summary: School — edit an interview round or change its status
+      security: [ { BearerAuth: [] } ]
+      parameters:
+        - { name: application_id, in: path, required: true, schema: { type: string, format: uuid } }
+        - { name: interview_id, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Interview' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data:
+                    type: object
+                    properties:
+                      interview_id: { type: string, format: uuid }
+                      status: { type: string }

@@ -7,6 +7,7 @@ import { inputClass } from "../../lib/formStyles";
 // - { label, value }  → used as-is (value falls back to label)
 // - { label, options } → group header + recursed children
 const normalize = (node) => {
+  if (node == null) return { label: "", value: "" };
   if (typeof node === "string") return { label: node, value: node };
   if (node && Array.isArray(node.options)) {
     return { group: node.label, options: node.options.map(normalize) };
