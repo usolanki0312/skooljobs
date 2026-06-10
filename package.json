@@ -11,6 +11,9 @@
     "swagger": "node scripts/swagger-server.js"
   },
   "dependencies": {
+    "@capacitor/android": "^8.4.0",
+    "@capacitor/cli": "^8.4.0",
+    "@capacitor/core": "^8.4.0",
     "@cloudstrytech/ui-components": "^1.0.18",
     "@material/web": "^2.4.1",
     "@tailwindcss/vite": "^4.3.0",
