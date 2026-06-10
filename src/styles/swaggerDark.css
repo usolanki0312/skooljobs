@@ -1,0 +1,19 @@
+/* Dark theme for swagger-ui (Swagger UI ships no dark theme).
+   Applied when the page root has .swagger-dark.
+   The whole .swagger-ui surface is inverted + hue-rotated so every element
+   (no white patches) goes dark while method colors stay recognisable;
+   images/logos are re-inverted so they keep their real colors. */
+
+.swagger-dark {
+  background: #0b0f14;
+}
+
+.swagger-dark .swagger-ui {
+  filter: invert(0.92) hue-rotate(180deg);
+}
+
+.swagger-dark .swagger-ui img,
+.swagger-dark .swagger-ui svg.arrow,
+.swagger-dark .swagger-ui .opblock-summary-method {
+  filter: invert(1) hue-rotate(180deg);
+}

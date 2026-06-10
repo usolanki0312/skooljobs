@@ -1,0 +1,208 @@
+/* Scoped styles for the rendered API spec + data model markdown.
+   Layout chrome (navbar/sidebar) uses Tailwind; this file styles the
+   markdown body and code blocks. Code-block colors come from the
+   highlight.js github-dark theme imported in ApiSpecPage. */
+
+.api-doc {
+  color: #2b3445;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+  word-wrap: break-word;
+}
+
+/* Clear the fixed navbar when jumping to an anchor */
+.api-doc :is(h1, h2, h3, h4) {
+  scroll-margin-top: 4.5rem;
+}
+
+.api-doc h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #044890;
+  margin: 0 0 0.75rem;
+}
+
+.api-doc h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #044890;
+  margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #dbe4f0;
+}
+
+.api-doc h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1f2a3a;
+  margin: 1.75rem 0 0.6rem;
+}
+
+.api-doc p {
+  margin: 0.6rem 0;
+}
+
+.api-doc a {
+  color: #044890;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.api-doc ul,
+.api-doc ol {
+  margin: 0.5rem 0;
+  padding-left: 1.3rem;
+}
+
+.api-doc li {
+  margin: 0.25rem 0;
+}
+
+.api-doc blockquote {
+  margin: 0.9rem 0;
+  padding: 0.6rem 0.9rem;
+  border-left: 4px solid #669aca;
+  background: #eef2f7;
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: #3a475a;
+}
+
+.api-doc blockquote p {
+  margin: 0.25rem 0;
+}
+
+/* Inline code */
+.api-doc :not(pre) > code {
+  background: #eef2f7;
+  color: #044890;
+  padding: 0.12em 0.4em;
+  border-radius: 0.35rem;
+  font-size: 0.86em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* Fenced code blocks (highlight.js github-dark theme paints the inside) */
+.api-doc pre {
+  margin: 0.75rem 0;
+  border-radius: 0.6rem;
+  overflow-x: auto;
+  background: #0d1117;
+  border: 1px solid #1f2733;
+}
+
+.api-doc pre code {
+  display: block;
+  padding: 1rem 1.1rem;
+  font-size: 13px;
+  line-height: 1.55;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* GFM tables */
+.api-doc table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.9rem 0;
+  font-size: 14px;
+  display: block;
+  overflow-x: auto;
+}
+
+.api-doc th,
+.api-doc td {
+  border: 1px solid #dbe4f0;
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.api-doc th {
+  background: #eef2f7;
+  font-weight: 700;
+  color: #1f2a3a;
+}
+
+.api-doc tr:nth-child(even) td {
+  background: #f7f9fc;
+}
+
+.api-doc hr {
+  border: 0;
+  border-top: 1px solid #dbe4f0;
+  margin: 2rem 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Dark theme (applied when the page root has .docs-dark)
+   Code blocks already use the github-dark hljs theme in both modes.
+   ───────────────────────────────────────────────────────────────────────── */
+.docs-dark {
+  background: #0b0f14;
+}
+
+.docs-dark .api-doc {
+  color: #c9d1d9;
+}
+
+.docs-dark .api-doc h1,
+.docs-dark .api-doc h2,
+.docs-dark .api-doc h3 {
+  color: #e6edf3;
+}
+
+.docs-dark .api-doc h2 {
+  border-bottom-color: #233044;
+}
+
+.docs-dark .api-doc a {
+  color: #6cb6ff;
+}
+
+.docs-dark .api-doc blockquote {
+  background: #11202e;
+  border-left-color: #2f6f9f;
+  color: #aab8c5;
+}
+
+.docs-dark .api-doc :not(pre) > code {
+  background: #1c2430;
+  color: #79c0ff;
+}
+
+.docs-dark .api-doc th {
+  background: #161b22;
+  color: #e6edf3;
+}
+
+.docs-dark .api-doc th,
+.docs-dark .api-doc td {
+  border-color: #233044;
+}
+
+.docs-dark .api-doc tr:nth-child(even) td {
+  background: #0f141b;
+}
+
+.docs-dark .api-doc hr {
+  border-top-color: #233044;
+}
+
+/* Sidebar dark */
+.docs-dark .docs-sidebar {
+  background: #0d131b;
+  border-color: #233044;
+}
+
+.docs-dark .docs-sidebar p {
+  color: #5b6b7f;
+}
+
+.docs-dark .docs-sidebar button {
+  color: #9fb0c3;
+}
+
+.docs-dark .docs-sidebar button:hover {
+  background: rgba(108, 182, 255, 0.12);
+  color: #6cb6ff;
+}

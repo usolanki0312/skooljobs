@@ -1,7 +1,12 @@
+import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Login from "../auth/login";
 import Signup from "../auth/signup";
 import PublicJobView from "../pages/PublicJobView";
+
+// Heavy, rarely-used docs pages — keep them out of the main bundle.
+const ApiSpecPage = lazy(() => import("../pages/ApiSpecPage"));
+const ApiSwaggerPage = lazy(() => import("../pages/ApiSwaggerPage"));
 import SchoolLayout from "../layouts/SchoolLayout";
 import TeacherLayout from "../layouts/TeacherLayout";
 import SchoolHome from "../pages/school/SchoolHome";
@@ -35,6 +40,24 @@ function AppRoutes() {
       <Route path="/" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/public-job/:jobId" element={<PublicJobView />} />
+
+      {/* Living API spec & data model docs (public) */}
+      <Route
+        path="/api-specification-and-datamodel"
+        element={
+          <Suspense fallback={<div className="p-8 text-slate-500">Loading…</div>}>
+            <ApiSpecPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/api-specification-and-datamodel/swagger"
+        element={
+          <Suspense fallback={<div className="p-8 text-slate-500">Loading…</div>}>
+            <ApiSwaggerPage />
+          </Suspense>
+        }
+      />
 
       {/* School module — shared layout wraps all school sections */}
       <Route path="/school" element={<SchoolLayout />}>
