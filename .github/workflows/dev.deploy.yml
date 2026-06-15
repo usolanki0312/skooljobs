@@ -1,0 +1,66 @@
+```yaml
+name: SkoolJobs Frontend Dev Deploy
+
+on:
+  push:
+    tags:
+      - "skooljobs-dev-v*"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    environment: development
+
+    steps:
+      # -------------------------
+      # Checkout
+      # -------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # -------------------------
+      # Docker Hub login
+      # -------------------------
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # -------------------------
+      # Build & Push Docker image
+      # -------------------------
+      - name: Build and push Docker image
+        run: |
+          IMAGE_TAG=${{ github.ref_name }}
+
+          docker build \
+            -t gopal011203/skooljobs-frontend:$IMAGE_TAG .
+
+          docker push gopal011203/skooljobs-frontend:$IMAGE_TAG
+
+      # -------------------------
+      # Deploy on EC2 (DEV)
+      # -------------------------
+      - name: Deploy to EC2 (DEV)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+
+            IMAGE_TAG=${{ github.ref_name }}
+
+            cd ~/frontends
+
+            docker pull gopal011203/skooljobs-frontend:$IMAGE_TAG
+
+            docker tag gopal011203/skooljobs-frontend:$IMAGE_TAG gopal011203/skooljobs-frontend:latest
+
+            docker compose up -d --force-recreate --remove-orphans skooljobs-frontend
+
+            docker image prune -f
+```
