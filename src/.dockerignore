@@ -40,4 +40,4 @@ docker-compose.yml
 coverage
 playwright-report
 test-results
-```
+
