@@ -1,10 +1,10 @@
 
-name: SkoolJobs Frontend Dev Deploy
+name: SkoolJobs   Dev Deploy
 
 on:
   push:
     tags:
-      - "skooljobs-dev-v*"
+      - "  dev-v*"
 
 jobs:
   build-and-deploy:
@@ -36,9 +36,9 @@ jobs:
           IMAGE_TAG=${{ github.ref_name }}
 
           docker build \
-            -t gopal011203/skooljobs-frontend:$IMAGE_TAG .
+            -t gopal011203/skooljobs:$IMAGE_TAG .
 
-          docker push gopal011203/skooljobs-frontend:$IMAGE_TAG
+          docker push gopal011203/skooljobs:$IMAGE_TAG
 
       # -------------------------
       # Deploy on EC2 (DEV)
@@ -54,13 +54,13 @@ jobs:
 
             IMAGE_TAG=${{ github.ref_name }}
 
-            cd ~/frontends
+            cd ~/ s
 
-            docker pull gopal011203/skooljobs-frontend:$IMAGE_TAG
+            docker pull gopal011203/skooljobs:$IMAGE_TAG
 
-            docker tag gopal011203/skooljobs-frontend:$IMAGE_TAG gopal011203/skooljobs-frontend:latest
+            docker tag gopal011203/skooljobs:$IMAGE_TAG gopal011203/   :latest
 
-            docker compose up -d --force-recreate --remove-orphans skooljobs-frontend
+            docker compose up -d --force-recreate --remove-orphans    
 
             docker image prune -f
 
