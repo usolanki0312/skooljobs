@@ -4,7 +4,7 @@ name: SkoolJobs   Dev Deploy
 on:
   push:
     tags:
-      - "  dev-v*"
+      - "skooljobs-dev-v*"
 
 jobs:
   build-and-deploy:
@@ -58,9 +58,9 @@ jobs:
 
             docker pull gopal011203/skooljobs:$IMAGE_TAG
 
-            docker tag gopal011203/skooljobs:$IMAGE_TAG gopal011203/   :latest
+            docker tag gopal011203/skooljobs:$IMAGE_TAG gopal011203/skooljobs:latest
 
-            docker compose up -d --force-recreate --remove-orphans    
+            docker compose up -d --force-recreate --remove-orphans skooljobs
 
             docker image prune -f
 
