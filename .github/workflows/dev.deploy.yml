@@ -54,7 +54,7 @@ jobs:
 
             IMAGE_TAG=${{ github.ref_name }}
 
-            cd ~/ frontends
+            cd ~/frontends
 
             docker pull gopal011203/skooljobs:$IMAGE_TAG
 
