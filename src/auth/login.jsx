@@ -3,7 +3,8 @@ import AuthLayout from "../components/Authlayout";
 import AuthInput from "../components/AuthInput";
 import AuthButton from "../components/AuthButton";
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@cloudstrytech/ui-components";
+import "@cloudstrytech/ui-components/styles.css";
+import {Button, Input} from "@cloudstrytech/ui-components";
 
 // ---------------------------------------------------------------------------
 // TODO: Replace hardcoded auth with backend API
@@ -171,14 +172,18 @@ function Login() {
       </div>
 
       <form onSubmit={handleLogin} className="mt-8 space-y-4">
-        <AuthInput
+        <Input
           label="Email Address or Mobile Number"
           type="text"
+          floatingLabel
           name="emailOrPhone"
           value={emailOrPhone}
           onChange={(e) => setEmailOrPhone(e.target.value)}
           placeholder="teacher@gmail.com or 9876543210"
         />
+
+            <Button variant="elevated" size="xl">Submit</Button>
+
 
         <AuthInput
           label="Password"

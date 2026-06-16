@@ -14,7 +14,7 @@
     "@capacitor/android": "^8.4.0",
     "@capacitor/cli": "^8.4.0",
     "@capacitor/core": "^8.4.0",
-    "@cloudstrytech/ui-components": "^1.0.18",
+    "@cloudstrytech/ui-components": "^1.0.20",
     "@material/web": "^2.4.1",
     "@tailwindcss/vite": "^4.3.0",
     "github-slugger": "^2.0.0",
