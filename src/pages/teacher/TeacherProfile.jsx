@@ -1,5 +1,7 @@
 import { useMemo, useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import "@cloudstrytech/ui-components/styles.css";
+import { Button, Input } from "@cloudstrytech/ui-components";
 import {
   Award,
   BookOpen,
@@ -142,7 +144,7 @@ const TeacherProfile = () => {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch {}
+      } catch { }
     }
     return {
       title: "Mr",
@@ -187,7 +189,7 @@ const TeacherProfile = () => {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch {}
+      } catch { }
     }
     return [];
   });
@@ -202,7 +204,7 @@ const TeacherProfile = () => {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch {}
+      } catch { }
     }
     return [];
   });
@@ -216,7 +218,7 @@ const TeacherProfile = () => {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch {}
+      } catch { }
     }
     return [];
   });
@@ -225,7 +227,7 @@ const TeacherProfile = () => {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch {}
+      } catch { }
     }
     return [];
   });
@@ -273,7 +275,7 @@ const TeacherProfile = () => {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch {}
+      } catch { }
     }
     return [{ language: "English", status: "Fluency enough to teach" }];
   });
@@ -286,7 +288,7 @@ const TeacherProfile = () => {
       if (saved) {
         try {
           return JSON.parse(saved);
-        } catch {}
+        } catch { }
       }
       return ["History", "Geography"];
     },
@@ -990,6 +992,12 @@ const TeacherProfile = () => {
   const completion = Math.round(
     (completionItems.filter(Boolean).length / completionItems.length) * 100,
   );
+  const updateField = (field) => (value) => {
+    setTeacherData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
   const renderBasicInfo = () => (
     <>
@@ -1007,28 +1015,37 @@ const TeacherProfile = () => {
           />
         </Field>
         <Field label="First Name">
-          <input
-            name="firstName"
+          <Input
             value={teacherData.firstName}
-            onChange={handleChange}
-            className={inputClass}
+            onChange={(value) =>
+              setTeacherData((prev) => ({
+                ...prev,
+                firstName: value,
+              }))
+            }
           />
         </Field>
         <Field label="Middle Name">
-          <input
-            name="middleName"
+          <Input
             value={teacherData.middleName}
-            onChange={handleChange}
-            className={inputClass}
             placeholder="Optional"
+            onChange={(value) =>
+              setTeacherData((prev) => ({
+                ...prev,
+                middleName: value,
+              }))
+            }
           />
         </Field>
         <Field label="Last Name">
-          <input
-            name="lastName"
+          <Input
             value={teacherData.lastName}
-            onChange={handleChange}
-            className={inputClass}
+            onChange={(value) =>
+              setTeacherData((prev) => ({
+                ...prev,
+                lastName: value,
+              }))
+            }
           />
         </Field>
       </div>
@@ -1037,37 +1054,50 @@ const TeacherProfile = () => {
         <div className="flex flex-col justify-start">
           <label className={labelClass}>DOB</label>
           <div className="grid grid-cols-[72px_72px_1fr] gap-2">
-            <input
-              name="dobDay"
+            <Input
               value={teacherData.dobDay}
-              onChange={handleDobChange}
-              className={compactInputClass}
               placeholder="DD"
+              onChange={(value) =>
+                setTeacherData((prev) => ({
+                  ...prev,
+                  dobDay: value,
+                }))
+              }
             />
-            <input
-              name="dobMonth"
+            <Input
               value={teacherData.dobMonth}
-              onChange={handleDobChange}
-              className={compactInputClass}
               placeholder="MM"
+              onChange={(value) =>
+                setTeacherData((prev) => ({
+                  ...prev,
+                  dobMonth: value.replace(/\D/g, "").slice(0, 2),
+                }))
+              }
             />
-            <input
-              name="dobYear"
+
+            <Input
               value={teacherData.dobYear}
-              onChange={handleDobChange}
-              className={compactInputClass}
               placeholder="YYYY"
+              onChange={(value) =>
+                setTeacherData((prev) => ({
+                  ...prev,
+                  dobYear: value.replace(/\D/g, "").slice(0, 4),
+                }))
+              }
             />
           </div>
         </div>
         <div className="flex flex-col justify-start">
           <label className={labelClass}>Age (Years Only)</label>
-          <input
-            name="age"
+          <Input
             value={teacherData.age}
-            onChange={handleChange}
-            className={inputClass}
             placeholder="Auto calculated"
+            onChange={(value) =>
+              setTeacherData((prev) => ({
+                ...prev,
+                age: value,
+              }))
+            }
           />
           <p className="mt-2 text-xs text-slate-500">
             If DOB not entered, user can enter age.
@@ -1210,18 +1240,19 @@ const TeacherProfile = () => {
         <div className="lg:col-span-3">
           <div className="mb-3 flex items-center justify-between">
             <label className={labelClass}>Language</label>
-            <button
+            <Button
               type="button"
+              variant="filled"
+              startIcon="plusIcon"
               onClick={() =>
                 setDynamicLanguages((prev) => [
                   ...prev,
                   { language: "", status: "" },
                 ])
               }
-              className="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-3 py-1 text-xs font-bold text-primary hover:bg-primary/20"
             >
-              <Plus size={13} /> Add Language
-            </button>
+              Add Language
+            </Button>
           </div>
           <div className="space-y-3">
             {dynamicLanguages.map((lang, idx) => (
@@ -1327,21 +1358,28 @@ const TeacherProfile = () => {
           </div>
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
             <Field label="Mobile Number *">
-              <input
-                name="mobile"
+              <Input
                 value={teacherData.mobile}
-                onChange={handleChange}
-                className={inputClass}
+
+                onChange={(value) =>
+                  setTeacherData((prev) => ({
+                    ...prev,
+                    mobile: value,
+                  }))
+                }
               />
             </Field>
             <div>
               <Field label="WhatsApp Number">
-                <input
-                  name="whatsapp"
+                <Input
                   value={teacherData.whatsapp}
-                  onChange={handleChange}
-                  className={inputClass}
                   placeholder="Enter WhatsApp number"
+                  onChange={(value) =>
+                    setTeacherData((prev) => ({
+                      ...prev,
+                      whatsapp: value,
+                    }))
+                  }
                 />
               </Field>
               <label className="mt-3 flex items-center gap-2 text-xs font-semibold text-slate-500">
@@ -1356,22 +1394,28 @@ const TeacherProfile = () => {
               </label>
             </div>
             <Field label="Primary Email *">
-              <input
+              <Input
                 type="email"
-                name="primaryEmail"
                 value={teacherData.primaryEmail}
-                onChange={handleChange}
-                className={inputClass}
+                onChange={(value) =>
+                  setTeacherData((prev) => ({
+                    ...prev,
+                    primaryEmail: value,
+                  }))
+                }
               />
             </Field>
             <Field label="Secondary Email">
-              <input
+              <Input
                 type="email"
-                name="secondaryEmail"
                 value={teacherData.secondaryEmail}
-                onChange={handleChange}
-                className={inputClass}
                 placeholder="Enter secondary email"
+                onChange={(value) =>
+                  setTeacherData((prev) => ({
+                    ...prev,
+                    secondaryEmail: value,
+                  }))
+                }
               />
             </Field>
           </div>
@@ -1395,18 +1439,17 @@ const TeacherProfile = () => {
           <div className="mb-5 rounded-2xl border border-primary/20 bg-primary/5 p-4">
             <Field label="Search Area / Locality">
               <div className="relative">
-                <input
+                <Input
                   value={areaQuery}
-                  onChange={(e) => {
-                    setAreaQuery(e.target.value);
+                  placeholder="Type an area name, e.g. Rajendra Nagar (min 3 letters)"
+                  autoComplete="off"
+                  onChange={(value) => {
+                    setAreaQuery(value);
                     setAreaError("");
                   }}
                   onFocus={() =>
                     areaResults.length > 0 && setShowAreaDropdown(true)
                   }
-                  className={inputClass}
-                  placeholder="Type an area name, e.g. Rajendra Nagar (min 3 letters)"
-                  autoComplete="off"
                 />
                 {areaLoading && (
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-primary animate-pulse">
@@ -1522,13 +1565,14 @@ const TeacherProfile = () => {
       <SectionHeader title="Academic Qualifications" />
       <div className="space-y-7">
         {!showQualificationForm && (
-          <button
+          <Button
             type="button"
+            variant="filled"
+            startIcon="plusIcon"
             onClick={addQualification}
-            className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95"
           >
-            <Plus size={17} /> Add Qualification
-          </button>
+            Add Qualification
+          </Button>
         )}
 
         {showQualificationForm && (
@@ -1558,25 +1602,26 @@ const TeacherProfile = () => {
               </Field>
               {qualificationDraft.classLevel && (
                 <Field label="School Name">
-                  <input
+                  <Input
                     value={qualificationDraft.school}
-                    onChange={(e) =>
-                      updateQualification("school", e.target.value)
-                    }
-                    className={inputClass}
                     placeholder="Enter school name"
+                    onChange={(value) =>
+                      updateQualification("school", value)
+                    }
                   />
                 </Field>
               )}
               {qualificationDraft.classLevel && (
                 <Field label="Percentage %">
-                  <input
+                  <Input
                     value={qualificationDraft.percentage}
-                    onChange={(e) =>
-                      updateQualification("percentage", e.target.value)
-                    }
-                    className={inputClass}
                     placeholder="e.g. 76.2"
+                    onChange={(value) =>
+                      updateQualification(
+                        "percentage",
+                        value.replace(/[^0-9.]/g, "")
+                      )
+                    }
                   />
                 </Field>
               )}
@@ -1597,11 +1642,12 @@ const TeacherProfile = () => {
                 />
               </Field>
               <Field label="Year Passed">
-                <input
+                <Input
                   value={qualificationDraft.year}
-                  onChange={(e) => updateQualification("year", e.target.value)}
-                  className={inputClass}
                   placeholder="e.g. 2023"
+                  onChange={(value) =>
+                    updateQualification("year", value.replace(/\D/g, "").slice(0, 4))
+                  }
                 />
               </Field>
               <Field label="Medium of Instruction">
@@ -1622,12 +1668,13 @@ const TeacherProfile = () => {
               </Field>
               {!qualificationDraft.classLevel && (
                 <Field label="Percentage %">
-                  <input
+                  <Input
+                    label="Percentage %"
+                    fieldClassName={inputClass}
                     value={qualificationDraft.percentage}
-                    onChange={(e) =>
-                      updateQualification("percentage", e.target.value)
+                    onChange={(value) =>
+                      updateQualification("percentage", value)
                     }
-                    className={inputClass}
                     placeholder="e.g. 76.2"
                   />
                 </Field>
@@ -1652,20 +1699,20 @@ const TeacherProfile = () => {
               </div>
             </div>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-end">
-              <button
-                type="button"
+              <Button
+                variant="filled"
+                startIcon="saveIcon"
                 onClick={saveQualificationDraft}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95"
               >
-                <Save size={17} /> Save
-              </button>
-              <button
-                type="button"
+                Save
+              </Button>
+              <Button
+                variant="filled"
+                startIcon="plusIcon"
                 onClick={saveAndAddQualification}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary/30 bg-white px-6 py-3 text-sm font-bold text-primary hover:bg-primary/5"
               >
-                <Plus size={17} /> Add Another
-              </button>
+                Add Another
+              </Button>
             </div>
           </div>
         )}
@@ -1733,20 +1780,21 @@ const TeacherProfile = () => {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex gap-2">
-                          <button
-                            type="button"
+                          <Button
+                            variant="outlined"
                             onClick={() => editQualification(index)}
-                            className="rounded-lg border border-borderColor px-3 py-2 text-xs font-bold text-primary hover:bg-primary/5"
+                            startIcon="editIcon"
                           >
                             Edit
-                          </button>
-                          <button
-                            type="button"
+                          </Button>
+
+                          <Button
+                            variant="outlined"
                             onClick={() => removeQualification(index)}
-                            className="rounded-lg border border-red-100 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50"
+                            startIcon="deleteIcon"
                           >
                             Delete
-                          </button>
+                          </Button>
                         </div>
                       </td>
                     </tr>
@@ -1765,13 +1813,13 @@ const TeacherProfile = () => {
       <SectionHeader title="Teaching Experience" />
       <div className="space-y-7">
         {!showExperienceForm && (
-          <button
-            type="button"
+          <Button
+            variant="primary"
             onClick={addExperience}
-            className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95"
+            startIcon="plusIcon"
           >
-            <Plus size={17} /> Add Experience
-          </button>
+            Add Experience
+          </Button>
         )}
 
         {showExperienceForm && (
@@ -1782,10 +1830,12 @@ const TeacherProfile = () => {
             <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
               <div className="lg:col-span-2">
                 <Field label="Name of the School">
-                  <input
+                  <Input
+                    label="School"
                     value={experienceDraft.school}
-                    onChange={(e) => updateExperience("school", e.target.value)}
-                    className={inputClass}
+                    onChange={(value) =>
+                      updateExperience("school", value)
+                    }
                     placeholder="e.g. Lincoln High School"
                   />
                 </Field>
@@ -1898,20 +1948,21 @@ const TeacherProfile = () => {
               </div>
             </div>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-end">
-              <button
-                type="button"
+              <Button
+                variant="primary"
                 onClick={saveExperienceDraft}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95"
+                startIcon="saveIcon"
               >
-                <Save size={17} /> Save
-              </button>
-              <button
-                type="button"
+                Save
+              </Button>
+
+              <Button
+                variant="outlined"
                 onClick={saveAndAddExperience}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary/30 bg-white px-6 py-3 text-sm font-bold text-primary hover:bg-primary/5"
+                startIcon="plusIcon"
               >
-                <Plus size={17} /> Add Another
-              </button>
+                Add Another
+              </Button>
             </div>
           </div>
         )}
@@ -1985,20 +2036,21 @@ const TeacherProfile = () => {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex gap-2">
-                          <button
-                            type="button"
+                          <Button
+                            variant="outlined"
                             onClick={() => editExperience(index)}
-                            className="rounded-lg border border-borderColor px-3 py-2 text-xs font-bold text-primary hover:bg-primary/5"
+                            startIcon="editIcon"
                           >
                             Edit
-                          </button>
-                          <button
-                            type="button"
+                          </Button>
+
+                          <Button
+                            variant="outlined"
                             onClick={() => removeExperience(index)}
-                            className="rounded-lg border border-red-100 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50"
+                            startIcon="deleteIcon"
                           >
                             Delete
-                          </button>
+                          </Button>
                         </div>
                       </td>
                     </tr>
@@ -2040,52 +2092,49 @@ const TeacherProfile = () => {
               />
             </Field>
             <Field label="Name of the Award">
-              <input
+              <Input
                 value={resumeData.awardName}
-                onChange={(e) =>
+                onChange={(value) =>
                   setResumeData((prev) => ({
                     ...prev,
-                    awardName: e.target.value,
+                    awardName: value,
                   }))
                 }
-                className={inputClass}
-                placeholder="e.g. Best Educator Award"
               />
             </Field>
             <Field label="Presented By">
-              <input
+              <Input
                 value={resumeData.awardBy}
-                onChange={(e) =>
+                onChange={(value) =>
                   setResumeData((prev) => ({
                     ...prev,
-                    awardBy: e.target.value,
+                    awardBy: value,
                   }))
                 }
-                className={inputClass}
                 placeholder="Organization / Institute"
               />
             </Field>
             <Field label="Year">
-              <input
+              <Input
                 value={resumeData.awardYear}
-                onChange={(e) =>
+                onChange={(value) =>
                   setResumeData((prev) => ({
                     ...prev,
-                    awardYear: e.target.value,
+                    awardYear: value,
                   }))
                 }
-                className={inputClass}
                 placeholder="Year"
               />
+
             </Field>
           </div>
-          <button
-            type="button"
+          <Button
+            variant="text"
             onClick={addAward}
-            className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-primary"
+            startIcon="plusIcon"
           >
-            <Plus size={16} /> Add Another Award
-          </button>
+            Add Another Award
+          </Button>
           <div className="mt-5 rounded-2xl bg-light p-4">
             <h4 className="mb-3 font-bold text-primary">Saved Awards</h4>
             {savedAwards.length === 0 ? (
@@ -2149,52 +2198,49 @@ const TeacherProfile = () => {
               />
             </Field>
             <Field label="Name of the Course">
-              <input
+              <Input
                 value={resumeData.courseName}
-                onChange={(e) =>
+                onChange={(value) =>
                   setResumeData((prev) => ({
                     ...prev,
-                    courseName: e.target.value,
+                    courseName: value,
                   }))
                 }
-                className={inputClass}
                 placeholder="e.g. Advanced Pedagogy"
               />
             </Field>
             <Field label="Conducted By">
-              <input
+              <Input
                 value={resumeData.conductedBy}
-                onChange={(e) =>
+                onChange={(value) =>
                   setResumeData((prev) => ({
                     ...prev,
-                    conductedBy: e.target.value,
+                    conductedBy: value,
                   }))
                 }
-                className={inputClass}
                 placeholder="Organization / Institute"
               />
             </Field>
             <Field label="Year">
-              <input
+              <Input
                 value={resumeData.courseYear}
-                onChange={(e) =>
+                onChange={(value) =>
                   setResumeData((prev) => ({
                     ...prev,
-                    courseYear: e.target.value,
+                    courseYear: value,
                   }))
                 }
-                className={inputClass}
                 placeholder="Year"
               />
             </Field>
           </div>
-          <button
-            type="button"
+          <Button
+            variant="text"
             onClick={addCourse}
-            className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-primary"
+            startIcon="plusIcon"
           >
-            <Plus size={16} /> Add Another Course
-          </button>
+            Add Another Course
+          </Button>
           <div className="mt-5 rounded-2xl bg-light p-4">
             <h4 className="mb-3 font-bold text-primary">Saved Courses</h4>
             {savedCourses.length === 0 ? (
@@ -2378,15 +2424,15 @@ const TeacherProfile = () => {
                 </h4>
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   <Field label="First Name *">
-                    <input
+                    <Input
                       value={teacherData.firstName}
-                      onChange={(e) =>
+                      fieldClassName={inputClass}
+                      onChange={(value) =>
                         setTeacherData((prev) => ({
                           ...prev,
-                          firstName: e.target.value,
+                          firstName: value,
                         }))
                       }
-                      className={inputClass}
                     />
                   </Field>
                   <Field label="Last Name *">
@@ -3615,11 +3661,10 @@ const TeacherProfile = () => {
                   key={item.id}
                   type="button"
                   onClick={() => setActiveSection(item.id)}
-                  className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${
-                    isActive
-                      ? "bg-white text-primary shadow-soft"
-                      : "text-white/80 hover:bg-white/10 hover:text-white"
-                  }`}
+                  className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${isActive
+                    ? "bg-white text-primary shadow-soft"
+                    : "text-white/80 hover:bg-white/10 hover:text-white"
+                    }`}
                 >
                   <Icon size={18} />
                   {item.label}
@@ -3629,13 +3674,14 @@ const TeacherProfile = () => {
           </nav>
 
           <div className="mt-8 border-t border-white/20 pt-4">
-            <button
+            <Button
               type="button"
+              variant="filled"
+              startIcon="arrowBackIcon"
               onClick={() => navigate("/teacher/dashboard")}
-              className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold text-white/80 hover:bg-white/10 hover:text-white transition"
             >
-              <ArrowLeft size={18} /> Back to Dashboard
-            </button>
+              Back to Dashboard
+            </Button>
           </div>
         </aside>
 
@@ -3665,9 +3711,8 @@ const TeacherProfile = () => {
                   key={item.id}
                   type="button"
                   onClick={() => setActiveSection(item.id)}
-                  className={`flex shrink-0 items-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition ${
-                    isActive ? "bg-primary text-white" : "bg-light text-primary"
-                  }`}
+                  className={`flex shrink-0 items-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition ${isActive ? "bg-primary text-white" : "bg-light text-primary"
+                    }`}
                 >
                   <Icon size={17} />
                   {item.label}
@@ -3681,22 +3726,23 @@ const TeacherProfile = () => {
             {!["qualification", "experience", "viewProfile"].includes(
               activeSection,
             ) && (
-              <div className="mt-10 flex flex-col-reverse gap-3 border-t border-borderColor pt-6 sm:flex-row sm:justify-end">
-                <button
-                  type="button"
-                  onClick={() => navigate(-1)}
-                  className="rounded-xl border border-borderColor px-6 py-3 text-sm font-bold text-slate-500 hover:bg-light"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95"
-                >
-                  <Save size={17} /> Save Changes
-                </button>
-              </div>
-            )}
+                <div className="mt-10 flex flex-col-reverse gap-3 border-t border-borderColor pt-6 sm:flex-row sm:justify-end">
+                  <Button
+                    type="button"
+                    variant="text"
+                    onClick={() => navigate(-1)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="filled"
+                    startIcon="saveIcon"
+                  >
+                    Save Changes
+                  </Button>
+                </div>
+              )}
           </div>
         </main>
       </form>

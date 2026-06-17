@@ -3,16 +3,18 @@ import AuthLayout from "../components/Authlayout";
 import AuthInput from "../components/AuthInput";
 import AuthButton from "../components/AuthButton";
 import { Link, useNavigate } from "react-router-dom";
+import "@cloudstrytech/ui-components/styles.css";
+import { Button, Input } from "@cloudstrytech/ui-components";
 
 function Signup() {
   const navigate = useNavigate();
   // We keep activeTab state internally as "candidate" to maintain compatibility with AuthLayout's internal state
   const activeTab = "candidate";
-  
+
   // Step state: "details" | "otp" | "password"
   const [step, setStep] = useState("details");
   const [otpValue, setOtpValue] = useState("");
-  
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -51,29 +53,29 @@ function Signup() {
 
   const handleSignup = (e) => {
     e.preventDefault();
-    
+
     if (!formData.password || !formData.confirmPassword) {
       alert("Please enter and confirm your password");
       return;
     }
-    
+
     if (!formData.agreeTerms) {
       alert("You must agree to the Terms of Service & Privacy Policy to register");
       return;
     }
-    
+
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-    
+
     // Get existing users or initialize empty array
     const existingUsersStr = localStorage.getItem("skooljobs_users");
     let users = [];
     if (existingUsersStr) {
       users = JSON.parse(existingUsersStr);
     }
-    
+
     // Check if user already exists
     if (users.find(u => u.email === formData.email && u.role === "candidate")) {
       alert("User with this email already exists!");
@@ -81,18 +83,18 @@ function Signup() {
     }
 
     // Save new user
-    const newUser = { 
+    const newUser = {
       firstName: formData.firstName,
       lastName: formData.lastName,
       email: formData.email,
       phone: formData.phone,
       password: formData.password,
       name: `${formData.firstName} ${formData.lastName}`.trim(),
-      role: "candidate" 
+      role: "candidate"
     };
     users.push(newUser);
     localStorage.setItem("skooljobs_users", JSON.stringify(users));
-    
+
     // Auto login
     localStorage.setItem("currentUser", JSON.stringify(newUser));
 
@@ -100,10 +102,10 @@ function Signup() {
   };
 
   return (
-    <AuthLayout 
+    <AuthLayout
       title={
-        step === "otp" 
-          ? "Verify your number" 
+        step === "otp"
+          ? "Verify your number"
           : "Sign up as the Teacher's"
       }
       activeTab={activeTab}
@@ -111,15 +113,15 @@ function Signup() {
 
       <div>
         <p className="uppercase tracking-[2px] text-secondary text-[11px] font-bold">
-          {step === "otp" 
-            ? "Account Verification" 
+          {step === "otp"
+            ? "Account Verification"
             : "Create Your Profile"}
         </p>
 
         <div className="flex items-end justify-between mt-2">
           <h1 className="text-2xl font-bold text-primary font-heading leading-tight sm:text-[28px]">
-            {step === "otp" 
-              ? "OTP Verification" 
+            {step === "otp"
+              ? "OTP Verification"
               : "Sign up as the Teacher's"}
           </h1>
         </div>
@@ -127,51 +129,63 @@ function Signup() {
 
       {/* Screen Form Content Area */}
       <div className="mt-8">
-        
+
         {/* Screen 1: Details Form */}
         {step === "details" && (
           <form onSubmit={handleSendOtp} className="space-y-4">
-            <AuthInput
-              label="First Name *"
-              name="firstName"
+            <Input
+              label="First Name"
               value={formData.firstName}
-              onChange={handleChange}
-              placeholder="Aman"
-              colSpan="col-span-2"
+              onChange={(value) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  firstName: value,
+                }))
+              }
             />
-
-            <AuthInput
+            <Input
               label="Last Name"
-              name="lastName"
               value={formData.lastName}
-              onChange={handleChange}
-              placeholder="Sharma"
-              colSpan="col-span-2"
+              onChange={(value) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  lastName: value,
+                }))
+              }
+
             />
 
-            <AuthInput
+            <Input
               label="Email Address *"
               type="email"
-              name="email"
               value={formData.email}
-              onChange={handleChange}
-              placeholder="teacher@skooljobs.in"
-              colSpan="col-span-2"
+              onChange={(value) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  email: value,
+                }))
+              }
             />
 
-            <AuthInput
-              label="Phone Number *"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="+91 9876543210"
-              colSpan="col-span-2"
-            />
+            <div className="col-span-2">
+              <Input
+                label="Phone Number *"
+                type="tel"
+                value={formData.phone}
+                placeholder=""
+                onChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    phone: value,
+                  }))
+                }
+              />
+            </div>
 
             <div className="pt-2">
-              <AuthButton type="submit">
-                Send OTP Verification Code <span>→</span>
-              </AuthButton>
+              <Button variant="filled" fullWidth color="#03274c" type="submit">
+                Send OTP Verification Code
+              </Button>
             </div>
           </form>
         )}
@@ -186,31 +200,25 @@ function Signup() {
               </div>
             </div>
 
-            <AuthInput
-              label="Enter 6-Digit OTP *"
-              name="otp"
-              value={otpValue}
-              onChange={(e) => setOtpValue(e.target.value)}
-              placeholder="123456"
-              colSpan="col-span-2"
-            />
+            <div className="col-span-2">
+              <Input
+                label="Enter 6-Digit OTP *"
+                type="tel"
+                value={otpValue}
+                placeholder=""
+                onChange={(value) => setOtpValue(value.replace(/\D/g, "").slice(0, 6))}
+              />
+            </div>
 
             {/* Downsized buttons side by side */}
             <div className="flex flex-col gap-2.5 pt-2 sm:flex-row sm:items-center">
-              <button
-                type="button"
-                onClick={() => setStep("details")}
-                className="bg-light border border-borderColor hover:bg-slate-100 text-secondary font-bold text-xs px-3.5 py-2 rounded-xl transition-all shadow-sm active:scale-95"
-              >
-                ← Back
-              </button>
-              
-              <button
-                type="submit"
-                className="bg-primary hover:bg-primary/95 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shadow-sm active:scale-95 flex items-center gap-1.5"
-              >
-                Verify OTP <span>→</span>
-              </button>
+              <Button variant="filled" color="#1D5A9B">
+                back
+              </Button>
+
+              <Button type="submit" variant="filled">
+                Verify OTP →
+              </Button>
             </div>
           </form>
         )}
@@ -227,14 +235,17 @@ function Signup() {
 
             {/* Reappearing Disabled Fields */}
             <div className="space-y-4 border-b border-borderColor/60 pb-5 mb-5">
-              <AuthInput
+              <Input
                 label="First Name"
-                name="firstName"
                 value={formData.firstName}
-                colSpan="col-span-2"
-                disabled={true}
+                onChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    firstName: value,
+                  }))
+                }
+                disabled
               />
-
               <AuthInput
                 label="Last Name"
                 name="lastName"
@@ -262,35 +273,45 @@ function Signup() {
             </div>
 
             {/* Active Password Attributes */}
-            <AuthInput
-              label="Create Password *"
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter password"
-              colSpan="col-span-2"
-            />
+            <div className="col-span-2">
+              <Input
+                label="Create Password *"
+                type="password"
+                value={formData.password}
+                placeholder="Enter password"
+                onChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    password: value,
+                  }))
+                }
+              />
+            </div>
 
-            <AuthInput
-              label="Save Password *"
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Re-enter password"
-              colSpan="col-span-2"
-            />
+            <div className="col-span-2">
+              <Input
+                label="Save Password *"
+                type="password"
+                value={formData.confirmPassword}
+                placeholder="Re-enter password"
+                onChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    confirmPassword: value,
+                  }))
+                }
+              />
+            </div>
 
             {/* Terms and Conditions Checkbox */}
             <div className="flex items-start gap-2.5 mt-5 mb-3 cursor-pointer group select-none">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 id="terms"
                 name="agreeTerms"
                 checked={formData.agreeTerms}
                 onChange={(e) => setFormData(prev => ({ ...prev, agreeTerms: e.target.checked }))}
-                className="w-[18px] h-[18px] accent-primary rounded border-borderColor cursor-pointer" 
+                className="w-[18px] h-[18px] accent-primary rounded border-borderColor cursor-pointer"
               />
               <label htmlFor="terms" className="text-[13.5px] text-secondary font-medium cursor-pointer group-hover:text-primary transition-colors">
                 I agree to the <span className="text-primary font-bold hover:underline">Terms of Service</span> & <span className="text-primary font-bold hover:underline">Privacy Policy</span>
@@ -298,9 +319,9 @@ function Signup() {
             </div>
 
             <div className="pt-2">
-              <AuthButton type="submit">
-                Create account <span>→</span>
-              </AuthButton>
+              <Button variant="filled" fullWidth color="#03274c" type="submit">
+                Create Account
+              </Button>
             </div>
           </form>
         )}
@@ -312,9 +333,11 @@ function Signup() {
         <Link
           to="/"
           className="text-primary font-bold hover:underline"
+
         >
-          Login here
-        </Link>
+          <Button variant="text" color="#1D5A9B">
+            Login
+          </Button>        </Link>
       </p>
 
     </AuthLayout>

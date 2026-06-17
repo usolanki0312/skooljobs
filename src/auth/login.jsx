@@ -4,7 +4,7 @@ import AuthInput from "../components/AuthInput";
 import AuthButton from "../components/AuthButton";
 import { Link, useNavigate } from "react-router-dom";
 import "@cloudstrytech/ui-components/styles.css";
-import {Button, Input} from "@cloudstrytech/ui-components";
+import { Button, Input } from "@cloudstrytech/ui-components";
 
 // ---------------------------------------------------------------------------
 // TODO: Replace hardcoded auth with backend API
@@ -95,9 +95,11 @@ function Login() {
   const navigate = useNavigate();
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [showPwd, setShowPwd] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleLogin = (e) => {
+    console.log(emailOrPhone, password);
     e.preventDefault();
     setErrorMessage("");
 
@@ -173,25 +175,31 @@ function Login() {
 
       <form onSubmit={handleLogin} className="mt-8 space-y-4">
         <Input
-          label="Email Address or Mobile Number"
-          type="text"
+          label="Email or Mobile"
           floatingLabel
-          name="emailOrPhone"
+          type="text"
           value={emailOrPhone}
-          onChange={(e) => setEmailOrPhone(e.target.value)}
-          placeholder="teacher@gmail.com or 9876543210"
+          onChange={setEmailOrPhone}
         />
 
-            <Button variant="elevated" size="xl">Submit</Button>
 
 
-        <AuthInput
+        <Input
           label="Password"
-          type="password"
-          name="password"
+          type={showPwd ? "text" : "password"}
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Enter your password"
+          floatingLabel
+          onChange={setPassword}
+          endIcon={
+            <button
+              type="button"
+              className="reveal-btn"
+              aria-label={showPwd ? "Hide password" : "Show password"}
+              aria-pressed={showPwd}
+              onClick={() => setShowPwd((prev) => !prev)}
+            >
+            </button>
+          }
         />
 
         {errorMessage && (
@@ -219,15 +227,17 @@ function Login() {
         </div>
 
         <div className="pt-2">
-          <AuthButton type="submit">
-            Login to dashboard <span>→</span>
-          </AuthButton>
+          <Button variant="filled" fullWidth color="#03274c" type="submit">
+            login to dashboard
+          </Button>
         </div>
 
         <p className="mt-6 text-[13px] text-secondary">
           New to SkoolJobs?{" "}
           <Link to="/signup" className="text-primary font-bold hover:underline">
-            Sign up
+            <Button variant="text" color="#1D5A9B">
+              Sign up
+            </Button>
           </Link>
         </p>
       </form>
