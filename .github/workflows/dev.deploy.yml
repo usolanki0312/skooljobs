@@ -1,5 +1,5 @@
 
-name: SkoolJobs   Dev Deploy
+name: SkoolJobs Dev Deploy
 
 on:
   push:
@@ -54,13 +54,18 @@ jobs:
 
             IMAGE_TAG=${{ github.ref_name }}
 
-            cd ~/frontends
+            cd ~
 
             docker pull gopal011203/skooljobs:$IMAGE_TAG
 
-            docker tag gopal011203/skooljobs:$IMAGE_TAG gopal011203/skooljobs:latest
+            docker tag \
+              gopal011203/skooljobs:$IMAGE_TAG \
+              gopal011203/skooljobs:latest
 
-            docker compose up -d --force-recreate --remove-orphans skooljobs
+            docker compose up -d \
+              --force-recreate \
+              --remove-orphans \
+              skooljob_frontend
 
             docker image prune -f
 
