@@ -6,12 +6,14 @@ import {
   FileText,
   LayoutDashboard,
   LogOut,
+  Menu,
   Sparkles,
   UserRound,
   Calendar,
   ClipboardList,
   Settings,
   Bookmark,
+  X,
 } from "lucide-react";
 import { jobsData, resumesData } from "../lib/teacherdata";
 
@@ -32,6 +34,11 @@ const navItems = [
 const TeacherLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  useEffect(() => {
+    setMobileNavOpen(false);
+  }, [location.pathname]);
 
   const [profileImage, setProfileImage] = useState("https://i.pravatar.cc/300?img=12");
   const [appliedJobs, setAppliedJobs] = useState(() => {
@@ -305,35 +312,56 @@ const TeacherLayout = () => {
           </div>
         </aside>
 
-        <main className="flex-1 p-5 lg:p-8">
-          <div className="mt-4 flex gap-2 overflow-x-auto rounded-3xl bg-white p-3 shadow-soft lg:hidden">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
-              return (
+        <main className="min-w-0 flex-1 overflow-x-hidden p-5 lg:p-8">
+          <div className="relative lg:hidden">
+            <div className="flex items-center justify-between rounded-3xl bg-white p-3 shadow-soft">
+              <span className="px-2 text-sm font-bold text-primary">
+                {[...navItems, { label: "Settings", path: "/teacher/settings" }].find(
+                  (item) => item.path === location.pathname,
+                )?.label || "Menu"}
+              </span>
+              <button
+                type="button"
+                onClick={() => setMobileNavOpen((o) => !o)}
+                aria-label="Toggle navigation menu"
+                aria-expanded={mobileNavOpen}
+                className="rounded-xl p-2 text-primary hover:bg-light"
+              >
+                {mobileNavOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+            </div>
+
+            {mobileNavOpen && (
+              <div className="absolute left-0 right-0 top-full z-40 mt-2 space-y-1 rounded-3xl bg-white p-3 shadow-soft">
+                {navItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = location.pathname === item.path;
+                  return (
+                    <button
+                      key={item.path}
+                      type="button"
+                      onClick={() => navigate(item.path)}
+                      className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${
+                        isActive ? "bg-primary text-white" : "text-slate-600 hover:bg-light hover:text-primary"
+                      }`}
+                    >
+                      <Icon size={17} />
+                      {item.label}
+                    </button>
+                  );
+                })}
                 <button
-                  key={item.path}
                   type="button"
-                  onClick={() => navigate(item.path)}
-                  className={`flex shrink-0 items-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition ${
-                    isActive ? "bg-primary text-white" : "bg-light text-primary"
+                  onClick={() => navigate("/teacher/settings")}
+                  className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${
+                    location.pathname === "/teacher/settings" ? "bg-primary text-white" : "text-slate-600 hover:bg-light hover:text-primary"
                   }`}
                 >
-                  <Icon size={17} />
-                  {item.label}
+                  <Settings size={17} />
+                  Settings
                 </button>
-              );
-            })}
-            <button
-              type="button"
-              onClick={() => navigate("/teacher/settings")}
-              className={`flex shrink-0 items-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition ${
-                location.pathname === "/teacher/settings" ? "bg-primary text-white" : "bg-light text-primary"
-              }`}
-            >
-              <Settings size={17} />
-              Settings
-            </button>
+              </div>
+            )}
           </div>
           <div className="mt-6">
             <Outlet context={outletCtx} />

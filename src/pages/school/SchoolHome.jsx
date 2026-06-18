@@ -102,7 +102,7 @@ const SchoolHome = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {stats.map((stat) => {
           const clickable = Boolean(stat.to);
           return (
@@ -145,7 +145,7 @@ const SchoolHome = () => {
             {barData.map((bar) => (
               <div
                 key={bar.label}
-                className="flex flex-1 flex-col items-center gap-2"
+                className="flex min-w-0 flex-1 flex-col items-center gap-2"
               >
                 <span className="text-xs font-bold text-slate-400">
                   {bar.val}
@@ -154,7 +154,7 @@ const SchoolHome = () => {
                   className={`w-full rounded-t-lg ${bar.color} opacity-80`}
                   style={{ height: `${Math.max(bar.val * 20, 4)}px` }}
                 />
-                <span className="text-center text-xs leading-tight text-slate-400">
+                <span className="break-words text-center text-[10px] leading-tight text-slate-400 sm:text-xs">
                   {bar.label}
                 </span>
               </div>

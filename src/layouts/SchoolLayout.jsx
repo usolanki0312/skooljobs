@@ -9,6 +9,7 @@ import {
   Heart,
   LayoutDashboard,
   LogOut,
+  Menu,
   Package,
   PlusCircle,
   Settings,
@@ -47,6 +48,11 @@ const sidebarItems = [
 const SchoolLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  useEffect(() => {
+    setMobileNavOpen(false);
+  }, [location.pathname]);
 
   const [jobs, setJobs] = useState(() => {
     const saved = localStorage.getItem("skooljobs_jobs");
@@ -337,7 +343,7 @@ const SchoolLayout = () => {
           </div>
         </aside>
 
-        <main className="flex-1 p-5 lg:p-8">
+        <main className="min-w-0 flex-1 overflow-x-hidden p-5 lg:p-8">
           <Topbar
             title="School Dashboard"
             subtitle="Manage your job postings and track applicants."
@@ -346,24 +352,43 @@ const SchoolLayout = () => {
             notificationDropdown={notificationDropdown}
           />
 
-          <div className="mt-4 flex gap-2 overflow-x-auto rounded-3xl bg-white p-3 shadow-soft lg:hidden">
-            {sidebarItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
-              return (
-                <button
-                  key={item.path}
-                  type="button"
-                  onClick={() => navigate(item.path)}
-                  className={`flex shrink-0 items-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition ${
-                    isActive ? "bg-primary text-white" : "bg-light text-primary"
-                  }`}
-                >
-                  <Icon size={17} />
-                  {item.label}
-                </button>
-              );
-            })}
+          <div className="relative lg:hidden">
+            <div className="mt-4 flex items-center justify-between rounded-3xl bg-white p-3 shadow-soft">
+              <span className="px-2 text-sm font-bold text-primary">
+                {sidebarItems.find((item) => item.path === location.pathname)?.label || "Menu"}
+              </span>
+              <button
+                type="button"
+                onClick={() => setMobileNavOpen((o) => !o)}
+                aria-label="Toggle navigation menu"
+                aria-expanded={mobileNavOpen}
+                className="rounded-xl p-2 text-primary hover:bg-light"
+              >
+                {mobileNavOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+            </div>
+
+            {mobileNavOpen && (
+              <div className="absolute left-0 right-0 top-full z-40 mt-2 space-y-1 rounded-3xl bg-white p-3 shadow-soft">
+                {sidebarItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = location.pathname === item.path;
+                  return (
+                    <button
+                      key={item.path}
+                      type="button"
+                      onClick={() => navigate(item.path)}
+                      className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${
+                        isActive ? "bg-primary text-white" : "text-slate-600 hover:bg-light hover:text-primary"
+                      }`}
+                    >
+                      <Icon size={17} />
+                      {item.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div className="mt-6">
