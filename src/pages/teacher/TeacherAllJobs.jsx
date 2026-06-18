@@ -29,24 +29,24 @@ const TeacherAllJobs = () => {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-3xl bg-white p-6 shadow-soft">
+      <section className="rounded-3xl bg-white p-5 shadow-soft sm:p-6">
         <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h2 className="text-2xl font-bold text-primary">All Teaching Jobs</h2>
-          <div className="flex items-center gap-3">
-            <Filter size={16} className="text-slate-400" />
+          <h2 className="text-2xl font-bold text-primary sm:text-3xl">All Teaching Jobs</h2>
+          <div className="flex flex-wrap items-center gap-3">
+            <Filter size={16} className="hidden text-slate-400 sm:inline" />
             <Select
               value={jobFilter.subject}
               onChange={(v) => setJobFilter((p) => ({ ...p, subject: v }))}
               placeholder="All Subjects"
               options={subjectOptions}
-              className="min-w-40 rounded-xl border border-borderColor bg-light px-3 py-2 text-sm font-bold focus:border-primary"
+              className="w-full rounded-xl border border-borderColor bg-light px-3 py-2 text-sm font-bold focus:border-primary sm:w-auto sm:min-w-40"
             />
             <Select
               value={jobFilter.type}
               onChange={(v) => setJobFilter((p) => ({ ...p, type: v }))}
               placeholder="All Types"
               options={typeOptions}
-              className="min-w-36 rounded-xl border border-borderColor bg-light px-3 py-2 text-sm font-bold focus:border-primary"
+              className="w-full rounded-xl border border-borderColor bg-light px-3 py-2 text-sm font-bold focus:border-primary sm:w-auto sm:min-w-36"
             />
           </div>
         </div>
@@ -69,17 +69,17 @@ const TeacherAllJobs = () => {
       </section>
 
       {appliedHistory.length > 0 && (
-        <section className="rounded-3xl bg-white p-6 shadow-soft">
+        <section className="rounded-3xl bg-white p-5 shadow-soft sm:p-6">
           <h3 className="text-xl font-bold text-primary">Applied History (Last 2 Years)</h3>
           <p className="mt-1 text-sm text-slate-500">Your job applications from the past 2 years.</p>
           <div className="mt-5 space-y-3">
             {appliedHistory.map((job) => (
-              <div key={job.id} className="flex items-center justify-between rounded-2xl border border-borderColor p-4">
-                <div>
-                  <p className="font-bold text-primary">{job.role}</p>
+              <div key={job.id} className="flex flex-col gap-3 rounded-2xl border border-borderColor p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <p className="break-words font-bold text-primary">{job.role}</p>
                   <p className="text-sm text-slate-500">{job.school} · {job.location}</p>
                 </div>
-                <div className="text-right">
+                <div className="text-left sm:text-right">
                   <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-600">Applied</span>
                   <p className="mt-1 text-xs text-slate-400">
                     {new Date(job.appliedDate).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
@@ -91,7 +91,7 @@ const TeacherAllJobs = () => {
         </section>
       )}
 
-      <section className="rounded-3xl bg-white p-6 shadow-soft">
+      <section className="rounded-3xl bg-white p-5 shadow-soft sm:p-6">
         <div className="mb-5 flex items-center gap-3">
           <span className="rounded-xl bg-primary/10 p-2 text-primary"><Bell size={19} /></span>
           <div>

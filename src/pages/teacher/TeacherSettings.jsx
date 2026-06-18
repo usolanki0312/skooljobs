@@ -26,10 +26,10 @@ const TeacherSettings = () => {
 
   return (
     <div className="space-y-8">
-      <h2 className="text-2xl font-bold text-slate-800">Account Settings</h2>
+      <h2 className="text-2xl font-bold text-slate-800 sm:text-3xl">Account Settings</h2>
 
       {/* --- Privacy & Visibility --- */}
-      <div className="rounded-2xl border border-borderColor bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm sm:p-6">
         <div className="mb-5 flex items-center gap-3 border-b border-borderColor pb-4">
           <span className="rounded-xl bg-primary/10 p-2 text-primary">
             <Eye size={18} />
@@ -39,14 +39,14 @@ const TeacherSettings = () => {
           </h3>
         </div>
         <div className="flex items-start justify-between gap-4">
-          <div>
+          <div className="min-w-0">
             <p className="font-bold text-slate-700">Profile Visibility</p>
             <p className="mt-1 text-sm text-slate-500">
               Allow verified schools to view your profile and contact you for
               teaching opportunities.
             </p>
           </div>
-          <label className="relative inline-flex cursor-pointer items-center">
+          <label className="relative inline-flex shrink-0 cursor-pointer items-center">
             <input
               type="checkbox"
               className="peer sr-only"
@@ -59,7 +59,7 @@ const TeacherSettings = () => {
       </div>
 
       {/* --- Notification Preferences --- */}
-      <div className="rounded-2xl border border-borderColor bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm sm:p-6">
         <div className="mb-5 flex items-center gap-3 border-b border-borderColor pb-4">
           <span className="rounded-xl bg-primary/10 p-2 text-primary">
             <Bell size={18} />
@@ -70,14 +70,14 @@ const TeacherSettings = () => {
         </div>
         <div className="space-y-6">
           <div className="flex items-start justify-between gap-4">
-            <div>
+            <div className="min-w-0">
               <p className="font-bold text-slate-700">Email Notifications</p>
               <p className="mt-1 text-sm text-slate-500">
                 Receive interview invites and job recommendations directly to
                 your inbox.
               </p>
             </div>
-            <label className="relative inline-flex cursor-pointer items-center">
+            <label className="relative inline-flex shrink-0 cursor-pointer items-center">
               <input
                 type="checkbox"
                 className="peer sr-only"
@@ -90,14 +90,14 @@ const TeacherSettings = () => {
             </label>
           </div>
           <div className="flex items-start justify-between gap-4 border-t border-borderColor/50 pt-6">
-            <div>
+            <div className="min-w-0">
               <p className="font-bold text-slate-700">SMS Alerts</p>
               <p className="mt-1 text-sm text-slate-500">
                 Get instant text alerts for critical updates like interview
                 confirmations.
               </p>
             </div>
-            <label className="relative inline-flex cursor-pointer items-center">
+            <label className="relative inline-flex shrink-0 cursor-pointer items-center">
               <input
                 type="checkbox"
                 className="peer sr-only"
@@ -111,7 +111,7 @@ const TeacherSettings = () => {
       </div>
 
       {/* --- Change Password --- */}
-      <div className="rounded-2xl border border-borderColor bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm sm:p-6">
         <div className="mb-5 flex items-center gap-3 border-b border-borderColor pb-4">
           <span className="rounded-xl bg-primary/10 p-2 text-primary">
             <KeyRound size={18} />
@@ -180,7 +180,7 @@ const TeacherSettings = () => {
       </div>
 
       {/* --- Help & Support --- */}
-      <div className="rounded-2xl border border-borderColor bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm sm:p-6">
         <div className="mb-5 flex items-center gap-3 border-b border-borderColor pb-4">
           <span className="rounded-xl bg-primary/10 p-2 text-primary">
             <HelpCircle size={18} />
@@ -227,7 +227,7 @@ const TeacherSettings = () => {
       </div>
 
       {/* --- Delete Account --- */}
-      <div className="rounded-2xl border border-red-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-red-200 bg-white p-5 shadow-sm sm:p-6">
         <div className="mb-5 flex items-center gap-3 border-b border-red-100 pb-4">
           <span className="rounded-xl bg-red-100 p-2 text-red-500">
             <Trash2 size={18} />
@@ -283,7 +283,7 @@ const TeacherSettings = () => {
                 it. This cannot be undone.
               </span>
             </label>
-            <div className="flex gap-3 pt-2">
+            <div className="flex flex-col gap-3 pt-2 sm:flex-row">
               <button
                 type="button"
                 disabled={!deleteChecks.c1 || !deleteChecks.c2}
@@ -333,7 +333,7 @@ const TeacherSettings = () => {
             <p className="text-xs text-slate-400">
               For demo: use OTP <strong>123456</strong>
             </p>
-            <div className="flex gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 type="button"
                 onClick={() => {

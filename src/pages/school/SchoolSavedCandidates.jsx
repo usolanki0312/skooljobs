@@ -14,8 +14,8 @@ const SchoolSavedCandidates = () => {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-slate-800">Saved Candidates</h2>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-2xl font-bold text-slate-800 sm:text-3xl">Saved Candidates</h2>
         <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-bold text-primary">
           {savedApplicants.length} saved
         </span>
@@ -44,15 +44,15 @@ const SchoolSavedCandidates = () => {
           {savedApplicants.map((applicant) => (
             <div key={applicant.id} className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-                <img src={applicant.avatar} alt={applicant.name} className="h-14 w-14 rounded-2xl object-cover" />
-                <div className="flex-1">
+                <img src={applicant.avatar} alt={applicant.name} className="h-14 w-14 shrink-0 rounded-2xl object-cover" />
+                <div className="min-w-0 flex-1">
                   <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <h3 className="font-bold text-slate-800">{applicant.name}</h3>
-                      <p className="text-xs text-slate-500">
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-slate-800 truncate">{applicant.name}</h3>
+                      <p className="text-xs text-slate-500 truncate">
                         {applicant.jobTitle} · {applicant.subject} · {applicant.experience}
                       </p>
-                      <p className="text-xs text-slate-400">{applicant.qualification}</p>
+                      <p className="text-xs text-slate-400 truncate">{applicant.qualification}</p>
                     </div>
                     <div className="flex items-center gap-2 self-start">
                       <span className={`rounded-full px-3 py-1 text-xs font-bold ${

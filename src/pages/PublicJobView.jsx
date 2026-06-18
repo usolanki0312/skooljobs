@@ -75,18 +75,18 @@ const PublicJobView = () => {
   return (
     <div className="min-h-screen bg-slate-50 font-body">
       {/* Navbar branding */}
-      <header className="sticky top-0 z-30 border-b border-borderColor bg-white px-6 py-4 shadow-sm">
-        <div className="mx-auto flex max-w-6xl items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white font-extrabold text-xl shadow-md">
+      <header className="sticky top-0 z-30 border-b border-borderColor bg-white px-4 py-3 shadow-sm sm:px-6 sm:py-4">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-white font-extrabold text-lg shadow-md sm:h-10 sm:w-10 sm:text-xl">
               SJ
             </span>
-            <span className="font-heading text-xl font-bold text-primary tracking-wide">
+            <span className="font-heading text-lg font-bold text-primary tracking-wide sm:text-xl">
               SkoolJobs
             </span>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             {isLoggedIn ? (
               <Link
                 to={isCandidate ? "/teacher/dashboard" : "/school/dashboard"}
@@ -104,7 +104,7 @@ const PublicJobView = () => {
                 </Link>
                 <Link
                   to="/signup"
-                  className="rounded-xl bg-primary/10 px-4 py-2 text-xs font-bold text-primary hover:bg-primary/15 transition"
+                  className="rounded-xl bg-primary/10 px-3 py-2 text-xs font-bold text-primary hover:bg-primary/15 transition sm:px-4"
                 >
                   Register as Teacher
                 </Link>
@@ -115,7 +115,7 @@ const PublicJobView = () => {
       </header>
 
       {/* Main Content wrapper */}
-      <main className="mx-auto max-w-6xl px-4 py-8 md:px-6 lg:py-12">
+      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:py-12">
         <SharedJobDetail
           job={job}
           isApplied={applied}

@@ -106,7 +106,7 @@ const SchoolJobDetail = () => {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <div className="flex flex-wrap items-center gap-3">
-              <h2 className="text-2xl font-bold text-slate-800">{job.title}</h2>
+              <h2 className="text-2xl font-bold text-slate-800 sm:text-3xl">{job.title}</h2>
               <span className={`rounded-full px-3 py-1 text-xs font-bold ${jobStatusChip[job.status] || "bg-slate-100 text-slate-500"}`}>
                 {job.status}
               </span>

@@ -29,7 +29,7 @@ const TeacherJobDetail = () => {
 
   if (!job) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 text-center">
+      <div className="flex flex-col items-center justify-center px-4 py-16 text-center sm:py-24">
         <Building2 size={64} className="text-slate-300 mb-4" />
         <h2 className="text-2xl font-bold text-slate-800">Job not found.</h2>
         <button

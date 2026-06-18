@@ -1161,7 +1161,7 @@ const TeacherProfile = () => {
             </div>
           )}
           {/* Dropdown + manual input row */}
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
             <select
               value=""
               onChange={(e) => {
@@ -1170,7 +1170,7 @@ const TeacherProfile = () => {
                   setSelectedAdditionalSubjects((prev) => [...prev, val]);
                 }
               }}
-              className={`${inputClass} flex-1`}
+              className={`${inputClass} sm:flex-1`}
             >
               <option value="">Select additional subject...</option>
               {ALL_ADDITIONAL_SUBJECTS.filter(
@@ -1182,7 +1182,7 @@ const TeacherProfile = () => {
             <input
               type="text"
               placeholder="Or type custom subject"
-              className={`${inputClass} flex-1`}
+              className={`${inputClass} sm:flex-1`}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
@@ -1205,7 +1205,7 @@ const TeacherProfile = () => {
                   input.value = "";
                 }
               }}
-              className="flex items-center gap-1 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary/90"
+              className="flex items-center justify-center gap-1 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary/90"
             >
               <Plus size={15} /> Add
             </button>
@@ -2316,25 +2316,25 @@ const TeacherProfile = () => {
                 )}
               </div>
             </div>
-            <div className="grid grid-cols-3 rounded-xl border border-borderColor bg-light p-1 text-sm font-bold">
+            <div className="grid grid-cols-3 rounded-xl border border-borderColor bg-light p-1 text-xs font-bold sm:text-sm">
               <button
                 type="button"
                 onClick={() => setResumeMode("upload")}
-                className={`rounded-lg px-4 py-2 ${resumeMode === "upload" ? "bg-white text-primary shadow-sm" : "text-slate-500"}`}
+                className={`rounded-lg px-2 py-2 sm:px-4 ${resumeMode === "upload" ? "bg-white text-primary shadow-sm" : "text-slate-500"}`}
               >
                 Add Resume
               </button>
               <button
                 type="button"
                 onClick={() => setResumeMode("create")}
-                className={`rounded-lg px-4 py-2 ${resumeMode === "create" ? "bg-white text-primary shadow-sm" : "text-slate-500"}`}
+                className={`rounded-lg px-2 py-2 sm:px-4 ${resumeMode === "create" ? "bg-white text-primary shadow-sm" : "text-slate-500"}`}
               >
                 Create Resume
               </button>
               <button
                 type="button"
                 onClick={() => setResumeMode("coverletter")}
-                className={`rounded-lg px-4 py-2 ${resumeMode === "coverletter" ? "bg-white text-primary shadow-sm" : "text-slate-500"}`}
+                className={`rounded-lg px-2 py-2 sm:px-4 ${resumeMode === "coverletter" ? "bg-white text-primary shadow-sm" : "text-slate-500"}`}
               >
                 Cover Letter
               </button>
@@ -2681,14 +2681,14 @@ const TeacherProfile = () => {
                     {savedQualifications.map((q, idx) => (
                       <div
                         key={idx}
-                        className="flex justify-between items-center rounded-xl bg-light p-3 text-xs border border-borderColor/40"
+                        className="flex flex-col gap-2 rounded-xl bg-light p-3 text-xs border border-borderColor/40 sm:flex-row sm:items-center sm:justify-between"
                       >
-                        <div>
-                          <p className="font-bold text-slate-800">
+                        <div className="min-w-0">
+                          <p className="break-words font-bold text-slate-800">
                             {q.degree || q.classLevel}{" "}
                             {q.course ? `(${q.course})` : ""}
                           </p>
-                          <p className="text-slate-500">
+                          <p className="break-words text-slate-500">
                             {q.college || q.school} · Passed in {q.year} ·
                             Marks: {q.percentage ? `${q.percentage}%` : "—"}
                           </p>
@@ -2880,13 +2880,13 @@ const TeacherProfile = () => {
                     {savedExperiences.map((exp, idx) => (
                       <div
                         key={idx}
-                        className="flex justify-between items-center rounded-xl bg-light p-3 text-xs border border-borderColor/40"
+                        className="flex flex-col gap-2 rounded-xl bg-light p-3 text-xs border border-borderColor/40 sm:flex-row sm:items-center sm:justify-between"
                       >
-                        <div>
-                          <p className="font-bold text-slate-800">
+                        <div className="min-w-0">
+                          <p className="break-words font-bold text-slate-800">
                             {exp.post} at {exp.school}
                           </p>
-                          <p className="text-slate-500">
+                          <p className="break-words text-slate-500">
                             {exp.startDate} to{" "}
                             {exp.currentEmployer ? "Present" : exp.endDate} ·
                             Subject: {exp.mainSubject} · Board: {exp.board}
@@ -2924,7 +2924,7 @@ const TeacherProfile = () => {
                   <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
                     Awards &amp; Recognitions
                   </p>
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-4 items-end">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 items-end">
                     <Field label="Type">
                       <Select
                         value={resumeData.awardType}
@@ -2987,9 +2987,9 @@ const TeacherProfile = () => {
                       {savedAwards.map((award, index) => (
                         <div
                           key={index}
-                          className="flex justify-between items-center rounded-lg bg-light p-2.5 text-xs border border-borderColor/45"
+                          className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-light p-2.5 text-xs border border-borderColor/45"
                         >
-                          <span>
+                          <span className="min-w-0 break-words">
                             <strong>{award.name}</strong> by {award.by} (
                             {award.year})
                           </span>
@@ -3000,7 +3000,7 @@ const TeacherProfile = () => {
                                 prev.filter((_, i) => i !== index),
                               )
                             }
-                            className="text-red-500 font-bold hover:underline"
+                            className="shrink-0 text-red-500 font-bold hover:underline"
                           >
                             Remove
                           </button>
@@ -3014,7 +3014,7 @@ const TeacherProfile = () => {
                   <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
                     Additional Courses &amp; Certifications
                   </p>
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-4 items-end">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 items-end">
                     <Field label="Type">
                       <Select
                         value={resumeData.courseType}
@@ -3077,9 +3077,9 @@ const TeacherProfile = () => {
                       {savedCourses.map((course, index) => (
                         <div
                           key={index}
-                          className="flex justify-between items-center rounded-lg bg-light p-2.5 text-xs border border-borderColor/45"
+                          className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-light p-2.5 text-xs border border-borderColor/45"
                         >
-                          <span>
+                          <span className="min-w-0 break-words">
                             <strong>{course.name}</strong> conducted by{" "}
                             {course.by} ({course.year})
                           </span>
@@ -3090,7 +3090,7 @@ const TeacherProfile = () => {
                                 prev.filter((_, i) => i !== index),
                               )
                             }
-                            className="text-red-500 font-bold hover:underline"
+                            className="shrink-0 text-red-500 font-bold hover:underline"
                           >
                             Remove
                           </button>
@@ -3233,7 +3233,7 @@ const TeacherProfile = () => {
               </button>
               {coverLetterState.generated && (
                 <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5">
-                  <div className="mb-3 flex items-center justify-between">
+                  <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                     <p className="text-sm font-bold text-primary">
                       AI Generated Cover Letter
                     </p>

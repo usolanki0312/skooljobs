@@ -163,8 +163,8 @@ const SchoolPostJob = () => {
   return (
     <div className="space-y-6">
       {/* Page header */}
-      <div className="rounded-2xl border border-borderColor bg-white p-6 shadow-sm">
-        <h2 className="text-2xl font-bold text-slate-800">Post a New Job</h2>
+      <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm sm:p-6">
+        <h2 className="text-2xl font-bold text-slate-800 sm:text-3xl">Post a New Job</h2>
         <p className="mt-1 text-sm text-slate-500">
           Create a detailed job post to attract the right candidates.
         </p>
@@ -185,33 +185,33 @@ const SchoolPostJob = () => {
       <HiringPreferences form={form} setField={setField} />
 
       {/* Footer */}
-      <div className="flex items-center justify-between rounded-2xl border border-borderColor bg-white px-6 py-4 shadow-sm">
+      <div className="flex flex-col gap-3 rounded-2xl border border-borderColor bg-white px-5 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <button
           type="button"
           onClick={() => navigate("/school/manage-jobs")}
-          className="text-sm font-bold text-slate-400 hover:text-slate-600"
+          className="text-sm font-bold text-slate-400 hover:text-slate-600 sm:order-first"
         >
           Cancel
         </button>
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row">
           <button
             type="button"
             onClick={() => setShowPreview(true)}
-            className="inline-flex items-center gap-2 rounded-xl border border-primary px-6 py-2.5 text-sm font-bold text-primary hover:bg-primary/5 transition"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary px-6 py-2.5 text-sm font-bold text-primary hover:bg-primary/5 transition"
           >
             <Eye size={15} /> Preview
           </button>
           <button
             type="button"
             onClick={handleSaveDraft}
-            className="inline-flex items-center gap-2 rounded-xl border border-borderColor px-6 py-2.5 text-sm font-bold text-slate-600 hover:bg-light transition"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-borderColor px-6 py-2.5 text-sm font-bold text-slate-600 hover:bg-light transition"
           >
             <Save size={15} /> Save as Draft
           </button>
           <button
             type="button"
             onClick={handlePublish}
-            className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-white hover:bg-primary/90 transition"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-white hover:bg-primary/90 transition"
           >
             <Send size={15} /> {form.publishOption === "Publish Later" ? "Schedule Job" : "Publish Job"}
           </button>

@@ -45,7 +45,7 @@ const TeacherHome = () => {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   const notificationDropdown = showNotifDropdown && (
-    <div className="absolute right-0 top-12 z-50 w-80 rounded-2xl border border-borderColor bg-white shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
+    <div className="absolute right-0 top-12 z-50 w-[90vw] max-w-sm rounded-2xl border border-borderColor bg-white shadow-[0_8px_32px_rgba(0,0,0,0.12)] sm:w-80">
       <div className="flex items-center justify-between border-b border-borderColor px-4 py-3">
         <p className="text-left font-bold text-slate-800">
           Notifications {unreadCount > 0 && <span className="ml-1 text-xs text-primary">({unreadCount} new)</span>}
@@ -79,7 +79,7 @@ const TeacherHome = () => {
             >
               <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${n.read ? "bg-slate-300" : "bg-primary"}`} />
               <div className="flex-1 min-w-0">
-                <p className="text-slate-700">{n.msg}</p>
+                <p className="break-words text-slate-700">{n.msg}</p>
                 <p className="mt-1 text-xs text-slate-400">{n.time}</p>
               </div>
               <button
@@ -99,7 +99,7 @@ const TeacherHome = () => {
   return (
     <div className="space-y-6">
       {/* 1. Header Welcome Card */}
-      <div className="rounded-3xl bg-white border border-borderColor p-6 shadow-soft flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+      <div className="rounded-3xl bg-white border border-borderColor p-5 shadow-soft sm:p-6 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
             Welcome Back, {displayName.toUpperCase()}
@@ -133,7 +133,7 @@ const TeacherHome = () => {
           </div>
 
           {/* Profile Strength progress tracker */}
-          <div className="min-w-[240px] space-y-2 border-t border-borderColor pt-4 sm:border-t-0 sm:pt-0">
+          <div className="w-full space-y-2 border-t border-borderColor pt-4 sm:w-auto sm:min-w-[240px] sm:border-t-0 sm:pt-0">
             <div className="flex items-center justify-between text-xs font-bold">
               <span className="text-primary font-bold">86% Complete</span>
               <span className="text-slate-400 font-bold">Profile Strength</span>
@@ -220,7 +220,7 @@ const TeacherHome = () => {
         {/* Left Column: Occupies 2/3 width */}
         <div className="lg:col-span-2 space-y-6">
           {/* Recommended Jobs */}
-          <section className="rounded-3xl bg-white border border-borderColor p-6 shadow-soft space-y-5">
+          <section className="rounded-3xl bg-white border border-borderColor p-5 shadow-soft sm:p-6 space-y-5">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-primary font-heading">
                 Recommended Jobs
@@ -255,16 +255,16 @@ const TeacherHome = () => {
                       onClick={handleRowClick}
                       className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm hover:shadow-soft transition duration-150 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between cursor-pointer"
                     >
-                      <div className="flex items-center gap-4">
+                      <div className="flex min-w-0 items-center gap-4">
                         {/* School Icon Placeholder */}
                         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/5 text-primary">
                           <GraduationCap size={22} />
                         </div>
-                        <div>
-                          <h3 className="font-bold text-slate-800 text-base">
+                        <div className="min-w-0">
+                          <h3 className="break-words font-bold text-slate-800 text-base">
                             {job.role}
                           </h3>
-                          <p className="text-sm font-semibold text-slate-500">
+                          <p className="break-words text-sm font-semibold text-slate-500">
                             {job.school} · {job.location}
                           </p>
                           <div className="mt-1 flex flex-wrap gap-2 text-xs text-slate-400">
@@ -318,7 +318,7 @@ const TeacherHome = () => {
           </section>
 
           {/* Recent Activity */}
-          <section className="rounded-3xl bg-white border border-borderColor p-6 shadow-soft space-y-4">
+          <section className="rounded-3xl bg-white border border-borderColor p-5 shadow-soft sm:p-6 space-y-4">
             <h3 className="text-lg font-bold text-primary font-heading">
               Recent Activity
             </h3>
@@ -344,7 +344,7 @@ const TeacherHome = () => {
         {/* Right Column: Sticky Upcoming Interview Card */}
         <div className="space-y-6 lg:col-span-1">
           {/* Upcoming Interview Card */}
-          <section className="rounded-3xl bg-white border border-borderColor p-6 shadow-soft space-y-4">
+          <section className="rounded-3xl bg-white border border-borderColor p-5 shadow-soft sm:p-6 space-y-4">
             <div className="flex items-center justify-between border-b border-borderColor pb-3">
               <h3 className="font-heading text-lg font-bold text-primary">
                 Upcoming Interview

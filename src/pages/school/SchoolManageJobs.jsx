@@ -32,7 +32,7 @@ const SchoolManageJobs = () => {
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">Manage Jobs</h2>
+          <h2 className="text-2xl font-bold text-slate-800 sm:text-3xl">Manage Jobs</h2>
           {draftCount > 0 && (
             <p className="mt-1 text-xs font-semibold text-amber-600">
               {draftCount} draft{draftCount > 1 ? "s" : ""} awaiting publication
