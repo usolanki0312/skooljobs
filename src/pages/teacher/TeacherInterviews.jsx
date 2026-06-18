@@ -45,10 +45,10 @@ const TeacherInterviews = () => {
     activeTab === "upcoming" ? upcomingInterviews : pastInterviews;
 
   return (
-    <section className="rounded-3xl bg-white p-6 shadow-soft space-y-6">
+    <section className="rounded-3xl bg-white p-5 shadow-soft sm:p-6 space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-borderColor pb-5">
         <div>
-          <h2 className="text-2xl font-bold text-primary">Interviews</h2>
+          <h2 className="text-2xl font-bold text-primary sm:text-3xl">Interviews</h2>
           <p className="mt-1 text-sm text-slate-500">
             Track your scheduled interviews and communicate with recruiters.
           </p>
@@ -91,11 +91,11 @@ const TeacherInterviews = () => {
               className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm space-y-4 hover:shadow-soft transition"
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                  <h3 className="text-lg font-bold text-slate-800">
+                <div className="min-w-0">
+                  <h3 className="break-words text-lg font-bold text-slate-800">
                     {iv.role || iv.jobTitle}
                   </h3>
-                  <p className="text-sm font-semibold text-primary">
+                  <p className="break-words text-sm font-semibold text-primary">
                     {iv.school || "School"}
                   </p>
 

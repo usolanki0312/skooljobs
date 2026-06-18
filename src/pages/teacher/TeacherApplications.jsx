@@ -35,9 +35,9 @@ const TeacherApplications = () => {
   };
 
   return (
-    <section className="rounded-3xl bg-white p-6 shadow-soft space-y-6">
+    <section className="rounded-3xl bg-white p-5 shadow-soft sm:p-6 space-y-6">
       <div className="border-b border-borderColor pb-5">
-        <h2 className="text-2xl font-bold text-primary">My Applications</h2>
+        <h2 className="text-2xl font-bold text-primary sm:text-3xl">My Applications</h2>
         <p className="mt-1 text-sm text-slate-500">
           Monitor your job application history and current status.
         </p>
@@ -56,8 +56,8 @@ const TeacherApplications = () => {
           </button>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-left text-sm border-collapse">
+        <div className="-mx-5 overflow-x-auto px-5 sm:-mx-6 sm:px-6">
+          <table className="min-w-[760px] w-full text-left text-sm border-collapse">
             <thead>
               <tr className="border-b border-borderColor text-xs font-semibold uppercase text-slate-400 bg-slate-50/50">
                 <th className="px-5 py-3">Job Role</th>
@@ -101,23 +101,25 @@ const TeacherApplications = () => {
                         {status}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-right pr-6 space-x-2">
-                      <button
-                        type="button"
-                        onClick={() => navigate(`/teacher/jobs/${job.id}`)}
-                        className="inline-flex items-center gap-1 rounded-lg border border-borderColor hover:bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-600 transition"
-                        title="View Job Details"
-                      >
-                        <Eye size={12} /> View Job
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleWithdraw(job.id, job.role || job.title, job.school)}
-                        className="inline-flex items-center gap-1 rounded-lg border border-red-200 hover:bg-red-50 px-2.5 py-1.5 text-xs font-semibold text-red-500 transition"
-                        title="Withdraw Application"
-                      >
-                        <Trash2 size={12} /> Withdraw
-                      </button>
+                    <td className="px-5 py-4 text-right pr-6">
+                      <div className="flex flex-wrap justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/teacher/jobs/${job.id}`)}
+                          className="inline-flex items-center gap-1 rounded-lg border border-borderColor hover:bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-600 transition"
+                          title="View Job Details"
+                        >
+                          <Eye size={12} /> View Job
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleWithdraw(job.id, job.role || job.title, job.school)}
+                          className="inline-flex items-center gap-1 rounded-lg border border-red-200 hover:bg-red-50 px-2.5 py-1.5 text-xs font-semibold text-red-500 transition"
+                          title="Withdraw Application"
+                        >
+                          <Trash2 size={12} /> Withdraw
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

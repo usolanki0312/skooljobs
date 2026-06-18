@@ -77,7 +77,7 @@ const FullTimeSalary = ({
           <p className="mb-2 text-xs font-bold text-slate-600">
             In-Hand Percentage (% of CTC)
           </p>
-          <div className="flex items-center gap-2 rounded-xl border border-borderColor bg-white px-3 py-2.5 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 sm:w-40">
+          <div className="flex w-full items-center gap-2 rounded-xl border border-borderColor bg-white px-3 py-2.5 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 sm:w-40">
             <input
               type="number"
               min="0"
@@ -140,7 +140,7 @@ const ContractSalary = ({ form, setField }) => (
       </div>
       <div>
         <p className="mb-2 text-xs font-bold text-slate-600">Payment Type</p>
-        <div className="flex gap-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
           {["Monthly Payment (₹)", "Total Contract Value (₹)"].map((type) => (
             <label
               key={type}
@@ -199,7 +199,7 @@ const HybridSalary = ({ form, setField }) => (
     </div>
     <div className="rounded-xl border border-borderColor bg-light p-4">
       <SubLabel>Work Arrangement</SubLabel>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <p className="mb-2 text-xs font-bold text-slate-600">
             Work From Home Days
@@ -227,7 +227,7 @@ const RemoteSalary = ({ form, setField }) => (
         onMaxChange={(v) => setField("maxMonthlySalary", v)}
       />
     </div>
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div>
         <p className="mb-2 text-xs font-bold text-slate-600">Work Timezone</p>
         <Select value={form.workTimezone} onChange={(v) => setField("workTimezone", v)} placeholder="Select Timezone" options={TIMEZONES} />
@@ -320,10 +320,10 @@ const SalaryBenefits = ({ form, setField }) => {
           Select an Employment Type in Section 1 to configure salary details.
         </p>
       ) : (
-        <div className="rounded-xl border border-borderColor p-5">
-          <div className="mb-5 flex items-center gap-3 border-b border-borderColor pb-4">
+        <div className="rounded-xl border border-borderColor p-4 sm:p-5">
+          <div className="mb-5 flex flex-wrap items-center gap-3 border-b border-borderColor pb-4">
             <span className="text-2xl">{meta.icon}</span>
-            <div>
+            <div className="min-w-0">
               <p className="font-bold text-slate-800">{meta.subtitle}</p>
               <p className="text-xs text-slate-400">
                 Fields change based on Employment Type

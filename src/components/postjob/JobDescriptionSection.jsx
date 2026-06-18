@@ -9,8 +9,8 @@ const JobDescriptionSection = ({
 }) => (
   <SectionCard number={4} title="Job Description">
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-slate-500">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="min-w-0 text-sm text-slate-500">
           Describe the role, responsibilities, and what you're looking for in an
           ideal candidate.
         </p>
@@ -18,7 +18,7 @@ const JobDescriptionSection = ({
           type="button"
           onClick={onGenerateJD}
           disabled={generating}
-          className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-primary/10 px-4 py-2 text-xs font-bold text-primary hover:bg-primary/20 disabled:opacity-50 transition"
+          className="inline-flex shrink-0 items-center gap-2 self-start rounded-xl bg-primary/10 px-4 py-2 text-xs font-bold text-primary hover:bg-primary/20 disabled:opacity-50 transition"
         >
           <Wand2 size={13} />
           {generating ? "Generating…" : "AI Generate JD"}

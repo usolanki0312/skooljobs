@@ -75,15 +75,15 @@ const JobPreview = ({ form, onClose }) => {
       <div className="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl">
 
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-borderColor px-6 py-4">
-          <div className="flex items-center gap-2">
-            <Sparkles size={18} className="text-primary" />
+        <div className="flex items-center justify-between gap-3 border-b border-borderColor px-4 py-4 sm:px-6">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <Sparkles size={18} className="shrink-0 text-primary" />
             <h3 className="font-bold text-slate-800">Job Preview</h3>
             <span className="rounded-full bg-light px-2.5 py-0.5 text-xs font-semibold text-slate-500">
               How candidates will see it
             </span>
           </div>
-          <button type="button" onClick={onClose} className="rounded-xl p-2 text-slate-400 hover:bg-light">
+          <button type="button" onClick={onClose} className="shrink-0 rounded-xl p-2 text-slate-400 hover:bg-light">
             <X size={18} />
           </button>
         </div>
@@ -92,13 +92,13 @@ const JobPreview = ({ form, onClose }) => {
         <div className="overflow-y-auto">
 
           {/* Hero */}
-          <div className="bg-primary/5 px-6 py-6">
+          <div className="bg-primary/5 px-4 py-6 sm:px-6">
             <div className="flex items-start gap-4">
               <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                 <GraduationCap size={28} />
               </div>
-              <div className="min-w-0">
-                <h2 className="text-xl font-bold text-slate-800">
+              <div className="min-w-0 flex-1">
+                <h2 className="text-xl font-bold text-slate-800 break-words">
                   {title || "Untitled Job"}
                 </h2>
                 <p className="mt-0.5 text-sm font-semibold text-primary">{subject || "—"}</p>
@@ -124,7 +124,7 @@ const JobPreview = ({ form, onClose }) => {
           </div>
 
           {/* Body sections */}
-          <div className="space-y-6 px-6 py-6">
+          <div className="space-y-6 px-4 py-6 sm:px-6">
 
             {form.description && (
               <Section icon={Briefcase} title="Job Description">
@@ -211,7 +211,7 @@ const JobPreview = ({ form, onClose }) => {
 
             {/* Hiring meta */}
             <Section icon={BadgeCheck} title="Hiring Details">
-              <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
                 <div className="rounded-xl border border-borderColor bg-light p-3">
                   <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Gender Preference</p>
                   <p className="mt-1 font-semibold text-slate-700">{form.genderPreference || "Any"}</p>
@@ -231,7 +231,7 @@ const JobPreview = ({ form, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end border-t border-borderColor px-6 py-4">
+        <div className="flex justify-end border-t border-borderColor px-4 py-4 sm:px-6">
           <button
             type="button"
             onClick={onClose}

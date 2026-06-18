@@ -133,7 +133,7 @@ const SchoolInterviews = () => {
 
   return (
     <div className="space-y-8">
-      <h2 className="text-2xl font-bold text-slate-800">Interview Schedule</h2>
+      <h2 className="text-2xl font-bold text-slate-800 sm:text-3xl">Interview Schedule</h2>
 
       {/* ── Shortlisted candidates ─────────────────────────────────────────── */}
       <div className="rounded-2xl border border-borderColor bg-white shadow-sm">
@@ -370,7 +370,7 @@ const SchoolInterviews = () => {
                     <div className="mt-3 space-y-3 rounded-xl border border-blue-100 bg-blue-50/50 p-4">
                       <div>
                         <Label required>Platform</Label>
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                           {ONLINE_PLATFORMS.map((p) => {
                             const isWhatsApp = p.val === "WhatsApp Video Call";
                             return (
