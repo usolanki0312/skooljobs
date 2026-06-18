@@ -8,10 +8,10 @@ const TeacherSavedJobs = () => {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-3xl bg-white p-6 shadow-soft">
+      <section className="rounded-3xl bg-white p-5 shadow-soft sm:p-6">
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-primary font-heading">Saved &amp; Bookmarked Jobs</h2>
+            <h2 className="text-2xl font-bold text-primary font-heading sm:text-3xl">Saved &amp; Bookmarked Jobs</h2>
             <p className="text-sm text-slate-500 mt-1">
               Keep track of jobs you bookmarked. You can apply directly or remove them from this list.
             </p>
@@ -22,7 +22,7 @@ const TeacherSavedJobs = () => {
         </div>
 
         {savedJobs.length === 0 ? (
-          <div className="rounded-3xl bg-light py-16 px-6 text-center border border-dashed border-borderColor">
+          <div className="rounded-3xl bg-light py-12 px-5 text-center border border-dashed border-borderColor sm:py-16 sm:px-6">
             <Bookmark size={48} className="mx-auto mb-4 text-slate-300" />
             <h3 className="text-lg font-bold text-slate-700">No saved jobs yet</h3>
             <p className="mt-2 text-sm text-slate-500 max-w-sm mx-auto">

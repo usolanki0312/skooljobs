@@ -79,29 +79,29 @@ const SharedJobDetail = ({
         {/* Left Column: Job Details */}
         <div className="lg:col-span-2 space-y-6">
           {/* Header Card */}
-          <div className="rounded-3xl border border-borderColor bg-white p-6 shadow-soft sm:p-8">
+          <div className="rounded-3xl border border-borderColor bg-white p-5 shadow-soft sm:p-6 lg:p-8">
             <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="space-y-1">
-                <h1 className="text-3xl font-bold text-slate-800 font-heading leading-tight">
+              <div className="min-w-0 space-y-1">
+                <h1 className="text-2xl font-bold text-slate-800 font-heading leading-tight sm:text-3xl">
                   {title}
                 </h1>
-                <p className="text-lg font-semibold text-primary">
+                <p className="text-base font-semibold text-primary sm:text-lg">
                   {companyName}
                 </p>
-                <div className="mt-4 flex flex-wrap gap-2.5 pt-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3.5 py-1.5 text-xs font-bold text-slate-600">
+                <div className="mt-4 flex flex-wrap gap-2 pt-2 sm:gap-2.5">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600 sm:px-3.5">
                     <MapPin size={13} /> {location}
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/5 px-3.5 py-1.5 text-xs font-bold text-primary">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/5 px-3 py-1.5 text-xs font-bold text-primary sm:px-3.5">
                     <Briefcase size={13} /> {employmentType}
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3.5 py-1.5 text-xs font-bold text-green-600">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1.5 text-xs font-bold text-green-600 sm:px-3.5">
                     <DollarSign size={13} /> {salaryRange}
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 {showMatch && (
                   <span className="rounded-full bg-green-50 px-3.5 py-1.5 text-xs font-bold text-green-600 shadow-sm border border-green-100">
                     {match}% Match
@@ -120,7 +120,7 @@ const SharedJobDetail = ({
           </div>
 
           {/* Info grid */}
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-4">
             {[
               { icon: BookOpen, label: "Subject", val: subject },
               { icon: Award, label: "Experience", val: experience },
@@ -148,7 +148,7 @@ const SharedJobDetail = ({
           </div>
 
           {/* Details sections */}
-          <div className="rounded-3xl border border-borderColor bg-white p-6 shadow-soft space-y-6 sm:p-8">
+          <div className="rounded-3xl border border-borderColor bg-white p-5 shadow-soft space-y-6 sm:p-6 lg:p-8">
             <div>
               <h3 className="text-lg font-bold text-slate-800 border-b border-borderColor pb-3 mb-4 font-heading">
                 Job Description
@@ -190,7 +190,7 @@ const SharedJobDetail = ({
         <div>
           <div className="space-y-6 lg:sticky lg:top-24">
             {/* Action Card */}
-            <div className="rounded-3xl border border-borderColor bg-white p-6 shadow-soft space-y-4">
+            <div className="rounded-3xl border border-borderColor bg-white p-5 shadow-soft space-y-4 sm:p-6">
               <h3 className="font-heading text-lg font-bold text-slate-800">
                 Interested in this position?
               </h3>
@@ -228,16 +228,16 @@ const SharedJobDetail = ({
             </div>
 
             {/* School Details */}
-            <div className="rounded-3xl border border-borderColor bg-white p-6 shadow-soft space-y-4">
+            <div className="rounded-3xl border border-borderColor bg-white p-5 shadow-soft space-y-4 sm:p-6">
               <h3 className="font-bold text-slate-800 border-b border-borderColor pb-3 mb-2 font-heading">
                 About the Institute
               </h3>
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-primary border border-borderColor">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-primary border border-borderColor">
                   <Building2 size={22} />
                 </div>
-                <div>
-                  <h4 className="font-bold text-slate-800 truncate max-w-[180px]">
+                <div className="min-w-0">
+                  <h4 className="font-bold text-slate-800 truncate">
                     {companyName}
                   </h4>
                   <p className="text-xs text-slate-400">Verified Recruiter</p>

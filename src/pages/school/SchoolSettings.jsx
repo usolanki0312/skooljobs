@@ -216,7 +216,7 @@ const SchoolSettings = () => {
 
   return (
     <div className="space-y-8">
-      <h2 className="text-2xl font-bold text-slate-800">Settings</h2>
+      <h2 className="text-2xl font-bold text-slate-800 sm:text-3xl">Settings</h2>
 
       {/* --- Member info for Non-Admins / Members --- */}
       {!isAdmin && (
@@ -662,7 +662,7 @@ const SchoolSettings = () => {
               <input type="checkbox" checked={deleteChecks.c2} onChange={(e) => setDeleteChecks((p) => ({ ...p, c2: e.target.checked }))} className="mt-1 h-4 w-4 accent-red-500" />
               <span className="text-sm text-slate-700">I confirm this is my account and I wish to permanently delete it. This cannot be undone.</span>
             </label>
-            <div className="flex gap-3 pt-2">
+            <div className="flex flex-col gap-3 pt-2 sm:flex-row">
               <button
                 type="button"
                 disabled={!deleteChecks.c1 || !deleteChecks.c2}
@@ -686,7 +686,7 @@ const SchoolSettings = () => {
               <input value={deleteOtp} onChange={(e) => setDeleteOtp(e.target.value)} className={inputClass} placeholder="Enter 6-digit OTP" maxLength={6} />
             </FormField>
             <p className="text-xs text-slate-400">For demo: use OTP <strong>123456</strong></p>
-            <div className="flex gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 type="button"
                 onClick={() => {

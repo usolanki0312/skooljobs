@@ -19,7 +19,7 @@ const SchoolViewProfile = () => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-slate-800">View Profile</h2>
+      <h2 className="text-2xl font-bold text-slate-800 sm:text-3xl">View Profile</h2>
       <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
         <p className="font-bold">Public Profile Visibility</p>
         <p className="mt-1">
@@ -57,9 +57,9 @@ const SchoolViewProfile = () => {
               </div>
             ))}
           </div>
-          <div className="mt-5 flex items-center justify-between rounded-xl border border-borderColor bg-light px-4 py-3">
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-borderColor bg-light px-4 py-3">
             <p className="text-sm font-bold text-slate-700">Profile visible to shortlisted candidates</p>
-            <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-600">Open</span>
+            <span className="shrink-0 rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-600">Open</span>
           </div>
         </div>
       </div>

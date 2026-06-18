@@ -53,7 +53,7 @@ const LanguageRequirements = ({ form, setField }) => {
         <Plus size={16} /> Add Language
       </button>
       {showPicker && (
-        <div className="absolute right-0 top-12 z-50 w-64 rounded-2xl border border-borderColor bg-white p-4 shadow-[0_8px_32px_rgba(0,0,0,0.12)] space-y-3">
+        <div className="absolute right-0 top-12 z-50 w-[min(16rem,calc(100vw-2rem))] rounded-2xl border border-borderColor bg-white p-4 shadow-[0_8px_32px_rgba(0,0,0,0.12)] space-y-3">
           <div>
             <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-500">
               Language Type

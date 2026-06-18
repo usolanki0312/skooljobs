@@ -238,7 +238,7 @@ const SchoolAllApplicants = () => {
 
   return (
     <div className="space-y-5">
-      <h2 className="text-2xl font-bold text-slate-800">All Applicants</h2>
+      <h2 className="text-2xl font-bold text-slate-800 sm:text-3xl">All Applicants</h2>
 
       {/* ── Filters ───────────────────────────────────────────────────────── */}
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -388,7 +388,7 @@ const SchoolAllApplicants = () => {
               </div>
 
               {/* Details grid */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {[
                   { label: "Subject", value: drawerApplicant.subject },
                   { label: "Experience", value: drawerApplicant.experience },

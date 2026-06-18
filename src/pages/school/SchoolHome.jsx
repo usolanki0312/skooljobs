@@ -83,7 +83,7 @@ const SchoolHome = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-slate-800">
+        <h2 className="text-2xl font-bold text-slate-800 sm:text-3xl">
           Applications Statistics
         </h2>
       </div>
@@ -130,7 +130,7 @@ const SchoolHome = () => {
               <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
                 {stat.label}
               </p>
-              <p className={`mt-3 text-4xl font-bold ${stat.color}`}>
+              <p className={`mt-3 text-3xl font-bold sm:text-4xl ${stat.color}`}>
                 {stat.value}
               </p>
               <p className="mt-2 text-xs text-slate-400">{stat.sub}</p>
@@ -140,8 +140,8 @@ const SchoolHome = () => {
       </div>
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_320px]">
-        <div className="rounded-2xl border border-borderColor bg-white p-6 shadow-sm">
-          <div className="flex h-40 items-end justify-around gap-4 border-b border-borderColor pb-4">
+        <div className="rounded-2xl border border-borderColor bg-white p-4 shadow-sm sm:p-6">
+          <div className="flex h-40 items-end justify-around gap-2 border-b border-borderColor pb-4 sm:gap-4">
             {barData.map((bar) => (
               <div
                 key={bar.label}

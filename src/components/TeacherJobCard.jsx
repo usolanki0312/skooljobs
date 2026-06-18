@@ -16,17 +16,17 @@ const TeacherJobCard = ({ job, appliedJobs, savedJobs, onApply, onSave }) => {
       onClick={handleCardClick}
       className="rounded-3xl border border-borderColor bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft cursor-pointer"
     >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex min-w-0 items-center gap-4">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
             <GraduationCap size={25} />
           </div>
-          <div>
-            <h3 className="text-lg font-bold text-primary">{job.role}</h3>
-            <p className="text-sm font-semibold text-slate-500">{job.school}</p>
+          <div className="min-w-0">
+            <h3 className="break-words text-lg font-bold text-primary">{job.role}</h3>
+            <p className="break-words text-sm font-semibold text-slate-500">{job.school}</p>
           </div>
         </div>
-        <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-600">
+        <span className="shrink-0 rounded-full bg-green-50 px-3 py-1 text-xs font-bold text-green-600">
           {job.match}% Match
         </span>
       </div>
