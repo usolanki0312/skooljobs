@@ -509,7 +509,7 @@ const SchoolInterviews = () => {
             </div>
 
             {/* Footer */}
-            <div className="sticky bottom-0 flex justify-end gap-3 rounded-b-3xl border-t border-borderColor bg-white px-6 py-4">
+            <div className="sticky bottom-0 flex flex-col-reverse gap-3 rounded-b-3xl border-t border-borderColor bg-white px-6 py-4 sm:flex-row sm:justify-end">
               <button type="button" onClick={() => setSchedulingFor(null)} className="rounded-xl border border-borderColor px-6 py-2.5 text-sm font-bold text-slate-500 hover:bg-light">
                 Cancel
               </button>

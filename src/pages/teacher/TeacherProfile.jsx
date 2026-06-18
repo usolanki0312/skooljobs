@@ -11,6 +11,7 @@ import {
   FileText,
   GraduationCap,
   MapPin,
+  Menu,
   Phone,
   Plus,
   Save,
@@ -136,6 +137,7 @@ const TeacherProfile = () => {
   }, []);
 
   const [activeSection, setActiveSection] = useState("basic");
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [profileImage, setProfileImage] = useState(
     storedUser.profilePhoto || "https://i.pravatar.cc/300?img=12",
   );
@@ -3702,23 +3704,46 @@ const TeacherProfile = () => {
             <BackButton />
           </div>
 
-          <div className="mb-6 flex gap-2 overflow-x-auto rounded-3xl bg-white p-3 shadow-soft lg:hidden">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeSection === item.id;
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => setActiveSection(item.id)}
-                  className={`flex shrink-0 items-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition ${isActive ? "bg-primary text-white" : "bg-light text-primary"
-                    }`}
-                >
-                  <Icon size={17} />
-                  {item.label}
-                </button>
-              );
-            })}
+          <div className="relative mb-6 lg:hidden">
+            <div className="flex items-center justify-between rounded-3xl bg-white p-3 shadow-soft">
+              <span className="px-2 text-sm font-bold text-primary">
+                {navItems.find((item) => item.id === activeSection)?.label || "Menu"}
+              </span>
+              <button
+                type="button"
+                onClick={() => setMobileNavOpen((o) => !o)}
+                aria-label="Toggle navigation menu"
+                aria-expanded={mobileNavOpen}
+                className="rounded-xl p-2 text-primary hover:bg-light"
+              >
+                {mobileNavOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+            </div>
+
+            {mobileNavOpen && (
+              <div className="absolute left-0 right-0 top-full z-40 mt-2 space-y-1 rounded-3xl bg-white p-3 shadow-soft">
+                {navItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = activeSection === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        setActiveSection(item.id);
+                        setMobileNavOpen(false);
+                      }}
+                      className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${
+                        isActive ? "bg-primary text-white" : "text-slate-600 hover:bg-light hover:text-primary"
+                      }`}
+                    >
+                      <Icon size={17} />
+                      {item.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div className="rounded-3xl bg-white p-4 shadow-soft sm:p-6 lg:p-8">

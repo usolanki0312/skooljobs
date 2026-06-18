@@ -142,7 +142,7 @@ const SchoolJobDetail = () => {
       </div>
 
       {/* ── Stats row ─────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
           { label: "Total Applied",  value: candidates.length || job.applicants, color: "text-primary" },
           { label: "Shortlisted",    value: shortlisted,  color: "text-green-600" },
@@ -334,7 +334,7 @@ const SchoolJobDetail = () => {
               </div>
             </div>
 
-            <div className="sticky bottom-0 flex justify-end gap-3 rounded-b-3xl border-t border-borderColor bg-white px-6 py-4">
+            <div className="sticky bottom-0 flex flex-col-reverse gap-3 rounded-b-3xl border-t border-borderColor bg-white px-6 py-4 sm:flex-row sm:justify-end">
               <button type="button" onClick={() => setEditOpen(false)} className="rounded-xl border border-borderColor px-6 py-2.5 text-sm font-bold text-slate-500 hover:bg-light">
                 Cancel
               </button>

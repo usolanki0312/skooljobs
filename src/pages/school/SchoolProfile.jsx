@@ -30,6 +30,7 @@ import {
   KeyRound,
   LayoutDashboard,
   LogOut,
+  Menu,
   Package,
   PlusCircle,
   Save,
@@ -115,6 +116,7 @@ const Field = ({ label, required, children }) => (
 const SchoolProfile = () => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("basic");
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [logoImage, setLogoImage] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
   const [galleryImages, setGalleryImages] = useState([]);
@@ -981,7 +983,7 @@ const SchoolProfile = () => {
           <SidebarInner />
         </aside>
 
-        <main className="flex-1 p-5 lg:p-8">
+        <main className="min-w-0 flex-1 overflow-x-hidden p-5 lg:p-8">
           <div className="mb-6 rounded-3xl bg-white p-5 shadow-soft">
             <p className="text-xs font-bold uppercase tracking-[2px] text-secondary">
               Employer Workspace
@@ -995,7 +997,7 @@ const SchoolProfile = () => {
             </p>
           </div>
 
-          <div className="mb-6 flex gap-2 overflow-x-auto rounded-3xl bg-white p-3 shadow-soft">
+          <div className="mb-6 hidden gap-2 rounded-3xl bg-white p-3 shadow-soft lg:flex">
             {profileSections.map((section) => {
               const isActive = activeSection === section.id;
               return (
@@ -1009,6 +1011,44 @@ const SchoolProfile = () => {
                 </button>
               );
             })}
+          </div>
+
+          <div className="relative mb-6 lg:hidden">
+            <div className="flex items-center justify-between rounded-3xl bg-white p-3 shadow-soft">
+              <span className="px-2 text-sm font-bold text-primary">
+                {profileSections.find((section) => section.id === activeSection)?.label || "Menu"}
+              </span>
+              <button
+                type="button"
+                onClick={() => setMobileNavOpen((o) => !o)}
+                aria-label="Toggle navigation menu"
+                aria-expanded={mobileNavOpen}
+                className="rounded-xl p-2 text-primary hover:bg-light"
+              >
+                {mobileNavOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+            </div>
+
+            {mobileNavOpen && (
+              <div className="absolute left-0 right-0 top-full z-40 mt-2 space-y-1 rounded-3xl bg-white p-3 shadow-soft">
+                {profileSections.map((section) => {
+                  const isActive = activeSection === section.id;
+                  return (
+                    <button
+                      key={section.id}
+                      type="button"
+                      onClick={() => {
+                        setActiveSection(section.id);
+                        setMobileNavOpen(false);
+                      }}
+                      className={`flex w-full items-center rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${isActive ? "bg-primary text-white" : "text-slate-600 hover:bg-light hover:text-primary"}`}
+                    >
+                      {section.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div className="rounded-3xl bg-white p-6 shadow-soft lg:p-8">
