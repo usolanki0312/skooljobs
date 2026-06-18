@@ -411,7 +411,7 @@ const SchoolSettings = () => {
                 className="w-full border border-borderColor rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary transition"
               />
             </div>
-            <div className="sm:col-span-2 flex justify-end gap-3 pt-3 border-t border-borderColor/60">
+            <div className="sm:col-span-2 flex flex-col-reverse gap-3 pt-3 border-t border-borderColor/60 sm:flex-row sm:justify-end">
               <button
                 type="button"
                 onClick={() => setEditingMember(null)}
@@ -510,7 +510,7 @@ const SchoolSettings = () => {
                 )}
               </div>
 
-              <div className="flex justify-end gap-3 pt-2">
+              <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
                 <button
                   type="button"
                   onClick={() => setOtpState(p => ({ ...p, isOpen: false }))}
@@ -554,7 +554,7 @@ const SchoolSettings = () => {
                 </p>
               )}
 
-              <div className="flex justify-end gap-3 pt-3 border-t border-primary/10">
+              <div className="flex flex-col-reverse gap-3 pt-3 border-t border-primary/10 sm:flex-row sm:justify-end">
                 <button
                   type="button"
                   onClick={() => setOtpState(p => ({ ...p, otpSent: false, error: "" }))}
