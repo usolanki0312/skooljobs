@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import { Button, Input } from "@cloudstrytech/ui-components";
+
 import {
   Calendar, CheckCircle, Clock, Link2, MapPin, MessageCircle, Pencil,
   PhoneCall, Video, XCircle, X,
@@ -180,13 +182,12 @@ const SchoolInterviews = () => {
                             Scheduled ✓
                           </span>
                         ) : (
-                          <button
+                          <Button
                             type="button"
                             onClick={() => openSchedule(a)}
-                            className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-primary/90"
                           >
                             <Calendar size={13} /> Schedule Interview
-                          </button>
+                          </Button>
                         )}
                       </td>
                     </tr>
@@ -248,17 +249,29 @@ const SchoolInterviews = () => {
                     </td>
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-2">
-                        <button type="button" onClick={() => openEdit(iv)} className="flex items-center gap-1 rounded-lg border border-borderColor px-3 py-1.5 text-xs font-bold text-primary hover:bg-light">
+                        <Button
+                          variant="outlined"
+                          type="button"
+                          onClick={() => openEdit(iv)}
+                        >
                           <Pencil size={11} /> Edit
-                        </button>
+                        </Button>
                         {iv.status === "Scheduled" && (
-                          <button type="button" onClick={() => updateStatus(iv.id, "Confirmed")} className="flex items-center gap-1 rounded-lg border border-green-200 px-3 py-1.5 text-xs font-bold text-green-600 hover:bg-green-50">
+                          <Button
+                            variant="outlined"
+                            type="button"
+                            onClick={() => updateStatus(iv.id, "Confirmed")}
+                          >
                             <CheckCircle size={11} /> Confirm
-                          </button>
+                          </Button>
                         )}
-                        <button type="button" onClick={() => deleteInterview(iv.id)} className="flex items-center gap-1 rounded-lg border border-red-100 px-3 py-1.5 text-xs font-bold text-red-500 hover:bg-red-50">
+                        <Button
+                          variant="outlined"
+                          type="button"
+                          onClick={() => deleteInterview(iv.id)}
+                        >
                           <XCircle size={11} /> Remove
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -287,9 +300,13 @@ const SchoolInterviews = () => {
                   <p className="text-xs text-slate-500">{schedulingFor.name} · {schedulingFor.jobTitle}</p>
                 </div>
               </div>
-              <button type="button" onClick={() => setSchedulingFor(null)} className="rounded-xl p-2 text-slate-400 hover:bg-light">
+              <Button
+                variant="text"
+                type="button"
+                onClick={() => setSchedulingFor(null)}
+              >
                 <X size={18} />
-              </button>
+              </Button>
             </div>
 
             <div className="grid grid-cols-1 gap-5 p-6 md:grid-cols-2">
@@ -303,20 +320,24 @@ const SchoolInterviews = () => {
                 <div className="space-y-4">
                   <div>
                     <Label required>Candidate</Label>
-                    <input readOnly value={schedulingFor.name} className={`${inputCls} bg-light text-slate-500`} />
-                  </div>
+                    <Input
+                      value={schedulingFor.name}
+                      readOnly
+                    />                  </div>
                   <div>
                     <Label required>Job Posting</Label>
-                    <input readOnly value={schedulingFor.jobTitle} className={`${inputCls} bg-light text-slate-500`} />
+                    <Input
+                      value={schedulingFor.jobTitle}
+                      readOnly
+                    />  
                   </div>
                   <div>
                     <Label>Interviewer(s)</Label>
-                    <input
-                      value={form.interviewer}
-                      onChange={(e) => set("interviewer", e.target.value)}
-                      className={inputCls}
-                      placeholder="e.g. Priya Sharma (Academic Head)"
-                    />
+                    <Input
+  value={form.interviewer}
+  onChange={(value) => set("interviewer", value)}
+  placeholder="e.g. Priya Sharma (Academic Head)"
+/>
                   </div>
                   <div>
                     <Label required>Interview Round</Label>
@@ -334,11 +355,18 @@ const SchoolInterviews = () => {
                 <div className="space-y-4">
                   <div>
                     <Label required>Date</Label>
-                    <input type="date" value={form.date} onChange={(e) => set("date", e.target.value)} className={inputCls} />
-                  </div>
+<Input
+  type="date"
+  value={form.date}
+  onChange={(value) => set("date", value)}
+/>                  </div>
                   <div>
                     <Label required>Time</Label>
-                    <input type="time" value={form.time} onChange={(e) => set("time", e.target.value)} className={inputCls} />
+                    <Input
+                      type="time"
+                      value={form.time}
+                      onChange={(value) => set("time", value)}
+                    />
                   </div>
                   <div>
                     <Label required>Duration</Label>
@@ -360,8 +388,13 @@ const SchoolInterviews = () => {
                     { val: "Telephonic", icon: <PhoneCall size={15} />, color: "text-green-500" },
                   ].map(({ val, icon, color }) => (
                     <label key={val} className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition ${form.mode === val ? "border-primary bg-primary/5" : "border-borderColor hover:bg-light"}`}>
-                      <input type="radio" name="mode" value={val} checked={form.mode === val} onChange={() => set("mode", val)} className="accent-primary" />
-                      <span className={color}>{icon}</span>
+<Input
+  type="radio"
+  name="mode"
+  value={val}
+  checked={form.mode === val}
+  onChange={() => set("mode", val)}
+/>                      <span className={color}>{icon}</span>
                       <span className="text-sm font-bold text-slate-700">{val}</span>
                     </label>
                   ))}
@@ -374,21 +407,21 @@ const SchoolInterviews = () => {
                           {ONLINE_PLATFORMS.map((p) => {
                             const isWhatsApp = p.val === "WhatsApp Video Call";
                             return (
-                              <button
-                                key={p.val}
-                                type="button"
-                                onClick={() => set("onlinePlatform", p.val)}
-                                className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-bold transition ${
-                                  form.onlinePlatform === p.val
-                                    ? "border-primary bg-primary/10 text-primary"
-                                    : "border-borderColor bg-white text-slate-600 hover:border-primary"
-                                }`}
-                              >
-                                {isWhatsApp
-                                  ? <MessageCircle size={14} className="text-green-500" />
-                                  : <Video size={14} className="text-blue-500" />}
-                                {p.val}
-                              </button>
+                            <Button
+  key={p.val}
+  type="button"
+  onClick={() => set("onlinePlatform", p.val)}
+  variant={
+    form.onlinePlatform === p.val ? "default" : "outlined"
+  }
+>
+  {isWhatsApp ? (
+    <MessageCircle size={14} className="text-green-500" />
+  ) : (
+    <Video size={14} className="text-blue-500" />
+  )}
+  {p.val}
+</Button>
                             );
                           })}
                         </div>
@@ -399,12 +432,13 @@ const SchoolInterviews = () => {
                           <Label required>Meeting Link</Label>
                           <div className="flex items-center gap-2 rounded-xl border border-borderColor bg-white px-3 py-2.5 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
                             <Link2 size={15} className="shrink-0 text-slate-400" />
-                            <input
-                              value={form.meetingLink}
-                              onChange={(e) => set("meetingLink", e.target.value)}
-                              placeholder={ONLINE_PLATFORMS.find((p) => p.val === form.onlinePlatform)?.placeholder}
-                              className="flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
-                            />
+                            <Input
+  value={form.meetingLink}
+  onChange={(value) => set("meetingLink", value)}
+  placeholder={
+    ONLINE_PLATFORMS.find((p) => p.val === form.onlinePlatform)?.placeholder
+  }
+/>
                           </div>
                         </div>
                       ) : (
@@ -424,11 +458,11 @@ const SchoolInterviews = () => {
                       <p className="text-xs font-bold text-orange-600">In-Person Details</p>
                       <div>
                         <Label>Location / Address</Label>
-                        <input value={form.location} onChange={(e) => set("location", e.target.value)} className={inputCls} placeholder="e.g. Delhi Public School, Sector-45" />
+                        <Input value={form.location} onChange={(value) => set("location", value)} className={inputCls} placeholder="e.g. Delhi Public School, Sector-45" />
                       </div>
                       <div>
                         <Label>Room / Venue</Label>
-                        <input value={form.room} onChange={(e) => set("room", e.target.value)} className={inputCls} placeholder="e.g. Conference Room – 2" />
+                        <Input value={form.room} onChange={(value) => set("room", value)} className={inputCls} placeholder="e.g. Conference Room – 2" />
                       </div>
                     </div>
                   )}
@@ -459,13 +493,12 @@ const SchoolInterviews = () => {
                         { key: "remind1h", label: "1 Hour Reminder", sub: "Before interview" },
                       ].map(({ key, label, sub }) => (
                         <label key={key} className="flex cursor-pointer items-start gap-3 rounded-xl border border-borderColor p-3 hover:bg-light">
-                          <input
-                            type="checkbox"
-                            checked={remindersEnabled && form[key]}
-                            disabled={!remindersEnabled}
-                            onChange={(e) => set(key, e.target.checked)}
-                            className="mt-0.5 h-4 w-4 accent-primary"
-                          />
+                        <Input
+  type="checkbox"
+  checked={remindersEnabled && form[key]}
+  disabled={!remindersEnabled}
+  onChange={(checked) => set(key, checked)}
+/>
                           <div>
                             <p className="text-sm font-bold text-slate-700">{label}</p>
                             <p className="text-xs text-slate-400">{sub}</p>
@@ -510,12 +543,20 @@ const SchoolInterviews = () => {
 
             {/* Footer */}
             <div className="sticky bottom-0 flex flex-col-reverse gap-3 rounded-b-3xl border-t border-borderColor bg-white px-6 py-4 sm:flex-row sm:justify-end">
-              <button type="button" onClick={() => setSchedulingFor(null)} className="rounded-xl border border-borderColor px-6 py-2.5 text-sm font-bold text-slate-500 hover:bg-light">
-                Cancel
-              </button>
-              <button type="button" onClick={handleSubmit} className="rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-white hover:bg-primary/90">
-                {editingId ? "Save Changes" : "Schedule Interview"}
-              </button>
+             <Button
+  variant="outlined"
+  type="button"
+  onClick={() => setSchedulingFor(null)}
+>
+  Cancel
+</Button>
+
+<Button
+  type="button"
+  onClick={handleSubmit}
+>
+  {editingId ? "Save Changes" : "Schedule Interview"}
+</Button>
             </div>
           </div>
         </div>

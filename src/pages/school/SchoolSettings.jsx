@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
+import { Button, Input } from "@cloudstrytech/ui-components";
+
 import {
   HelpCircle,
   KeyRound,
@@ -72,7 +74,7 @@ const SchoolSettings = () => {
   // Helper to trigger OTP verification inline
   const triggerOtpVerification = (actionType, targetId, formData = null) => {
     let defaultPhone = currentUser.phone || "9999999999";
-    
+
     if (actionType === "edit" || actionType === "add") {
       defaultPhone = formData.phone || defaultPhone;
     } else if (actionType === "delete" || actionType === "transfer") {
@@ -128,8 +130,8 @@ const SchoolSettings = () => {
       localStorage.setItem("skooljobs_members", JSON.stringify(updated));
       setEditingMember(null);
       alert("Team member account created successfully!");
-    } 
-    
+    }
+
     else if (actionType === "edit") {
       const updated = members.map(m => m.id === targetMemberId ? {
         ...m,
@@ -143,15 +145,15 @@ const SchoolSettings = () => {
       localStorage.setItem("skooljobs_members", JSON.stringify(updated));
       setEditingMember(null);
       alert("Team member details updated successfully!");
-    } 
-    
+    }
+
     else if (actionType === "delete") {
       const updated = members.filter(m => m.id !== targetMemberId);
       setMembers(updated);
       localStorage.setItem("skooljobs_members", JSON.stringify(updated));
       alert("Team member account removed successfully!");
-    } 
-    
+    }
+
     else if (actionType === "transfer") {
       const promotedMember = members.find(m => m.id === targetMemberId);
       if (!promotedMember) return;
@@ -181,7 +183,7 @@ const SchoolSettings = () => {
         companyName: currentUser.companyName || "Green Valley School",
         role: "employer",
       };
-      
+
       const filteredUsers = users.filter(u => u.email !== promotedMember.email);
       filteredUsers.push(newAdminUser);
       localStorage.setItem("skooljobs_users", JSON.stringify(filteredUsers));
@@ -249,17 +251,22 @@ const SchoolSettings = () => {
                 <p className="text-xs text-slate-400">Manage login credentials and access levels for your staff (Max 3 members).</p>
               </div>
             </div>
-            <button
+            <Button
               type="button"
               disabled={members.length >= 3}
               onClick={() => {
-                setEditingMember({ name: "", email: "", phone: "", memberRole: "Member", password: "" });
-                setOtpState(prev => ({ ...prev, isOpen: false })); // Close OTP panel
+                setEditingMember({
+                  name: "",
+                  email: "",
+                  phone: "",
+                  memberRole: "Member",
+                  password: "",
+                });
+                setOtpState((prev) => ({ ...prev, isOpen: false }));
               }}
-              className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-white hover:bg-primary/95 disabled:opacity-40 disabled:cursor-not-allowed transition"
             >
               <UserPlus size={14} /> Add Member ({members.length}/3)
-            </button>
+            </Button>
           </div>
 
           <div className="overflow-x-auto">
@@ -280,11 +287,10 @@ const SchoolSettings = () => {
                     <td className="px-4 py-3.5 text-slate-600">{m.email}</td>
                     <td className="px-4 py-3.5 text-slate-600">{m.phone}</td>
                     <td className="px-4 py-3.5">
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold ${
-                        m.isAdminRow
-                          ? "bg-amber-50 text-amber-700 border border-amber-100"
-                          : "bg-primary/5 text-primary"
-                      }`}>
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold ${m.isAdminRow
+                        ? "bg-amber-50 text-amber-700 border border-amber-100"
+                        : "bg-primary/5 text-primary"
+                        }`}>
                         {m.memberRole}
                       </span>
                     </td>
@@ -358,73 +364,85 @@ const SchoolSettings = () => {
           >
             <div>
               <label className="block text-xs font-bold text-slate-500 mb-1.5">Full Name *</label>
-              <input
-                type="text"
-                required
-                value={editingMember.name}
-                onChange={(e) => setEditingMember(p => ({ ...p, name: e.target.value }))}
-                placeholder="e.g. Ritesh Deshmukh"
-                className="w-full border border-borderColor rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary transition"
+              <Input
+                type="password"
+                required={!editingMember.id}
+                value={editingMember.password || ""}
+                onChange={(value) =>
+                  setEditingMember((p) => ({
+                    ...p,
+                    password: value,
+                  }))
+                }
+                placeholder={editingMember.id ? "••••••••" : "Enter password"}
               />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-500 mb-1.5">Email Address *</label>
-              <input
+              <Input
                 type="email"
                 required
                 value={editingMember.email}
-                onChange={(e) => setEditingMember(p => ({ ...p, email: e.target.value }))}
+                onChange={(value) =>
+                  setEditingMember((p) => ({
+                    ...p,
+                    email: value,
+                  }))
+                }
                 placeholder="e.g. ritesh@school.in"
-                className="w-full border border-borderColor rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary transition"
               />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-500 mb-1.5">Mobile Number *</label>
-              <input
-                type="text"
+              <Input
+                type="email"
                 required
-                value={editingMember.phone}
-                onChange={(e) => setEditingMember(p => ({ ...p, phone: e.target.value }))}
-                placeholder="e.g. 9876543210"
-                className="w-full border border-borderColor rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary transition"
+                value={editingMember.email}
+                onChange={(value) =>
+                  setEditingMember((p) => ({
+                    ...p,
+                    email: value,
+                  }))
+                }
+                placeholder="e.g. ritesh@school.in"
               />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-500 mb-1.5">Role (Fixed) *</label>
-              <input
+              <Input
                 type="text"
                 disabled
                 value="Member"
-                className="w-full border border-borderColor/60 rounded-xl px-4 py-2.5 text-sm bg-slate-50 text-slate-400 font-bold outline-none cursor-not-allowed"
               />
             </div>
             <div className="sm:col-span-2">
               <label className="block text-xs font-bold text-slate-500 mb-1.5">
                 {editingMember.id ? "New Password (leave blank to keep current)" : "Password *"}
               </label>
-              <input
+              <Input
                 type="password"
                 required={!editingMember.id}
                 value={editingMember.password || ""}
-                onChange={(e) => setEditingMember(p => ({ ...p, password: e.target.value }))}
+                onChange={(value) =>
+                  setEditingMember((p) => ({
+                    ...p,
+                    password: value,
+                  }))
+                }
                 placeholder={editingMember.id ? "••••••••" : "Enter password"}
-                className="w-full border border-borderColor rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary transition"
               />
             </div>
             <div className="sm:col-span-2 flex flex-col-reverse gap-3 pt-3 border-t border-borderColor/60 sm:flex-row sm:justify-end">
-              <button
+              <Button
+                variant="outlined"
                 type="button"
                 onClick={() => setEditingMember(null)}
-                className="rounded-xl border border-borderColor px-4 py-2 text-sm font-semibold text-slate-500 hover:bg-light transition"
               >
                 Cancel
-              </button>
-              <button
-                type="submit"
-                className="rounded-xl bg-primary px-5 py-2 text-sm font-bold text-white hover:bg-primary/95 transition"
-              >
+              </Button>
+              <Button type="submit">
                 Save &amp; Request OTP
-              </button>
+              </Button>
             </div>
           </form>
         </div>
@@ -457,14 +475,17 @@ const SchoolSettings = () => {
               </p>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <label className="flex items-center gap-3 p-3 rounded-xl border border-borderColor bg-white cursor-pointer hover:bg-light/40 transition">
-                  <input
+                  <Input
                     type="radio"
                     name="otpDest"
                     checked={otpState.selectedPhone === (currentUser.phone || "9999999999")}
-                    onChange={() => setOtpState(p => ({ ...p, selectedPhone: currentUser.phone || "9999999999" }))}
-                    className="accent-primary h-4.5 w-4.5"
-                  />
-                  <div>
+                    onChange={() =>
+                      setOtpState((p) => ({
+                        ...p,
+                        selectedPhone: currentUser.phone || "9999999999",
+                      }))
+                    }
+                  /><div>
                     <p className="text-xs font-bold text-slate-700">Admin's Number (You)</p>
                     <p className="text-xs text-slate-500">{currentUser.phone || "+91 99999 99999"}</p>
                   </div>
@@ -473,12 +494,16 @@ const SchoolSettings = () => {
                 {/* If adding/editing, show the member phone inputted */}
                 {otpState.formData?.phone && (
                   <label className="flex items-center gap-3 p-3 rounded-xl border border-borderColor bg-white cursor-pointer hover:bg-light/40 transition">
-                    <input
+                    <Input
                       type="radio"
                       name="otpDest"
                       checked={otpState.selectedPhone === otpState.formData.phone}
-                      onChange={() => setOtpState(p => ({ ...p, selectedPhone: otpState.formData.phone }))}
-                      className="accent-primary h-4.5 w-4.5"
+                      onChange={() =>
+                        setOtpState((p) => ({
+                          ...p,
+                          selectedPhone: otpState.formData.phone,
+                        }))
+                      }
                     />
                     <div>
                       <p className="text-xs font-bold text-slate-700">Member's Number</p>
@@ -537,14 +562,18 @@ const SchoolSettings = () => {
               </div>
 
               <FormField label="Enter Verification Code">
-                <input
+                <Input
                   type="text"
                   required
                   maxLength={6}
                   value={otpState.otpInput}
-                  onChange={(e) => setOtpState(p => ({ ...p, otpInput: e.target.value }))}
+                  onChange={(value) =>
+                    setOtpState((p) => ({
+                      ...p,
+                      otpInput: value,
+                    }))
+                  }
                   placeholder="Enter 6-digit OTP"
-                  className={`${inputClass} text-center tracking-[4px] font-bold text-base bg-white`}
                 />
               </FormField>
 
@@ -582,29 +611,67 @@ const SchoolSettings = () => {
         </div>
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
           <FormField label="Current Password">
-            <input type="password" value={pwForm.current} onChange={(e) => setPwForm((p) => ({ ...p, current: e.target.value }))} className={inputClass} placeholder="Enter current password" />
-          </FormField>
+            <Input
+              type="password"
+              value={pwForm.current}
+              onChange={(value) =>
+                setPwForm((p) => ({
+                  ...p,
+                  current: value,
+                }))
+              }
+              placeholder="Enter current password"
+            />          </FormField>
           <FormField label="New Password">
-            <input type="password" value={pwForm.next} onChange={(e) => setPwForm((p) => ({ ...p, next: e.target.value }))} className={inputClass} placeholder="Enter new password" />
-          </FormField>
+            <Input
+              type="password"
+              value={pwForm.next}
+              onChange={(value) =>
+                setPwForm((p) => ({
+                  ...p,
+                  next: value,
+                }))
+              }
+              placeholder="Enter new password"
+            />          </FormField>
           <FormField label="Confirm New Password">
-            <input type="password" value={pwForm.confirm} onChange={(e) => setPwForm((p) => ({ ...p, confirm: e.target.value }))} className={inputClass} placeholder="Re-enter new password" />
-          </FormField>
+            <Input
+              type="password"
+              value={pwForm.confirm}
+              onChange={(value) =>
+                setPwForm((p) => ({
+                  ...p,
+                  confirm: value,
+                }))
+              }
+              placeholder="Re-enter new password"
+            />          </FormField>
         </div>
         <div className="mt-5 flex justify-end">
-          <button
+          <Button
             type="button"
             onClick={() => {
-              if (!pwForm.current) { alert("Enter your current password."); return; }
-              if (pwForm.next !== pwForm.confirm) { alert("New passwords do not match."); return; }
-              if (pwForm.next.length < 6) { alert("Password must be at least 6 characters."); return; }
+              if (!pwForm.current) {
+                alert("Enter your current password.");
+                return;
+              }
+
+              if (pwForm.next !== pwForm.confirm) {
+                alert("New passwords do not match.");
+                return;
+              }
+
+              if (pwForm.next.length < 6) {
+                alert("Password must be at least 6 characters.");
+                return;
+              }
+
               alert("Password updated successfully!");
               setPwForm({ current: "", next: "", confirm: "" });
             }}
-            className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white hover:bg-primary/95"
           >
             <Save size={16} /> Update Password
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -646,34 +713,64 @@ const SchoolSettings = () => {
         </p>
 
         {deleteStep === 0 && (
-          <button type="button" onClick={() => setDeleteStep(1)} className="mt-5 inline-flex items-center gap-2 rounded-xl border border-red-300 px-5 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50">
+          <Button
+            variant="outlined"
+            type="button"
+            onClick={() => setDeleteStep(1)}
+          >
             <Trash2 size={15} /> Request Account Deletion
-          </button>
+          </Button>
         )}
 
         {deleteStep === 1 && (
           <div className="mt-5 space-y-4 rounded-xl border border-red-200 bg-red-50 p-5">
             <p className="text-sm font-bold text-red-700">Confirmation Required — Step 1 of 2</p>
             <label className="flex cursor-pointer items-start gap-3">
-              <input type="checkbox" checked={deleteChecks.c1} onChange={(e) => setDeleteChecks((p) => ({ ...p, c1: e.target.checked }))} className="mt-1 h-4 w-4 accent-red-500" />
-              <span className="text-sm text-slate-700">I understand that all my job postings and applicant data will be permanently deleted.</span>
+              <Input
+                type="checkbox"
+                checked={deleteChecks.c1}
+                onChange={(checked) =>
+                  setDeleteChecks((p) => ({
+                    ...p,
+                    c1: checked,
+                  }))
+                }
+              />              <span className="text-sm text-slate-700">I understand that all my job postings and applicant data will be permanently deleted.</span>
             </label>
             <label className="flex cursor-pointer items-start gap-3">
-              <input type="checkbox" checked={deleteChecks.c2} onChange={(e) => setDeleteChecks((p) => ({ ...p, c2: e.target.checked }))} className="mt-1 h-4 w-4 accent-red-500" />
-              <span className="text-sm text-slate-700">I confirm this is my account and I wish to permanently delete it. This cannot be undone.</span>
+              <Input
+                type="checkbox"
+                checked={deleteChecks.c2}
+                onChange={(checked) =>
+                  setDeleteChecks((p) => ({
+                    ...p,
+                    c2: checked,
+                  }))
+                }
+              />              <span className="text-sm text-slate-700">I confirm this is my account and I wish to permanently delete it. This cannot be undone.</span>
             </label>
             <div className="flex flex-col gap-3 pt-2 sm:flex-row">
-              <button
+              <Button
                 type="button"
                 disabled={!deleteChecks.c1 || !deleteChecks.c2}
-                onClick={() => { setDeleteStep(2); setDeleteOtpSent(true); alert("Demo OTP sent! Use code 123456 to confirm deletion."); }}
-                className="rounded-xl bg-red-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-40"
+                onClick={() => {
+                  setDeleteStep(2);
+                  setDeleteOtpSent(true);
+                  alert("Demo OTP sent! Use code 123456 to confirm deletion.");
+                }}
               >
                 Proceed to OTP Verification
-              </button>
-              <button type="button" onClick={() => { setDeleteStep(0); setDeleteChecks({ c1: false, c2: false }); }} className="rounded-xl border border-borderColor px-5 py-2.5 text-sm font-bold text-slate-500 hover:bg-light">
+              </Button>
+              <Button
+                variant="outlined"
+                type="button"
+                onClick={() => {
+                  setDeleteStep(0);
+                  setDeleteChecks({ c1: false, c2: false });
+                }}
+              >
                 Cancel
-              </button>
+              </Button>
             </div>
           </div>
         )}
@@ -687,20 +784,33 @@ const SchoolSettings = () => {
             </FormField>
             <p className="text-xs text-slate-400">For demo: use OTP <strong>123456</strong></p>
             <div className="flex flex-col gap-3 sm:flex-row">
-              <button
+              <Button
                 type="button"
                 onClick={() => {
-                  if (deleteOtp !== "123456") { alert("Invalid OTP. Try 123456 for demo."); return; }
+                  if (deleteOtp !== "123456") {
+                    alert("Invalid OTP. Try 123456 for demo.");
+                    return;
+                  }
+
                   alert("Account deleted. Redirecting...");
                   handleLogout();
                 }}
-                className="rounded-xl bg-red-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-red-600"
               >
                 Confirm Delete Account
-              </button>
-              <button type="button" onClick={() => { setDeleteStep(0); setDeleteChecks({ c1: false, c2: false }); setDeleteOtp(""); setDeleteOtpSent(false); }} className="rounded-xl border border-borderColor px-5 py-2.5 text-sm font-bold text-slate-500 hover:bg-light">
+              </Button>
+
+              <Button
+                variant="outlined"
+                type="button"
+                onClick={() => {
+                  setDeleteStep(0);
+                  setDeleteChecks({ c1: false, c2: false });
+                  setDeleteOtp("");
+                  setDeleteOtpSent(false);
+                }}
+              >
                 Cancel
-              </button>
+              </Button>
             </div>
           </div>
         )}
