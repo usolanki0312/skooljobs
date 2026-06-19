@@ -9,6 +9,8 @@ import SkillsSection from "../../components/postjob/SkillsSection";
 import SalaryBenefits from "../../components/postjob/SalaryBenefits";
 import HiringPreferences from "../../components/postjob/HiringPreferences";
 import JobPreview from "../../components/postjob/JobPreview";
+import { Button, Input } from "@cloudstrytech/ui-components";
+
 
 const blankForm = {
   // Section 1 — Role & Basic Info
@@ -186,35 +188,40 @@ const SchoolPostJob = () => {
 
       {/* Footer */}
       <div className="flex flex-col gap-3 rounded-2xl border border-borderColor bg-white px-5 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
-        <button
-          type="button"
-          onClick={() => navigate("/school/manage-jobs")}
-          className="text-sm font-bold text-slate-400 hover:text-slate-600 sm:order-first"
-        >
-          Cancel
-        </button>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <button
-            type="button"
-            onClick={() => setShowPreview(true)}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary px-6 py-2.5 text-sm font-bold text-primary hover:bg-primary/5 transition"
-          >
-            <Eye size={15} /> Preview
-          </button>
-          <button
-            type="button"
-            onClick={handleSaveDraft}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-borderColor px-6 py-2.5 text-sm font-bold text-slate-600 hover:bg-light transition"
-          >
-            <Save size={15} /> Save as Draft
-          </button>
-          <button
-            type="button"
-            onClick={handlePublish}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-white hover:bg-primary/90 transition"
-          >
-            <Send size={15} /> {form.publishOption === "Publish Later" ? "Schedule Job" : "Publish Job"}
-          </button>
+        <Button
+  variant="text"
+  type="button"
+  onClick={() => navigate("/school/manage-jobs")}
+>
+  Cancel
+</Button>
+
+<div className="flex flex-col gap-3 sm:flex-row">
+  <Button
+    variant="outlined"
+    type="button"
+    onClick={() => setShowPreview(true)}
+  >
+    <Eye size={15} /> Preview
+  </Button>
+
+  <Button
+    variant="outlined"
+    type="button"
+    onClick={handleSaveDraft}
+  >
+    <Save size={15} /> Save as Draft
+  </Button>
+
+  <Button
+    type="button"
+    onClick={handlePublish}
+  >
+    <Send size={15} />
+    {form.publishOption === "Publish Later"
+      ? "Schedule Job"
+      : "Publish Job"}
+  </Button>
         </div>
       </div>
 

@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { profileSections } from "../../lib/schooldata";
 import profileOptions from "../../../dropdown/School_module/profile.json";
+import { Button, Input } from "@cloudstrytech/ui-components";
+
 
 const {
   Sector: sectors,
@@ -283,36 +285,47 @@ const SchoolProfile = () => {
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Field label="First Name" required>
-          <input
-            name="firstName"
+          <Input
             value={formData.firstName}
-            onChange={handleChange}
-            className={inputClass}
+            onChange={(value) =>
+              setFormData((prev) => ({
+                ...prev,
+                firstName: value,
+              }))
+            }
           />
         </Field>
         <Field label="Last Name" required>
-          <input
-            name="lastName"
+          <Input
             value={formData.lastName}
-            onChange={handleChange}
-            className={inputClass}
+            onChange={(value) =>
+              setFormData((prev) => ({
+                ...prev,
+                lastName: value,
+              }))
+            }
           />
         </Field>
         <Field label="Institute Name" required>
-          <input
-            name="companyName"
+          <Input
             value={formData.companyName}
-            onChange={handleChange}
-            className={inputClass}
+            onChange={(value) =>
+              setFormData((prev) => ({
+                ...prev,
+                companyName: value,
+              }))
+            }
           />
         </Field>
         <Field label="Email" required>
-          <input
-            type="email"
-            name="email"
+          <Input
             value={formData.email}
-            onChange={handleChange}
-            className={inputClass}
+            onChange={(value) =>
+              setFormData((prev) => ({
+                ...prev,
+                email: value,
+              }))
+            }
           />
         </Field>
       </div>
@@ -325,12 +338,9 @@ const SchoolProfile = () => {
           <span className="flex-1 truncate text-sm text-slate-600">
             {formData.profileUrl}
           </span>
-          <button
-            type="button"
-            className="text-xs font-bold text-primary underline underline-offset-2"
-          >
+          <Button variant="text" color type="button">
             Edit
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -343,20 +353,26 @@ const SchoolProfile = () => {
           />
         </Field>
         <Field label="Phone">
-          <input
-            name="phone"
+          <Input
             value={formData.phone}
-            onChange={handleChange}
-            className={inputClass}
+            onChange={(value) =>
+              setFormData((prev) => ({
+                ...prev,
+                phone: value,
+              }))
+            }
             placeholder="Phone number"
           />
         </Field>
         <Field label="Website">
-          <input
-            name="website"
+          <Input
             value={formData.website}
-            onChange={handleChange}
-            className={inputClass}
+            onChange={(value) =>
+              setFormData((prev) => ({
+                ...prev,
+                website: value,
+              }))
+            }
             placeholder="https://yourwebsite.com"
           />
         </Field>
@@ -437,11 +453,14 @@ const SchoolProfile = () => {
           </Field>
 
           <Field label="School Timings / Working Hours">
-            <input
-              name="schoolTimings"
+            <Input
               value={formData.schoolTimings}
-              onChange={handleChange}
-              className={inputClass}
+              onChange={(value) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  schoolTimings: value,
+                }))
+              }
               placeholder="e.g. 8:00 AM – 2:30 PM, Mon–Sat"
             />
           </Field>
@@ -584,12 +603,14 @@ const SchoolProfile = () => {
 
           <div className="lg:col-span-2">
             <Field label="Alternate Email">
-              <input
-                type="email"
-                name="alternateEmail"
+              <Input
                 value={formData.alternateEmail}
-                onChange={handleChange}
-                className={inputClass}
+                onChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    alternateEmail: value,
+                  }))
+                }
                 placeholder="alternate-email"
               />
             </Field>
@@ -607,31 +628,40 @@ const SchoolProfile = () => {
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Field label="Facebook">
-          <input
-            name="facebook"
+          <Input
             value={formData.facebook}
-            onChange={handleChange}
-            className={inputClass}
+            onChange={(value) =>
+              setFormData((prev) => ({
+                ...prev,
+                facebook: value,
+              }))
+            }
             placeholder="https://facebook.com/yourschool"
           />
         </Field>
         {/* Twitter → renamed to X (Twitter) */}
         <Field label="X (Twitter)">
-          <input
-            name="twitter"
+          <Input
             value={formData.twitter}
-            onChange={handleChange}
-            className={inputClass}
+            onChange={(value) =>
+              setFormData((prev) => ({
+                ...prev,
+                twitter: value,
+              }))
+            }
             placeholder="https://x.com/yourschool"
           />
         </Field>
         <div className="lg:col-span-2">
           <Field label="LinkedIn">
-            <input
-              name="linkedin"
+            <Input
               value={formData.linkedin}
-              onChange={handleChange}
-              className={inputClass}
+              onChange={(value) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  linkedin: value,
+                }))
+              }
               placeholder="https://linkedin.com/school/yourschool"
             />
           </Field>
@@ -742,14 +772,13 @@ const SchoolProfile = () => {
       <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
         <Field label="Search Area / Locality">
           <div className="relative">
-            <input
+            <Input
               value={areaQuery}
-              onChange={(e) => {
-                setAreaQuery(e.target.value);
+              onChange={(value) => {
+                setAreaQuery(value);
                 setAreaError("");
               }}
               onFocus={() => areaResults.length > 0 && setShowAreaDropdown(true)}
-              className={inputClass}
               placeholder="Type an area name, e.g. Rajendra Nagar (min 3 letters)"
               autoComplete="off"
             />
@@ -804,23 +833,29 @@ const SchoolProfile = () => {
         </Field>
 
         <Field label="Area / Locality">
-          <input
-            name="area"
-            value={formData.area}
-            onChange={handleChange}
-            className={inputClass}
-            placeholder="e.g. Rajendra Nagar"
-          />
+         <Input
+  value={formData.area}
+  onChange={(value) =>
+    setFormData((prev) => ({
+      ...prev,
+      area: value,
+    }))
+  }
+  placeholder="e.g. Rajendra Nagar"
+/>
         </Field>
 
         <Field label="City / District">
-          <input
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-            className={inputClass}
-            placeholder="e.g. Indore"
-          />
+         <Input
+  value={formData.city}
+  onChange={(value) =>
+    setFormData((prev) => ({
+      ...prev,
+      city: value,
+    }))
+  }
+  placeholder="e.g. Indore"
+/>
         </Field>
 
         <Field label="State">
@@ -835,17 +870,18 @@ const SchoolProfile = () => {
         {/* Postal code — also supports reverse autofill if typed directly */}
         <Field label="Postal / PIN Code" required>
           <div className="relative">
-            <input
-              name="postalCode"
-              value={formData.postalCode}
-              onChange={(e) => {
-                setPincodeError("");
-                handleChange(e);
-              }}
-              className={inputClass}
-              placeholder="e.g. 452012"
-              maxLength={6}
-            />
+            <Input
+  value={formData.postalCode}
+  onChange={(value) => {
+    setPincodeError("");
+    setFormData((prev) => ({
+      ...prev,
+      postalCode: value,
+    }));
+  }}
+  placeholder="e.g. 452012"
+  maxLength={6}
+/>
             {pincodeLoading && (
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-primary animate-pulse">
                 Fetching…
@@ -863,25 +899,31 @@ const SchoolProfile = () => {
 
         <div className="lg:col-span-2">
           <Field label="Address Lane 1">
-            <input
-              name="addressLane1"
-              value={formData.addressLane1}
-              onChange={handleChange}
-              className={inputClass}
-              placeholder="Flat / Building No., Building Name, Street"
-            />
+           <Input
+  value={formData.addressLane1}
+  onChange={(value) =>
+    setFormData((prev) => ({
+      ...prev,
+      addressLane1: value,
+    }))
+  }
+  placeholder="Flat / Building No., Building Name, Street"
+/>
           </Field>
         </div>
 
         <div className="lg:col-span-2">
           <Field label="Address Lane 2">
-            <input
-              name="addressLane2"
-              value={formData.addressLane2}
-              onChange={handleChange}
-              className={inputClass}
-              placeholder="Area, Landmark (optional)"
-            />
+           <Input
+  value={formData.addressLane2}
+  onChange={(value) =>
+    setFormData((prev) => ({
+      ...prev,
+      addressLane2: value,
+    }))
+  }
+  placeholder="Area, Landmark (optional)"
+/>
           </Field>
         </div>
       </div>
@@ -1055,18 +1097,12 @@ const SchoolProfile = () => {
             {renderActiveSection()}
 
             <div className="mt-8 flex flex-col-reverse gap-3 border-t border-borderColor pt-6 sm:flex-row sm:justify-end">
-              <button
-                type="button"
-                className="rounded-xl border border-borderColor px-6 py-3 text-sm font-bold text-slate-500 hover:bg-light"
-              >
+              <Button variant="outlined" type="button">
                 Cancel
-              </button>
-              <button
-                type="submit"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95"
-              >
+              </Button>
+              <Button type="filled">
                 <Save size={17} /> Save Changes
-              </button>
+              </Button>
             </div>
           </div>
         </main>

@@ -18,22 +18,22 @@ const {
 
 const jobStatusChip = {
   Active: "bg-green-50 text-green-600",
-  Draft:  "bg-amber-50 text-amber-600",
+  Draft: "bg-amber-50 text-amber-600",
   Closed: "bg-slate-100 text-slate-500",
   Paused: "bg-orange-50 text-orange-500",
   Scheduled: "bg-blue-50 text-blue-600",
 };
- 
+
 const SchoolJobDetail = () => {
   const jobId = useParams();
   const navigate = useNavigate();
   const { jobs, setJobs, applicants, interviews } = useOutletContext();
- 
+
   const [editOpen, setEditOpen] = useState(false);
   const [editForm, setEditForm] = useState({});
- 
+
   const job = jobs.find((j) => String(j.id) === String(jobId.jobId));
- 
+
   if (!job) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
@@ -45,40 +45,40 @@ const SchoolJobDetail = () => {
       </div>
     );
   }
- 
-  const candidates  = applicants.filter((a) => a.jobTitle === job.title);
+
+  const candidates = applicants.filter((a) => a.jobTitle === job.title);
   const shortlisted = candidates.filter((a) => a.status === "Shortlisted").length;
-  const rejected    = candidates.filter((a) => a.status === "Rejected").length;
-  const ivCount     = interviews.filter((iv) => iv.jobTitle === job.title).length;
- 
+  const rejected = candidates.filter((a) => a.status === "Rejected").length;
+  const ivCount = interviews.filter((iv) => iv.jobTitle === job.title).length;
+
   const setJobStatus = (status) =>
     setJobs((p) => p.map((j) => (j.id === job.id ? { ...j, status } : j)));
- 
+
   const handleDelete = () => {
     if (window.confirm("Permanently delete this job? This cannot be undone.")) {
       setJobs((p) => p.filter((j) => j.id !== job.id));
       navigate("/school/manage-jobs");
     }
   };
- 
+
   const openEdit = () => {
     setEditForm({
-      title:          job.title || "",
-      roleType:       job.roleType || "Teaching",
-      subject:        job.subject || "",
-      experience:     job.experience || "",
-      vacancies:      job.vacancies || "1",
-      salaryRange:    job.salaryRange || "",
-      location:       job.location || "",
+      title: job.title || "",
+      roleType: job.roleType || "Teaching",
+      subject: job.subject || "",
+      experience: job.experience || "",
+      vacancies: job.vacancies || "1",
+      salaryRange: job.salaryRange || "",
+      location: job.location || "",
       employmentType: job.employmentType || "",
-      expiryDate:     job.expiryDate || "",
-      description:    job.description || "",
-      requirements:   job.requirements || "",
+      expiryDate: job.expiryDate || "",
+      description: job.description || "",
+      requirements: job.requirements || "",
       qualifications: job.qualifications || "",
     });
     setEditOpen(true);
   };
- 
+
   const handleSaveEdit = () => {
     if (!editForm.title || !editForm.location || !editForm.employmentType) {
       alert("Job Title, Location and Employment Type are required.");
@@ -87,12 +87,12 @@ const SchoolJobDetail = () => {
     setJobs((p) => p.map((j) => (j.id === job.id ? { ...j, ...editForm } : j)));
     setEditOpen(false);
   };
- 
+
   const setField = (k, v) => setEditForm((p) => ({ ...p, [k]: v }));
- 
+
   return (
     <div className="space-y-6">
- 
+
       {/* ── Back + header ─────────────────────────────────────────────────── */}
       <div>
         <button
@@ -102,7 +102,7 @@ const SchoolJobDetail = () => {
         >
           <ArrowLeft size={16} /> Back to Manage Jobs
         </button>
- 
+
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <div className="flex flex-wrap items-center gap-3">
@@ -117,7 +117,7 @@ const SchoolJobDetail = () => {
               {job.employmentType && <span>· {job.employmentType}</span>}
             </div>
           </div>
- 
+
           {/* Quick actions */}
           <div className="flex flex-wrap gap-2 shrink-0">
             <button type="button"
@@ -144,10 +144,10 @@ const SchoolJobDetail = () => {
       {/* ── Stats row ─────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          { label: "Total Applied",  value: candidates.length || job.applicants, color: "text-primary" },
-          { label: "Shortlisted",    value: shortlisted,  color: "text-green-600" },
-          { label: "Rejected",       value: rejected,     color: "text-red-500"   },
-          { label: "Interviews",     value: ivCount,      color: "text-blue-600"  },
+          { label: "Total Applied", value: candidates.length || job.applicants, color: "text-primary" },
+          { label: "Shortlisted", value: shortlisted, color: "text-green-600" },
+          { label: "Rejected", value: rejected, color: "text-red-500" },
+          { label: "Interviews", value: ivCount, color: "text-blue-600" },
         ].map((s) => (
           <div key={s.label} className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm text-center">
             <p className={`text-3xl font-bold ${s.color}`}>{s.value}</p>
@@ -190,12 +190,12 @@ const SchoolJobDetail = () => {
           <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm space-y-3">
             <h3 className="font-bold text-slate-800">Job Details</h3>
             {[
-              { label: "Posted",          value: job.date },
-              { label: "Expiry",          value: job.expiryDate || "Not set" },
-              { label: "Experience",      value: job.experience || "—" },
-              { label: "Vacancies",       value: job.vacancies || "—" },
-              { label: "Salary Range",    value: job.salaryRange || "—" },
-              { label: "Role Type",       value: job.roleType || "—" },
+              { label: "Posted", value: job.date },
+              { label: "Expiry", value: job.expiryDate || "Not set" },
+              { label: "Experience", value: job.experience || "—" },
+              { label: "Vacancies", value: job.vacancies || "—" },
+              { label: "Salary Range", value: job.salaryRange || "—" },
+              { label: "Role Type", value: job.roleType || "—" },
             ].map((d) => (
               <div key={d.label} className="flex items-center justify-between text-sm">
                 <span className="text-slate-500">{d.label}</span>
@@ -295,8 +295,10 @@ const SchoolJobDetail = () => {
 
               <div>
                 <label className={labelClass}>Location <span className="text-red-500">*</span></label>
-                <input value={editForm.location} onChange={(e) => setField("location", e.target.value)} className={inputClass} />
-              </div>
+                <Input
+                  value={editForm.location}
+                  onChange={(value) => setField("location", value)}
+                />              </div>
 
               <div>
                 <label className={labelClass}>Expiry Date</label>
