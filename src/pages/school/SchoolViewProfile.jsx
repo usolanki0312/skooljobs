@@ -41,13 +41,13 @@ const SchoolViewProfile = () => {
               <h2 className="text-2xl font-bold text-slate-900">{schoolName}</h2>
               <p className="mt-1 text-sm font-semibold text-primary">Schools &amp; Institutions</p>
             </div>
-            <button
-              type="button"
-              onClick={() => navigate("/school/profile")}
-              className="rounded-xl border border-primary px-5 py-2.5 text-sm font-bold text-primary hover:bg-primary/5"
-            >
-              Edit Profile
-            </button>
+           <Button
+  variant="outlined"
+  type="button"
+  onClick={() => navigate("/school/profile")}
+>
+  Edit Profile
+</Button>
           </div>
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {details.map((detail) => (
