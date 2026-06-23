@@ -1,16 +1,18 @@
+import styles from "./styles/Authlayout.module.css";
+
 function AuthLayout({ children, title, subtitle, activeTab = 'candidate', onTabChange }) {
   return (
-    <div className="min-h-screen bg-light flex items-start justify-center p-3 font-body sm:items-center sm:p-8">
-      <div className="w-full max-w-5xl grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div className={styles.page}>
+      <div className={styles.grid}>
 
         {/* Left Side */}
-        <div className="bg-hero-gradient rounded-[24px] p-5 text-white shadow-soft flex flex-col justify-between sm:rounded-[30px] sm:p-10">
+        <div className={styles.leftPanel}>
           <div>
-            <h1 className="text-3xl font-bold leading-tight font-heading sm:text-[38px]">
+            <h1 className={styles.title}>
               {title}
             </h1>
 
-            <p className="mt-4 text-sm leading-relaxed text-white/90 sm:text-[17px]">
+            <p className={styles.subtitle}>
               {activeTab === 'combined'
                 ? "Connecting passionate educators with leading schools and institutions."
                 : activeTab === 'candidate'
@@ -20,23 +22,23 @@ function AuthLayout({ children, title, subtitle, activeTab = 'candidate', onTabC
 
             {/* Toggle */}
             {onTabChange && (
-              <div className="border border-white/40 mt-8 rounded-full p-[2px] flex items-center bg-white/5 backdrop-blur-sm sm:mt-10">
-                <button 
+              <div className={styles.toggleWrap}>
+                <button
                   onClick={() => onTabChange('candidate')}
-                  className={`flex-1 py-2.5 rounded-full font-semibold text-sm transition-all ${
-                    activeTab === 'candidate' 
-                      ? "bg-white text-primary shadow-sm" 
-                      : "text-white hover:bg-white/10"
+                  className={`${styles.toggleButton} ${
+                    activeTab === 'candidate'
+                      ? styles.toggleButtonActive
+                      : styles.toggleButtonInactive
                   }`}
                 >
                   Teacher
                 </button>
-                <button 
+                <button
                   onClick={() => onTabChange('employer')}
-                  className={`flex-1 py-2.5 rounded-full font-semibold text-sm transition-all ${
-                    activeTab === 'employer' 
-                      ? "bg-white text-primary shadow-sm" 
-                      : "text-white hover:bg-white/10"
+                  className={`${styles.toggleButton} ${
+                    activeTab === 'employer'
+                      ? styles.toggleButtonActive
+                      : styles.toggleButtonInactive
                   }`}
                 >
                   School
@@ -45,8 +47,8 @@ function AuthLayout({ children, title, subtitle, activeTab = 'candidate', onTabC
             )}
 
             {/* Info Box */}
-            <div className="border border-white/30 mt-6 rounded-[22px] p-4 bg-white/5 backdrop-blur-md sm:mt-8 sm:rounded-[24px] sm:p-6">
-              <div className="flex items-center gap-4">
+            <div className={styles.infoBox}>
+              <div className={styles.infoBoxHeader}>
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   {activeTab === 'combined' ? (
                     <>
@@ -71,12 +73,12 @@ function AuthLayout({ children, title, subtitle, activeTab = 'candidate', onTabC
                     </>
                   )}
                 </svg>
-                <h2 className="text-xl font-bold font-heading">
+                <h2 className={styles.infoBoxHeading}>
                   {activeTab === 'combined' ? "SkoolJobs Network" : activeTab === 'candidate' ? "Teachers" : "Schools"}
                 </h2>
               </div>
 
-              <p className="mt-2 text-sm text-white/80 sm:pl-[44px] sm:text-[15px]">
+              <p className={styles.infoBoxText}>
                 {activeTab === 'combined'
                   ? "Unified platform for teaching careers and recruitment"
                   : activeTab === 'candidate'
@@ -84,49 +86,49 @@ function AuthLayout({ children, title, subtitle, activeTab = 'candidate', onTabC
                   : "Streamlined hiring for schools & institutions"}
               </p>
 
-              <ul className="mt-5 space-y-3 text-sm text-white/90 sm:mt-6 sm:space-y-4 sm:text-[15px]">
+              <ul className={styles.featureList}>
                 {activeTab === 'combined' ? (
                   <>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0"></span>
+                    <li className={styles.featureItem}>
+                      <span className={styles.featureDot}></span>
                       <span><strong>For Teachers:</strong> Discover teaching roles & track your applications</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0"></span>
+                    <li className={styles.featureItem}>
+                      <span className={styles.featureDot}></span>
                       <span><strong>For Schools:</strong> Post jobs, search resumes & hire top educators</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0"></span>
+                    <li className={styles.featureItem}>
+                      <span className={styles.featureDot}></span>
                       <span>Secure, unified access with mobile & email support</span>
                     </li>
                   </>
                 ) : activeTab === 'candidate' ? (
                   <>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0"></span>
+                    <li className={styles.featureItem}>
+                      <span className={styles.featureDot}></span>
                       Create a teaching-first profile
                     </li>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0"></span>
+                    <li className={styles.featureItem}>
+                      <span className={styles.featureDot}></span>
                       Track applications and interview status
                     </li>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0"></span>
+                    <li className={styles.featureItem}>
+                      <span className={styles.featureDot}></span>
                       Build resumes tailored to school hiring
                     </li>
                   </>
                 ) : (
                   <>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0"></span>
+                    <li className={styles.featureItem}>
+                      <span className={styles.featureDot}></span>
                       Post and manage job listings
                     </li>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0"></span>
+                    <li className={styles.featureItem}>
+                      <span className={styles.featureDot}></span>
                       Access verified teacher profiles
                     </li>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 w-1.5 h-1.5 bg-white rounded-full shrink-0"></span>
+                    <li className={styles.featureItem}>
+                      <span className={styles.featureDot}></span>
                       Streamline your interview process
                     </li>
                   </>
@@ -135,11 +137,11 @@ function AuthLayout({ children, title, subtitle, activeTab = 'candidate', onTabC
             </div>
           </div>
 
-          <div className="mt-8" />
+          <div className={styles.spacer} />
         </div>
 
         {/* Right Side */}
-        <div className="bg-white rounded-[24px] p-5 shadow-soft flex flex-col justify-center sm:rounded-[30px] sm:p-10">
+        <div className={styles.rightPanel}>
           {children}
         </div>
 

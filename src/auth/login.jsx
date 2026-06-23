@@ -5,6 +5,7 @@ import AuthButton from "../components/AuthButton";
 import { Link, useNavigate } from "react-router-dom";
 import "@cloudstrytech/ui-components/styles.css";
 import { Button, Input } from "@cloudstrytech/ui-components";
+import styles from "./login.module.css";
 
 // ---------------------------------------------------------------------------
 // TODO: Replace hardcoded auth with backend API
@@ -165,15 +166,15 @@ function Login() {
   return (
     <AuthLayout title="Welcome to SkoolJobs" activeTab="combined">
       <div>
-        <p className="uppercase tracking-[2px] text-secondary text-[11px] font-bold">
+        <p className={styles.eyebrow}>
           Welcome Back
         </p>
-        <h1 className="mt-2 text-2xl font-bold text-primary font-heading leading-tight sm:text-[28px]">
+        <h1 className={styles.heading}>
           Login to your account
         </h1>
       </div>
 
-      <form onSubmit={handleLogin} className="mt-8 space-y-4">
+      <form onSubmit={handleLogin} className={styles.form}>
         <Input
           label="Email or Mobile"
           floatingLabel
@@ -203,39 +204,39 @@ function Login() {
         />
 
         {errorMessage && (
-          <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
+          <p className={styles.errorMessage}>
             {errorMessage}
           </p>
         )}
 
-        <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
-          <label className="flex items-center gap-2.5 cursor-pointer select-none">
+        <div className={styles.rememberRow}>
+          <label className={styles.rememberLabel}>
             <input
               type="checkbox"
-              className="w-[18px] h-[18px] accent-primary rounded border-borderColor cursor-pointer"
+              className={styles.rememberCheckbox}
             />
-            <span className="text-[14px] text-primary font-semibold">
+            <span className={styles.rememberText}>
               Remember me
             </span>
           </label>
           <Link
             to="/forgot-password"
-            className="text-primary text-[13.5px] hover:underline font-bold"
+            className={styles.forgotLink}
           >
             Forgot password?
           </Link>
         </div>
 
-        <div className="pt-2">
+        <div className={styles.submitRow}>
           <Button variant="filled" fullWidth color="#03274c" type="submit">
             login to dashboard
           </Button>
         </div>
 
-        <p className="mt-6 text-[13px] text-secondary">
+        <p className={styles.signupText}>
           New to SkoolJobs?{" "}
-          <Link to="/signup" className="text-primary font-bold hover:underline">
-            <Button variant="text" color="#1D5A9B">
+          <Link to="/signup" className={styles.signupLink}>
+            <Button variant="filled">
               Sign up
             </Button>
           </Link>

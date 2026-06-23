@@ -14,6 +14,7 @@ import { useDocsTheme } from "../lib/useDocsTheme";
 
 import "highlight.js/styles/github-dark.css";
 import "../styles/apiDoc.css";
+import styles from "./ApiSpecPage.module.css";
 
 const mdPlugins = {
   remarkPlugins: [remarkGfm],
@@ -36,17 +37,17 @@ const scrollTo = (id) =>
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 
 const SidebarGroup = ({ label, items }) => (
-  <div className="mb-5">
-    <p className="mb-1.5 px-2 text-xs font-bold uppercase tracking-wide text-slate-400">
+  <div className={styles.sidebarGroup}>
+    <p className={styles.sidebarGroupLabel}>
       {label}
     </p>
-    <ul className="space-y-0.5">
+    <ul className={styles.sidebarGroupList}>
       {items.map((it) => (
         <li key={it.slug}>
           <button
             type="button"
             onClick={() => scrollTo(it.slug)}
-            className="w-full truncate rounded-lg px-2 py-1.5 text-left text-sm text-slate-600 transition hover:bg-primary/10 hover:text-primary"
+            className={styles.sidebarGroupButton}
           >
             {it.title}
           </button>
@@ -74,41 +75,41 @@ export default function ApiSpecPage() {
   }, []);
 
   return (
-    <div className={`min-h-screen ${theme === "dark" ? "docs-dark" : "bg-white"}`}>
+    <div className={`${styles.page} ${theme === "dark" ? "docs-dark" : styles.pageLight}`}>
       {/* Fixed navbar */}
-      <header className="fixed inset-x-0 top-0 z-30 flex h-14 items-center justify-between gap-3 bg-primary px-5 text-white shadow-md">
-        <span className="truncate text-sm font-bold sm:text-base">
+      <header className={styles.header}>
+        <span className={styles.headerTitle}>
           SkoolJobs API — Endpoint Reference
         </span>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className={styles.headerActions}>
           <button
             type="button"
             onClick={toggleTheme}
             aria-label="Toggle theme"
             title={theme === "dark" ? "Switch to light" : "Switch to dark"}
-            className="rounded-lg border border-white/40 p-2 transition hover:bg-white/15"
+            className={styles.iconButton}
           >
             {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
           </button>
           <Link
             to="/api-specification-and-datamodel/swagger"
-            className="rounded-lg border border-white/40 px-3 py-1.5 text-xs font-bold transition hover:bg-white/15 sm:text-sm"
+            className={styles.swaggerLink}
           >
             OAS Swagger UI
           </Link>
         </div>
       </header>
 
-      <div className="flex pt-14">
+      <div className={styles.body}>
         {/* Sidebar */}
-        <aside className="docs-sidebar sticky top-14 hidden h-[calc(100vh-3.5rem)] w-64 shrink-0 overflow-y-auto border-r border-borderColor bg-light/40 p-4 lg:block">
+        <aside className={`docs-sidebar ${styles.sidebar}`}>
           <SidebarGroup label="Services" items={servicesToc} />
           <SidebarGroup label="Data Model" items={dataModelToc} />
         </aside>
 
         {/* Content */}
-        <main className="api-doc min-w-0 flex-1 px-5 py-8 sm:px-8 lg:px-12">
-          <div className="mx-auto max-w-4xl">
+        <main className={`api-doc ${styles.main}`}>
+          <div className={styles.mainInner}>
             <ReactMarkdown {...mdPlugins}>{endpointsMd}</ReactMarkdown>
             <ReactMarkdown {...mdPlugins}>{dataModelMd}</ReactMarkdown>
           </div>

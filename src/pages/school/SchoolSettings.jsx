@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { inputClass } from "../../lib/formStyles";
 import FormField from "../../components/FormField";
+import styles from "./styles/SchoolSettings.module.css";
 
 const SchoolSettings = () => {
   const { handleLogout, currentUser } = useOutletContext();
@@ -217,21 +218,21 @@ const SchoolSettings = () => {
   };
 
   return (
-    <div className="space-y-8">
-      <h2 className="text-2xl font-bold text-slate-800 sm:text-3xl">Settings</h2>
+    <div className={styles.wrapper}>
+      <h2 className={styles.pageTitle}>Settings</h2>
 
       {/* --- Member info for Non-Admins / Members --- */}
       {!isAdmin && (
-        <div className="rounded-2xl border border-borderColor bg-white p-6 shadow-sm flex items-start gap-4">
-          <span className="rounded-xl bg-primary/10 p-3 text-primary shrink-0">
+        <div className={styles.card}>
+          <span className={styles.cardIconShrink}>
             <Users size={22} />
           </span>
           <div>
-            <h3 className="text-lg font-bold text-slate-800">Member Account Settings</h3>
-            <p className="mt-1 text-sm text-slate-600">
-              You are signed in as a team member with the role: <span className="font-bold text-primary">{currentUser.memberRole || "Member"}</span>.
+            <h3 className={styles.cardTitle}>Member Account Settings</h3>
+            <p className={styles.cardText}>
+              You are signed in as a team member with the role: <span className={styles.cardTextHighlight}>{currentUser.memberRole || "Member"}</span>.
             </p>
-            <p className="mt-2 text-xs leading-relaxed text-slate-400">
+            <p className={styles.cardNote}>
               Note: Team member accounts, member creation, and profile ownership configurations can only be managed by the primary School Admin ({currentUser.schoolEmail || "owner"}).
             </p>
           </div>
@@ -240,19 +241,21 @@ const SchoolSettings = () => {
 
       {/* --- Member Management (Admin Only) --- */}
       {isAdmin && (
-        <div className="rounded-2xl border border-borderColor bg-white p-6 shadow-sm space-y-6">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-borderColor pb-4">
-            <div className="flex items-center gap-3">
-              <span className="rounded-xl bg-primary/10 p-2 text-primary">
+        <div className={styles.sectionCard}>
+          <div className={styles.sectionHeaderRow}>
+            <div className={styles.sectionHeaderLeft}>
+              <span className={styles.sectionIcon}>
                 <Users size={18} />
               </span>
               <div>
-                <h3 className="text-lg font-bold text-slate-800">Team Members</h3>
-                <p className="text-xs text-slate-400">Manage login credentials and access levels for your staff (Max 3 members).</p>
+                <h3 className={styles.sectionTitle}>Team Members</h3>
+                <p className={styles.sectionSubtitle}>Manage login credentials and access levels for your staff (Max 3 members).</p>
               </div>
             </div>
             <Button
               type="button"
+              variant="filled"
+              startIcon="userPlusIcon"
               disabled={members.length >= 3}
               onClick={() => {
                 setEditingMember({
@@ -265,38 +268,38 @@ const SchoolSettings = () => {
                 setOtpState((prev) => ({ ...prev, isOpen: false }));
               }}
             >
-              <UserPlus size={14} /> Add Member ({members.length}/3)
+              Add Member ({members.length}/3)
             </Button>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-left text-sm">
+          <div className={styles.tableWrap}>
+            <table className={styles.table}>
               <thead>
-                <tr className="border-b border-borderColor text-xs font-semibold uppercase text-slate-400 bg-slate-50/50">
-                  <th className="px-4 py-3">Name</th>
-                  <th className="px-4 py-3">Email</th>
-                  <th className="px-4 py-3">Mobile</th>
-                  <th className="px-4 py-3">Role</th>
-                  <th className="px-4 py-3 text-right">Actions</th>
+                <tr className={styles.tableHeadRow}>
+                  <th className={styles.tableHeadCell}>Name</th>
+                  <th className={styles.tableHeadCell}>Email</th>
+                  <th className={styles.tableHeadCell}>Mobile</th>
+                  <th className={styles.tableHeadCell}>Role</th>
+                  <th className={styles.tableHeadCellRight}>Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-borderColor/60">
+              <tbody className={styles.tableBody}>
                 {allRows.map((m) => (
-                  <tr key={m.id} className="hover:bg-light/30 transition">
-                    <td className="px-4 py-3.5 font-bold text-slate-800">{m.name}</td>
-                    <td className="px-4 py-3.5 text-slate-600">{m.email}</td>
-                    <td className="px-4 py-3.5 text-slate-600">{m.phone}</td>
-                    <td className="px-4 py-3.5">
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold ${m.isAdminRow
-                        ? "bg-amber-50 text-amber-700 border border-amber-100"
-                        : "bg-primary/5 text-primary"
+                  <tr key={m.id} className={styles.tableRow}>
+                    <td className={styles.tableCellName}>{m.name}</td>
+                    <td className={styles.tableCell}>{m.email}</td>
+                    <td className={styles.tableCell}>{m.phone}</td>
+                    <td className={styles.tableCell}>
+                      <span className={`${styles.roleBadge} ${m.isAdminRow
+                        ? styles.roleBadgeAdmin
+                        : styles.roleBadgeMember
                         }`}>
                         {m.memberRole}
                       </span>
                     </td>
-                    <td className="px-4 py-3.5 text-right space-x-2">
+                    <td className={styles.tableCellActions}>
                       {m.isAdminRow ? (
-                        <span className="text-xs text-slate-400 font-semibold italic">Primary Owner</span>
+                        <span className={styles.primaryOwnerLabel}>Primary Owner</span>
                       ) : (
                         <>
                           <button
@@ -305,7 +308,7 @@ const SchoolSettings = () => {
                               setEditingMember(m);
                               setOtpState(prev => ({ ...prev, isOpen: false })); // Close OTP panel
                             }}
-                            className="inline-flex items-center gap-1 rounded-lg border border-borderColor hover:bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-600 transition"
+                            className={styles.rowActionButton}
                           >
                             <Pencil size={12} /> Edit
                           </button>
@@ -314,14 +317,14 @@ const SchoolSettings = () => {
                             onClick={() => {
                               triggerOtpVerification("transfer", m.id);
                             }}
-                            className="inline-flex items-center gap-1 rounded-lg border border-amber-200 hover:bg-amber-50 px-2.5 py-1.5 text-xs font-semibold text-amber-600 transition"
+                            className={styles.rowActionButtonAmber}
                           >
                             <ArrowLeftRight size={12} /> Transfer Ownership
                           </button>
                           <button
                             type="button"
                             onClick={() => triggerOtpVerification("delete", m.id)}
-                            className="inline-flex items-center gap-1 rounded-lg border border-red-200 hover:bg-red-50 px-2.5 py-1.5 text-xs font-semibold text-red-500 transition"
+                            className={styles.rowActionButtonRed}
                           >
                             <Trash2 size={12} /> Delete
                           </button>
@@ -338,15 +341,15 @@ const SchoolSettings = () => {
 
       {/* --- INLINE ADD / EDIT MEMBER FORM CARD --- */}
       {isAdmin && editingMember && (
-        <div className="rounded-2xl border border-borderColor bg-white p-6 shadow-sm space-y-4 animate-in fade-in slide-in-from-top-4 duration-200">
-          <div className="flex justify-between items-center border-b border-borderColor pb-3 mb-2">
-            <h3 className="font-bold text-slate-800 text-base flex items-center gap-2">
-              <UserPlus className="text-primary" size={18} />
+        <div className={styles.formCard}>
+          <div className={styles.formCardHeader}>
+            <h3 className={styles.formCardTitle}>
+              <UserPlus className={styles.formCardTitleIcon} size={18} />
               {editingMember.id ? "Edit Team Member Details" : "Add New Team Member"}
             </h3>
             <button
               onClick={() => setEditingMember(null)}
-              className="text-slate-400 hover:bg-slate-100 p-1.5 rounded-xl transition"
+              className={styles.formCardCloseButton}
             >
               <X size={16} />
             </button>
@@ -360,10 +363,10 @@ const SchoolSettings = () => {
               }
               triggerOtpVerification(editingMember.id ? "edit" : "add", editingMember.id, editingMember);
             }}
-            className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+            className={styles.formGrid}
           >
             <div>
-              <label className="block text-xs font-bold text-slate-500 mb-1.5">Full Name *</label>
+              <label className={styles.formFieldLabel}>Full Name *</label>
               <Input
                 type="password"
                 required={!editingMember.id}
@@ -378,7 +381,7 @@ const SchoolSettings = () => {
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-500 mb-1.5">Email Address *</label>
+              <label className={styles.formFieldLabel}>Email Address *</label>
               <Input
                 type="email"
                 required
@@ -393,7 +396,7 @@ const SchoolSettings = () => {
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-500 mb-1.5">Mobile Number *</label>
+              <label className={styles.formFieldLabel}>Mobile Number *</label>
               <Input
                 type="email"
                 required
@@ -408,15 +411,15 @@ const SchoolSettings = () => {
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-500 mb-1.5">Role (Fixed) *</label>
+              <label className={styles.formFieldLabel}>Role (Fixed) *</label>
               <Input
                 type="text"
                 disabled
                 value="Member"
               />
             </div>
-            <div className="sm:col-span-2">
-              <label className="block text-xs font-bold text-slate-500 mb-1.5">
+            <div className={styles.formGridFullSpan}>
+              <label className={styles.formFieldLabel}>
                 {editingMember.id ? "New Password (leave blank to keep current)" : "Password *"}
               </label>
               <Input
@@ -432,7 +435,7 @@ const SchoolSettings = () => {
                 placeholder={editingMember.id ? "••••••••" : "Enter password"}
               />
             </div>
-            <div className="sm:col-span-2 flex flex-col-reverse gap-3 pt-3 border-t border-borderColor/60 sm:flex-row sm:justify-end">
+            <div className={styles.formActionsRow}>
               <Button
                 variant="outlined"
                 type="button"
@@ -450,31 +453,31 @@ const SchoolSettings = () => {
 
       {/* --- INLINE OTP VERIFICATION CARD --- */}
       {isAdmin && otpState.isOpen && (
-        <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 shadow-sm space-y-4 animate-in fade-in slide-in-from-top-4 duration-200">
-          <div className="flex items-center justify-between border-b border-primary/10 pb-3">
-            <div className="flex items-center gap-2">
-              <span className="rounded-lg bg-primary/10 p-1.5 text-primary">
+        <div className={styles.otpCard}>
+          <div className={styles.otpCardHeader}>
+            <div className={styles.otpCardHeaderLeft}>
+              <span className={styles.otpCardIcon}>
                 <ShieldAlert size={18} />
               </span>
-              <h3 className="font-bold text-slate-800 text-base">
+              <h3 className={styles.otpCardTitle}>
                 Security Verification ({otpState.actionType.toUpperCase()})
               </h3>
             </div>
             <button
               onClick={() => setOtpState(p => ({ ...p, isOpen: false }))}
-              className="text-slate-400 hover:bg-primary/10 p-1.5 rounded-xl transition"
+              className={styles.otpCardCloseButton}
             >
               <X size={16} />
             </button>
           </div>
 
           {!otpState.otpSent ? (
-            <div className="space-y-4">
-              <p className="text-sm text-slate-600">
+            <div className={styles.otpBody}>
+              <p className={styles.otpDescription}>
                 To authorize this action, select where we should send the verification One-Time Passcode (OTP):
               </p>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <label className="flex items-center gap-3 p-3 rounded-xl border border-borderColor bg-white cursor-pointer hover:bg-light/40 transition">
+              <div className={styles.otpDestGrid}>
+                <label className={styles.otpDestOption}>
                   <Input
                     type="radio"
                     name="otpDest"
@@ -486,14 +489,14 @@ const SchoolSettings = () => {
                       }))
                     }
                   /><div>
-                    <p className="text-xs font-bold text-slate-700">Admin's Number (You)</p>
-                    <p className="text-xs text-slate-500">{currentUser.phone || "+91 99999 99999"}</p>
+                    <p className={styles.otpDestLabel}>Admin's Number (You)</p>
+                    <p className={styles.otpDestValue}>{currentUser.phone || "+91 99999 99999"}</p>
                   </div>
                 </label>
 
                 {/* If adding/editing, show the member phone inputted */}
                 {otpState.formData?.phone && (
-                  <label className="flex items-center gap-3 p-3 rounded-xl border border-borderColor bg-white cursor-pointer hover:bg-light/40 transition">
+                  <label className={styles.otpDestOption}>
                     <Input
                       type="radio"
                       name="otpDest"
@@ -506,8 +509,8 @@ const SchoolSettings = () => {
                       }
                     />
                     <div>
-                      <p className="text-xs font-bold text-slate-700">Member's Number</p>
-                      <p className="text-xs text-slate-500">{otpState.formData.phone}</p>
+                      <p className={styles.otpDestLabel}>Member's Number</p>
+                      <p className={styles.otpDestValue}>{otpState.formData.phone}</p>
                     </div>
                   </label>
                 )}
@@ -517,17 +520,17 @@ const SchoolSettings = () => {
                   (() => {
                     const mObj = members.find(m => m.id === otpState.targetMemberId);
                     return mObj && mObj.phone !== currentUser.phone ? (
-                      <label className="flex items-center gap-3 p-3 rounded-xl border border-borderColor bg-white cursor-pointer hover:bg-light/40 transition">
+                      <label className={styles.otpDestOption}>
                         <input
                           type="radio"
                           name="otpDest"
                           checked={otpState.selectedPhone === mObj.phone}
                           onChange={() => setOtpState(p => ({ ...p, selectedPhone: mObj.phone }))}
-                          className="accent-primary h-4.5 w-4.5"
+                          className={styles.otpDestRadio}
                         />
                         <div>
-                          <p className="text-xs font-bold text-slate-700">Member's Number</p>
-                          <p className="text-xs text-slate-500">{mObj.phone}</p>
+                          <p className={styles.otpDestLabel}>Member's Number</p>
+                          <p className={styles.otpDestValue}>{mObj.phone}</p>
                         </div>
                       </label>
                     ) : null;
@@ -535,29 +538,29 @@ const SchoolSettings = () => {
                 )}
               </div>
 
-              <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
+              <div className={styles.otpActionsRow}>
                 <button
                   type="button"
                   onClick={() => setOtpState(p => ({ ...p, isOpen: false }))}
-                  className="rounded-xl border border-borderColor bg-white px-4 py-2 text-sm font-semibold text-slate-500 hover:bg-light transition"
+                  className={styles.otpSecondaryButton}
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleSendOtp}
-                  className="rounded-xl bg-primary px-5 py-2 text-sm font-bold text-white hover:bg-primary/95 transition"
+                  className={styles.otpPrimaryButton}
                 >
                   Send OTP Code
                 </button>
               </div>
             </div>
           ) : (
-            <form onSubmit={handleVerifyOtp} className="space-y-4">
-              <p className="text-sm text-slate-600 font-semibold">
-                OTP code has been simulated and sent to <strong className="text-slate-800">{otpState.selectedPhone}</strong>.
+            <form onSubmit={handleVerifyOtp} className={styles.otpForm}>
+              <p className={styles.otpSentText}>
+                OTP code has been simulated and sent to <strong className={styles.otpSentTextStrong}>{otpState.selectedPhone}</strong>.
               </p>
-              <div className="bg-white p-3 rounded-xl border border-primary/10 text-xs text-primary font-semibold leading-relaxed">
+              <div className={styles.otpHintBox}>
                 ℹ️ For demo verification, please use OTP code: <strong>123456</strong>
               </div>
 
@@ -578,22 +581,22 @@ const SchoolSettings = () => {
               </FormField>
 
               {otpState.error && (
-                <p className="text-xs font-bold text-red-600 bg-red-50 p-2.5 rounded-xl border border-red-100">
+                <p className={styles.otpErrorText}>
                   ⚠️ {otpState.error}
                 </p>
               )}
 
-              <div className="flex flex-col-reverse gap-3 pt-3 border-t border-primary/10 sm:flex-row sm:justify-end">
+              <div className={styles.otpActionsRowBordered}>
                 <button
                   type="button"
                   onClick={() => setOtpState(p => ({ ...p, otpSent: false, error: "" }))}
-                  className="rounded-xl border border-borderColor bg-white px-4 py-2 text-sm font-semibold text-slate-500 hover:bg-light transition"
+                  className={styles.otpSecondaryButton}
                 >
                   ← Change Phone
                 </button>
                 <button
                   type="submit"
-                  className="rounded-xl bg-primary px-5 py-2 text-sm font-bold text-white hover:bg-primary/95 transition"
+                  className={styles.otpPrimaryButton}
                 >
                   Verify &amp; Confirm
                 </button>
@@ -604,12 +607,12 @@ const SchoolSettings = () => {
       )}
 
       {/* --- Change Password --- */}
-      <div className="rounded-2xl border border-borderColor bg-white p-6 shadow-sm">
-        <div className="mb-5 flex items-center gap-3 border-b border-borderColor pb-4">
-          <span className="rounded-xl bg-primary/10 p-2 text-primary"><KeyRound size={18} /></span>
-          <h3 className="text-lg font-bold text-slate-800">Change Password</h3>
+      <div className={styles.cardSimple}>
+        <div className={styles.simpleHeader}>
+          <span className={styles.simpleHeaderIcon}><KeyRound size={18} /></span>
+          <h3 className={styles.simpleHeaderTitle}>Change Password</h3>
         </div>
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+        <div className={styles.passwordGrid}>
           <FormField label="Current Password">
             <Input
               type="password"
@@ -647,9 +650,11 @@ const SchoolSettings = () => {
               placeholder="Re-enter new password"
             />          </FormField>
         </div>
-        <div className="mt-5 flex justify-end">
+        <div className={styles.passwordActions}>
           <Button
             type="button"
+            variant="filled"
+            startIcon="saveIcon"
             onClick={() => {
               if (!pwForm.current) {
                 alert("Enter your current password.");
@@ -670,144 +675,170 @@ const SchoolSettings = () => {
               setPwForm({ current: "", next: "", confirm: "" });
             }}
           >
-            <Save size={16} /> Update Password
+            Update Password
           </Button>
         </div>
       </div>
 
       {/* --- Help & Support --- */}
-      <div className="rounded-2xl border border-borderColor bg-white p-6 shadow-sm">
-        <div className="mb-5 flex items-center gap-3 border-b border-borderColor pb-4">
-          <span className="rounded-xl bg-primary/10 p-2 text-primary"><HelpCircle size={18} /></span>
-          <h3 className="text-lg font-bold text-slate-800">Help &amp; Support</h3>
+      <div className={styles.cardSimple}>
+        <div className={styles.simpleHeader}>
+          <span className={styles.simpleHeaderIcon}><HelpCircle size={18} /></span>
+          <h3 className={styles.simpleHeaderTitle}>Help &amp; Support</h3>
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className={styles.faqGrid}>
           {[
             { q: "How do I post a job?", a: "Go to 'Post a New Job' in the sidebar, fill in the details and click Publish Job." },
             { q: "How do I shortlist candidates?", a: "Go to 'All Applicants', find a candidate and click the Shortlist button." },
             { q: "How do I view an applicant's resume?", a: "In All Applicants, click the Resume button next to any candidate's row." },
             { q: "How do I schedule an interview?", a: "Shortlist a candidate first, then go to Saved Candidates to coordinate." },
           ].map((faq) => (
-            <div key={faq.q} className="rounded-xl bg-light p-4">
-              <p className="text-sm font-bold text-slate-800">{faq.q}</p>
-              <p className="mt-1 text-xs leading-relaxed text-slate-500">{faq.a}</p>
+            <div key={faq.q} className={styles.faqCard}>
+              <p className={styles.faqQuestion}>{faq.q}</p>
+              <p className={styles.faqAnswer}>{faq.a}</p>
             </div>
           ))}
         </div>
-        <div className="mt-5 rounded-xl border border-primary/20 bg-primary/5 p-4 text-sm">
-          <p className="font-bold text-primary">Need more help?</p>
-          <p className="mt-1 text-slate-600">
-            Email us at <span className="font-bold text-primary">support@skooljobs.in</span> — we respond within 24 hours.
+        <div className={styles.helpBanner}>
+          <p className={styles.helpBannerTitle}>Need more help?</p>
+          <p className={styles.helpBannerText}>
+            Email us at <span className={styles.helpBannerEmail}>support@skooljobs.in</span> — we respond within 24 hours.
           </p>
         </div>
       </div>
 
       {/* --- Delete Account --- */}
-      <div className="rounded-2xl border border-red-200 bg-white p-6 shadow-sm">
-        <div className="mb-5 flex items-center gap-3 border-b border-red-100 pb-4">
-          <span className="rounded-xl bg-red-100 p-2 text-red-500"><Trash2 size={18} /></span>
-          <h3 className="text-lg font-bold text-red-600">Delete Account</h3>
+       <div className={styles.dangerCard}>
+        <div className={styles.dangerCardHeader}>
+          <span className={styles.dangerIcon}>
+            <Trash2 size={18} />
+          </span>
+          <h3 className={styles.dangerTitle}>Delete Account</h3>
         </div>
-        <p className="text-sm leading-relaxed text-slate-600">
-          Permanently deleting your account will remove all job postings, applicant data, and profile information. This action is <strong>irreversible</strong>.
+        <p className={styles.dangerDescription}>
+          Permanently deleting your account will remove your profile,
+          applications, and saved jobs. This action is{" "}
+          <strong>irreversible</strong>.
         </p>
 
         {deleteStep === 0 && (
           <Button
-            variant="outlined"
-            type="button"
+            variant="" filled
+            startIcon="deleteIcon"
             onClick={() => setDeleteStep(1)}
+            className={styles.requestDeleteButton}
           >
-            <Trash2 size={15} /> Request Account Deletion
-          </Button>
-        )}
+            Request Account Deletion
+          </Button>)}
 
         {deleteStep === 1 && (
-          <div className="mt-5 space-y-4 rounded-xl border border-red-200 bg-red-50 p-5">
-            <p className="text-sm font-bold text-red-700">Confirmation Required — Step 1 of 2</p>
-            <label className="flex cursor-pointer items-start gap-3">
-              <Input
+          <div className={styles.dangerStepPanel}>
+            <p className={styles.dangerStepTitle}>
+              Confirmation Required — Step 1 of 2
+            </p>
+            <label className={styles.dangerCheckLabel}>
+              <input
                 type="checkbox"
                 checked={deleteChecks.c1}
-                onChange={(checked) =>
-                  setDeleteChecks((p) => ({
-                    ...p,
-                    c1: checked,
-                  }))
+                onChange={(e) =>
+                  setDeleteChecks((p) => ({ ...p, c1: e.target.checked }))
                 }
-              />              <span className="text-sm text-slate-700">I understand that all my job postings and applicant data will be permanently deleted.</span>
+                className={styles.dangerCheckbox}
+              />
+              <span className={styles.dangerCheckText}>
+                I understand that my job applications and profile data will be
+                permanently deleted.
+              </span>
             </label>
-            <label className="flex cursor-pointer items-start gap-3">
-              <Input
+            <label className={styles.dangerCheckLabel}>
+              <input
                 type="checkbox"
                 checked={deleteChecks.c2}
-                onChange={(checked) =>
-                  setDeleteChecks((p) => ({
-                    ...p,
-                    c2: checked,
-                  }))
+                onChange={(e) =>
+                  setDeleteChecks((p) => ({ ...p, c2: e.target.checked }))
                 }
-              />              <span className="text-sm text-slate-700">I confirm this is my account and I wish to permanently delete it. This cannot be undone.</span>
+                className={styles.dangerCheckbox}
+              />
+              <span className={styles.dangerCheckText}>
+                I confirm this is my account and I wish to permanently delete
+                it. This cannot be undone.
+              </span>
             </label>
-            <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+            <div className={styles.dangerStepActions}>
               <Button
-                type="button"
+                variant="filled"
                 disabled={!deleteChecks.c1 || !deleteChecks.c2}
                 onClick={() => {
                   setDeleteStep(2);
                   setDeleteOtpSent(true);
                   alert("Demo OTP sent! Use code 123456 to confirm deletion.");
                 }}
+                className={styles.primaryDangerButton}
               >
                 Proceed to OTP Verification
               </Button>
-              <Button
-                variant="outlined"
+              <button
                 type="button"
                 onClick={() => {
                   setDeleteStep(0);
                   setDeleteChecks({ c1: false, c2: false });
                 }}
+                className={styles.secondaryButton}
               >
                 Cancel
-              </Button>
+              </button>
             </div>
           </div>
         )}
 
         {deleteStep === 2 && (
-          <div className="mt-5 space-y-4 rounded-xl border border-red-200 bg-red-50 p-5">
-            <p className="text-sm font-bold text-red-700">OTP Verification — Step 2 of 2</p>
-            {deleteOtpSent && <p className="text-xs text-slate-600">A 6-digit OTP has been sent to your registered email and mobile number.</p>}
+          <div className={styles.dangerStepPanel}>
+            <p className={styles.dangerStepTitle}>
+              OTP Verification — Step 2 of 2
+            </p>
+            {deleteOtpSent && (
+              <p className={styles.otpHint}>
+                A 6-digit OTP has been sent to your registered email and mobile
+                number.
+              </p>
+            )}
             <FormField label="Enter OTP">
-              <input value={deleteOtp} onChange={(e) => setDeleteOtp(e.target.value)} className={inputClass} placeholder="Enter 6-digit OTP" maxLength={6} />
+              <Input
+                label="Enter OTP"
+                value={deleteOtp}
+                onChange={setDeleteOtp}
+                fieldClassName="host-tweak"
+                placeholder="Enter 6-digit OTP"
+              />
             </FormField>
-            <p className="text-xs text-slate-400">For demo: use OTP <strong>123456</strong></p>
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <p className={styles.otpNote}>
+              For demo: use OTP <strong>123456</strong>
+            </p>
+            <div className={styles.dangerStepActionsNoTop}>
               <Button
-                type="button"
+                variant="filled"
                 onClick={() => {
                   if (deleteOtp !== "123456") {
                     alert("Invalid OTP. Try 123456 for demo.");
                     return;
                   }
-
                   alert("Account deleted. Redirecting...");
                   handleLogout();
                 }}
+                className={styles.primaryDangerButton}
               >
                 Confirm Delete Account
               </Button>
 
               <Button
                 variant="outlined"
-                type="button"
                 onClick={() => {
                   setDeleteStep(0);
                   setDeleteChecks({ c1: false, c2: false });
                   setDeleteOtp("");
                   setDeleteOtpSent(false);
                 }}
+                className={styles.secondaryButton}
               >
                 Cancel
               </Button>

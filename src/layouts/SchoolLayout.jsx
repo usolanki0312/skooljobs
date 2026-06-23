@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import Topbar from "../components/topbar";
 import { initialJobs, initialApplicants } from "../lib/schooldata";
+import styles from "./SchoolLayout.module.css";
 
 const augmentedJobs = [...initialJobs]
   .sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -219,47 +220,47 @@ const SchoolLayout = () => {
   };
 
   const notificationDropdown = showNotifDropdown && (
-    <div className="absolute right-0 top-12 z-50 w-80 rounded-2xl border border-borderColor bg-white shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
-      <div className="flex items-center justify-between border-b border-borderColor px-4 py-3">
-        <p className="text-left font-bold text-slate-800">
-          Notifications {unreadCount > 0 && <span className="ml-1 text-xs text-primary">({unreadCount} new)</span>}
+    <div className={styles.notifDropdown}>
+      <div className={styles.notifHeader}>
+        <p className={styles.notifHeaderTitle}>
+          Notifications {unreadCount > 0 && <span className={styles.notifHeaderBadge}>({unreadCount} new)</span>}
         </p>
-        <div className="flex items-center gap-3">
+        <div className={styles.notifHeaderActions}>
           <button
             type="button"
             onClick={() => setNotifications((p) => p.map((n) => ({ ...n, read: true })))}
-            className="text-xs font-bold text-primary hover:underline"
+            className={styles.notifMarkAllRead}
           >
             Mark all read
           </button>
           <button
             type="button"
             onClick={() => setShowNotifDropdown(false)}
-            className="rounded-lg p-1 text-slate-400 hover:bg-light hover:text-slate-600"
+            className={styles.notifCloseButton}
           >
             <X size={14} />
           </button>
         </div>
       </div>
-      <div className="max-h-72 overflow-y-auto">
+      <div className={styles.notifList}>
         {notifications.length === 0 ? (
-          <p className="px-4 py-6 text-center text-sm text-slate-400">No notifications</p>
+          <p className={styles.notifEmpty}>No notifications</p>
         ) : (
           notifications.map((n) => (
             <div
               key={n.id}
               onClick={() => handleMarkRead(n.id)}
-              className={`flex cursor-pointer gap-3 border-b border-borderColor/50 px-4 py-3 text-left text-sm transition hover:bg-light/60 ${n.read ? "bg-white" : "bg-primary/5"}`}
+              className={`${styles.notifItem} ${n.read ? "" : styles.notifItemUnread}`}
             >
-              <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${n.read ? "bg-slate-300" : "bg-primary"}`} />
-              <div className="flex-1 min-w-0">
-                <p className="text-slate-700">{n.msg}</p>
-                <p className="mt-1 text-xs text-slate-400">{n.time}</p>
+              <span className={`${styles.notifDot} ${n.read ? "" : styles.notifDotUnread}`} />
+              <div className={styles.notifBody}>
+                <p className={styles.notifMessage}>{n.msg}</p>
+                <p className={styles.notifTime}>{n.time}</p>
               </div>
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); handleDeleteNotification(n.id); }}
-                className="mt-0.5 shrink-0 rounded-md p-0.5 text-slate-300 hover:bg-red-50 hover:text-red-400"
+                className={styles.notifDeleteButton}
               >
                 <X size={13} />
               </button>
@@ -287,41 +288,41 @@ const SchoolLayout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-light">
-      <div className="flex min-h-screen">
-        <aside className="hidden w-64 shrink-0 flex-col border-r border-borderColor bg-white p-5 lg:flex">
-          <div className="flex h-full flex-col">
-            <label className="mb-5 flex cursor-pointer items-center gap-2 self-start rounded-xl border border-dashed border-borderColor px-4 py-2 text-xs font-bold text-primary hover:bg-light">
+    <div className={styles.page}>
+      <div className={styles.shell}>
+        <aside className={styles.sidebar}>
+          <div className={styles.sidebarInner}>
+            <label className={styles.logoUploadLabel}>
               <Upload size={13} />
               Upload Institute Logo
               <input type="file" hidden accept="image/*" onChange={handleLogoUpload} />
             </label>
 
-            <div className="mb-6 flex items-center gap-3">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-borderColor bg-light">
+            <div className={styles.schoolInfoRow}>
+              <div className={styles.logoBox}>
                 {logoImage ? (
-                  <img src={logoImage} alt="logo" className="h-full w-full object-cover" />
+                  <img src={logoImage} alt="logo" className={styles.logoImage} />
                 ) : (
-                  <Building2 size={22} className="text-primary" />
+                  <Building2 size={22} className={styles.logoIcon} />
                 )}
               </div>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-bold text-slate-800">{schoolName}</p>
-                <p className="text-xs text-slate-400">School Account</p>
+              <div className={styles.schoolInfoText}>
+                <p className={styles.schoolName}>{schoolName}</p>
+                <p className={styles.schoolAccountLabel}>School Account</p>
               </div>
             </div>
 
-            <nav className="flex-1 space-y-1 overflow-y-auto">
+            <nav className={styles.nav}>
               {sidebarItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = location.pathname === item.path;
-                return (
+              const Icon = item.icon;
+              const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
+              return (
                   <button
                     key={item.path}
                     type="button"
                     onClick={() => navigate(item.path)}
-                    className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold transition ${
-                      isActive ? "bg-primary text-white" : "text-slate-600 hover:bg-light hover:text-primary"
+                    className={`${styles.navButton} ${
+                      isActive ? styles.navButtonActive : ""
                     }`}
                   >
                     <Icon size={17} />
@@ -331,11 +332,11 @@ const SchoolLayout = () => {
               })}
             </nav>
 
-            <div className="mt-4 border-t border-borderColor pt-4">
+            <div className={styles.sidebarFooter}>
               <button
                 type="button"
                 onClick={handleLogout}
-                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold text-slate-600 hover:bg-light"
+                className={styles.logoutButton}
               >
                 <LogOut size={17} /> Logout
               </button>
@@ -343,7 +344,7 @@ const SchoolLayout = () => {
           </div>
         </aside>
 
-        <main className="min-w-0 flex-1 overflow-x-hidden p-5 lg:p-8">
+        <main className={styles.main}>
           <Topbar
             title="School Dashboard"
             subtitle="Manage your job postings and track applicants."
@@ -352,9 +353,9 @@ const SchoolLayout = () => {
             notificationDropdown={notificationDropdown}
           />
 
-          <div className="relative lg:hidden">
-            <div className="mt-4 flex items-center justify-between rounded-3xl bg-white p-3 shadow-soft">
-              <span className="px-2 text-sm font-bold text-primary">
+          <div className={styles.mobileNavWrap}>
+            <div className={styles.mobileNavBar}>
+              <span className={styles.mobileNavTitle}>
                 {sidebarItems.find((item) => item.path === location.pathname)?.label || "Menu"}
               </span>
               <button
@@ -362,24 +363,24 @@ const SchoolLayout = () => {
                 onClick={() => setMobileNavOpen((o) => !o)}
                 aria-label="Toggle navigation menu"
                 aria-expanded={mobileNavOpen}
-                className="rounded-xl p-2 text-primary hover:bg-light"
+                className={styles.mobileNavToggle}
               >
                 {mobileNavOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
             </div>
 
             {mobileNavOpen && (
-              <div className="absolute left-0 right-0 top-full z-40 mt-2 space-y-1 rounded-3xl bg-white p-3 shadow-soft">
+              <div className={styles.mobileNavMenu}>
                 {sidebarItems.map((item) => {
                   const Icon = item.icon;
-                  const isActive = location.pathname === item.path;
+                  const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
                   return (
                     <button
                       key={item.path}
                       type="button"
                       onClick={() => navigate(item.path)}
-                      className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${
-                        isActive ? "bg-primary text-white" : "text-slate-600 hover:bg-light hover:text-primary"
+                      className={`${styles.mobileNavButton} ${
+                        isActive ? styles.mobileNavButtonActive : ""
                       }`}
                     >
                       <Icon size={17} />
@@ -391,7 +392,7 @@ const SchoolLayout = () => {
             )}
           </div>
 
-          <div className="mt-6">
+          <div className={styles.outletWrap}>
             <Outlet context={outletCtx} />
           </div>
         </main>

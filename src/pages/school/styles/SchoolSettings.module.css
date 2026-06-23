@@ -1,0 +1,749 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+@media (min-width: 640px) {
+  .pageTitle {
+    font-size: 1.875rem;
+  }
+}
+
+/* --- Generic card --- */
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+  background-color: #fff;
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.cardIconShrink {
+  flex-shrink: 0;
+  border-radius: 0.75rem;
+  background-color: rgba(4, 72, 144, 0.1);
+  padding: 0.75rem;
+  color: var(--color-primary);
+}
+
+.cardTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.cardText {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.cardTextHighlight {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.cardNote {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1.625;
+  color: #94a3b8;
+}
+
+/* --- Section card (with header + body, used for member mgmt / password / help / delete) --- */
+.sectionCard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+  background-color: #fff;
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.sectionHeaderRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+  .sectionHeaderRow {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.sectionHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sectionIcon {
+  border-radius: 0.75rem;
+  background-color: rgba(4, 72, 144, 0.1);
+  padding: 0.5rem;
+  color: var(--color-primary);
+}
+
+.sectionTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.sectionSubtitle {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* --- Member table --- */
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  min-width: 100%;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.tableHeadRow {
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #94a3b8;
+  background-color: rgba(248, 250, 252, 0.5);
+}
+
+.tableHeadCell {
+  padding: 0.75rem 1rem;
+}
+
+.tableHeadCellRight {
+  padding: 0.75rem 1rem;
+  text-align: right;
+}
+
+.tableBody > tr {
+  border-bottom: 1px solid rgba(219, 228, 240, 0.6);
+}
+
+.tableBody > tr:last-child {
+  border-bottom: none;
+}
+
+.tableRow {
+  transition: background-color 0.15s ease-in-out;
+}
+
+.tableRow:hover {
+  background-color: rgba(238, 242, 247, 0.3);
+}
+
+.tableCellName {
+  padding: 0.875rem 1rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.tableCell {
+  padding: 0.875rem 1rem;
+  color: #475569;
+}
+
+.tableCellActions {
+  padding: 0.875rem 1rem;
+  text-align: right;
+}
+
+.tableCellActions > * + * {
+  margin-left: 0.5rem;
+}
+
+.roleBadge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.roleBadgeAdmin {
+  background-color: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fef3c7;
+}
+
+.roleBadgeMember {
+  background-color: rgba(4, 72, 144, 0.05);
+  color: var(--color-primary);
+}
+
+.primaryOwnerLabel {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.rowActionButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  padding: 0.375rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #475569;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.rowActionButton:hover {
+  background-color: #f8fafc;
+}
+
+.rowActionButtonAmber {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid #fde68a;
+  padding: 0.375rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #d97706;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.rowActionButtonAmber:hover {
+  background-color: #fffbeb;
+}
+
+.rowActionButtonRed {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid #fecaca;
+  padding: 0.375rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ef4444;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.rowActionButtonRed:hover {
+  background-color: #fef2f2;
+}
+
+/* --- Inline add/edit member form card --- */
+.formCard {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+  background-color: #fff;
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  animation: fadeInSlideTop 0.2s ease-in-out;
+}
+
+@keyframes fadeInSlideTop {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.formCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.formCardTitle {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.formCardTitleIcon {
+  color: var(--color-primary);
+}
+
+.formCardCloseButton {
+  color: #94a3b8;
+  padding: 0.375rem;
+  border-radius: 0.75rem;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.formCardCloseButton:hover {
+  background-color: #f1f5f9;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .formGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.formGridFullSpan {
+  grid-column: 1 / -1;
+}
+
+.formFieldLabel {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 0.375rem;
+}
+
+.formActionsRow {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(219, 228, 240, 0.6);
+}
+
+@media (min-width: 640px) {
+  .formActionsRow {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+/* --- Inline OTP verification card --- */
+.otpCard {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(4, 72, 144, 0.2);
+  background-color: rgba(4, 72, 144, 0.05);
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  animation: fadeInSlideTop 0.2s ease-in-out;
+}
+
+.otpCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(4, 72, 144, 0.1);
+  padding-bottom: 0.75rem;
+}
+
+.otpCardHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.otpCardIcon {
+  border-radius: 0.5rem;
+  background-color: rgba(4, 72, 144, 0.1);
+  padding: 0.375rem;
+  color: var(--color-primary);
+}
+
+.otpCardTitle {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 1rem;
+}
+
+.otpCardCloseButton {
+  color: #94a3b8;
+  padding: 0.375rem;
+  border-radius: 0.75rem;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.otpCardCloseButton:hover {
+  background-color: rgba(4, 72, 144, 0.1);
+}
+
+.otpBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.otpDescription {
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.otpDestGrid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .otpDestGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.otpDestOption {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.otpDestOption:hover {
+  background-color: rgba(238, 242, 247, 0.4);
+}
+
+.otpDestRadio {
+  accent-color: var(--color-primary);
+  height: 1.125rem;
+  width: 1.125rem;
+}
+
+.otpDestLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.otpDestValue {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.otpActionsRow {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .otpActionsRow {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+.otpActionsRowBordered {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(4, 72, 144, 0.1);
+}
+
+@media (min-width: 640px) {
+  .otpActionsRowBordered {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+.otpSecondaryButton {
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+  background-color: #fff;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.otpSecondaryButton:hover {
+  background-color: var(--color-light);
+}
+
+.otpPrimaryButton {
+  border-radius: 0.75rem;
+  background-color: var(--color-primary);
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #fff;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.otpPrimaryButton:hover {
+  background-color: rgba(4, 72, 144, 0.95);
+}
+
+.otpForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.otpSentText {
+  font-size: 0.875rem;
+  color: #475569;
+  font-weight: 600;
+}
+
+.otpSentTextStrong {
+  color: #1e293b;
+}
+
+.otpHintBox {
+  background-color: #fff;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(4, 72, 144, 0.1);
+  font-size: 0.75rem;
+  color: var(--color-primary);
+  font-weight: 600;
+  line-height: 1.625;
+}
+
+.otpErrorText {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #dc2626;
+  background-color: #fef2f2;
+  padding: 0.625rem;
+  border-radius: 0.75rem;
+  border: 1px solid #fee2e2;
+}
+
+/* --- Toggle / shared card with header (password, help, danger) --- */
+.cardSimple {
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+  background-color: #fff;
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.simpleHeader {
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 1rem;
+}
+
+.simpleHeaderIcon {
+  border-radius: 0.75rem;
+  background-color: rgba(4, 72, 144, 0.1);
+  padding: 0.5rem;
+  color: var(--color-primary);
+}
+
+.simpleHeaderTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.passwordGrid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .passwordGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.passwordActions {
+  margin-top: 1.25rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.faqGrid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .faqGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.faqCard {
+  border-radius: 0.75rem;
+  background-color: var(--color-light);
+  padding: 1rem;
+}
+
+.faqQuestion {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.faqAnswer {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1.625;
+  color: #64748b;
+}
+
+.helpBanner {
+  margin-top: 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(4, 72, 144, 0.2);
+  background-color: rgba(4, 72, 144, 0.05);
+  padding: 1rem;
+  font-size: 0.875rem;
+}
+
+.helpBannerTitle {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.helpBannerText {
+  margin-top: 0.25rem;
+  color: #475569;
+}
+
+.helpBannerEmail {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+/* --- Delete account --- */
+.dangerCard {
+  border-radius: 1rem;
+  border: 1px solid #fecaca;
+  background-color: #fff;
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.dangerHeader {
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid #fee2e2;
+  padding-bottom: 1rem;
+}
+
+.dangerIcon {
+  border-radius: 0.75rem;
+  background-color: #fee2e2;
+  padding: 0.5rem;
+  color: #ef4444;
+}
+
+.dangerTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.dangerDescription {
+  font-size: 0.875rem;
+  line-height: 1.625;
+  color: #475569;
+}
+
+.dangerStepPanel {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #fecaca;
+  background-color: #fef2f2;
+  padding: 1.25rem;
+}
+
+.dangerStepTitle {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #b91c1c;
+}
+
+.dangerCheckLabel {
+  display: flex;
+  cursor: pointer;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.dangerCheckText {
+  font-size: 0.875rem;
+  color: #334155;
+}
+
+.dangerStepActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .dangerStepActions {
+    flex-direction: row;
+  }
+}
+
+.otpHint {
+  font-size: 0.75rem;
+  color: #475569;
+}
+
+.otpNote {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}

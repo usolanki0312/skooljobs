@@ -3,6 +3,9 @@ import { useOutletContext } from "react-router-dom";
 import { HelpCircle, KeyRound, Save, Trash2, Bell, Eye } from "lucide-react";
 import { inputClass } from "../../lib/formStyles";
 import FormField from "../../components/FormField";
+import styles from "./styles/TeacherSettings.module.css";
+import { Button, Input } from "@cloudstrytech/ui-components";
+
 
 const TeacherSettings = () => {
   const { handleLogout } = useOutletContext();
@@ -25,154 +28,154 @@ const TeacherSettings = () => {
   const [pwForm, setPwForm] = useState({ current: "", next: "", confirm: "" });
 
   return (
-    <div className="space-y-8">
-      <h2 className="text-2xl font-bold text-slate-800 sm:text-3xl">Account Settings</h2>
+    <div className={styles.wrapper}>
+      <h2 className={styles.pageTitle}>Account Settings</h2>
 
       {/* --- Privacy & Visibility --- */}
-      <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm sm:p-6">
-        <div className="mb-5 flex items-center gap-3 border-b border-borderColor pb-4">
-          <span className="rounded-xl bg-primary/10 p-2 text-primary">
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
+          <span className={styles.cardIcon}>
             <Eye size={18} />
           </span>
-          <h3 className="text-lg font-bold text-slate-800">
+          <h3 className={styles.cardTitle}>
             Privacy &amp; Visibility
           </h3>
         </div>
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <p className="font-bold text-slate-700">Profile Visibility</p>
-            <p className="mt-1 text-sm text-slate-500">
+        <div className={styles.toggleRow}>
+          <div className={styles.toggleText}>
+            <p className={styles.toggleTitle}>Profile Visibility</p>
+            <p className={styles.toggleDescription}>
               Allow verified schools to view your profile and contact you for
               teaching opportunities.
             </p>
           </div>
-          <label className="relative inline-flex shrink-0 cursor-pointer items-center">
+          <label className={styles.switch}>
             <input
               type="checkbox"
-              className="peer sr-only"
+              className={styles.switchInput}
               checked={isProfileVisible}
               onChange={() => setIsProfileVisible(!isProfileVisible)}
             />
-            <div className="peer h-6 w-11 rounded-full bg-slate-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none"></div>
+            <div className={styles.switchTrack}></div>
           </label>
         </div>
       </div>
 
       {/* --- Notification Preferences --- */}
-      <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm sm:p-6">
-        <div className="mb-5 flex items-center gap-3 border-b border-borderColor pb-4">
-          <span className="rounded-xl bg-primary/10 p-2 text-primary">
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
+          <span className={styles.cardIcon}>
             <Bell size={18} />
           </span>
-          <h3 className="text-lg font-bold text-slate-800">
+          <h3 className={styles.cardTitle}>
             Notification Preferences
           </h3>
         </div>
-        <div className="space-y-6">
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <p className="font-bold text-slate-700">Email Notifications</p>
-              <p className="mt-1 text-sm text-slate-500">
+        <div className={styles.notificationList}>
+          <div className={styles.toggleRow}>
+            <div className={styles.toggleText}>
+              <p className={styles.toggleTitle}>Email Notifications</p>
+              <p className={styles.toggleDescription}>
                 Receive interview invites and job recommendations directly to
                 your inbox.
               </p>
             </div>
-            <label className="relative inline-flex shrink-0 cursor-pointer items-center">
+            <label className={styles.switch}>
               <input
                 type="checkbox"
-                className="peer sr-only"
+                className={styles.switchInput}
                 checked={notifPrefs.email}
                 onChange={() =>
                   setNotifPrefs((p) => ({ ...p, email: !p.email }))
                 }
               />
-              <div className="peer h-6 w-11 rounded-full bg-slate-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none"></div>
+              <div className={styles.switchTrack}></div>
             </label>
           </div>
-          <div className="flex items-start justify-between gap-4 border-t border-borderColor/50 pt-6">
-            <div className="min-w-0">
-              <p className="font-bold text-slate-700">SMS Alerts</p>
-              <p className="mt-1 text-sm text-slate-500">
+          <div className={styles.toggleRowBordered}>
+            <div className={styles.toggleText}>
+              <p className={styles.toggleTitle}>SMS Alerts</p>
+              <p className={styles.toggleDescription}>
                 Get instant text alerts for critical updates like interview
                 confirmations.
               </p>
             </div>
-            <label className="relative inline-flex shrink-0 cursor-pointer items-center">
+            <label className={styles.switch}>
               <input
                 type="checkbox"
-                className="peer sr-only"
+                className={styles.switchInput}
                 checked={notifPrefs.sms}
                 onChange={() => setNotifPrefs((p) => ({ ...p, sms: !p.sms }))}
               />
-              <div className="peer h-6 w-11 rounded-full bg-slate-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none"></div>
+              <div className={styles.switchTrack}></div>
             </label>
           </div>
         </div>
       </div>
 
       {/* --- Change Password --- */}
-      <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm sm:p-6">
-        <div className="mb-5 flex items-center gap-3 border-b border-borderColor pb-4">
-          <span className="rounded-xl bg-primary/10 p-2 text-primary">
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
+          <span className={styles.cardIcon}>
             <KeyRound size={18} />
           </span>
-          <h3 className="text-lg font-bold text-slate-800">Change Password</h3>
+          <h3 className={styles.cardTitle}>Change Password</h3>
         </div>
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+        <div className={styles.passwordGrid}>
           <FormField label="Current Password">
-            <input
+            <Input
               type="password"
               value={pwForm.current}
-              onChange={(e) =>
-                setPwForm((p) => ({ ...p, current: e.target.value }))
+              onChange={(value) =>
+                setPwForm((p) => ({ ...p, current: value }))
               }
-              className={inputClass}
               placeholder="Enter current password"
             />
           </FormField>
           <FormField label="New Password">
-            <input
+            <Input
               type="password"
               value={pwForm.next}
-              onChange={(e) =>
-                setPwForm((p) => ({ ...p, next: e.target.value }))
+              onChange={(value) =>
+                setPwForm((p) => ({ ...p, next: value }))
               }
-              className={inputClass}
               placeholder="Enter new password"
             />
           </FormField>
           <FormField label="Confirm New Password">
-            <input
+            <Input
               type="password"
               value={pwForm.confirm}
-              onChange={(e) =>
-                setPwForm((p) => ({ ...p, confirm: e.target.value }))
+              onChange={(value) =>
+                setPwForm((p) => ({ ...p, confirm: value }))
               }
-              className={inputClass}
               placeholder="Re-enter new password"
             />
           </FormField>
         </div>
-        <div className="mt-5 flex justify-end">
+        <div className={styles.passwordActions}>
           <button
             type="button"
+            className={styles.updatePasswordButton}
             onClick={() => {
               if (!pwForm.current) {
                 alert("Enter your current password.");
                 return;
               }
+
               if (pwForm.next !== pwForm.confirm) {
                 alert("New passwords do not match.");
                 return;
               }
+
               if (pwForm.next.length < 6) {
                 alert("Password must be at least 6 characters.");
                 return;
               }
+
               alert("Password updated successfully!");
               setPwForm({ current: "", next: "", confirm: "" });
             }}
-            className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white hover:bg-primary/95"
           >
             <Save size={16} /> Update Password
           </button>
@@ -180,16 +183,16 @@ const TeacherSettings = () => {
       </div>
 
       {/* --- Help & Support --- */}
-      <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm sm:p-6">
-        <div className="mb-5 flex items-center gap-3 border-b border-borderColor pb-4">
-          <span className="rounded-xl bg-primary/10 p-2 text-primary">
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
+          <span className={styles.cardIcon}>
             <HelpCircle size={18} />
           </span>
-          <h3 className="text-lg font-bold text-slate-800">
+          <h3 className={styles.cardTitle}>
             Help &amp; Support
           </h3>
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className={styles.faqGrid}>
           {[
             {
               q: "How do I apply for a job?",
@@ -208,101 +211,101 @@ const TeacherSettings = () => {
               a: "Check the 'Interviews' section for meeting links and preparation tips.",
             },
           ].map((faq) => (
-            <div key={faq.q} className="rounded-xl bg-light p-4">
-              <p className="text-sm font-bold text-slate-800">{faq.q}</p>
-              <p className="mt-1 text-xs leading-relaxed text-slate-500">
+            <div key={faq.q} className={styles.faqCard}>
+              <p className={styles.faqQuestion}>{faq.q}</p>
+              <p className={styles.faqAnswer}>
                 {faq.a}
               </p>
             </div>
           ))}
         </div>
-        <div className="mt-5 rounded-xl border border-primary/20 bg-primary/5 p-4 text-sm">
-          <p className="font-bold text-primary">Need more help?</p>
-          <p className="mt-1 text-slate-600">
+        <div className={styles.helpBanner}>
+          <p className={styles.helpBannerTitle}>Need more help?</p>
+          <p className={styles.helpBannerText}>
             Email us at{" "}
-            <span className="font-bold text-primary">support@skooljobs.in</span>{" "}
+            <span className={styles.helpBannerEmail}>support@skooljobs.in</span>{" "}
             — we respond within 24 hours.
           </p>
         </div>
       </div>
 
       {/* --- Delete Account --- */}
-      <div className="rounded-2xl border border-red-200 bg-white p-5 shadow-sm sm:p-6">
-        <div className="mb-5 flex items-center gap-3 border-b border-red-100 pb-4">
-          <span className="rounded-xl bg-red-100 p-2 text-red-500">
+      <div className={styles.dangerCard}>
+        <div className={styles.dangerCardHeader}>
+          <span className={styles.dangerIcon}>
             <Trash2 size={18} />
           </span>
-          <h3 className="text-lg font-bold text-red-600">Delete Account</h3>
+          <h3 className={styles.dangerTitle}>Delete Account</h3>
         </div>
-        <p className="text-sm leading-relaxed text-slate-600">
+        <p className={styles.dangerDescription}>
           Permanently deleting your account will remove your profile,
           applications, and saved jobs. This action is{" "}
           <strong>irreversible</strong>.
         </p>
 
         {deleteStep === 0 && (
-          <button
-            type="button"
+          <Button
+            variant="" filled
+            startIcon="deleteIcon"
             onClick={() => setDeleteStep(1)}
-            className="mt-5 inline-flex items-center gap-2 rounded-xl border border-red-300 px-5 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50"
+            className={styles.requestDeleteButton}
           >
-            <Trash2 size={15} /> Request Account Deletion
-          </button>
-        )}
+            Request Account Deletion
+          </Button>)}
 
         {deleteStep === 1 && (
-          <div className="mt-5 space-y-4 rounded-xl border border-red-200 bg-red-50 p-5">
-            <p className="text-sm font-bold text-red-700">
+          <div className={styles.dangerStepPanel}>
+            <p className={styles.dangerStepTitle}>
               Confirmation Required — Step 1 of 2
             </p>
-            <label className="flex cursor-pointer items-start gap-3">
+            <label className={styles.dangerCheckLabel}>
               <input
                 type="checkbox"
                 checked={deleteChecks.c1}
                 onChange={(e) =>
                   setDeleteChecks((p) => ({ ...p, c1: e.target.checked }))
                 }
-                className="mt-1 h-4 w-4 accent-red-500"
+                className={styles.dangerCheckbox}
               />
-              <span className="text-sm text-slate-700">
+              <span className={styles.dangerCheckText}>
                 I understand that my job applications and profile data will be
                 permanently deleted.
               </span>
             </label>
-            <label className="flex cursor-pointer items-start gap-3">
+            <label className={styles.dangerCheckLabel}>
               <input
                 type="checkbox"
                 checked={deleteChecks.c2}
                 onChange={(e) =>
                   setDeleteChecks((p) => ({ ...p, c2: e.target.checked }))
                 }
-                className="mt-1 h-4 w-4 accent-red-500"
+                className={styles.dangerCheckbox}
               />
-              <span className="text-sm text-slate-700">
+              <span className={styles.dangerCheckText}>
                 I confirm this is my account and I wish to permanently delete
                 it. This cannot be undone.
               </span>
             </label>
-            <div className="flex flex-col gap-3 pt-2 sm:flex-row">
-              <button
-                type="button"
+            <div className={styles.dangerStepActions}>
+              <Button
+                variant="filled"
                 disabled={!deleteChecks.c1 || !deleteChecks.c2}
                 onClick={() => {
                   setDeleteStep(2);
                   setDeleteOtpSent(true);
                   alert("Demo OTP sent! Use code 123456 to confirm deletion.");
                 }}
-                className="rounded-xl bg-red-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-40"
+                className={styles.primaryDangerButton}
               >
                 Proceed to OTP Verification
-              </button>
+              </Button>
               <button
                 type="button"
                 onClick={() => {
                   setDeleteStep(0);
                   setDeleteChecks({ c1: false, c2: false });
                 }}
-                className="rounded-xl border border-borderColor px-5 py-2.5 text-sm font-bold text-slate-500 hover:bg-light"
+                className={styles.secondaryButton}
               >
                 Cancel
               </button>
@@ -311,31 +314,31 @@ const TeacherSettings = () => {
         )}
 
         {deleteStep === 2 && (
-          <div className="mt-5 space-y-4 rounded-xl border border-red-200 bg-red-50 p-5">
-            <p className="text-sm font-bold text-red-700">
+          <div className={styles.dangerStepPanel}>
+            <p className={styles.dangerStepTitle}>
               OTP Verification — Step 2 of 2
             </p>
             {deleteOtpSent && (
-              <p className="text-xs text-slate-600">
+              <p className={styles.otpHint}>
                 A 6-digit OTP has been sent to your registered email and mobile
                 number.
               </p>
             )}
             <FormField label="Enter OTP">
-              <input
+              <Input
+                label="Enter OTP"
                 value={deleteOtp}
-                onChange={(e) => setDeleteOtp(e.target.value)}
-                className={inputClass}
+                onChange={setDeleteOtp}
+                fieldClassName="host-tweak"
                 placeholder="Enter 6-digit OTP"
-                maxLength={6}
               />
             </FormField>
-            <p className="text-xs text-slate-400">
+            <p className={styles.otpNote}>
               For demo: use OTP <strong>123456</strong>
             </p>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <button
-                type="button"
+            <div className={styles.dangerStepActionsNoTop}>
+              <Button
+                variant="filled"
                 onClick={() => {
                   if (deleteOtp !== "123456") {
                     alert("Invalid OTP. Try 123456 for demo.");
@@ -344,22 +347,23 @@ const TeacherSettings = () => {
                   alert("Account deleted. Redirecting...");
                   handleLogout();
                 }}
-                className="rounded-xl bg-red-500 px-5 py-2.5 text-sm font-bold text-white hover:bg-red-600"
+                className={styles.primaryDangerButton}
               >
                 Confirm Delete Account
-              </button>
-              <button
-                type="button"
+              </Button>
+
+              <Button
+                variant="outlined"
                 onClick={() => {
                   setDeleteStep(0);
                   setDeleteChecks({ c1: false, c2: false });
                   setDeleteOtp("");
                   setDeleteOtpSent(false);
                 }}
-                className="rounded-xl border border-borderColor px-5 py-2.5 text-sm font-bold text-slate-500 hover:bg-light"
+                className={styles.secondaryButton}
               >
                 Cancel
-              </button>
+              </Button>
             </div>
           </div>
         )}

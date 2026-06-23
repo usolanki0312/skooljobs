@@ -1,0 +1,88 @@
+.label {
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .row {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+  }
+}
+
+.box {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 0%;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+  padding: 0.625rem 0.75rem;
+}
+
+.boxReadOnly {
+  background-color: #f8fafc;
+}
+
+.boxEditable {
+  background-color: #fff;
+}
+
+.boxEditable:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(4, 72, 144, 0.1);
+}
+
+.currencySymbol {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.input {
+  width: 100%;
+  min-width: 0;
+  background-color: transparent;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.input::placeholder {
+  color: #94a3b8;
+}
+
+.inputReadOnly {
+  color: #64748b;
+}
+
+.inputEditable {
+  color: #1e293b;
+}
+
+.separator {
+  display: none;
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+@media (min-width: 640px) {
+  .separator {
+    display: inline;
+  }
+}
+
+.suffix {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}

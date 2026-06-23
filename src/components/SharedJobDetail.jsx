@@ -13,6 +13,7 @@ import {
   ArrowLeft,
   Bookmark,
 } from "lucide-react";
+import styles from "./styles/SharedJobDetail.module.css";
 
 const SharedJobDetail = ({
   job,
@@ -62,65 +63,65 @@ const SharedJobDetail = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className={styles.wrapper}>
       {/* Back button (optional) */}
       {onBack && (
         <div>
           <button
             onClick={onBack}
-            className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-primary transition"
+            className={styles.backButton}
           >
             <ArrowLeft size={16} /> Back
           </button>
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div className={styles.layoutGrid}>
         {/* Left Column: Job Details */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className={styles.leftColumn}>
           {/* Header Card */}
-          <div className="rounded-3xl border border-borderColor bg-white p-5 shadow-soft sm:p-6 lg:p-8">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="min-w-0 space-y-1">
-                <h1 className="text-2xl font-bold text-slate-800 font-heading leading-tight sm:text-3xl">
+          <div className={styles.headerCard}>
+            <div className={styles.headerRow}>
+              <div className={styles.headerInfo}>
+                <h1 className={styles.jobTitle}>
                   {title}
                 </h1>
-                <p className="text-base font-semibold text-primary sm:text-lg">
+                <p className={styles.companyName}>
                   {companyName}
                 </p>
-                <div className="mt-4 flex flex-wrap gap-2 pt-2 sm:gap-2.5">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-bold text-slate-600 sm:px-3.5">
+                <div className={styles.badgeRow}>
+                  <span className={styles.badgeLocation}>
                     <MapPin size={13} /> {location}
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/5 px-3 py-1.5 text-xs font-bold text-primary sm:px-3.5">
+                  <span className={styles.badgeType}>
                     <Briefcase size={13} /> {employmentType}
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1.5 text-xs font-bold text-green-600 sm:px-3.5">
+                  <span className={styles.badgeSalary}>
                     <DollarSign size={13} /> {salaryRange}
                   </span>
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2">
+              <div className={styles.headerActions}>
                 {showMatch && (
-                  <span className="rounded-full bg-green-50 px-3.5 py-1.5 text-xs font-bold text-green-600 shadow-sm border border-green-100">
+                  <span className={styles.matchBadge}>
                     {match}% Match
                   </span>
                 )}
                 <button
                   onClick={handleCopyLink}
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-borderColor bg-white hover:bg-slate-50 p-2.5 text-sm font-semibold text-slate-600 transition shadow-sm"
+                  className={styles.shareButton}
                   title="Copy Share Link"
                 >
                   <Share2 size={16} />
-                  <span className="hidden sm:inline">{copied ? "Copied!" : "Share"}</span>
+                  <span className={styles.shareLabel}>{copied ? "Copied!" : "Share"}</span>
                 </button>
               </div>
             </div>
           </div>
 
           {/* Info grid */}
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+          <div className={styles.infoGrid}>
             {[
               { icon: BookOpen, label: "Subject", val: subject },
               { icon: Award, label: "Experience", val: experience },
@@ -131,15 +132,15 @@ const SharedJobDetail = ({
               return (
                 <div
                   key={idx}
-                  className="rounded-2xl border border-borderColor bg-white p-4 text-center shadow-sm hover:shadow-soft transition duration-200"
+                  className={styles.infoItem}
                 >
-                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-primary/5 text-primary mb-2">
+                  <div className={styles.infoIconWrap}>
                     <Icon size={18} />
                   </div>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">
+                  <p className={styles.infoLabel}>
                     {item.label}
                   </p>
-                  <p className="mt-1 text-sm font-bold text-slate-800 truncate">
+                  <p className={styles.infoValue}>
                     {item.val}
                   </p>
                 </div>
@@ -148,22 +149,22 @@ const SharedJobDetail = ({
           </div>
 
           {/* Details sections */}
-          <div className="rounded-3xl border border-borderColor bg-white p-5 shadow-soft space-y-6 sm:p-6 lg:p-8">
+          <div className={styles.detailsCard}>
             <div>
-              <h3 className="text-lg font-bold text-slate-800 border-b border-borderColor pb-3 mb-4 font-heading">
+              <h3 className={styles.sectionHeading}>
                 Job Description
               </h3>
-              <p className="text-sm leading-relaxed text-slate-600 whitespace-pre-line">
+              <p className={styles.descriptionText}>
                 {description}
               </p>
             </div>
 
             {requirements && (
               <div>
-                <h3 className="text-lg font-bold text-slate-800 border-b border-borderColor pb-3 mb-4 font-heading">
+                <h3 className={styles.sectionHeading}>
                   Key Requirements &amp; Skills
                 </h3>
-                <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 pl-1">
+                <ul className={styles.list}>
                   {requirements.split("\n").map((r, i) => r.trim() && (
                     <li key={i}>{r}</li>
                   ))}
@@ -173,10 +174,10 @@ const SharedJobDetail = ({
 
             {qualifications && (
               <div>
-                <h3 className="text-lg font-bold text-slate-800 border-b border-borderColor pb-3 mb-4 font-heading">
+                <h3 className={styles.sectionHeading}>
                   Required Qualifications
                 </h3>
-                <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 pl-1">
+                <ul className={styles.list}>
                   {qualifications.split("\n").map((q, i) => q.trim() && (
                     <li key={i}>{q}</li>
                   ))}
@@ -188,25 +189,25 @@ const SharedJobDetail = ({
 
         {/* Right Column: Apply Panel */}
         <div>
-          <div className="space-y-6 lg:sticky lg:top-24">
+          <div className={styles.rightColumnInner}>
             {/* Action Card */}
-            <div className="rounded-3xl border border-borderColor bg-white p-5 shadow-soft space-y-4 sm:p-6">
-              <h3 className="font-heading text-lg font-bold text-slate-800">
+            <div className={styles.actionCard}>
+              <h3 className={styles.actionCardHeading}>
                 Interested in this position?
               </h3>
-              <p className="text-xs leading-relaxed text-slate-400">
+              <p className={styles.actionCardText}>
                 Submit your credentials directly. The recruitment team of {companyName} will review your application.
               </p>
 
               {isApplied ? (
-                <div className="flex items-center gap-2 rounded-xl bg-green-50 p-4 text-xs font-bold text-green-600 border border-green-150 shadow-sm">
+                <div className={styles.appliedBanner}>
                   <CheckCircle2 size={16} /> Applied Successfully!
                 </div>
               ) : (
                 <button
                   type="button"
                   onClick={onApply}
-                  className="w-full rounded-xl bg-primary py-3 text-sm font-bold text-white shadow-md hover:bg-primary/95 transition active:scale-[0.98]"
+                  className={styles.applyButton}
                 >
                   Apply Now
                 </button>
@@ -216,11 +217,7 @@ const SharedJobDetail = ({
                 <button
                   type="button"
                   onClick={onSave}
-                  className={`w-full rounded-xl border py-3 text-sm font-bold transition flex items-center justify-center gap-1.5 ${
-                    isSaved
-                      ? "border-green-500 bg-green-500 text-white shadow-sm"
-                      : "border-borderColor text-slate-600 hover:bg-light"
-                  }`}
+                  className={isSaved ? styles.saveButtonSaved : styles.saveButton}
                 >
                   <Bookmark size={16} /> {isSaved ? "Saved Job" : "Save Job"}
                 </button>
@@ -228,34 +225,34 @@ const SharedJobDetail = ({
             </div>
 
             {/* School Details */}
-            <div className="rounded-3xl border border-borderColor bg-white p-5 shadow-soft space-y-4 sm:p-6">
-              <h3 className="font-bold text-slate-800 border-b border-borderColor pb-3 mb-2 font-heading">
+            <div className={styles.instituteCard}>
+              <h3 className={styles.instituteHeading}>
                 About the Institute
               </h3>
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-primary border border-borderColor">
+              <div className={styles.instituteRow}>
+                <div className={styles.instituteIconWrap}>
                   <Building2 size={22} />
                 </div>
-                <div className="min-w-0">
-                  <h4 className="font-bold text-slate-800 truncate">
+                <div className={styles.instituteTextWrap}>
+                  <h4 className={styles.instituteName}>
                     {companyName}
                   </h4>
-                  <p className="text-xs text-slate-400">Verified Recruiter</p>
+                  <p className={styles.instituteVerified}>Verified Recruiter</p>
                 </div>
               </div>
-              
-              <div className="space-y-2.5 pt-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Sector:</span>
-                  <span className="font-bold text-slate-700">Schools &amp; Institutions</span>
+
+              <div className={styles.instituteFacts}>
+                <div className={styles.instituteFactRow}>
+                  <span className={styles.instituteFactLabel}>Sector:</span>
+                  <span className={styles.instituteFactValue}>Schools &amp; Institutions</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Medium:</span>
-                  <span className="font-bold text-slate-700">English Medium</span>
+                <div className={styles.instituteFactRow}>
+                  <span className={styles.instituteFactLabel}>Medium:</span>
+                  <span className={styles.instituteFactValue}>English Medium</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Affiliation:</span>
-                  <span className="font-bold text-slate-700">CBSE Affiliated</span>
+                <div className={styles.instituteFactRow}>
+                  <span className={styles.instituteFactLabel}>Affiliation:</span>
+                  <span className={styles.instituteFactValue}>CBSE Affiliated</span>
                 </div>
               </div>
             </div>

@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import styles from "./styles/backbutton.module.css";
 
 const BackButton = () => {
 
@@ -9,7 +10,7 @@ const BackButton = () => {
     <button
       type="button"
       onClick={() => navigate(-1)}
-      className="bg-primary text-white px-5 py-3 rounded-xl hover:bg-secondary transition"
+      className={styles.backButton}
     >
       ← Back
     </button>

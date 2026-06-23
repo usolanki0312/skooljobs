@@ -1,15 +1,16 @@
 import { useOutletContext } from "react-router-dom";
 import TeacherJobCard from "../../components/TeacherJobCard";
+import styles from "./styles/TeacherRecommendation.module.css";
 
 const TeacherRecommendation = () => {
   const { appliedJobs, savedJobs, recommendedJobs, handleApply, handleSave } = useOutletContext();
 
   return (
-    <section className="rounded-3xl bg-white p-5 shadow-soft sm:p-6">
-      <h2 className="text-2xl font-bold text-primary sm:text-3xl">Resume Based Recommendation</h2>
-      <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
+    <section className={styles.section}>
+      <h2 className={styles.heading}>Resume Based Recommendation</h2>
+      <div className={styles.grid}>
         {recommendedJobs.length === 0 ? (
-          <p className="rounded-2xl bg-light p-5 text-sm text-slate-500">No recommendations for this resume yet.</p>
+          <p className={styles.emptyMessage}>No recommendations for this resume yet.</p>
         ) : (
           recommendedJobs.map((job) => (
             <TeacherJobCard

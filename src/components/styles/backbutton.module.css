@@ -1,0 +1,13 @@
+.backButton {
+  background-color: var(--color-primary);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.backButton:hover {
+  background-color: var(--color-secondary);
+}

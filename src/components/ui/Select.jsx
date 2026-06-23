@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, ChevronDown, Search } from "lucide-react";
 import { inputClass } from "../../lib/formStyles";
+import styles from "./Select.module.css";
 
 // Normalize a raw option node into { label, value } or a group.
 // - string            → { label, value: same }
@@ -129,7 +130,7 @@ const Select = ({
       if (it.group) {
         return (
           <div key={`g-${it.group}-${i}`} role="group" aria-label={it.group}>
-            <p className="px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-slate-400">
+            <p className={styles.groupLabel}>
               {it.group}
             </p>
             {renderRows(it.options)}
@@ -148,22 +149,22 @@ const Select = ({
           aria-selected={isSelected}
           onMouseEnter={() => setActiveIndex(idx)}
           onClick={() => choose(it.value)}
-          className={`flex w-full items-center justify-between gap-2 px-3 py-2.5 text-left text-sm transition ${
+          className={
             isSelected
-              ? "bg-primary/5 font-semibold text-primary"
+              ? styles.optionSelected
               : isActive
-                ? "bg-light text-slate-700"
-                : "text-slate-700 hover:bg-light"
-          }`}
+                ? styles.optionActive
+                : styles.option
+          }
         >
-          <span className="truncate">{it.label}</span>
-          {isSelected && <Check size={14} className="shrink-0 text-primary" />}
+          <span className={styles.optionLabel}>{it.label}</span>
+          {isSelected && <Check size={14} className={styles.optionCheck} />}
         </button>
       );
     });
 
   return (
-    <div ref={rootRef} className="relative">
+    <div ref={rootRef} className={styles.root}>
       <button
         ref={triggerRef}
         type="button"
@@ -173,42 +174,42 @@ const Select = ({
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={ariaLabel}
-        className={`flex items-center justify-between gap-2 text-left ${
+        className={`${styles.trigger} ${
           className || inputClass
-        } ${disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
+        } ${disabled ? styles.triggerDisabled : styles.triggerEnabled}`}
       >
-        <span className={`truncate ${selectedLabel ? "text-slate-800" : "text-slate-400"}`}>
+        <span className={`${styles.selectedLabel} ${selectedLabel ? styles.selectedLabelFilled : styles.selectedLabelPlaceholder}`}>
           {selectedLabel || placeholder}
         </span>
         <ChevronDown
           size={16}
-          className={`shrink-0 text-slate-400 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`${styles.chevron} ${open ? styles.chevronOpen : ""}`}
         />
       </button>
 
       {open && (
         <div
           role="listbox"
-          className="absolute z-30 mt-1 max-h-64 w-full overflow-y-auto rounded-xl border border-borderColor bg-white py-1 shadow-soft"
+          className={styles.popover}
         >
           {showSearch && (
-            <div className="sticky top-0 border-b border-borderColor bg-white px-2 pb-2 pt-1">
-              <div className="flex items-center gap-2 rounded-lg border border-borderColor px-2.5 py-1.5">
-                <Search size={14} className="shrink-0 text-slate-400" />
+            <div className={styles.searchWrap}>
+              <div className={styles.searchInner}>
+                <Search size={14} className={styles.searchIcon} />
                 <input
                   ref={searchRef}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Search…"
-                  className="w-full bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400"
+                  className={styles.searchInput}
                 />
               </div>
             </div>
           )}
 
           {filteredSelectable.length === 0 ? (
-            <p className="px-3 py-3 text-center text-sm text-slate-400">No matches</p>
+            <p className={styles.noMatches}>No matches</p>
           ) : (
             renderRows(filtered)
           )}

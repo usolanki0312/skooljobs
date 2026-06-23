@@ -1,0 +1,266 @@
+.page {
+  min-height: 100vh;
+  background-color: #fff;
+}
+
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  display: none;
+  width: 18rem;
+  background-color: var(--color-primary);
+  padding: 1.25rem;
+  color: #fff;
+}
+
+@media (min-width: 1024px) {
+  .sidebar {
+    display: block;
+  }
+}
+
+.profileCard {
+  border-radius: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 1.25rem;
+}
+
+.profileRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profileAvatar {
+  height: 3.5rem;
+  width: 3.5rem;
+  border-radius: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  object-fit: cover;
+}
+
+.profileName {
+  font-weight: 700;
+}
+
+.profileSubtitle {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.scoreCard {
+  margin-top: 1.5rem;
+  border-radius: 1.5rem;
+  padding: 1.25rem;
+}
+
+.scoreHeader {
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.scoreActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.completeButton {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  transition-property: all;
+  transition-duration: 150ms;
+}
+
+.completeButton:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.scoreTrack {
+  height: 0.5rem;
+  overflow: hidden;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.scoreFill {
+  height: 100%;
+  border-radius: 9999px;
+  background-color: #fff;
+}
+
+.nav {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.navButton {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition-property: all;
+  transition-duration: 150ms;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.navButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.navButton.navButtonActive {
+  background-color: #fff;
+  color: var(--color-primary);
+}
+
+.navButton.navButtonActive:hover {
+  background-color: #fff;
+  color: var(--color-primary);
+}
+
+.bottomNav {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.logoutButton {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 1rem;
+  background-color: #ef4444;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #fff;
+  transition-property: all;
+  transition-duration: 150ms;
+}
+
+.logoutButton:hover {
+  background-color: #dc2626;
+}
+
+.main {
+  min-width: 0;
+  flex: 1 1 0%;
+  overflow-x: hidden;
+  padding: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .main {
+    padding: 2rem;
+  }
+}
+
+.mobileNavWrap {
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .mobileNavWrap {
+    display: none;
+  }
+}
+
+.mobileNavBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 1.5rem;
+  padding: 0.75rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.mobileNavTitle {
+  padding: 0 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.mobileNavToggle {
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  color: var(--color-primary);
+}
+
+.mobileNavToggle:hover {
+  background-color: var(--color-light);
+}
+
+.mobileNavMenu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 40;
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  border-radius: 1.5rem;
+  padding: 0.75rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.mobileNavButton {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition-property: all;
+  transition-duration: 150ms;
+}
+
+.mobileNavButton:hover {
+  background-color: var(--color-light);
+  color: var(--color-primary);
+}
+
+.mobileNavButton.mobileNavButtonActive {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.mobileNavButton.mobileNavButtonActive:hover {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.outletWrap {
+  margin-top: 1.5rem;
+}
