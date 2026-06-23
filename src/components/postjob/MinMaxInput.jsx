@@ -1,42 +1,37 @@
+import styles from "./styles/MinMaxInput.module.css";
+import { Button, Input } from "@cloudstrytech/ui-components";
+
 const MinMaxInput = ({
   label, minValue, maxValue, onMinChange, onMaxChange, suffix = "", readOnly = false,
 }) => {
-  const boxCls = `flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-borderColor px-3 py-2.5 ${
-    readOnly
-      ? "bg-slate-50"
-      : "bg-white focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10"
-  }`;
-  const inputCls = `w-full min-w-0 bg-transparent text-sm outline-none placeholder:text-slate-400 ${
-    readOnly ? "text-slate-500" : "text-slate-800"
-  }`;
+  const boxCls = `${styles.box} ${readOnly ? styles.boxReadOnly : styles.boxEditable}`;
+  const inputCls = `${styles.input} ${readOnly ? styles.inputReadOnly : styles.inputEditable}`;
 
   return (
     <div>
-      {label && <p className="mb-2 text-xs font-bold text-slate-600">{label}</p>}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+      {label && <p className={styles.label}>{label}</p>}
+      <div className={styles.row}>
         <div className={boxCls}>
-          <span className="text-sm font-bold text-slate-400">₹</span>
-          <input
+          <span className={styles.currencySymbol}>₹</span>
+          <Input
             type="number"
             value={minValue}
-            onChange={(e) => onMinChange?.(e.target.value)}
+            onChange={(value) => onMinChange?.(value)}
             readOnly={readOnly}
             placeholder="Min"
-            className={inputCls}
           />
         </div>
-        <span className="hidden text-sm text-slate-400 sm:inline">—</span>
+        <span className={styles.separator}>—</span>
         <div className={boxCls}>
-          <span className="text-sm font-bold text-slate-400">₹</span>
-          <input
+          <span className={styles.currencySymbol}>₹</span>
+          <Input
             type="number"
             value={maxValue}
-            onChange={(e) => onMaxChange?.(e.target.value)}
+            onChange={(value) => onMaxChange?.(value)}
             readOnly={readOnly}
             placeholder="Max"
-            className={inputCls}
           />
-          {suffix && <span className="shrink-0 text-xs text-slate-400">{suffix}</span>}
+          {suffix && <span className={styles.suffix}>{suffix}</span>}
         </div>
       </div>
     </div>

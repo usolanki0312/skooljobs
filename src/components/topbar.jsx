@@ -1,4 +1,5 @@
 import { Bell, Settings } from "lucide-react";
+import styles from "./styles/topbar.module.css";
 
 const Topbar = ({
   title = "Teacher Dashboard",
@@ -20,28 +21,28 @@ const Topbar = ({
     currentUser.profilePhoto || "https://i.pravatar.cc/300?img=12";
 
   return (
-    <div className="rounded-3xl bg-white p-4 shadow-soft sm:p-5">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-[2px] text-secondary">
+    <div className={styles.topbar}>
+      <div className={styles.headerRow}>
+        <div className={styles.welcomeBlock}>
+          <p className={styles.welcomeText}>
             Welcome back, {displayName}
           </p>
-          <h2 className="mt-1 text-2xl font-bold text-primary sm:text-3xl">
+          <h2 className={styles.title}>
             {title}
           </h2>
-          <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
+          <p className={styles.subtitle}>{subtitle}</p>
         </div>
 
-        <div className="flex items-center gap-3 self-end sm:self-center">
-          <div className="relative">
+        <div className={styles.actionsRow}>
+          <div className={styles.notificationWrapper}>
             <button
-              className="relative rounded-2xl border border-borderColor p-3 text-primary hover:bg-light"
+              className={styles.iconButton}
               type="button"
               onClick={onNotificationClick}
             >
               <Bell size={18} />
               {unreadCount > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
+                <span className={styles.unreadBadge}>
                   {unreadCount}
                 </span>
               )}
@@ -49,7 +50,7 @@ const Topbar = ({
             {notificationDropdown}
           </div>
           <button
-            className="rounded-2xl border border-borderColor p-3 text-primary hover:bg-light"
+            className={styles.iconButton}
             type="button"
           >
             <Settings size={18} />
@@ -57,7 +58,7 @@ const Topbar = ({
           <img
             src={profilePhoto}
             alt="profile"
-            className="h-11 w-11 rounded-2xl object-cover"
+            className={styles.profilePhoto}
           />
         </div>
       </div>

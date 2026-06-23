@@ -1,0 +1,43 @@
+.notFoundWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .notFoundWrapper {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+.notFoundIcon {
+  color: #cbd5e1;
+  margin-bottom: 1rem;
+}
+
+.notFoundTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.backButton {
+  margin-top: 1rem;
+  border-radius: 0.75rem;
+  background-color: var(--color-primary);
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.backButton:hover {
+  background-color: rgba(4, 72, 144, 0.9);
+}

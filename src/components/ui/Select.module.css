@@ -1,0 +1,177 @@
+.root {
+  position: relative;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.triggerDisabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.triggerEnabled {
+  cursor: pointer;
+}
+
+.selectedLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selectedLabelFilled {
+  color: #1e293b;
+}
+
+.selectedLabelPlaceholder {
+  color: #94a3b8;
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: #94a3b8;
+  transition-property: transform;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.popover {
+  position: absolute;
+  z-index: 30;
+  margin-top: 0.25rem;
+  max-height: 16rem;
+  width: 100%;
+  overflow-y: auto;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+  background-color: #fff;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.searchWrap {
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid var(--color-border);
+  background-color: #fff;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-top: 0.25rem;
+}
+
+.searchInner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  padding: 0.375rem 0.625rem;
+}
+
+.searchIcon {
+  flex-shrink: 0;
+  color: #94a3b8;
+}
+
+.searchInput {
+  width: 100%;
+  background-color: transparent;
+  font-size: 0.875rem;
+  color: #1e293b;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: #94a3b8;
+}
+
+.noMatches {
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+.groupLabel {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  color: #94a3b8;
+}
+
+.option {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+  font-size: 0.875rem;
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  color: #334155;
+}
+
+.option:hover {
+  background-color: var(--color-light);
+}
+
+.optionActive {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+  font-size: 0.875rem;
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: var(--color-light);
+  color: #334155;
+}
+
+.optionSelected {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+  font-size: 0.875rem;
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: rgba(4, 72, 144, 0.05);
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.optionLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.optionCheck {
+  flex-shrink: 0;
+  color: var(--color-primary);
+}

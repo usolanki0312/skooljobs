@@ -2,15 +2,17 @@ import {
   Award, BadgeCheck, Briefcase, CalendarClock, GraduationCap,
   Languages, MapPin, Sparkles, Wallet, X,
 } from "lucide-react";
+import styles from "./styles/JobPreview.module.css";
+import { Button } from "@cloudstrytech/ui-components";
 
 const Chip = ({ children, tone = "primary" }) => {
   const tones = {
-    primary: "bg-primary/10 text-primary",
-    green: "bg-green-50 text-green-600",
-    slate: "bg-slate-100 text-slate-600",
+    primary: styles.chipPrimary,
+    green: styles.chipGreen,
+    slate: styles.chipSlate,
   };
   return (
-    <span className={`rounded-full px-3 py-1 text-xs font-bold ${tones[tone]}`}>
+    <span className={`${styles.chip} ${tones[tone]}`}>
       {children}
     </span>
   );
@@ -18,8 +20,8 @@ const Chip = ({ children, tone = "primary" }) => {
 
 const Section = ({ icon: Icon, title, children }) => (
   <div>
-    <h4 className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-800">
-      <Icon size={16} className="text-primary" /> {title}
+    <h4 className={styles.sectionTitle}>
+      <Icon size={16} className={styles.sectionIcon} /> {title}
     </h4>
     {children}
   </div>
@@ -27,11 +29,11 @@ const Section = ({ icon: Icon, title, children }) => (
 
 const TagList = ({ items, empty = "—" }) =>
   items?.length ? (
-    <div className="flex flex-wrap gap-2">
+    <div className={styles.tagListWrap}>
       {items.map((it) => <Chip key={it} tone="slate">{it}</Chip>)}
     </div>
   ) : (
-    <p className="text-sm text-slate-400">{empty}</p>
+    <p className={styles.tagListEmpty}>{empty}</p>
   );
 
 const fmt = (v) => (v ? Number(v).toLocaleString("en-IN") : "");
@@ -71,38 +73,41 @@ const JobPreview = ({ form, onClose }) => {
   const subject = form.subject === "Other" ? form.customSubject : form.subject;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl">
+    <div className={styles.overlay}>
+      <div className={styles.modal}>
 
         {/* Header */}
-        <div className="flex items-center justify-between gap-3 border-b border-borderColor px-4 py-4 sm:px-6">
-          <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <Sparkles size={18} className="shrink-0 text-primary" />
-            <h3 className="font-bold text-slate-800">Job Preview</h3>
-            <span className="rounded-full bg-light px-2.5 py-0.5 text-xs font-semibold text-slate-500">
+        <div className={styles.header}>
+          <div className={styles.headerLeft}>
+            <Sparkles size={18} className={styles.headerIcon} />
+            <h3 className={styles.headerTitle}>Job Preview</h3>
+            <span className={styles.headerBadge}>
               How candidates will see it
             </span>
           </div>
-          <button type="button" onClick={onClose} className="shrink-0 rounded-xl p-2 text-slate-400 hover:bg-light">
-            <X size={18} />
-          </button>
+          <Button
+            variant="filled"
+            onClick={onClose}
+            className={styles.closeButton}
+            startIcon={<X size={18} />}
+          />
         </div>
 
         {/* Scrollable body */}
-        <div className="overflow-y-auto">
+        <div className={styles.body}>
 
           {/* Hero */}
-          <div className="bg-primary/5 px-4 py-6 sm:px-6">
-            <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <div className={styles.hero}>
+            <div className={styles.heroTop}>
+              <div className={styles.heroIconWrap}>
                 <GraduationCap size={28} />
               </div>
-              <div className="min-w-0 flex-1">
-                <h2 className="text-xl font-bold text-slate-800 break-words">
+              <div className={styles.heroBody}>
+                <h2 className={styles.heroTitle}>
                   {title || "Untitled Job"}
                 </h2>
-                <p className="mt-0.5 text-sm font-semibold text-primary">{subject || "—"}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
+                <p className={styles.heroSubject}>{subject || "—"}</p>
+                <div className={styles.heroChips}>
                   {form.employmentType && <Chip>{form.employmentType}</Chip>}
                   {form.roleCategory && <Chip tone="slate">{form.roleCategory}</Chip>}
                   {form.experience && <Chip tone="green">{form.experience}</Chip>}
@@ -110,40 +115,40 @@ const JobPreview = ({ form, onClose }) => {
               </div>
             </div>
 
-            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600">
+            <div className={styles.heroMetaRow}>
               {form.location && (
-                <span className="flex items-center gap-1.5"><MapPin size={15} className="text-slate-400" /> {form.location}</span>
+                <span className={styles.heroMetaItem}><MapPin size={15} className={styles.heroMetaIcon} /> {form.location}</span>
               )}
               {form.joiningTimeline && (
-                <span className="flex items-center gap-1.5"><CalendarClock size={15} className="text-slate-400" /> Joining: {form.joiningTimeline}</span>
+                <span className={styles.heroMetaItem}><CalendarClock size={15} className={styles.heroMetaIcon} /> Joining: {form.joiningTimeline}</span>
               )}
-              <span className="flex items-center gap-1.5 font-semibold text-slate-700">
-                <Wallet size={15} className="text-slate-400" /> {salarySummary(form)}
+              <span className={styles.heroMetaSalary}>
+                <Wallet size={15} className={styles.heroMetaIcon} /> {salarySummary(form)}
               </span>
             </div>
           </div>
 
           {/* Body sections */}
-          <div className="space-y-6 px-4 py-6 sm:px-6">
+          <div className={styles.sections}>
 
             {form.description && (
               <Section icon={Briefcase} title="Job Description">
-                <p className="whitespace-pre-line text-sm leading-relaxed text-slate-600">
+                <p className={styles.description}>
                   {form.description}
                 </p>
               </Section>
             )}
 
             <Section icon={GraduationCap} title="Qualifications & Experience">
-              <div className="space-y-2 text-sm text-slate-600">
-                <p><span className="font-semibold text-slate-700">Minimum:</span> {form.minQualification || "—"}</p>
+              <div className={styles.qualWrap}>
+                <p><span className={styles.qualLabel}>Minimum:</span> {form.minQualification || "—"}</p>
                 {form.additionalQualification && (
-                  <p><span className="font-semibold text-slate-700">Additional:</span> {form.additionalQualification}</p>
+                  <p><span className={styles.qualLabel}>Additional:</span> {form.additionalQualification}</p>
                 )}
-                <p><span className="font-semibold text-slate-700">Experience:</span> {form.experience || "—"}</p>
+                <p><span className={styles.qualLabel}>Experience:</span> {form.experience || "—"}</p>
                 {form.studentLevels?.length > 0 && (
-                  <div className="pt-1"><span className="font-semibold text-slate-700">Student Levels:</span>
-                    <div className="mt-1"><TagList items={form.studentLevels} /></div>
+                  <div className={styles.studentLevelsWrap}><span className={styles.qualLabel}>Student Levels:</span>
+                    <div className={styles.studentLevelsInner}><TagList items={form.studentLevels} /></div>
                   </div>
                 )}
               </div>
@@ -163,7 +168,7 @@ const JobPreview = ({ form, onClose }) => {
 
             {form.languages?.length > 0 && (
               <Section icon={Languages} title="Language Requirements">
-                <div className="flex flex-wrap gap-2">
+                <div className={styles.tagListWrap}>
                   {form.languages.map((l) => (
                     <Chip key={l.name} tone="slate">{l.name} · {l.proficiency}</Chip>
                   ))}
@@ -173,16 +178,16 @@ const JobPreview = ({ form, onClose }) => {
 
             {(form.requiredSkills?.length > 0 || form.technicalSkills?.length > 0) && (
               <Section icon={Sparkles} title="Skills">
-                <div className="space-y-3">
+                <div className={styles.skillsWrap}>
                   {form.requiredSkills?.length > 0 && (
                     <div>
-                      <p className="mb-1.5 text-xs font-semibold text-slate-500">Required Skills</p>
+                      <p className={styles.skillsLabel}>Required Skills</p>
                       <TagList items={form.requiredSkills} />
                     </div>
                   )}
                   {form.technicalSkills?.length > 0 && (
                     <div>
-                      <p className="mb-1.5 text-xs font-semibold text-slate-500">Technical Skills</p>
+                      <p className={styles.skillsLabel}>Technical Skills</p>
                       <TagList items={form.technicalSkills} />
                     </div>
                   )}
@@ -192,16 +197,16 @@ const JobPreview = ({ form, onClose }) => {
 
             {(form.monthlyBenefits?.length > 0 || form.annualBenefits?.length > 0) && (
               <Section icon={Wallet} title="Benefits">
-                <div className="space-y-3">
+                <div className={styles.skillsWrap}>
                   {form.monthlyBenefits?.length > 0 && (
                     <div>
-                      <p className="mb-1.5 text-xs font-semibold text-slate-500">Monthly</p>
+                      <p className={styles.skillsLabel}>Monthly</p>
                       <TagList items={form.monthlyBenefits} />
                     </div>
                   )}
                   {form.annualBenefits?.length > 0 && (
                     <div>
-                      <p className="mb-1.5 text-xs font-semibold text-slate-500">Annual</p>
+                      <p className={styles.skillsLabel}>Annual</p>
                       <TagList items={form.annualBenefits} />
                     </div>
                   )}
@@ -211,17 +216,17 @@ const JobPreview = ({ form, onClose }) => {
 
             {/* Hiring meta */}
             <Section icon={BadgeCheck} title="Hiring Details">
-              <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-                <div className="rounded-xl border border-borderColor bg-light p-3">
-                  <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Gender Preference</p>
-                  <p className="mt-1 font-semibold text-slate-700">{form.genderPreference || "Any"}</p>
+              <div className={styles.hiringGrid}>
+                <div className={styles.hiringCard}>
+                  <p className={styles.hiringCardLabel}>Gender Preference</p>
+                  <p className={styles.hiringCardValue}>{form.genderPreference || "Any"}</p>
                 </div>
-                <div className="rounded-xl border border-borderColor bg-light p-3">
-                  <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Interview Mode</p>
-                  <p className="mt-1 font-semibold text-slate-700">{form.interviewMode || "Not specified"}</p>
+                <div className={styles.hiringCard}>
+                  <p className={styles.hiringCardLabel}>Interview Mode</p>
+                  <p className={styles.hiringCardValue}>{form.interviewMode || "Not specified"}</p>
                 </div>
               </div>
-              <p className="mt-3 text-xs text-slate-400">
+              <p className={styles.publishNote}>
                 {form.publishOption === "Publish Later" && form.publishDate
                   ? `Scheduled to publish on ${form.publishDate}${form.publishTime ? ` at ${form.publishTime}` : ""}`
                   : "Will be published immediately"}
@@ -231,14 +236,13 @@ const JobPreview = ({ form, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end border-t border-borderColor px-4 py-4 sm:px-6">
-          <button
-            type="button"
+        <div className={styles.footer}>
+          <Button
+            variant="outlined"
             onClick={onClose}
-            className="rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-white hover:bg-primary/90"
           >
             Close Preview
-          </button>
+          </Button>
         </div>
       </div>
     </div>

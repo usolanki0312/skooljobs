@@ -1,5 +1,7 @@
 import { useOutletContext, useNavigate } from "react-router-dom";
 import { Calendar, Briefcase, Eye, Trash2, CheckCircle2 } from "lucide-react";
+import styles from "./styles/TeacherApplications.module.css";
+import { Button } from "@cloudstrytech/ui-components";
 
 const TeacherApplications = () => {
   const navigate = useNavigate();
@@ -35,91 +37,96 @@ const TeacherApplications = () => {
   };
 
   return (
-    <section className="rounded-3xl bg-white p-5 shadow-soft sm:p-6 space-y-6">
-      <div className="border-b border-borderColor pb-5">
-        <h2 className="text-2xl font-bold text-primary sm:text-3xl">My Applications</h2>
-        <p className="mt-1 text-sm text-slate-500">
+    <section className={styles.section}>
+      <div className={styles.headerRow}>
+        <h2 className={styles.heading}>My Applications</h2>
+        <p className={styles.subtext}>
           Monitor your job application history and current status.
         </p>
       </div>
 
       {appliedJobs.length === 0 ? (
-        <div className="py-12 text-center text-sm text-slate-400 space-y-3">
-          <Briefcase size={40} className="mx-auto text-slate-300 animate-pulse" />
+        <div className={styles.emptyState}>
+          <Briefcase size={40} className={styles.emptyIcon} />
           <p>You haven't submitted any job applications yet.</p>
           <button
             type="button"
             onClick={() => navigate("/teacher/all-jobs")}
-            className="rounded-xl bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-primary/95 transition shadow-sm"
+            className={styles.findJobsButton}
           >
             Find Teaching Jobs
           </button>
         </div>
       ) : (
-        <div className="-mx-5 overflow-x-auto px-5 sm:-mx-6 sm:px-6">
-          <table className="min-w-[760px] w-full text-left text-sm border-collapse">
+        <div className={styles.tableScrollWrap}>
+          <table className={styles.table}>
             <thead>
-              <tr className="border-b border-borderColor text-xs font-semibold uppercase text-slate-400 bg-slate-50/50">
-                <th className="px-5 py-3">Job Role</th>
-                <th className="px-5 py-3">School</th>
-                <th className="px-5 py-3">Applied Date</th>
-                <th className="px-5 py-3">Status</th>
-                <th className="px-5 py-3 text-right pr-6">Actions</th>
+              <tr className={styles.tableHeadRow}>
+                <th className={styles.th}>Job Role</th>
+                <th className={styles.th}>School</th>
+                <th className={styles.th}>Applied Date</th>
+                <th className={styles.th}>Status</th>
+                <th className={styles.thActions}>Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-borderColor/60">
+            <tbody>
               {appliedJobs.map((job) => {
-                const displayDate = job.appliedDate 
+                const displayDate = job.appliedDate
                   ? new Date(job.appliedDate).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
                   : "05 Jun 2026";
-                
+
                 // Mock status mapping for UI
                 const status = job.status || "Under Review";
 
                 return (
-                  <tr key={job.id} className="hover:bg-light/30 transition">
-                    <td className="px-5 py-4 font-bold text-slate-800">
+                  <tr key={job.id} className={styles.row}>
+                    <td className={styles.tdRole}>
                       <div>
                         {job.role || job.title}
-                        <span className="ml-2 inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">
+                        <span className={styles.typeTag}>
                           {job.type}
                         </span>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-slate-600">{job.school || "Sunrise Public School"}</td>
-                    <td className="px-5 py-4 text-slate-500 flex items-center gap-1.5 mt-0.5">
-                      <Calendar size={13} className="text-slate-400" />
+                    <td className={styles.tdSchool}>{job.school || "Sunrise Public School"}</td>
+                    <td className={styles.tdDate}>
+                      <Calendar size={13} className={styles.dateIcon} />
                       {displayDate}
                     </td>
-                    <td className="px-5 py-4">
-                      <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${
-                        status === "Shortlisted" ? "bg-green-50 text-green-600" :
-                        status === "Rejected" ? "bg-red-50 text-red-500" :
-                        "bg-blue-50 text-blue-600"
-                      }`}>
-                        <CheckCircle2 size={12} className="shrink-0" />
+                    <td className={styles.tdStatus}>
+                      <span className={`${styles.statusBadge} ${status === "Shortlisted" ? styles.statusShortlisted :
+                        status === "Rejected" ? styles.statusRejected :
+                          styles.statusDefault
+                        }`}>
+                        <CheckCircle2 size={12} className={styles.statusIcon} />
                         {status}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-right pr-6">
-                      <div className="flex flex-wrap justify-end gap-2">
-                        <button
-                          type="button"
+                    <td className={styles.tdActions}>
+                      <div className={styles.actionsRow}>
+                        <Button
+                          variant="text"
+                          startIcon="eyeIcon"
                           onClick={() => navigate(`/teacher/jobs/${job.id}`)}
-                          className="inline-flex items-center gap-1 rounded-lg border border-borderColor hover:bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-600 transition"
-                          title="View Job Details"
+                          className={styles.viewJobButton}
                         >
-                          <Eye size={12} /> View Job
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleWithdraw(job.id, job.role || job.title, job.school)}
-                          className="inline-flex items-center gap-1 rounded-lg border border-red-200 hover:bg-red-50 px-2.5 py-1.5 text-xs font-semibold text-red-500 transition"
-                          title="Withdraw Application"
+                          View Job
+                        </Button>
+
+                        <Button
+                          variant="text"
+                          startIcon="deleteIcon"
+                          onClick={() =>
+                            handleWithdraw(
+                              job.id,
+                              job.role || job.title,
+                              job.school
+                            )
+                          }
+                          className={styles.withdrawButton}
                         >
-                          <Trash2 size={12} /> Withdraw
-                        </button>
-                      </div>
+                          Withdraw
+                        </Button>                      </div>
                     </td>
                   </tr>
                 );

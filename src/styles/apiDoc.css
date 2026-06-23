@@ -3,9 +3,12 @@
    markdown body and code blocks. Code-block colors come from the
    highlight.js github-dark theme imported in ApiSpecPage. */
 
+.api-doc, .api-doc * {
+  font-family: "Montserrat", sans-serif;
+}
+
 .api-doc {
   color: #2b3445;
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-size: 15px;
   line-height: 1.65;
   word-wrap: break-word;
@@ -79,7 +82,7 @@
   padding: 0.12em 0.4em;
   border-radius: 0.35rem;
   font-size: 0.86em;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: "Montserrat", sans-serif;
 }
 
 /* Fenced code blocks (highlight.js github-dark theme paints the inside) */
@@ -96,7 +99,7 @@
   padding: 1rem 1.1rem;
   font-size: 13px;
   line-height: 1.55;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: "Montserrat", sans-serif;
 }
 
 /* GFM tables */

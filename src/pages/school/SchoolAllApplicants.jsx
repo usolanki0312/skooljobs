@@ -3,16 +3,25 @@ import { useNavigate, useOutletContext, useSearchParams } from "react-router-dom
 import {
   Bookmark, Calendar, ChevronRight, FileText, Search, X, CheckCircle2, XCircle, User,
 } from "lucide-react";
-import { statusChipClass } from "../../lib/schooldata";
 import postjob from "../../../dropdown/School_module/postjob.json";
 import applicantsOptions from "../../../dropdown/School_module/applicants.json";
-import Select from "../../components/ui/Select";
+import styles from "./styles/SchoolAllApplicants.module.css";
+import { Button ,Select} from "@cloudstrytech/ui-components";
 
 const { Subject: subjects } = postjob;
-const { Applicant_status: statusOptions } = applicantsOptions;
+const { Applicant_status: statusOptions, Experience_filter: experienceFilterOptions } = applicantsOptions;
 
-const filterPill =
-  "min-w-44 rounded-2xl border border-borderColor bg-white px-4 py-3 text-sm shadow-sm focus:border-primary";
+const applicantStatusChipStyle = {
+  "Not Reviewed": { backgroundColor: "#eff6ff", color: "#2563eb" },
+  Reviewed: { backgroundColor: "#faf5ff", color: "#9333ea" },
+  Applied: { backgroundColor: "#eff6ff", color: "#2563eb" },
+  Shortlisted: { backgroundColor: "#f0fdf4", color: "#16a34a" },
+  Rejected: { backgroundColor: "#fef2f2", color: "#ef4444" },
+  Active: { backgroundColor: "#f0fdf4", color: "#16a34a" },
+  Closed: { backgroundColor: "#fef2f2", color: "#ef4444" },
+  Draft: { backgroundColor: "#f1f5f9", color: "#64748b" },
+};
+const defaultStatusChipStyle = { backgroundColor: "#f1f5f9", color: "#64748b" };
 
 const SchoolAllApplicants = () => {
   const navigate = useNavigate();
@@ -43,22 +52,22 @@ const SchoolAllApplicants = () => {
         email: teacherProfile.email || "teacher@gmail.com",
         phone: teacherProfile.phone || "9876543210",
         summary: teacherProfile.briefWriteUp || "Dedicated, creative, and student-focused classroom teacher who is committed to providing a high-quality educational experience.",
-        qualifications: teacherQualifications.length > 0 
+        qualifications: teacherQualifications.length > 0
           ? teacherQualifications.map(q => ({ degree: q.degree, school: q.school, year: `${q.startYear}-${q.endYear}`, score: q.score || q.percentage }))
           : [
-              { degree: "Bachelor of Education (B.Ed)", school: "Bhopal University", year: "2019-2021", score: "82%" },
-              { degree: "M.Sc in Mathematics", school: "Indore University", year: "2017-2019", score: "9.2 CGPA" }
-            ],
+            { degree: "Bachelor of Education (B.Ed)", school: "Bhopal University", year: "2019-2021", score: "82%" },
+            { degree: "M.Sc in Mathematics", school: "Indore University", year: "2017-2019", score: "9.2 CGPA" }
+          ],
         experiences: teacherExperiences.length > 0
           ? teacherExperiences.map(e => ({ jobTitle: e.jobTitle || e.role, schoolName: e.schoolName || e.school, startYear: e.startYear, endYear: e.endYear, details: e.details || e.description }))
           : [
-              { jobTitle: "Mathematics Teacher", schoolName: "Sunrise Public School", startYear: "2021", endYear: "2024", details: "Handled senior secondary algebra and calculus curriculum. Developed creative classroom teaching aids." }
-            ],
+            { jobTitle: "Mathematics Teacher", schoolName: "Sunrise Public School", startYear: "2021", endYear: "2024", details: "Handled senior secondary algebra and calculus curriculum. Developed creative classroom teaching aids." }
+          ],
         achievements: teacherAchievements.length > 0
           ? teacherAchievements.map(a => ({ name: a.name || a.title, year: a.year, by: a.by || a.issuer }))
           : [
-              { name: "Best Teacher Award", year: "2023", by: "School Administration" }
-            ]
+            { name: "Best Teacher Award", year: "2023", by: "School Administration" }
+          ]
       };
     }
     const nameKey = candidate.name.toLowerCase();
@@ -237,72 +246,68 @@ const SchoolAllApplicants = () => {
     : null;
 
   return (
-    <div className="space-y-5">
-      <h2 className="text-2xl font-bold text-slate-800 sm:text-3xl">All Applicants</h2>
+    <div className={styles.page}>
+      <h2 className={styles.title}>All Applicants</h2>
 
       {/* ── Filters ───────────────────────────────────────────────────────── */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-        <div className="flex flex-1 min-w-48 items-center gap-2 rounded-2xl border border-borderColor bg-white px-4 py-3 shadow-sm">
-          <Search size={16} className="shrink-0 text-slate-400" />
+      <div className={styles.filtersRow}>
+        <div className={styles.searchBox}>
+          <Search size={16} className={styles.searchIcon} />
           <input
             value={applicantSearch}
             onChange={(e) => setApplicantSearch(e.target.value)}
             placeholder="Search by name or subject..."
-            className="flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
+            className={styles.searchInput}
           />
         </div>
         <Select
+          options={uniqueJobTitles}
           value={jobTitleFilter}
           onChange={setJobTitleFilter}
           placeholder="All Job Titles"
-          options={uniqueJobTitles}
-          className={filterPill}
+          className={styles.filterPillJobTitle}
         />
         <Select
           value={subjectFilter}
           onChange={setSubjectFilter}
           placeholder="All Subjects"
           options={subjects}
-          className={filterPill}
+          className={styles.filterPill}
         />
         <Select
           value={statusFilter}
           onChange={setStatusFilter}
           placeholder="All Status"
           options={statusOptions}
-          className={filterPill}
+          className={styles.filterPill}
         />
         <Select
           value={expFilter}
           onChange={setExpFilter}
           placeholder="All Experience"
-          options={[
-            { label: "0 – 3 yrs", value: "0-3" },
-            { label: "3 – 6 yrs", value: "3-6" },
-            { label: "6+ yrs", value: "6+" },
-          ]}
-          className={filterPill}
+          options={experienceFilterOptions}
+          className={styles.filterPill}
         />
       </div>
 
       {/* ── Table ─────────────────────────────────────────────────────────── */}
-      <div className="overflow-hidden rounded-2xl border border-borderColor bg-white shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="min-w-170 w-full text-left text-sm">
-            <thead className="bg-primary/5 text-xs uppercase tracking-wide text-primary">
+      <div className={styles.tableCard}>
+        <div className={styles.tableScroll}>
+          <table className={styles.table}>
+            <thead className={styles.tableHead}>
               <tr>
-                <th className="px-5 py-4">Candidate</th>
-                <th className="px-5 py-4">Job Title</th>
-                <th className="px-5 py-4">Subject</th>
-                <th className="px-5 py-4">Experience</th>
-                <th className="px-5 py-4">Status</th>
-                <th className="px-5 py-4 w-10" />
+                <th className={styles.th}>Candidate</th>
+                <th className={styles.th}>Job Title</th>
+                <th className={styles.th}>Subject</th>
+                <th className={styles.th}>Experience</th>
+                <th className={styles.th}>Status</th>
+                <th className={styles.thNarrow} />
               </tr>
             </thead>
-            <tbody className="divide-y divide-borderColor">
+            <tbody className={styles.tableBody}>
               {filteredApplicants.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-5 py-10 text-center text-sm text-slate-400">
+                  <td colSpan={6} className={styles.emptyRow}>
                     No applicants found.
                   </td>
                 </tr>
@@ -311,26 +316,29 @@ const SchoolAllApplicants = () => {
                   <tr
                     key={applicant.id}
                     onClick={() => openDrawer(applicant)}
-                    className={`cursor-pointer transition hover:bg-light/60 ${selected?.id === applicant.id ? "bg-primary/5" : ""}`}
+                    className={selected?.id === applicant.id ? styles.trSelected : styles.tr}
                   >
-                    <td className="px-5 py-3.5">
-                      <div className="flex items-center gap-3">
-                        <img src={applicant.avatar} alt={applicant.name} className="h-9 w-9 shrink-0 rounded-xl object-cover" />
-                        <div className="min-w-0">
-                          <p className="font-bold text-slate-800 truncate">{applicant.name}</p>
-                          <p className="text-xs text-slate-400 truncate">{applicant.qualification}</p>
+                    <td className={styles.td}>
+                      <div className={styles.candidateCell}>
+                        <img src={applicant.avatar} alt={applicant.name} className={styles.candidateAvatar} />
+                        <div className={styles.candidateInfo}>
+                          <p className={styles.candidateName}>{applicant.name}</p>
+                          <p className={styles.candidateQualification}>{applicant.qualification}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-3.5 text-slate-600">{applicant.jobTitle}</td>
-                    <td className="px-5 py-3.5 text-slate-600">{applicant.subject}</td>
-                    <td className="px-5 py-3.5 text-slate-600">{applicant.experience}</td>
-                    <td className="px-5 py-3.5">
-                      <span className={`rounded-full px-3 py-1 text-xs font-bold ${statusChipClass[applicant.status] || "bg-slate-100 text-slate-500"}`}>
+                    <td className={styles.tdMuted}>{applicant.jobTitle}</td>
+                    <td className={styles.tdMuted}>{applicant.subject}</td>
+                    <td className={styles.tdMuted}>{applicant.experience}</td>
+                    <td className={styles.td}>
+                      <span
+                        className={styles.statusChip}
+                        style={applicantStatusChipStyle[applicant.status] || defaultStatusChipStyle}
+                      >
                         {applicant.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3.5 text-slate-300">
+                    <td className={styles.tdChevron}>
                       <ChevronRight size={16} />
                     </td>
                   </tr>
@@ -344,113 +352,100 @@ const SchoolAllApplicants = () => {
       {/* ── Drawer backdrop ───────────────────────────────────────────────── */}
       {drawerApplicant && (
         <div
-          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
+          className={styles.drawerBackdrop}
           onClick={closeDrawer}
         />
       )}
 
       {/* ── Drawer panel ──────────────────────────────────────────────────── */}
-      <div
-        className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out ${
-          drawerApplicant ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
+      <div className={drawerApplicant ? styles.drawerOpen : styles.drawer}>
         {drawerApplicant && (
           <>
             {/* Drawer header */}
-            <div className="flex items-center justify-between border-b border-borderColor px-6 py-4">
-              <h3 className="font-bold text-slate-800">Candidate Profile</h3>
-              <button type="button" onClick={closeDrawer} className="rounded-xl p-2 text-slate-400 hover:bg-light">
+            <div className={styles.drawerHeader}>
+              <h3 className={styles.drawerHeaderTitle}>Candidate Profile</h3>
+              <button type="button" onClick={closeDrawer} className={styles.drawerCloseBtn}>
                 <X size={18} />
               </button>
             </div>
 
             {/* Drawer content */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            <div className={styles.drawerContent}>
 
               {/* Profile card */}
-              <div className="relative rounded-2xl border border-borderColor bg-light p-4">
-                <span className={`absolute top-4 right-4 rounded-full px-3 py-1 text-xs font-bold ${statusChipClass[drawerApplicant.status] || "bg-slate-100 text-slate-500"}`}>
+              <div className={styles.profileCard}>
+                <span
+                  className={styles.profileStatusChip}
+                  style={applicantStatusChipStyle[drawerApplicant.status] || defaultStatusChipStyle}
+                >
                   {drawerApplicant.status}
                 </span>
-                <div className="flex items-center gap-4 pr-24">
+                <div className={styles.profileHeader}>
                   <img
                     src={drawerApplicant.avatar}
                     alt={drawerApplicant.name}
-                    className="h-16 w-16 shrink-0 rounded-2xl object-cover"
+                    className={styles.profileAvatar}
                   />
-                  <div className="min-w-0">
-                    <h4 className="text-lg font-bold text-slate-800 truncate">{drawerApplicant.name}</h4>
-                    <p className="text-sm text-slate-500 truncate">{drawerApplicant.jobTitle}</p>
-                    <p className="text-xs text-slate-400 mt-0.5 truncate">{drawerApplicant.qualification}</p>
+                  <div className={styles.profileInfo}>
+                    <h4 className={styles.profileName}>{drawerApplicant.name}</h4>
+                    <p className={styles.profileJobTitle}>{drawerApplicant.jobTitle}</p>
+                    <p className={styles.profileQualification}>{drawerApplicant.qualification}</p>
                   </div>
                 </div>
               </div>
 
               {/* Details grid */}
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className={styles.detailsGrid}>
                 {[
                   { label: "Subject", value: drawerApplicant.subject },
                   { label: "Experience", value: drawerApplicant.experience },
                   { label: "Job Title", value: drawerApplicant.jobTitle },
                   { label: "Qualification", value: drawerApplicant.qualification },
                 ].map((d) => (
-                  <div key={d.label} className="rounded-xl border border-borderColor bg-white p-3">
-                    <p className="text-xs font-bold uppercase tracking-wide text-slate-400">{d.label}</p>
-                    <p className="mt-1 text-sm font-semibold text-slate-700">{d.value}</p>
+                  <div key={d.label} className={styles.detailCard}>
+                    <p className={styles.detailLabel}>{d.label}</p>
+                    <p className={styles.detailValue}>{d.value}</p>
                   </div>
                 ))}
               </div>
 
               {/* Actions */}
-              <div className="space-y-2">
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Actions</p>
-                <div className="flex gap-2">
+              <div className={styles.actionsBlock}>
+                <p className={styles.actionsLabel}>Actions</p>
+                <div className={styles.actionsRow}>
                   <button
                     type="button"
                     onClick={() => handleStatusChange(drawerApplicant.id, "Shortlisted")}
-                    className={`flex-1 flex flex-col items-center justify-center gap-1.5 rounded-xl border py-2.5 text-xs font-bold transition ${
-                      drawerApplicant.status === "Shortlisted"
-                        ? "border-green-400 bg-green-50 text-green-600 shadow-sm"
-                        : "border-borderColor text-slate-600 hover:border-green-400 hover:text-green-600 hover:bg-green-50/20"
-                    }`}
+                    className={drawerApplicant.status === "Shortlisted" ? styles.actionBtnShortlistActive : `${styles.actionBtn} ${styles.actionBtnShortlist}`}
                   >
-                    <CheckCircle2 size={16} className="mb-0.5" />
+                    <CheckCircle2 size={16} className={styles.actionBtnIcon} />
                     Shortlist
                   </button>
 
                   <button
                     type="button"
                     onClick={() => handleSave(drawerApplicant.id)}
-                    className={`flex-1 flex flex-col items-center justify-center gap-1.5 rounded-xl border py-2.5 text-xs font-bold transition ${
-                      drawerApplicant.saved
-                        ? "border-orange-400 bg-orange-50 text-orange-600 shadow-sm"
-                        : "border-borderColor text-slate-700 hover:bg-orange-50/20 hover:text-orange-600 hover:border-orange-400"
-                    }`}
+                    className={drawerApplicant.saved ? styles.actionBtnSaveActive : `${styles.actionBtn} ${styles.actionBtnSave}`}
                   >
-                    <Bookmark size={16} className={drawerApplicant.saved ? "fill-orange-600 text-orange-600 mb-0.5" : "text-slate-400 mb-0.5"} />
+                    <Bookmark size={16} className={drawerApplicant.saved ? styles.saveIconActive : styles.saveIconInactive} />
                     Save for later
                   </button>
 
                   <button
                     type="button"
                     onClick={() => handleStatusChange(drawerApplicant.id, "Rejected")}
-                    className={`flex-1 flex flex-col items-center justify-center gap-1.5 rounded-xl border py-2.5 text-xs font-bold transition ${
-                      drawerApplicant.status === "Rejected"
-                        ? "border-red-300 bg-red-50 text-red-500 shadow-sm"
-                        : "border-borderColor text-slate-600 hover:border-red-300 hover:text-red-500 hover:bg-red-50/20"
-                    }`}
+                    className={drawerApplicant.status === "Rejected" ? styles.actionBtnRejectActive : `${styles.actionBtn} ${styles.actionBtnReject}`}
                   >
-                    <XCircle size={16} className="mb-0.5" />
+                    <XCircle size={16} className={styles.actionBtnIcon} />
                     Reject
                   </button>
                 </div>
               </div>
 
               {/* Evaluation & Scheduling */}
-              <div className="space-y-2">
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Evaluation & Scheduling</p>
-                <div className="space-y-2">
+              <div className={styles.evalBlock}>
+                <p className={styles.actionsLabel}>Evaluation & Scheduling</p>
+                <div className={styles.evalStack}>
                   <button
                     type="button"
                     onClick={() => {
@@ -459,9 +454,9 @@ const SchoolAllApplicants = () => {
                         handleStatusChange(drawerApplicant.id, "Reviewed");
                       }
                     }}
-                    className="flex w-full items-center gap-3 rounded-xl border border-borderColor px-4 py-3 text-sm font-bold text-slate-700 hover:bg-light transition"
+                    className={styles.evalBtn}
                   >
-                    <FileText size={16} className="text-primary" /> View Resume
+                    <FileText size={16} className={styles.evalBtnIcon} /> View Resume
                   </button>
 
                   <button
@@ -472,17 +467,17 @@ const SchoolAllApplicants = () => {
                         handleStatusChange(drawerApplicant.id, "Reviewed");
                       }
                     }}
-                    className="flex w-full items-center gap-3 rounded-xl border border-borderColor px-4 py-3 text-sm font-bold text-slate-700 hover:bg-light transition"
+                    className={styles.evalBtn}
                   >
-                    <User size={16} className="text-primary" /> View Public Profile
+                    <User size={16} className={styles.evalBtnIcon} /> View Public Profile
                   </button>
 
                   <button
                     type="button"
                     onClick={() => { closeDrawer(); navigate("/school/interviews"); }}
-                    className="flex w-full items-center gap-3 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-bold text-blue-600 hover:bg-blue-100 transition"
+                    className={styles.evalBtnSchedule}
                   >
-                    <Calendar size={16} className="text-blue-600" /> Schedule Interview
+                    <Calendar size={16} className={styles.evalBtnScheduleIcon} /> Schedule Interview
                   </button>
                 </div>
               </div>
@@ -493,35 +488,35 @@ const SchoolAllApplicants = () => {
 
       {/* ── Resume Modal Overlay ─────────────────────────────────────────── */}
       {showResumeModal && resumeData && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white shadow-2xl border border-borderColor">
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalCard}>
             {/* Header */}
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-borderColor bg-white px-6 py-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <div className={styles.modalHeader}>
+              <div className={styles.modalHeaderLeft}>
+                <div className={styles.modalHeaderIcon}>
                   <FileText size={20} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-800 text-lg">Curriculum Vitae</h3>
-                  <p className="text-xs text-slate-500">{resumeData.name}</p>
+                  <h3 className={styles.modalHeaderTitle}>Curriculum Vitae</h3>
+                  <p className={styles.modalHeaderSubtitle}>{resumeData.name}</p>
                 </div>
               </div>
-              <button 
-                type="button" 
-                onClick={() => setShowResumeModal(false)} 
-                className="rounded-xl p-2 text-slate-400 hover:bg-light hover:text-slate-600 transition"
+              <button
+                type="button"
+                onClick={() => setShowResumeModal(false)}
+                className={styles.modalCloseBtn}
               >
                 <X size={20} />
               </button>
             </div>
 
             {/* Resume Details Content */}
-            <div className="p-6 md:p-8 space-y-6">
+            <div className={styles.modalBody}>
               {/* Header Card */}
-              <div className="rounded-2xl bg-gradient-to-r from-primary to-primary/80 p-6 text-white shadow-soft">
-                <h2 className="text-2xl font-bold">{resumeData.name}</h2>
-                <p className="text-white/80 mt-1 font-medium">{drawerApplicant.jobTitle} · {drawerApplicant.subject}</p>
-                <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-xs text-white/90">
+              <div className={styles.resumeHeaderCard}>
+                <h2 className={styles.resumeHeaderName}>{resumeData.name}</h2>
+                <p className={styles.resumeHeaderSubtitle}>{drawerApplicant.jobTitle} · {drawerApplicant.subject}</p>
+                <div className={styles.resumeHeaderMeta}>
                   <span>📧 {resumeData.email}</span>
                   <span>📞 {resumeData.phone}</span>
                   {teacherProfile.city && (
@@ -531,27 +526,27 @@ const SchoolAllApplicants = () => {
               </div>
 
               {/* Summary */}
-              <div className="space-y-2">
-                <h3 className="text-sm font-bold uppercase tracking-wide text-primary border-b border-borderColor pb-1">Professional Summary</h3>
-                <p className="text-sm text-slate-600 leading-relaxed">{resumeData.summary}</p>
+              <div className={styles.sectionBlock}>
+                <h3 className={styles.sectionHeading}>Professional Summary</h3>
+                <p className={styles.sectionBodyText}>{resumeData.summary}</p>
               </div>
 
               {/* Experience */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-bold uppercase tracking-wide text-primary border-b border-borderColor pb-1">Work Experience</h3>
+              <div className={styles.sectionBlockLg}>
+                <h3 className={styles.sectionHeading}>Work Experience</h3>
                 {resumeData.experiences.length === 0 ? (
-                  <p className="text-xs text-slate-400 italic">No professional experience listed.</p>
+                  <p className={styles.emptyHint}>No professional experience listed.</p>
                 ) : (
-                  <div className="space-y-4">
+                  <div className={styles.experienceList}>
                     {resumeData.experiences.map((exp, idx) => (
-                      <div key={idx} className="relative pl-4 border-l-2 border-primary/20">
-                        <div className="absolute -left-[5px] top-1.5 h-2 w-2 rounded-full bg-primary" />
-                        <div className="flex flex-wrap justify-between items-start">
-                          <h4 className="text-sm font-bold text-slate-800">{exp.jobTitle}</h4>
-                          <span className="text-xs font-semibold text-slate-400">{exp.startYear} - {exp.endYear || "Present"}</span>
+                      <div key={idx} className={styles.experienceItem}>
+                        <div className={styles.experienceDot} />
+                        <div className={styles.experienceTopRow}>
+                          <h4 className={styles.experienceJobTitle}>{exp.jobTitle}</h4>
+                          <span className={styles.experienceYears}>{exp.startYear} - {exp.endYear || "Present"}</span>
                         </div>
-                        <p className="text-xs font-semibold text-primary">{exp.schoolName}</p>
-                        {exp.details && <p className="mt-2 text-xs text-slate-600 leading-relaxed">{exp.details}</p>}
+                        <p className={styles.experienceSchool}>{exp.schoolName}</p>
+                        {exp.details && <p className={styles.experienceDetails}>{exp.details}</p>}
                       </div>
                     ))}
                   </div>
@@ -559,19 +554,19 @@ const SchoolAllApplicants = () => {
               </div>
 
               {/* Qualifications */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-bold uppercase tracking-wide text-primary border-b border-borderColor pb-1">Education & Qualifications</h3>
+              <div className={styles.sectionBlockLg}>
+                <h3 className={styles.sectionHeading}>Education & Qualifications</h3>
                 {resumeData.qualifications.length === 0 ? (
-                  <p className="text-xs text-slate-400 italic">No educational qualifications listed.</p>
+                  <p className={styles.emptyHint}>No educational qualifications listed.</p>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className={styles.qualificationsGrid}>
                     {resumeData.qualifications.map((qual, idx) => (
-                      <div key={idx} className="rounded-xl border border-borderColor bg-light/50 p-4">
-                        <h4 className="text-sm font-bold text-slate-800">{qual.degree}</h4>
-                        <p className="text-xs text-primary font-semibold mt-1">{qual.school}</p>
-                        <div className="mt-2 flex justify-between items-center text-[11px] text-slate-400">
+                      <div key={idx} className={styles.qualificationCard}>
+                        <h4 className={styles.qualificationDegree}>{qual.degree}</h4>
+                        <p className={styles.qualificationSchool}>{qual.school}</p>
+                        <div className={styles.qualificationMetaRow}>
                           <span>Year: {qual.year}</span>
-                          {qual.score && <span className="bg-white px-2 py-0.5 rounded border border-borderColor font-bold text-slate-600">{qual.score}</span>}
+                          {qual.score && <span className={styles.qualificationScore}>{qual.score}</span>}
                         </div>
                       </div>
                     ))}
@@ -581,13 +576,13 @@ const SchoolAllApplicants = () => {
 
               {/* Achievements */}
               {resumeData.achievements && resumeData.achievements.length > 0 && (
-                <div className="space-y-3">
-                  <h3 className="text-sm font-bold uppercase tracking-wide text-primary border-b border-borderColor pb-1">Awards & Certifications</h3>
-                  <div className="flex flex-wrap gap-2">
+                <div className={styles.sectionBlock}>
+                  <h3 className={styles.sectionHeading}>Awards & Certifications</h3>
+                  <div className={styles.chipsRow}>
                     {resumeData.achievements.map((ach, idx) => (
-                      <div key={idx} className="rounded-xl border border-borderColor bg-light px-3.5 py-2 text-xs">
-                        <p className="font-bold text-slate-800">{ach.name}</p>
-                        <p className="text-[10px] text-slate-400 mt-0.5">{ach.by} · {ach.year}</p>
+                      <div key={idx} className={styles.chipCard}>
+                        <p className={styles.chipCardTitle}>{ach.name}</p>
+                        <p className={styles.chipCardSubtitle}>{ach.by} · {ach.year}</p>
                       </div>
                     ))}
                   </div>
@@ -596,11 +591,11 @@ const SchoolAllApplicants = () => {
             </div>
 
             {/* Footer */}
-            <div className="border-t border-borderColor px-6 py-4 flex justify-end bg-light/40">
-              <button 
-                type="button" 
-                onClick={() => setShowResumeModal(false)} 
-                className="rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-white hover:bg-primary/90 transition shadow-soft"
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                onClick={() => setShowResumeModal(false)}
+                className={styles.modalFooterBtn}
               >
                 Close CV
               </button>
@@ -611,43 +606,43 @@ const SchoolAllApplicants = () => {
 
       {/* ── Public Profile Modal Overlay ─────────────────────────────────── */}
       {showProfileModal && publicProfileData && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white shadow-2xl border border-borderColor">
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalCard}>
             {/* Header */}
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-borderColor bg-white px-6 py-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <div className={styles.modalHeader}>
+              <div className={styles.modalHeaderLeft}>
+                <div className={styles.modalHeaderIcon}>
                   <User size={20} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-800 text-lg">Public Profile</h3>
-                  <p className="text-xs text-slate-500">{publicProfileData.firstName} {publicProfileData.lastName?.charAt(0)}.</p>
+                  <h3 className={styles.modalHeaderTitle}>Public Profile</h3>
+                  <p className={styles.modalHeaderSubtitle}>{publicProfileData.firstName} {publicProfileData.lastName?.charAt(0)}.</p>
                 </div>
               </div>
-              <button 
-                type="button" 
-                onClick={() => setShowProfileModal(false)} 
-                className="rounded-xl p-2 text-slate-400 hover:bg-light hover:text-slate-600 transition"
+              <button
+                type="button"
+                onClick={() => setShowProfileModal(false)}
+                className={styles.modalCloseBtn}
               >
                 <X size={20} />
               </button>
             </div>
 
             {/* Profile Content */}
-            <div className="p-6 md:p-8 space-y-6">
+            <div className={styles.modalBody}>
               {/* Header Card */}
-              <div className="relative overflow-hidden rounded-2xl border border-borderColor bg-white shadow-soft">
-                <div className="h-20 bg-primary/10" />
-                <div className="px-6 pb-6">
-                  <div className="-mt-10 flex items-end gap-4">
-                    <div className="flex h-20 w-20 items-center justify-center rounded-2xl border-4 border-white bg-slate-200 shadow-md text-slate-400">
+              <div className={styles.profileModalHeaderCard}>
+                <div className={styles.profileModalBanner} />
+                <div className={styles.profileModalBody}>
+                  <div className={styles.profileModalAvatarRow}>
+                    <div className={styles.profileModalAvatar}>
                       <User size={32} />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-xl font-bold text-slate-800">
+                    <div className={styles.profileModalInfo}>
+                      <h4 className={styles.profileModalName}>
                         {publicProfileData.title} {publicProfileData.firstName} {publicProfileData.lastName?.charAt(0)}.
                       </h4>
-                      <p className="text-xs text-primary font-bold mt-1">
+                      <p className={styles.profileModalJobTitle}>
                         {publicProfileData.currentJob}
                       </p>
                     </div>
@@ -656,7 +651,7 @@ const SchoolAllApplicants = () => {
               </div>
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className={styles.statsGrid}>
                 {[
                   { label: "Age", value: publicProfileData.age },
                   { label: "Main Subject", value: publicProfileData.mainSubject },
@@ -665,18 +660,18 @@ const SchoolAllApplicants = () => {
                   { label: "University", value: publicProfileData.university },
                   { label: "Area / City", value: publicProfileData.city },
                 ].map((s) => (
-                  <div key={s.label} className="rounded-xl border border-borderColor bg-light/50 p-4">
-                    <p className="text-xs font-bold uppercase tracking-wide text-slate-400">{s.label}</p>
-                    <p className="mt-1 text-sm font-semibold text-slate-800">{s.value || "Not added"}</p>
+                  <div key={s.label} className={styles.statCard}>
+                    <p className={styles.statLabel}>{s.label}</p>
+                    <p className={styles.statValue}>{s.value || "Not added"}</p>
                   </div>
                 ))}
               </div>
 
               {/* Summary */}
               {publicProfileData.summary && (
-                <div className="space-y-2">
-                  <h3 className="text-sm font-bold uppercase tracking-wide text-primary border-b border-borderColor pb-1">Professional Summary</h3>
-                  <p className="text-sm text-slate-600 leading-relaxed bg-light/35 p-4 rounded-xl border border-borderColor/50">
+                <div className={styles.sectionBlock}>
+                  <h3 className={styles.sectionHeading}>Professional Summary</h3>
+                  <p className={styles.summaryText}>
                     {publicProfileData.summary}
                   </p>
                 </div>
@@ -684,13 +679,13 @@ const SchoolAllApplicants = () => {
 
               {/* Awards */}
               {publicProfileData.awards && publicProfileData.awards.length > 0 && (
-                <div className="space-y-3">
-                  <h3 className="text-sm font-bold uppercase tracking-wide text-primary border-b border-borderColor pb-1">Public Awards</h3>
-                  <div className="flex flex-wrap gap-2">
+                <div className={styles.sectionBlock}>
+                  <h3 className={styles.sectionHeading}>Public Awards</h3>
+                  <div className={styles.chipsRow}>
                     {publicProfileData.awards.map((award, idx) => (
-                      <div key={idx} className="rounded-xl border border-borderColor bg-light px-3.5 py-2 text-xs">
-                        <p className="font-bold text-slate-800">{award.name || award.title}</p>
-                        <p className="text-[10px] text-slate-400 mt-0.5">{award.by || award.issuer} · {award.year}</p>
+                      <div key={idx} className={styles.chipCard}>
+                        <p className={styles.chipCardTitle}>{award.name || award.title}</p>
+                        <p className={styles.chipCardSubtitle}>{award.by || award.issuer} · {award.year}</p>
                       </div>
                     ))}
                   </div>
@@ -699,11 +694,11 @@ const SchoolAllApplicants = () => {
             </div>
 
             {/* Footer */}
-            <div className="border-t border-borderColor px-6 py-4 flex justify-end bg-light/40">
-              <button 
-                type="button" 
-                onClick={() => setShowProfileModal(false)} 
-                className="rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-white hover:bg-primary/90 transition shadow-soft"
+            <div className={styles.modalFooter}>
+              <button
+                type="button"
+                onClick={() => setShowProfileModal(false)}
+                className={styles.modalFooterBtn}
               >
                 Close Profile
               </button>

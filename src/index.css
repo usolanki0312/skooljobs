@@ -1,11 +1,86 @@
-@import "tailwindcss";
-@config "../tailwind.config.js";
+﻿@import "@cloudstrytech/ui-components/styles.css";
 
-@layer base {
-  body {
-    @apply font-body text-[#333] antialiased;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-heading;
-  }
+/* Tailwind CSS Preflight (Essential Resets) */
+*, ::before, ::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
+  font-family: "Montserrat", sans-serif;
+}
+
+html {
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  line-height: inherit;
+}
+
+button, [role="button"] {
+  cursor: pointer;
+}
+
+button, input, optgroup, select, textarea {
+  font-family: inherit;
+  font-size: 100%;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+button, [type="button"], [type="reset"], [type="submit"] {
+  -webkit-appearance: button;
+  background-color: transparent;
+  background-image: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+p {
+  margin: 0;
+}
+
+ul, ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Original Variables */
+:root {
+  --color-primary: #044890;
+  --color-secondary: #669aca;
+  --color-light: #eef2f7;
+  --color-border: #dbe4f0;
+
+  --font-heading: "Montserrat", sans-serif;
+  --font-body: "Montserrat", sans-serif;
+
+  --shadow-soft: 0 18px 45px rgba(4, 72, 144, 0.12);
+  --gradient-hero: linear-gradient(135deg, rgba(4, 72, 144, 0.96), rgba(102, 154, 202, 0.78));
+}
+
+html, body {
+  font-family: var(--font-body);
+  color: #333;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
 }

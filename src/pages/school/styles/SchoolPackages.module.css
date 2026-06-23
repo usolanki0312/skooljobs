@@ -1,0 +1,38 @@
+.wrap {
+  border-radius: 1rem;
+  background-color: #ffffff;
+  padding: 1.25rem;
+  text-align: center;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+@media (min-width: 640px) {
+  .wrap {
+    padding: 2rem;
+  }
+}
+
+.icon {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1rem;
+  color: rgba(4, 72, 144, 0.3);
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+@media (min-width: 640px) {
+  .title {
+    font-size: 1.875rem;
+  }
+}
+
+.text {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}

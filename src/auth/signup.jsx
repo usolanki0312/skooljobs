@@ -5,6 +5,7 @@ import AuthButton from "../components/AuthButton";
 import { Link, useNavigate } from "react-router-dom";
 import "@cloudstrytech/ui-components/styles.css";
 import { Button, Input } from "@cloudstrytech/ui-components";
+import styles from "./signup.module.css";
 
 function Signup() {
   const navigate = useNavigate();
@@ -112,14 +113,14 @@ function Signup() {
     >
 
       <div>
-        <p className="uppercase tracking-[2px] text-secondary text-[11px] font-bold">
+        <p className={styles.eyebrow}>
           {step === "otp"
             ? "Account Verification"
             : "Create Your Profile"}
         </p>
 
-        <div className="flex items-end justify-between mt-2">
-          <h1 className="text-2xl font-bold text-primary font-heading leading-tight sm:text-[28px]">
+        <div className={styles.headingRow}>
+          <h1 className={styles.heading}>
             {step === "otp"
               ? "OTP Verification"
               : "Sign up as the Teacher's"}
@@ -128,11 +129,11 @@ function Signup() {
       </div>
 
       {/* Screen Form Content Area */}
-      <div className="mt-8">
+      <div className={styles.formArea}>
 
         {/* Screen 1: Details Form */}
         {step === "details" && (
-          <form onSubmit={handleSendOtp} className="space-y-4">
+          <form onSubmit={handleSendOtp} className={styles.form}>
             <Input
               label="First Name"
               value={formData.firstName}
@@ -167,7 +168,7 @@ function Signup() {
               }
             />
 
-            <div className="col-span-2">
+            <div className={styles.colSpan2}>
               <Input
                 label="Phone Number *"
                 type="tel"
@@ -182,7 +183,7 @@ function Signup() {
               />
             </div>
 
-            <div className="pt-2">
+            <div className={styles.submitRow}>
               <Button variant="filled" fullWidth color="#03274c" type="submit">
                 Send OTP Verification Code
               </Button>
@@ -192,15 +193,15 @@ function Signup() {
 
         {/* Screen 2: OTP Verification (Details are hidden!) */}
         {step === "otp" && (
-          <form onSubmit={handleVerifyOtp} className="space-y-4">
-            <div className="bg-[#f0f5fc] p-4 rounded-2xl border border-primary/10 text-xs text-primary font-semibold leading-relaxed">
+          <form onSubmit={handleVerifyOtp} className={styles.form}>
+            <div className={styles.otpInfoBox}>
               ℹ️ We have sent a verification code to <strong>{formData.phone}</strong> and <strong>{formData.email}</strong>.
-              <div className="mt-2 text-[#137333] font-bold">
+              <div className={styles.otpDemoCode}>
                 For demo verification, please use code: <strong>123456</strong>
               </div>
             </div>
 
-            <div className="col-span-2">
+            <div className={styles.colSpan2}>
               <Input
                 label="Enter 6-Digit OTP *"
                 type="tel"
@@ -211,7 +212,7 @@ function Signup() {
             </div>
 
             {/* Downsized buttons side by side */}
-            <div className="flex flex-col gap-2.5 pt-2 sm:flex-row sm:items-center">
+            <div className={styles.otpActionsRow}>
               <Button variant="filled" color="#1D5A9B">
                 back
               </Button>
@@ -225,16 +226,16 @@ function Signup() {
 
         {/* Screen 3: Password Page (Basic Details reappear as greyed out / disabled) */}
         {step === "password" && (
-          <form onSubmit={handleSignup} className="space-y-4">
-            <div className="bg-[#e6f4ea] p-4 rounded-2xl border border-[#137333]/15 text-xs text-[#137333] font-extrabold flex items-center gap-1.5 leading-relaxed mb-2">
-              <svg className="w-5 h-5 shrink-0 text-[#137333]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <form onSubmit={handleSignup} className={styles.form}>
+            <div className={styles.verifiedBox}>
+              <svg className={styles.verifiedIcon} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
               </svg>
               Mobile & Email verified successfully via OTP!
             </div>
 
             {/* Reappearing Disabled Fields */}
-            <div className="space-y-4 border-b border-borderColor/60 pb-5 mb-5">
+            <div className={styles.disabledFieldsGroup}>
               <Input
                 label="First Name"
                 value={formData.firstName}
@@ -273,7 +274,7 @@ function Signup() {
             </div>
 
             {/* Active Password Attributes */}
-            <div className="col-span-2">
+            <div className={styles.colSpan2}>
               <Input
                 label="Create Password *"
                 type="password"
@@ -288,7 +289,7 @@ function Signup() {
               />
             </div>
 
-            <div className="col-span-2">
+            <div className={styles.colSpan2}>
               <Input
                 label="Save Password *"
                 type="password"
@@ -304,21 +305,21 @@ function Signup() {
             </div>
 
             {/* Terms and Conditions Checkbox */}
-            <div className="flex items-start gap-2.5 mt-5 mb-3 cursor-pointer group select-none">
+            <div className={styles.termsRow}>
               <input
                 type="checkbox"
                 id="terms"
                 name="agreeTerms"
                 checked={formData.agreeTerms}
                 onChange={(e) => setFormData(prev => ({ ...prev, agreeTerms: e.target.checked }))}
-                className="w-[18px] h-[18px] accent-primary rounded border-borderColor cursor-pointer"
+                className={styles.termsCheckbox}
               />
-              <label htmlFor="terms" className="text-[13.5px] text-secondary font-medium cursor-pointer group-hover:text-primary transition-colors">
-                I agree to the <span className="text-primary font-bold hover:underline">Terms of Service</span> & <span className="text-primary font-bold hover:underline">Privacy Policy</span>
+              <label htmlFor="terms" className={styles.termsLabel}>
+                I agree to the <span className={styles.termsLink}>Terms of Service</span> & <span className={styles.termsLink}>Privacy Policy</span>
               </label>
             </div>
 
-            <div className="pt-2">
+            <div className={styles.submitRow}>
               <Button variant="filled" fullWidth color="#03274c" type="submit">
                 Create Account
               </Button>
@@ -328,11 +329,11 @@ function Signup() {
 
       </div>
 
-      <p className="mt-6 text-[13px] text-secondary">
+      <p className={styles.loginText}>
         Already have an account?{" "}
         <Link
           to="/"
-          className="text-primary font-bold hover:underline"
+          className={styles.loginLink}
 
         >
           <Button variant="text" color="#1D5A9B">

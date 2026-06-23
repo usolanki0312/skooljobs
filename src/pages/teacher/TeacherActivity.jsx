@@ -1,5 +1,6 @@
 import { useOutletContext } from "react-router-dom";
 import { formatRelativeTime } from "../../lib/teacherdata";
+import styles from "./styles/TeacherActivity.module.css";
 
 const TeacherActivity = () => {
   const { activities } = useOutletContext();
@@ -10,32 +11,32 @@ const TeacherActivity = () => {
     .slice(0, 10);
 
   return (
-    <section className="rounded-3xl bg-white p-5 shadow-soft sm:p-6">
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <section className={styles.section}>
+      <div className={styles.header}>
         <div>
-          <h2 className="text-2xl font-bold text-primary sm:text-3xl">Recent Activity</h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <h2 className={styles.heading}>Recent Activity</h2>
+          <p className={styles.subtext}>
             Jobs searched and applications submitted in the last 30 days (max 10 entries).
           </p>
         </div>
-        <span className="self-start rounded-full bg-primary/10 px-3 py-1 text-sm font-bold text-primary">
+        <span className={styles.countBadge}>
           {recentActivities.length} / 10
         </span>
       </div>
       {recentActivities.length === 0 ? (
-        <p className="rounded-2xl bg-light p-5 text-sm text-slate-500">No activity in the last 30 days.</p>
+        <p className={styles.emptyMessage}>No activity in the last 30 days.</p>
       ) : (
-        <div className="space-y-3">
+        <div className={styles.list}>
           {recentActivities.map((activity, index) => (
             <div
               key={`${activity.message}-${index}`}
-              className="flex flex-col gap-2 rounded-2xl border border-borderColor p-4 text-sm sm:flex-row sm:items-start sm:justify-between"
+              className={styles.activityRow}
             >
-              <div className="flex min-w-0 gap-3">
-                <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
-                <span className="break-words text-slate-700">{activity.message}</span>
+              <div className={styles.activityMain}>
+                <span className={styles.dot} />
+                <span className={styles.activityMessage}>{activity.message}</span>
               </div>
-              <span className="shrink-0 text-xs text-slate-400 sm:ml-4">{formatRelativeTime(activity.date)}</span>
+              <span className={styles.activityTime}>{formatRelativeTime(activity.date)}</span>
             </div>
           ))}
         </div>

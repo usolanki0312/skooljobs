@@ -1,0 +1,317 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.headerRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+@media (min-width: 640px) {
+  .title {
+    font-size: 1.875rem;
+  }
+}
+
+.countBadge {
+  border-radius: 9999px;
+  background-color: rgba(4, 72, 144, 0.1);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.emptyState {
+  border-radius: 1rem;
+  background-color: #ffffff;
+  padding: 2.5rem;
+  text-align: center;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.emptyIcon {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0.75rem;
+  display: block;
+  color: #cbd5e1;
+}
+
+.emptyTitle {
+  font-weight: 700;
+  color: #64748b;
+}
+
+.emptySubtitle {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+.emptyButton {
+  margin-top: 1rem;
+  border-radius: 0.75rem;
+  background-color: var(--color-primary);
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.emptyButton:hover {
+  background-color: rgba(4, 72, 144, 0.95);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.card {
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+  background-color: #ffffff;
+  padding: 1.25rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.cardInner {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .cardInner {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.avatar {
+  height: 3.5rem;
+  width: 3.5rem;
+  flex-shrink: 0;
+  border-radius: 1rem;
+  object-fit: cover;
+}
+
+.body {
+  min-width: 0;
+  flex: 1 1 0%;
+}
+
+.bodyHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+@media (min-width: 640px) {
+  .bodyHeader {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+}
+
+.bodyHeaderInfo {
+  min-width: 0;
+}
+
+.name {
+  font-weight: 700;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metaLine {
+  font-size: 0.75rem;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.qualification {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.statusActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: flex-start;
+}
+
+.statusChip {
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.statusShortlisted {
+  background-color: #f0fdf4;
+  color: #16a34a;
+}
+
+.statusRejected {
+  background-color: #fef2f2;
+  color: #ef4444;
+}
+
+.statusDefault {
+  background-color: #f1f5f9;
+  color: #64748b;
+}
+
+.bookmarkButton {
+  border-radius: 0.5rem;
+  border: 1px solid rgba(4, 72, 144, 0.2);
+  padding: 0.375rem;
+  color: var(--color-primary);
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bookmarkButton:hover {
+  background-color: #fef2f2;
+  color: #ef4444;
+  border-color: #fecaca;
+}
+
+.bookmarkIcon {
+  fill: var(--color-primary);
+}
+
+.notesSection {
+  margin-top: 1rem;
+}
+
+.notesEditWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.notesTextarea {
+  width: 100%;
+  min-height: 5rem;
+  resize: none;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-light);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.notesTextarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(4, 72, 144, 0.1);
+}
+
+.notesActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.saveNoteButton {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 0.5rem;
+  background-color: var(--color-primary);
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.saveNoteButton:hover {
+  background-color: rgba(4, 72, 144, 0.95);
+}
+
+.cancelNoteButton {
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.cancelNoteButton:hover {
+  background-color: var(--color-light);
+}
+
+.notesDisplayWrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.noteBox {
+  flex: 1 1 0%;
+  border-radius: 0.75rem;
+  background-color: var(--color-light);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.noteBoxLabel {
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.noNotes {
+  font-size: 0.75rem;
+  font-style: italic;
+  color: #94a3b8;
+}
+
+.addNoteButton {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.addNoteButton:hover {
+  background-color: var(--color-light);
+}

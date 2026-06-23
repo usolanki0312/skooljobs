@@ -16,6 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { jobsData, resumesData } from "../lib/teacherdata";
+import styles from "./TeacherLayout.module.css";
 
 const resumes = resumesData;
 
@@ -237,53 +238,53 @@ const TeacherLayout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-light">
-      <div className="flex min-h-screen">
-        <aside className="hidden w-72 bg-primary p-5 text-white lg:block">
-          <div className="rounded-3xl bg-white/10 p-5">
-            <div className="flex items-center gap-4">
+    <div className={styles.page}>
+      <div className={styles.shell}>
+        <aside className={styles.sidebar}>
+          <div className={styles.profileCard}>
+            <div className={styles.profileRow}>
               <img
                 src={profileImage}
                 alt="profile"
-                className="h-14 w-14 rounded-2xl border-2 border-white/40 object-cover"
+                className={styles.profileAvatar}
               />
               <div>
-                <h1 className="font-bold">{displayName}</h1>
-                <p className="text-xs text-white/70">Teacher Account</p>
+                <h1 className={styles.profileName}>{displayName}</h1>
+                <p className={styles.profileSubtitle}>Teacher Account</p>
               </div>
             </div>
           </div>
 
-          <div className="mt-6 rounded-3xl bg-white/10 p-5">
-            <div className="mb-3 flex items-center justify-between text-sm font-bold text-white">
+          <div className={styles.scoreCard}>
+            <div className={styles.scoreHeader}>
               <span>Profile Score</span>
-              <div className="flex items-center gap-2">
+              <div className={styles.scoreActions}>
                 <span>86%</span>
                 <button
                   type="button"
                   onClick={() => navigate("/teacher/profile")}
-                  className="flex items-center gap-1 rounded-lg bg-white/20 px-2 py-1 text-xs font-bold text-white hover:bg-white/30"
+                  className={styles.completeButton}
                 >
                   <UserRound size={11} /> Complete
                 </button>
               </div>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-white/20">
-              <div className="h-full rounded-full bg-white" style={{ width: "86%" }} />
+            <div className={styles.scoreTrack}>
+              <div className={styles.scoreFill} style={{ width: "86%" }} />
             </div>
           </div>
 
-          <nav className="mt-8 space-y-2">
+          <nav className={styles.nav}>
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = location.pathname === item.path;
+              const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
               return (
                 <button
                   key={item.path}
                   type="button"
                   onClick={() => navigate(item.path)}
-                  className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${
-                    isActive ? "bg-white text-primary" : "text-white/80 hover:bg-white/10 hover:text-white"
+                  className={`${styles.navButton} ${
+                    isActive ? styles.navButtonActive : ""
                   }`}
                 >
                   <Icon size={18} /> {item.label}
@@ -292,11 +293,11 @@ const TeacherLayout = () => {
             })}
           </nav>
 
-          <div className="mt-10 space-y-2">
+          <div className={styles.bottomNav}>
             <button
               onClick={() => navigate("/teacher/settings")}
-              className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${
-                location.pathname === "/teacher/settings" ? "bg-white text-primary" : "text-white/80 hover:bg-white/10 hover:text-white"
+              className={`${styles.navButton} ${
+                (location.pathname === "/teacher/settings" || location.pathname.startsWith("/teacher/settings/")) ? styles.navButtonActive : ""
               }`}
               type="button"
             >
@@ -304,7 +305,7 @@ const TeacherLayout = () => {
             </button>
             <button
               onClick={handleLogout}
-              className="flex w-full items-center gap-3 rounded-2xl bg-red-500 px-4 py-3 text-left text-sm font-bold text-white hover:bg-red-600 transition"
+              className={styles.logoutButton}
               type="button"
             >
               <LogOut size={18} /> Logout
@@ -312,10 +313,10 @@ const TeacherLayout = () => {
           </div>
         </aside>
 
-        <main className="min-w-0 flex-1 overflow-x-hidden p-5 lg:p-8">
-          <div className="relative lg:hidden">
-            <div className="flex items-center justify-between rounded-3xl bg-white p-3 shadow-soft">
-              <span className="px-2 text-sm font-bold text-primary">
+        <main className={styles.main}>
+          <div className={styles.mobileNavWrap}>
+            <div className={styles.mobileNavBar}>
+              <span className={styles.mobileNavTitle}>
                 {[...navItems, { label: "Settings", path: "/teacher/settings" }].find(
                   (item) => item.path === location.pathname,
                 )?.label || "Menu"}
@@ -325,24 +326,24 @@ const TeacherLayout = () => {
                 onClick={() => setMobileNavOpen((o) => !o)}
                 aria-label="Toggle navigation menu"
                 aria-expanded={mobileNavOpen}
-                className="rounded-xl p-2 text-primary hover:bg-light"
+                className={styles.mobileNavToggle}
               >
                 {mobileNavOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
             </div>
 
             {mobileNavOpen && (
-              <div className="absolute left-0 right-0 top-full z-40 mt-2 space-y-1 rounded-3xl bg-white p-3 shadow-soft">
+              <div className={styles.mobileNavMenu}>
                 {navItems.map((item) => {
                   const Icon = item.icon;
-                  const isActive = location.pathname === item.path;
+                  const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
                   return (
                     <button
                       key={item.path}
                       type="button"
                       onClick={() => navigate(item.path)}
-                      className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${
-                        isActive ? "bg-primary text-white" : "text-slate-600 hover:bg-light hover:text-primary"
+                      className={`${styles.mobileNavButton} ${
+                        isActive ? styles.mobileNavButtonActive : ""
                       }`}
                     >
                       <Icon size={17} />
@@ -353,8 +354,8 @@ const TeacherLayout = () => {
                 <button
                   type="button"
                   onClick={() => navigate("/teacher/settings")}
-                  className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${
-                    location.pathname === "/teacher/settings" ? "bg-primary text-white" : "text-slate-600 hover:bg-light hover:text-primary"
+                  className={`${styles.mobileNavButton} ${
+                    (location.pathname === "/teacher/settings" || location.pathname.startsWith("/teacher/settings/")) ? styles.mobileNavButtonActive : ""
                   }`}
                 >
                   <Settings size={17} />
@@ -363,7 +364,7 @@ const TeacherLayout = () => {
               </div>
             )}
           </div>
-          <div className="mt-6">
+          <div className={styles.outletWrap}>
             <Outlet context={outletCtx} />
           </div>
         </main>

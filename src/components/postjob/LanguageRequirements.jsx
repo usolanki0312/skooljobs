@@ -1,11 +1,12 @@
 import { Plus, Trash2, Info, HelpCircle } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import SectionCard from "./SectionCard";
-import Select from "../ui/Select";
 import common from "../../../dropdown/common/common.json";
 import postjob from "../../../dropdown/School_module/postjob.json";
+import styles from "./styles/LanguageRequirements.module.css";
+import { Button, Select } from "@cloudstrytech/ui-components";
 
-const { Indian_language: INDIAN_LANGUAGES, Foreign_language: FOREIGN_LANGUAGES } = common;
+const { Indian_language: INDIAN_LANGUAGES, Foreign_language: FOREIGN_LANGUAGES, Language_type: LANGUAGE_TYPES } = common;
 const { Proficiency_level: PROFICIENCY_LEVELS } = postjob;
 
 const LanguageRequirements = ({ form, setField }) => {
@@ -40,38 +41,37 @@ const LanguageRequirements = ({ form, setField }) => {
     setField("languages", form.languages.map((l) => (l.name === name ? { ...l, proficiency } : l)));
 
   const headerAction = (
-    <div className="relative" ref={pickerRef}>
-      <button
-        type="button"
+    <div className={styles.pickerWrap} ref={pickerRef}>
+      <Button
+        variant="filled"
         onClick={() => {
           setShowPicker(!showPicker);
           setTempType("");
           setTempLang("");
         }}
-        className="flex items-center gap-1.5 rounded-xl border border-primary px-4 py-2.5 text-sm font-bold text-primary hover:bg-primary/5 transition cursor-pointer"
+        startIcon={<Plus size={16} />}
       >
-        <Plus size={16} /> Add Language
-      </button>
+        Add Language
+      </Button>
       {showPicker && (
-        <div className="absolute right-0 top-12 z-50 w-[min(16rem,calc(100vw-2rem))] rounded-2xl border border-borderColor bg-white p-4 shadow-[0_8px_32px_rgba(0,0,0,0.12)] space-y-3">
+        <div className={styles.pickerPanel}>
           <div>
-            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-500">
+            <label className={styles.pickerLabel}>
               Language Type
             </label>
             <Select
               value={tempType}
-              onChange={(v) => { setTempType(v); setTempLang(""); }}
+              onChange={(value) => {
+                setTempType(value);
+                setTempLang("");
+              }}
               placeholder="Select Type..."
-              options={[
-                { label: "Indian Languages", value: "Indian" },
-                { label: "Foreign Languages", value: "Foreign" },
-              ]}
-              className="w-full rounded-xl border border-borderColor bg-white px-3 py-2 text-sm focus:border-primary"
+              options={LANGUAGE_TYPES}
             />
           </div>
 
           <div>
-            <label className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-slate-500">
+            <label className={styles.pickerLabel}>
               Choose Language
             </label>
             <Select
@@ -82,15 +82,14 @@ const LanguageRequirements = ({ form, setField }) => {
               options={
                 tempType
                   ? (tempType === "Indian" ? INDIAN_LANGUAGES : FOREIGN_LANGUAGES)
-                      .filter((l) => !form.languages.some((fl) => fl.name === l))
+                    .filter((l) => !form.languages.some((fl) => fl.name === l))
                   : []
               }
-              className="w-full rounded-xl border border-borderColor bg-white px-3 py-2 text-sm focus:border-primary"
+              className={styles.pickerSelect}
             />
           </div>
-
-          <button
-            type="button"
+          <Button
+            variant="filled"
             disabled={!tempLang}
             onClick={() => {
               addLanguage(tempLang);
@@ -98,10 +97,9 @@ const LanguageRequirements = ({ form, setField }) => {
               setTempType("");
               setShowPicker(false);
             }}
-            className="w-full rounded-xl bg-primary py-2 text-xs font-bold text-white hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             Add to List
-          </button>
+          </Button>
         </div>
       )}
     </div>
@@ -109,47 +107,47 @@ const LanguageRequirements = ({ form, setField }) => {
 
   return (
     <SectionCard number={2} title="Language Requirement" headerAction={headerAction}>
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
+      <div className={styles.contentGrid}>
         {/* Left Side: Table & Info Box */}
-        <div className="space-y-4">
-          <div className="overflow-x-auto rounded-xl border border-borderColor bg-white">
-            <table className="w-full text-left text-sm">
+        <div className={styles.leftCol}>
+          <div className={styles.tableWrap}>
+            <table className={styles.table}>
               <thead>
-                <tr className="border-b border-borderColor bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
-                  <th className="px-5 py-4 w-1/3">Language</th>
-                  <th className="px-5 py-4">
-                    <span className="flex items-center gap-1.5">
-                      Required Proficiency Level <span className="text-red-500">*</span>
-                      <HelpCircle size={14} className="text-slate-400 cursor-pointer" title="Expected level of proficiency" />
+                <tr className={styles.tableHeadRow}>
+                  <th className={styles.thLanguage}>Language</th>
+                  <th className={styles.th}>
+                    <span className={styles.thInner}>
+                      Required Proficiency Level <span className={styles.required}>*</span>
+                      <HelpCircle size={14} className={styles.helpIcon} title="Expected level of proficiency" />
                     </span>
                   </th>
-                  <th className="px-5 py-4 text-center w-24">Action</th>
+                  <th className={styles.thAction}>Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-borderColor">
+              <tbody className={styles.tableBody}>
                 {form.languages.length === 0 ? (
                   <tr>
-                    <td colSpan={3} className="px-5 py-8 text-center text-sm text-slate-400 italic">
+                    <td colSpan={3} className={styles.emptyCell}>
                       No languages added yet. Click "+ Add Language" at the top right to start.
                     </td>
                   </tr>
                 ) : (
                   form.languages.map((l) => (
-                    <tr key={l.name} className="hover:bg-slate-50/50 transition">
-                      <td className="px-5 py-4 font-semibold text-slate-800">{l.name}</td>
-                      <td className="px-5 py-4">
+                    <tr key={l.name} className={styles.row}>
+                      <td className={styles.tdName}>{l.name}</td>
+                      <td className={styles.td}>
                         <Select
                           value={l.proficiency}
                           onChange={(v) => setProficiency(l.name, v)}
                           options={PROFICIENCY_LEVELS}
-                          className="w-full max-w-xs rounded-xl border border-borderColor bg-white px-4 py-2.5 text-sm focus:border-primary focus:ring-4 focus:ring-primary/10"
+                          className={styles.proficiencySelect}
                         />
                       </td>
-                      <td className="px-5 py-4 text-center">
+                      <td className={styles.tdCenter}>
                         <button
                           type="button"
                           onClick={() => removeLanguage(l.name)}
-                          className="rounded-xl p-2 text-slate-400 hover:bg-red-50 hover:text-red-500 transition cursor-pointer"
+                          className={styles.removeButton}
                         >
                           <Trash2 size={16} />
                         </button>
@@ -161,38 +159,38 @@ const LanguageRequirements = ({ form, setField }) => {
             </table>
           </div>
 
-          <div className="flex items-start gap-2.5 rounded-xl border border-blue-100 bg-blue-50/50 p-4 text-xs leading-relaxed text-blue-700">
-            <Info size={16} className="mt-0.5 shrink-0 text-blue-500" />
+          <div className={styles.infoBox}>
+            <Info size={16} className={styles.infoIcon} />
             <p>Add all languages required for the job and select the minimum proficiency level expected for each.</p>
           </div>
         </div>
 
         {/* Right Side: Guidelines Card */}
-        <div className="rounded-2xl border border-indigo-100 bg-indigo-50/30 p-5 text-sm">
-          <h4 className="font-bold text-indigo-955 mb-3 text-indigo-900">Proficiency Levels</h4>
-          <ul className="space-y-2.5 text-xs text-indigo-900/80">
-            <li className="flex items-start gap-2">
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
+        <div className={styles.guidelinesCard}>
+          <h4 className={styles.guidelinesTitle}>Proficiency Levels</h4>
+          <ul className={styles.guidelinesList}>
+            <li className={styles.guidelinesItem}>
+              <span className={styles.guidelinesDot} />
               <span><strong>Basic</strong> – Understands simple conversations</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
+            <li className={styles.guidelinesItem}>
+              <span className={styles.guidelinesDot} />
               <span><strong>Intermediate</strong> – Can handle basic communication</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
+            <li className={styles.guidelinesItem}>
+              <span className={styles.guidelinesDot} />
               <span><strong>Conversational</strong> – Comfortable in daily conversations</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
+            <li className={styles.guidelinesItem}>
+              <span className={styles.guidelinesDot} />
               <span><strong>Professional</strong> – Can communicate in professional settings</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
+            <li className={styles.guidelinesItem}>
+              <span className={styles.guidelinesDot} />
               <span><strong>Fluent</strong> – Highly proficient</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
+            <li className={styles.guidelinesItem}>
+              <span className={styles.guidelinesDot} />
               <span><strong>Native</strong> – Native level proficiency</span>
             </li>
           </ul>

@@ -1,0 +1,106 @@
+.card {
+  border-radius: 1.5rem;
+  border: 1px solid var(--color-border);
+  background-color: #fff;
+  padding: 1.25rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-0.125rem);
+  box-shadow: var(--shadow-soft);
+}
+
+.headerRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.titleGroup {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 1rem;
+}
+
+.iconBadge {
+  display: flex;
+  height: 3.5rem;
+  width: 3.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background-color: rgba(4, 72, 144, 0.1);
+  color: var(--color-primary);
+}
+
+.titleTextWrap {
+  min-width: 0;
+}
+
+.role {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.school {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.matchBadge {
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background-color: #f0fdf4;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+.infoGrid {
+  margin-top: 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+@media (min-width: 640px) {
+  .infoGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.salary {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.actionsRow {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
