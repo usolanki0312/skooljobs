@@ -1,0 +1,212 @@
+.notFoundWrap {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8fafc;
+  padding: 1rem;
+  text-align: center;
+}
+
+.notFoundIcon {
+  color: #cbd5e1;
+  margin-bottom: 1rem;
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.notFoundTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.notFoundText {
+  margin-top: 0.5rem;
+  color: #64748b;
+  max-width: 24rem;
+}
+
+.notFoundLink {
+  margin-top: 1.5rem;
+  border-radius: 0.75rem;
+  background-color: var(--color-primary);
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #ffffff;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.notFoundLink:hover {
+  background-color: rgba(4, 72, 144, 0.95);
+}
+
+.page {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  font-family: var(--font-body);
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid var(--color-border);
+  background-color: #ffffff;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+@media (min-width: 640px) {
+  .header {
+    padding: 1rem 1.5rem;
+  }
+}
+
+.headerInner {
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  max-width: 72rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.brandGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+@media (min-width: 640px) {
+  .brandGroup {
+    gap: 0.75rem;
+  }
+}
+
+.brandLogo {
+  display: flex;
+  height: 2.25rem;
+  width: 2.25rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1.125rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 640px) {
+  .brandLogo {
+    height: 2.5rem;
+    width: 2.5rem;
+    font-size: 1.25rem;
+  }
+}
+
+.brandName {
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.025em;
+}
+
+@media (min-width: 640px) {
+  .brandName {
+    font-size: 1.25rem;
+  }
+}
+
+.navActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .navActions {
+    gap: 1rem;
+  }
+}
+
+.navLink {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #475569;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+
+.navLink:hover {
+  color: var(--color-primary);
+}
+
+.registerLink {
+  border-radius: 0.75rem;
+  background-color: rgba(4, 72, 144, 0.1);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+
+@media (min-width: 640px) {
+  .registerLink {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+.registerLink:hover {
+  background-color: rgba(4, 72, 144, 0.15);
+}
+
+.main {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 72rem;
+  padding: 1.5rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .main {
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .main {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+}

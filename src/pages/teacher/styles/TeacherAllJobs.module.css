@@ -1,0 +1,306 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.section {
+  border-radius: 1.5rem;
+  background-color: #fff;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-soft);
+}
+
+@media (min-width: 640px) {
+  .section {
+    padding: 1.5rem;
+  }
+}
+
+.headerRow {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .headerRow {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+@media (min-width: 640px) {
+  .heading {
+    font-size: 1.875rem;
+  }
+}
+
+.filterGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.filterIcon {
+  display: none;
+  color: #94a3b8;
+}
+
+@media (min-width: 640px) {
+  .filterIcon {
+    display: inline;
+  }
+}
+
+.subjectSelect {
+  width: 10rem;
+}
+
+.typeSelect {
+  width: 9rem;
+}
+
+.jobsGrid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .jobsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.emptyMessage {
+  border-radius: 1rem;
+  background-color: var(--color-light);
+  padding: 1.25rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.historyHeading {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.historySubtext {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.historyList {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.historyRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+  padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  .historyRow {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.historyMain {
+  min-width: 0;
+}
+
+.historyRole {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.historyMeta {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.historyStatusWrap {
+  text-align: left;
+}
+
+@media (min-width: 640px) {
+  .historyStatusWrap {
+    text-align: right;
+  }
+}
+
+.appliedBadge {
+  border-radius: 9999px;
+  background-color: #f0fdf4;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #16a34a;
+}
+
+.appliedDate {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.notifHeaderRow {
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.notifIconBadge {
+  border-radius: 0.75rem;
+  background-color: rgba(4, 72, 144, 0.1);
+  padding: 0.5rem;
+  color: var(--color-primary);
+}
+
+.notifTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.notifSubtext {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.enableRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+  padding: 1rem;
+}
+
+.enableCheckbox {
+  height: 1rem;
+  width: 1rem;
+  accent-color: var(--color-primary);
+}
+
+.enableLabel {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.prefsWrap {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fieldLabel {
+  margin-bottom: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  color: #64748b;
+}
+
+.subjectPillRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.subjectPill {
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-light);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #475569;
+  transition-property: color, background-color, border-color;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.subjectPill:hover {
+  border-color: var(--color-primary);
+}
+
+.subjectPillActive {
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  background-color: var(--color-primary);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #fff;
+  transition-property: color, background-color, border-color;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.jobTitleInput {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.jobTitleInput:focus {
+  border-color: var(--color-primary);
+}
+
+.titleTagRow {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.titleTag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  background-color: rgba(4, 72, 144, 0.1);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.titleTagRemove {
+  color: rgba(4, 72, 144, 0.6);
+}
+
+.titleTagRemove:hover {
+  color: var(--color-primary);
+}

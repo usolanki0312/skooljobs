@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { profileSections } from "../../lib/schooldata";
 import profileOptions from "../../../dropdown/School_module/profile.json";
-import { Button, Input } from "@cloudstrytech/ui-components";
+import { Button, Input ,Select} from "@cloudstrytech/ui-components";
+import styles from "./styles/SchoolProfile.module.css";
 
 
 const {
@@ -41,7 +42,6 @@ import {
   Users,
   X,
 } from "lucide-react";
-import Select from "../../components/ui/Select";
 
 const sidebarItems = [
   {
@@ -99,17 +99,15 @@ const establishmentYears = Array.from({ length: 76 }, (_, i) =>
   String(2025 - i),
 );
 
-const inputClass =
-  "w-full rounded-xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10";
+const inputClass = styles.inputBase;
 
-const labelClass =
-  "mb-2 block text-xs font-bold uppercase tracking-wide text-slate-600";
+const labelClass = styles.fieldLabel;
 
 const Field = ({ label, required, children }) => (
   <div>
     <label className={labelClass}>
       {label}
-      {required && <span className="ml-1 text-red-500">*</span>}
+      {required && <span className={styles.requiredMark}>*</span>}
     </label>
     {children}
   </div>
@@ -117,7 +115,17 @@ const Field = ({ label, required, children }) => (
 
 const SchoolProfile = () => {
   const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState("basic");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeSection = searchParams.get("section") || "basic";
+  const setActiveSection = (id) =>
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.set("section", id);
+        return next;
+      },
+      { replace: true },
+    );
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [logoImage, setLogoImage] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
@@ -248,42 +256,42 @@ const SchoolProfile = () => {
   // ─── Render Basic Info ─────────────────────────────────────────────────────
 
   const renderBasicInfo = () => (
-    <div className="space-y-6">
-      <h2 className="text-xl font-bold text-primary">Basic Information</h2>
+    <div className={styles.sectionStack}>
+      <h2 className={styles.sectionTitle}>Basic Information</h2>
 
       {/* Logo + Cover photo upload */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+      <div className={styles.logoCoverRow}>
         {/* Institute logo */}
-        <div className="flex flex-col items-center gap-2">
-          <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-borderColor bg-light">
+        <div className={styles.logoCol}>
+          <div className={styles.logoBox}>
             {logoImage ? (
-              <img src={logoImage} alt="logo" className="h-full w-full object-cover" />
+              <img src={logoImage} alt="logo" className={styles.logoImg} />
             ) : (
-              <Building2 size={32} className="text-slate-300" />
+              <Building2 size={32} className={styles.logoPlaceholderIcon} />
             )}
           </div>
-          <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-borderColor bg-white px-3 py-2 text-xs font-bold text-primary hover:bg-primary/5">
+          <label className={styles.uploadLogoLabel}>
             <Upload size={13} /> {logoImage ? "Change Logo" : "Upload Logo"}
             <input type="file" hidden accept="image/*" onChange={handleLogoUpload} />
           </label>
-          <p className="text-xs text-slate-400">Recommended: 200×200px</p>
+          <p className={styles.logoHint}>Recommended: 200×200px</p>
         </div>
 
         {/* Cover photo */}
-        <div className="flex-1">
-          <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-borderColor bg-light px-5 py-2.5 text-sm font-bold text-primary hover:bg-primary/5">
+        <div className={styles.coverCol}>
+          <label className={styles.uploadCoverLabel}>
             <ImageIcon size={16} /> Upload Cover Photo
             <input type="file" hidden accept="image/*" onChange={handleCoverUpload} />
           </label>
           {coverImage && (
-            <div className="mt-3 h-32 w-full overflow-hidden rounded-2xl border border-borderColor">
-              <img src={coverImage} alt="cover" className="h-full w-full object-cover" />
+            <div className={styles.coverPreviewWrap}>
+              <img src={coverImage} alt="cover" className={styles.coverPreviewImg} />
             </div>
           )}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+      <div className={styles.fieldGrid}>
         <Field label="First Name" required>
           <Input
             value={formData.firstName}
@@ -333,23 +341,24 @@ const SchoolProfile = () => {
       {/* Profile URL */}
       <div>
         <label className={labelClass}>Profile URL</label>
-        <div className="flex items-center gap-3 rounded-xl border border-borderColor bg-light px-4 py-3">
-          <Globe size={15} className="shrink-0 text-primary" />
-          <span className="flex-1 truncate text-sm text-slate-600">
+        <div className={styles.profileUrlRow}>
+          <Globe size={15} className={styles.profileUrlIcon} />
+          <span className={styles.profileUrlText}>
             {formData.profileUrl}
           </span>
-          <Button variant="text" color type="button">
+          <Button variant="outlined" color type="button">
             Edit
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+      <div className={styles.fieldGrid}>
         <Field label="Profile for Public View">
           <Select
+            options={publicViewOptions}
             value={formData.publicView}
             onChange={(v) => setField("publicView", v)}
-            options={publicViewOptions}
+            placeholder="Select public view"
           />
         </Field>
         <Field label="Phone">
@@ -389,29 +398,29 @@ const SchoolProfile = () => {
       {/* About the Institute (renamed from About the Company) */}
       <div>
         <label className={labelClass}>About the Institute</label>
-        <div className="overflow-hidden rounded-xl border border-borderColor">
-          <div className="flex flex-wrap items-center gap-1 border-b border-borderColor bg-light px-3 py-2">
+        <div className={styles.editorBox}>
+          <div className={styles.editorToolbar}>
             {["B", "I", "U", "S", "≡", "≡", "≡", "⊞", "🔗", "↩", "↪"].map(
               (btn, i) => (
                 <button
                   key={i}
                   type="button"
-                  className="min-w-7 rounded px-2 py-1 text-xs font-bold text-slate-600 hover:bg-white hover:shadow-sm"
+                  className={styles.editorToolbarBtn}
                 >
                   {btn}
                 </button>
               ),
             )}
-            <div className="ml-auto flex gap-1">
+            <div className={styles.editorModeGroup}>
               <button
                 type="button"
-                className="rounded border border-primary/30 px-3 py-1 text-xs font-bold text-primary bg-white"
+                className={styles.editorModeBtnActive}
               >
                 Visual
               </button>
               <button
                 type="button"
-                className="rounded px-3 py-1 text-xs font-bold text-slate-500 hover:bg-white"
+                className={styles.editorModeBtn}
               >
                 Text
               </button>
@@ -421,34 +430,34 @@ const SchoolProfile = () => {
             name="aboutInstitute"
             value={formData.aboutInstitute}
             onChange={handleChange}
-            className="min-h-32 w-full resize-none bg-white px-4 py-3 text-sm text-slate-800 outline-none"
+            className={styles.editorTextarea}
             placeholder="Write about your school / institute..."
           />
         </div>
       </div>
 
       {/* School-specific fields */}
-      <div className="rounded-2xl border border-borderColor bg-light p-5 space-y-5">
-        <h3 className="font-bold text-slate-800 text-sm uppercase tracking-wide">
+      <div className={styles.schoolDetailsBox}>
+        <h3 className={styles.schoolDetailsTitle}>
           School Details for Candidate Matching
         </h3>
 
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div className={styles.fieldGrid}>
           <Field label="Total Student Strength">
             <Select
+              options={studentCountOptions}
               value={formData.totalStudents}
               onChange={(v) => setField("totalStudents", v)}
               placeholder="Select total students"
-              options={studentCountOptions}
             />
           </Field>
 
           <Field label="Students Per Class">
             <Select
+              options={studentsPerClassOptions}
               value={formData.studentsPerClass}
               onChange={(v) => setField("studentsPerClass", v)}
               placeholder="Select students per class"
-              options={studentsPerClassOptions}
             />
           </Field>
 
@@ -467,10 +476,11 @@ const SchoolProfile = () => {
 
           <Field label="Bus / Transport Service Available">
             <Select
+              style={{ "--cst-input-focus": "#16a34a" }}
+              options={busServiceOptions}
               value={formData.busService}
               onChange={(v) => setField("busService", v)}
               placeholder="Select option"
-              options={busServiceOptions}
             />
           </Field>
         </div>
@@ -479,11 +489,11 @@ const SchoolProfile = () => {
       {/* School Photo Gallery */}
       <div>
         <label className={labelClass}>School Photos / Gallery</label>
-        <p className="mb-3 text-xs text-slate-500">
+        <p className={styles.galleryHint}>
           Upload up to 8 photos — a visual profile makes your school more
           attractive to candidates.
         </p>
-        <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-dashed border-primary/40 px-5 py-3 text-sm font-bold text-primary hover:bg-primary/5">
+        <label className={styles.uploadPhotosLabel}>
           <Camera size={16} /> Upload Photos
           <input
             type="file"
@@ -494,16 +504,16 @@ const SchoolProfile = () => {
           />
         </label>
         {galleryImages.length > 0 && (
-          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className={styles.galleryGrid}>
             {galleryImages.map((url, i) => (
               <div
                 key={i}
-                className="group relative overflow-hidden rounded-xl border border-borderColor"
+                className={styles.galleryItem}
               >
                 <img
                   src={url}
                   alt={`gallery-${i}`}
-                  className="h-24 w-full object-cover"
+                  className={styles.galleryImg}
                 />
                 <button
                   type="button"
@@ -512,7 +522,7 @@ const SchoolProfile = () => {
                       prev.filter((_, idx) => idx !== i),
                     )
                   }
-                  className="absolute right-1 top-1 hidden rounded-full bg-red-500 p-1 text-white group-hover:flex"
+                  className={styles.galleryRemoveBtn}
                 >
                   <X size={12} />
                 </button>
@@ -532,10 +542,10 @@ const SchoolProfile = () => {
       ? currentYear - parseInt(formData.establishedYear)
       : null;
     return (
-      <div className="space-y-6">
-        <h2 className="text-xl font-bold text-primary">Other Information</h2>
+      <div className={styles.sectionStack}>
+        <h2 className={styles.sectionTitle}>Other Information</h2>
 
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div className={styles.fieldGrid}>
           {/* Founded Since — replaced slider with dropdown */}
           <div>
             <Field label="Established / Founded Since *">
@@ -547,9 +557,9 @@ const SchoolProfile = () => {
               />
             </Field>
             {age !== null && age > 0 && (
-              <p className="mt-1.5 text-xs text-slate-500">
+              <p className={styles.schoolAgeHint}>
                 School age:{" "}
-                <span className="font-bold text-primary">
+                <span className={styles.schoolAgeValue}>
                   {age} year{age !== 1 ? "s" : ""}
                 </span>
               </p>
@@ -581,7 +591,7 @@ const SchoolProfile = () => {
               placeholder="Select the Level"
               options={levels}
             />
-            <p className="mt-1 text-xs text-slate-400">
+            <p className={styles.fieldHelpText}>
               Mandatory — affects teacher matching.
             </p>
           </Field>
@@ -594,14 +604,14 @@ const SchoolProfile = () => {
               placeholder="Select the Board"
               options={boards}
             />
-            <p className="mt-1 text-xs text-slate-400">
+            <p className={styles.fieldHelpText}>
               Board helps match the right teachers for your curriculum.
             </p>
           </Field>
 
           {/* Website field REMOVED from Other Info — it's in Basic Information already */}
 
-          <div className="lg:col-span-2">
+          <div className={styles.colSpan2}>
             <Field label="Alternate Email">
               <Input
                 value={formData.alternateEmail}
@@ -623,10 +633,10 @@ const SchoolProfile = () => {
   // ─── Render Social Links ───────────────────────────────────────────────────
 
   const renderSocialLinks = () => (
-    <div className="space-y-6">
-      <h2 className="text-xl font-bold text-primary">Social Links</h2>
+    <div className={styles.sectionStack}>
+      <h2 className={styles.sectionTitle}>Social Links</h2>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+      <div className={styles.fieldGrid}>
         <Field label="Facebook">
           <Input
             value={formData.facebook}
@@ -652,7 +662,7 @@ const SchoolProfile = () => {
             placeholder="https://x.com/yourschool"
           />
         </Field>
-        <div className="lg:col-span-2">
+        <div className={styles.colSpan2}>
           <Field label="LinkedIn">
             <Input
               value={formData.linkedin}
@@ -765,13 +775,13 @@ const SchoolProfile = () => {
   // ─── Render Address ────────────────────────────────────────────────────────
 
   const renderAddress = () => (
-    <div className="space-y-6">
-      <h2 className="text-xl font-bold text-primary">Address / Location</h2>
+    <div className={styles.sectionStack}>
+      <h2 className={styles.sectionTitle}>Address / Location</h2>
 
       {/* Locality search — type an area name, pick from results, everything fills */}
-      <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
+      <div className={styles.localitySearchBox}>
         <Field label="Search Area / Locality">
-          <div className="relative">
+          <div className={styles.relativeWrap}>
             <Input
               value={areaQuery}
               onChange={(value) => {
@@ -783,29 +793,29 @@ const SchoolProfile = () => {
               autoComplete="off"
             />
             {areaLoading && (
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-primary animate-pulse">
+              <span className={styles.searchingLabel}>
                 Searching…
               </span>
             )}
 
             {showAreaDropdown && areaResults.length > 0 && (
-              <div className="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto rounded-xl border border-borderColor bg-white shadow-lg">
+              <div className={styles.localityDropdown}>
                 {areaResults.map((po, i) => (
                   <button
                     key={`${po.Name}-${po.Pincode}-${i}`}
                     type="button"
                     onClick={() => handleSelectLocality(po)}
-                    className="flex w-full items-start justify-between gap-3 border-b border-borderColor/60 px-4 py-2.5 text-left last:border-0 hover:bg-light"
+                    className={styles.localityOption}
                   >
                     <span>
-                      <span className="block text-sm font-semibold text-slate-800">
+                      <span className={styles.localityName}>
                         {po.Name}
                       </span>
-                      <span className="block text-xs text-slate-500">
+                      <span className={styles.localityMeta}>
                         {po.District}, {po.State}
                       </span>
                     </span>
-                    <span className="shrink-0 rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary">
+                    <span className={styles.localityPincode}>
                       {po.Pincode}
                     </span>
                   </button>
@@ -814,16 +824,16 @@ const SchoolProfile = () => {
             )}
           </div>
           {areaError ? (
-            <p className="mt-1 text-xs text-red-500">{areaError}</p>
+            <p className={styles.errorText}>{areaError}</p>
           ) : (
-            <p className="mt-1 text-xs text-slate-500">
+            <p className={styles.helperText}>
               Select a locality and the City/District, State &amp; PIN code fill in automatically.
             </p>
           )}
         </Field>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+      <div className={styles.fieldGrid}>
         <Field label="Country">
           <Select
             value={formData.country}
@@ -833,29 +843,29 @@ const SchoolProfile = () => {
         </Field>
 
         <Field label="Area / Locality">
-         <Input
-  value={formData.area}
-  onChange={(value) =>
-    setFormData((prev) => ({
-      ...prev,
-      area: value,
-    }))
-  }
-  placeholder="e.g. Rajendra Nagar"
-/>
+          <Input
+            value={formData.area}
+            onChange={(value) =>
+              setFormData((prev) => ({
+                ...prev,
+                area: value,
+              }))
+            }
+            placeholder="e.g. Rajendra Nagar"
+          />
         </Field>
 
         <Field label="City / District">
-         <Input
-  value={formData.city}
-  onChange={(value) =>
-    setFormData((prev) => ({
-      ...prev,
-      city: value,
-    }))
-  }
-  placeholder="e.g. Indore"
-/>
+          <Input
+            value={formData.city}
+            onChange={(value) =>
+              setFormData((prev) => ({
+                ...prev,
+                city: value,
+              }))
+            }
+            placeholder="e.g. Indore"
+          />
         </Field>
 
         <Field label="State">
@@ -869,61 +879,61 @@ const SchoolProfile = () => {
 
         {/* Postal code — also supports reverse autofill if typed directly */}
         <Field label="Postal / PIN Code" required>
-          <div className="relative">
+          <div className={styles.relativeWrap}>
             <Input
-  value={formData.postalCode}
-  onChange={(value) => {
-    setPincodeError("");
-    setFormData((prev) => ({
-      ...prev,
-      postalCode: value,
-    }));
-  }}
-  placeholder="e.g. 452012"
-  maxLength={6}
-/>
+              value={formData.postalCode}
+              onChange={(value) => {
+                setPincodeError("");
+                setFormData((prev) => ({
+                  ...prev,
+                  postalCode: value,
+                }));
+              }}
+              placeholder="e.g. 452012"
+              maxLength={6}
+            />
             {pincodeLoading && (
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-primary animate-pulse">
+              <span className={styles.searchingLabel}>
                 Fetching…
               </span>
             )}
           </div>
           {pincodeError ? (
-            <p className="mt-1 text-xs text-red-500">{pincodeError}</p>
+            <p className={styles.errorText}>{pincodeError}</p>
           ) : (
-            <p className="mt-1 text-xs text-slate-400">
+            <p className={styles.fieldHelpText}>
               Auto-filled from locality search, or type a 6-digit PIN to fill the rest.
             </p>
           )}
         </Field>
 
-        <div className="lg:col-span-2">
+        <div className={styles.colSpan2}>
           <Field label="Address Lane 1">
-           <Input
-  value={formData.addressLane1}
-  onChange={(value) =>
-    setFormData((prev) => ({
-      ...prev,
-      addressLane1: value,
-    }))
-  }
-  placeholder="Flat / Building No., Building Name, Street"
-/>
+            <Input
+              value={formData.addressLane1}
+              onChange={(value) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  addressLane1: value,
+                }))
+              }
+              placeholder="Flat / Building No., Building Name, Street"
+            />
           </Field>
         </div>
 
-        <div className="lg:col-span-2">
+        <div className={styles.colSpan2}>
           <Field label="Address Lane 2">
-           <Input
-  value={formData.addressLane2}
-  onChange={(value) =>
-    setFormData((prev) => ({
-      ...prev,
-      addressLane2: value,
-    }))
-  }
-  placeholder="Area, Landmark (optional)"
-/>
+            <Input
+              value={formData.addressLane2}
+              onChange={(value) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  addressLane2: value,
+                }))
+              }
+              placeholder="Area, Landmark (optional)"
+            />
           </Field>
         </div>
       </div>
@@ -940,47 +950,47 @@ const SchoolProfile = () => {
   // ─── Sidebar ───────────────────────────────────────────────────────────────
 
   const SidebarInner = () => (
-    <div className="flex h-full flex-col">
-      <div className="mb-4 flex items-center gap-3">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-borderColor bg-light">
+    <div className={styles.sidebarInner}>
+      <div className={styles.sidebarHeader}>
+        <div className={styles.sidebarLogoBox}>
           {logoImage ? (
             <img
               src={logoImage}
               alt="logo"
-              className="h-full w-full object-cover"
+              className={styles.sidebarLogoImg}
             />
           ) : (
-            <Building2 size={22} className="text-primary" />
+            <Building2 size={22} className={styles.sidebarLogoIcon} />
           )}
         </div>
-        <div className="min-w-0">
-          <p className="truncate text-sm font-bold text-slate-800">
+        <div className={styles.sidebarNameCol}>
+          <p className={styles.sidebarSchoolName}>
             {schoolName}
           </p>
-          <p className="text-xs text-slate-400">School Account</p>
+          <p className={styles.sidebarAccountLabel}>School Account</p>
         </div>
       </div>
 
       {/* Profile completion indicator */}
-      <div className="mb-5 rounded-xl bg-light p-3 border border-borderColor">
-        <div className="flex items-center justify-between text-xs font-bold text-slate-600 mb-1.5">
+      <div className={styles.completionBox}>
+        <div className={styles.completionRow}>
           <span>Profile Completion</span>
-          <span className="text-primary">{completionPct}%</span>
+          <span className={styles.completionPct}>{completionPct}%</span>
         </div>
-        <div className="h-2 overflow-hidden rounded-full bg-white border border-borderColor/50">
+        <div className={styles.completionBarTrack}>
           <div
-            className="h-full rounded-full bg-primary transition-all duration-500"
+            className={styles.completionBarFill}
             style={{ width: `${completionPct}%` }}
           />
         </div>
         {completionPct < 100 && (
-          <p className="mt-1.5 text-xs text-slate-400">
+          <p className={styles.completionRemaining}>
             {100 - completionPct}% remaining to complete profile
           </p>
         )}
       </div>
 
-      <nav className="flex-1 space-y-1">
+      <nav className={styles.sidebarNav}>
         {sidebarItems.map((item) => {
           const Icon = item.icon;
           const isActive = item.id === "companyProfile";
@@ -989,7 +999,7 @@ const SchoolProfile = () => {
               key={item.id}
               type="button"
               onClick={() => handleNavClick(item)}
-              className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold transition ${isActive ? "bg-primary text-white" : "text-slate-600 hover:bg-light hover:text-primary"}`}
+              className={`${styles.navItem} ${isActive ? styles.navItemActive : ""}`}
             >
               <Icon size={17} />
               {item.label}
@@ -998,18 +1008,18 @@ const SchoolProfile = () => {
         })}
       </nav>
 
-      <div className="mt-4 space-y-1 border-t border-borderColor pt-4">
+      <div className={styles.sidebarFooter}>
         <button
           type="button"
           onClick={() => navigate("/school/dashboard")}
-          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold text-slate-600 hover:bg-light"
+          className={styles.footerNavItem}
         >
           <ArrowLeft size={17} /> Back to Dashboard
         </button>
         <button
           type="button"
           onClick={handleLogout}
-          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-bold text-slate-600 hover:bg-light"
+          className={styles.footerNavItem}
         >
           <LogOut size={17} /> Logout
         </button>
@@ -1019,27 +1029,27 @@ const SchoolProfile = () => {
   );
 
   return (
-    <div className="min-h-screen bg-light">
-      <form onSubmit={handleSubmit} className="flex min-h-screen">
-        <aside className="hidden w-64 shrink-0 flex-col border-r border-borderColor bg-white p-5 lg:flex">
+    <div className={styles.pageWrap}>
+      <form onSubmit={handleSubmit} className={styles.formLayout}>
+        <aside className={styles.aside}>
           <SidebarInner />
         </aside>
 
-        <main className="min-w-0 flex-1 overflow-x-hidden p-5 lg:p-8">
-          <div className="mb-6 rounded-3xl bg-white p-5 shadow-soft">
-            <p className="text-xs font-bold uppercase tracking-[2px] text-secondary">
+        <main className={styles.main}>
+          <div className={styles.headerCard}>
+            <p className={styles.headerEyebrow}>
               Employer Workspace
             </p>
-            <h1 className="mt-1 text-2xl font-bold text-primary sm:text-3xl">
+            <h1 className={styles.headerTitle}>
               School Profile
             </h1>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className={styles.headerSubtitle}>
               Keep your school information up to date to attract the best
               candidates.
             </p>
           </div>
 
-          <div className="mb-6 hidden gap-2 rounded-3xl bg-white p-3 shadow-soft lg:flex">
+          <div className={styles.sectionNavDesktop}>
             {profileSections.map((section) => {
               const isActive = activeSection === section.id;
               return (
@@ -1047,7 +1057,7 @@ const SchoolProfile = () => {
                   key={section.id}
                   type="button"
                   onClick={() => setActiveSection(section.id)}
-                  className={`flex shrink-0 items-center rounded-2xl px-5 py-3 text-sm font-bold transition ${isActive ? "bg-primary text-white" : "bg-light text-primary hover:bg-primary/10"}`}
+                  className={`${styles.sectionTabBtn} ${isActive ? styles.sectionTabBtnActive : ""}`}
                 >
                   {section.label}
                 </button>
@@ -1055,9 +1065,9 @@ const SchoolProfile = () => {
             })}
           </div>
 
-          <div className="relative mb-6 lg:hidden">
-            <div className="flex items-center justify-between rounded-3xl bg-white p-3 shadow-soft">
-              <span className="px-2 text-sm font-bold text-primary">
+          <div className={styles.mobileNavWrap}>
+            <div className={styles.mobileNavBar}>
+              <span className={styles.mobileNavLabel}>
                 {profileSections.find((section) => section.id === activeSection)?.label || "Menu"}
               </span>
               <button
@@ -1065,14 +1075,14 @@ const SchoolProfile = () => {
                 onClick={() => setMobileNavOpen((o) => !o)}
                 aria-label="Toggle navigation menu"
                 aria-expanded={mobileNavOpen}
-                className="rounded-xl p-2 text-primary hover:bg-light"
+                className={styles.mobileNavToggleBtn}
               >
                 {mobileNavOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
             </div>
 
             {mobileNavOpen && (
-              <div className="absolute left-0 right-0 top-full z-40 mt-2 space-y-1 rounded-3xl bg-white p-3 shadow-soft">
+              <div className={styles.mobileNavDropdown}>
                 {profileSections.map((section) => {
                   const isActive = activeSection === section.id;
                   return (
@@ -1083,7 +1093,7 @@ const SchoolProfile = () => {
                         setActiveSection(section.id);
                         setMobileNavOpen(false);
                       }}
-                      className={`flex w-full items-center rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${isActive ? "bg-primary text-white" : "text-slate-600 hover:bg-light hover:text-primary"}`}
+                      className={`${styles.mobileNavItem} ${isActive ? styles.mobileNavItemActive : ""}`}
                     >
                       {section.label}
                     </button>
@@ -1093,15 +1103,18 @@ const SchoolProfile = () => {
             )}
           </div>
 
-          <div className="rounded-3xl bg-white p-6 shadow-soft lg:p-8">
+          <div className={styles.contentCard}>
             {renderActiveSection()}
 
-            <div className="mt-8 flex flex-col-reverse gap-3 border-t border-borderColor pt-6 sm:flex-row sm:justify-end">
+            <div className={styles.formActions}>
               <Button variant="outlined" type="button">
                 Cancel
               </Button>
-              <Button type="filled">
-                <Save size={17} /> Save Changes
+              <Button
+                variant="filled"
+                startIcon="saveIcon"
+              >
+                Save Changes
               </Button>
             </div>
           </div>

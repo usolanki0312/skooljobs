@@ -1,3 +1,8 @@
 {
-  "Applicant_status": ["Not Reviewed", "Reviewed", "Shortlisted", "Rejected"]
+  "Applicant_status": ["Not Reviewed", "Reviewed", "Shortlisted", "Rejected"],
+  "Experience_filter": [
+    { "label": "0 – 3 yrs", "value": "0-3" },
+    { "label": "3 – 6 yrs", "value": "3-6" },
+    { "label": "6+ yrs", "value": "6+" }
+  ]
 }

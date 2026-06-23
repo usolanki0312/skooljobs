@@ -1,0 +1,395 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+@media (min-width: 640px) {
+  .pageTitle {
+    font-size: 1.875rem;
+  }
+}
+
+.card {
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+  background-color: #fff;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-soft);
+}
+
+@media (min-width: 640px) {
+  .card {
+    padding: 1.5rem;
+  }
+}
+
+.cardHeader {
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 1rem;
+}
+
+.cardIcon {
+  border-radius: 0.75rem;
+  background-color: rgba(4, 72, 144, 0.1);
+  padding: 0.5rem;
+  color: var(--color-primary);
+}
+
+.cardTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.toggleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.toggleRowBordered {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid rgba(219, 228, 240, 0.5);
+  padding-top: 1.5rem;
+}
+
+.toggleText {
+  min-width: 0;
+}
+
+.toggleTitle {
+  font-weight: 700;
+  color: #334155;
+}
+
+.toggleDescription {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.notificationList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.switch {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  cursor: pointer;
+  align-items: center;
+}
+
+.switchInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.switchTrack {
+  height: 1.5rem;
+  width: 2.75rem;
+  border-radius: 9999px;
+  background-color: #e2e8f0;
+  transition: background-color 0.2s ease-in-out;
+  position: relative;
+}
+
+.switchTrack::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  height: 1.25rem;
+  width: 1.25rem;
+  border-radius: 9999px;
+  border: 1px solid #d1d5db;
+  background-color: #fff;
+  transition: all 0.2s ease-in-out;
+}
+
+.switchInput:checked + .switchTrack {
+  background-color: var(--color-primary);
+}
+
+.switchInput:checked + .switchTrack::after {
+  transform: translateX(100%);
+  border-color: #fff;
+}
+
+.switchInput:focus + .switchTrack {
+  outline: none;
+}
+
+.passwordGrid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .passwordGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.passwordActions {
+  margin-top: 1.25rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.updatePasswordButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  background-color: var(--color-primary);
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.updatePasswordButton:hover {
+  background-color: rgba(4, 72, 144, 0.95);
+}
+
+.faqGrid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .faqGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.faqCard {
+  border-radius: 0.75rem;
+  background-color: var(--color-light);
+  padding: 1rem;
+}
+
+.faqQuestion {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.faqAnswer {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1.625;
+  color: #64748b;
+}
+
+.helpBanner {
+  margin-top: 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(4, 72, 144, 0.2);
+  background-color: rgba(4, 72, 144, 0.05);
+  padding: 1rem;
+  font-size: 0.875rem;
+}
+
+.helpBannerTitle {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.helpBannerText {
+  margin-top: 0.25rem;
+  color: #475569;
+}
+
+.helpBannerEmail {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.dangerCard {
+  border-radius: 1rem;
+  border: 1px solid #fecaca;
+  background-color: #fff;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-soft);
+}
+
+@media (min-width: 640px) {
+  .dangerCard {
+    padding: 1.5rem;
+  }
+}
+
+.dangerCardHeader {
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid #fee2e2;
+  padding-bottom: 1rem;
+}
+
+.dangerIcon {
+  border-radius: 0.75rem;
+  background-color: #fee2e2;
+  padding: 0.5rem;
+  color: #ef4444;
+}
+
+.dangerTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.dangerDescription {
+  font-size: 0.875rem;
+  line-height: 1.625;
+  color: #475569;
+}
+
+.requestDeleteButton {
+  margin-top: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid #fca5a5;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #ef4444;
+}
+
+.requestDeleteButton:hover {
+  background-color: #fef2f2;
+}
+
+.primaryDangerButton {
+  border-radius: 0.75rem;
+  background-color: #ef4444;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.primaryDangerButton:hover {
+  background-color: #dc2626;
+}
+
+.primaryDangerButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.secondaryButton {
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.secondaryButton:hover {
+  background-color: var(--color-light);
+}
+
+.dangerStepPanel {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #fecaca;
+  background-color: #fef2f2;
+  padding: 1.25rem;
+}
+
+.dangerStepTitle {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #b91c1c;
+}
+
+.dangerCheckLabel {
+  display: flex;
+  cursor: pointer;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.dangerCheckbox {
+  margin-top: 0.25rem;
+  height: 1rem;
+  width: 1rem;
+  accent-color: #ef4444;
+}
+
+.dangerCheckText {
+  font-size: 0.875rem;
+  color: #334155;
+}
+
+.dangerStepActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .dangerStepActions {
+    flex-direction: row;
+  }
+}
+
+.dangerStepActionsNoTop {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .dangerStepActionsNoTop {
+    flex-direction: row;
+  }
+}
+
+.otpHint {
+  font-size: 0.75rem;
+  color: #475569;
+}
+
+.otpNote {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}

@@ -13,5 +13,12 @@
     "HR Round",
     "Final Round"
   ],
-  "Status": ["Scheduled", "Confirmed", "Completed", "Cancelled"]
+  "Status": ["Scheduled", "Confirmed", "Completed", "Cancelled"],
+  "Mode": ["Online", "In-Person", "Telephonic"],
+  "Online_platform": [
+    { "value": "Google Meet", "needsLink": true, "placeholder": "https://meet.google.com/abc-defg-hjk" },
+    { "value": "Zoom", "needsLink": true, "placeholder": "https://zoom.us/j/1234567890" },
+    { "value": "Microsoft Teams", "needsLink": true, "placeholder": "https://teams.microsoft.com/l/meetup-join/..." },
+    { "value": "WhatsApp Video Call", "needsLink": false, "placeholder": "" }
+  ]
 }

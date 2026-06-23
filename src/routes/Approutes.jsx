@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import styles from "./Approutes.module.css";
 import Login from "../auth/login";
 import Signup from "../auth/signup";
 import PublicJobView from "../pages/PublicJobView";
@@ -45,7 +46,7 @@ function AppRoutes() {
       <Route
         path="/api-specification-and-datamodel"
         element={
-          <Suspense fallback={<div className="p-8 text-slate-500">Loading…</div>}>
+          <Suspense fallback={<div className={styles.loading}>Loading…</div>}>
             <ApiSpecPage />
           </Suspense>
         }
@@ -53,7 +54,7 @@ function AppRoutes() {
       <Route
         path="/api-specification-and-datamodel/swagger"
         element={
-          <Suspense fallback={<div className="p-8 text-slate-500">Loading…</div>}>
+          <Suspense fallback={<div className={styles.loading}>Loading…</div>}>
             <ApiSwaggerPage />
           </Suspense>
         }

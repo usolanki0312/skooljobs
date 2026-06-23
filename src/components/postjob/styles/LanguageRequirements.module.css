@@ -1,0 +1,284 @@
+.pickerWrap {
+  position: relative;
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-primary);
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  background-color: transparent;
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.addButton:hover {
+  background-color: rgba(4, 72, 144, 0.05);
+}
+
+.pickerPanel {
+  position: absolute;
+  right: 0;
+  top: 3rem;
+  z-index: 50;
+  width: min(16rem, calc(100vw - 2rem));
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+  background-color: #ffffff;
+  padding: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pickerLabel {
+  display: block;
+  margin-bottom: 0.375rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+}
+
+.pickerSelect {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+  background-color: #ffffff;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.pickerSelect:focus {
+  border-color: var(--color-primary);
+}
+
+.addToListButton {
+  width: 100%;
+  border-radius: 0.75rem;
+  background-color: var(--color-primary);
+  padding: 0.5rem 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ffffff;
+  border: none;
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.addToListButton:hover {
+  background-color: rgba(4, 72, 144, 0.9);
+}
+
+.addToListButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .contentGrid {
+    grid-template-columns: 1fr 320px;
+  }
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+  background-color: #ffffff;
+}
+
+.table {
+  width: 100%;
+  text-align: left;
+  font-size: 0.875rem;
+  border-collapse: collapse;
+}
+
+.tableHeadRow {
+  border-bottom: 1px solid var(--color-border);
+  background-color: #f8fafc;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+}
+
+.th {
+  padding: 1rem 1.25rem;
+}
+
+.thLanguage {
+  padding: 1rem 1.25rem;
+  width: 33.333333%;
+}
+
+.thAction {
+  padding: 1rem 1.25rem;
+  text-align: center;
+  width: 6rem;
+}
+
+.thInner {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.helpIcon {
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.required {
+  color: #ef4444;
+}
+
+.tableBody > tr + tr {
+  border-top: 1px solid var(--color-border);
+}
+
+.emptyCell {
+  padding: 2rem 1.25rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.row {
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.row:hover {
+  background-color: rgba(248, 250, 252, 0.5);
+}
+
+.tdName {
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.td {
+  padding: 1rem 1.25rem;
+}
+
+.tdCenter {
+  padding: 1rem 1.25rem;
+  text-align: center;
+}
+
+.proficiencySelect {
+  width: 100%;
+  max-width: 20rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+  background-color: #ffffff;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+}
+
+.proficiencySelect:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(4, 72, 144, 0.1);
+}
+
+.removeButton {
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  color: #94a3b8;
+  background-color: transparent;
+  border: none;
+  transition-property: all;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.removeButton:hover {
+  background-color: #fef2f2;
+  color: #ef4444;
+}
+
+.infoBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  border-radius: 0.75rem;
+  border: 1px solid #dbeafe;
+  background-color: rgba(239, 246, 255, 0.5);
+  padding: 1rem;
+  font-size: 0.75rem;
+  line-height: 1.625;
+  color: #1d4ed8;
+}
+
+.infoIcon {
+  margin-top: 0.125rem;
+  flex-shrink: 0;
+  color: #3b82f6;
+}
+
+.guidelinesCard {
+  border-radius: 1rem;
+  border: 1px solid #e0e7ff;
+  background-color: rgba(238, 242, 255, 0.3);
+  padding: 1.25rem;
+  font-size: 0.875rem;
+}
+
+.guidelinesTitle {
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: #312e81;
+}
+
+.guidelinesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  font-size: 0.75rem;
+  color: rgba(49, 46, 129, 0.8);
+}
+
+.guidelinesItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.guidelinesDot {
+  margin-top: 0.375rem;
+  height: 0.375rem;
+  width: 0.375rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background-color: #6366f1;
+}

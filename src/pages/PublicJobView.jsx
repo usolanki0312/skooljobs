@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { Building2 } from "lucide-react";
 import { initialJobs } from "../lib/schooldata";
 import SharedJobDetail from "../components/SharedJobDetail";
+import styles from "./PublicJobView.module.css";
 
 const PublicJobView = () => {
   const { jobId } = useParams();
@@ -56,15 +57,15 @@ const PublicJobView = () => {
 
   if (!job) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 p-4 text-center">
-        <Building2 size={64} className="text-slate-300 mb-4 animate-bounce" />
-        <h2 className="text-2xl font-bold text-slate-800">Job Not Found</h2>
-        <p className="mt-2 text-slate-500 max-w-sm">
+      <div className={styles.notFoundWrap}>
+        <Building2 size={64} className={styles.notFoundIcon} />
+        <h2 className={styles.notFoundTitle}>Job Not Found</h2>
+        <p className={styles.notFoundText}>
           The sharing link might be invalid, or this job post may have been removed by the school administration.
         </p>
         <Link
           to="/"
-          className="mt-6 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-md hover:bg-primary/95 transition"
+          className={styles.notFoundLink}
         >
           Back to SkoolJobs Home
         </Link>
@@ -73,24 +74,24 @@ const PublicJobView = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-body">
+    <div className={styles.page}>
       {/* Navbar branding */}
-      <header className="sticky top-0 z-30 border-b border-borderColor bg-white px-4 py-3 shadow-sm sm:px-6 sm:py-4">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5 sm:gap-3">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary text-white font-extrabold text-lg shadow-md sm:h-10 sm:w-10 sm:text-xl">
+      <header className={styles.header}>
+        <div className={styles.headerInner}>
+          <div className={styles.brandGroup}>
+            <span className={styles.brandLogo}>
               SJ
             </span>
-            <span className="font-heading text-lg font-bold text-primary tracking-wide sm:text-xl">
+            <span className={styles.brandName}>
               SkoolJobs
             </span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+          <div className={styles.navActions}>
             {isLoggedIn ? (
               <Link
                 to={isCandidate ? "/teacher/dashboard" : "/school/dashboard"}
-                className="text-sm font-semibold text-slate-600 hover:text-primary transition"
+                className={styles.navLink}
               >
                 Go to Dashboard
               </Link>
@@ -98,13 +99,13 @@ const PublicJobView = () => {
               <>
                 <Link
                   to="/"
-                  className="text-sm font-semibold text-slate-600 hover:text-primary transition"
+                  className={styles.navLink}
                 >
                   Log In
                 </Link>
                 <Link
                   to="/signup"
-                  className="rounded-xl bg-primary/10 px-3 py-2 text-xs font-bold text-primary hover:bg-primary/15 transition sm:px-4"
+                  className={styles.registerLink}
                 >
                   Register as Teacher
                 </Link>
@@ -115,7 +116,7 @@ const PublicJobView = () => {
       </header>
 
       {/* Main Content wrapper */}
-      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:py-12">
+      <main className={styles.main}>
         <SharedJobDetail
           job={job}
           isApplied={applied}

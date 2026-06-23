@@ -1,0 +1,335 @@
+.chip {
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.chipPrimary {
+  background-color: rgba(4, 72, 144, 0.1);
+  color: var(--color-primary);
+}
+
+.chipGreen {
+  background-color: #f0fdf4;
+  color: #16a34a;
+}
+
+.chipSlate {
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.sectionTitle {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.sectionIcon {
+  color: var(--color-primary);
+}
+
+.tagListWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tagListEmpty {
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 1rem;
+}
+
+.modal {
+  display: flex;
+  max-height: 92vh;
+  width: 100%;
+  max-width: 42rem;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  background-color: #ffffff;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  padding: 1rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .header {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+.headerLeft {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.headerIcon {
+  flex-shrink: 0;
+  color: var(--color-primary);
+}
+
+.headerTitle {
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.headerBadge {
+  border-radius: 9999px;
+  background-color: var(--color-light);
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.closeButton {
+  flex-shrink: 0;
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  color: #94a3b8;
+  background-color: transparent;
+  border: none;
+}
+
+.closeButton:hover {
+  background-color: var(--color-light);
+}
+
+.body {
+  overflow-y: auto;
+}
+
+.hero {
+  background-color: rgba(4, 72, 144, 0.05);
+  padding: 1.5rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .hero {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+.heroTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.heroIconWrap {
+  display: flex;
+  height: 3.5rem;
+  width: 3.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background-color: rgba(4, 72, 144, 0.1);
+  color: var(--color-primary);
+}
+
+.heroBody {
+  min-width: 0;
+  flex: 1 1 0%;
+}
+
+.heroTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  overflow-wrap: break-word;
+}
+
+.heroSubject {
+  margin-top: 0.125rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.heroChips {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.heroMetaRow {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 0.5rem;
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.heroMetaItem {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.heroMetaIcon {
+  color: #94a3b8;
+}
+
+.heroMetaSalary {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .sections {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+.description {
+  white-space: pre-line;
+  font-size: 0.875rem;
+  line-height: 1.625;
+  color: #475569;
+}
+
+.qualWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.qualLabel {
+  font-weight: 600;
+  color: #334155;
+}
+
+.studentLevelsWrap {
+  padding-top: 0.25rem;
+}
+
+.studentLevelsInner {
+  margin-top: 0.25rem;
+}
+
+.skillsWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.skillsLabel {
+  margin-bottom: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.hiringGrid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.75rem;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .hiringGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.hiringCard {
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-light);
+  padding: 0.75rem;
+}
+
+.hiringCardLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  color: #94a3b8;
+}
+
+.hiringCardValue {
+  margin-top: 0.25rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.publishNote {
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid var(--color-border);
+  padding: 1rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .footer {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+.closePreviewButton {
+  border-radius: 0.75rem;
+  background-color: var(--color-primary);
+  padding: 0.625rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #ffffff;
+  border: none;
+}
+
+.closePreviewButton:hover {
+  background-color: rgba(4, 72, 144, 0.9);
+}

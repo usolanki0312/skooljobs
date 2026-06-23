@@ -1,29 +1,26 @@
 import SectionCard from "./SectionCard";
 import postjob from "../../../dropdown/School_module/postjob.json";
 import { PUBLISH_OPTIONS } from "../../lib/postjobOptions";
+import styles from "./styles/HiringPreferences.module.css";
+import { Button, Input } from "@cloudstrytech/ui-components";
 
 const { Gender_preference: GENDER_PREFERENCES, Interview_mode: INTERVIEW_MODES } = postjob;
 
-const inputCls =
-  "w-full rounded-xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10";
+const inputCls = styles.input;
 
 const PillGroup = ({ label, options, value, onSelect }) => (
   <div>
-    <p className="mb-2 text-xs font-bold text-slate-600">{label}</p>
-    <div className="flex flex-wrap gap-2">
+    <p className={styles.pillGroupLabel}>{label}</p>
+    <div className={styles.pillRow}>
       {options.map((opt) => (
-        <button
+        <Button
           key={opt}
-          type="button"
+          variant={value === opt ? "filled" : "outlined"}
           onClick={() => onSelect(opt)}
-          className={`rounded-full border px-4 py-2 text-sm font-bold transition ${
-            value === opt
-              ? "border-primary bg-primary text-white"
-              : "border-borderColor text-slate-600 hover:border-primary hover:text-primary"
-          }`}
+          className={value === opt ? styles.pillActive : styles.pill}
         >
           {opt}
-        </button>
+        </Button>
       ))}
     </div>
   </div>
@@ -31,9 +28,9 @@ const PillGroup = ({ label, options, value, onSelect }) => (
 
 const HiringPreferences = ({ form, setField }) => (
   <SectionCard number={7} title="Hiring Preferences">
-    <div className="space-y-6">
+    <div className={styles.wrapper}>
       {/* Row 1: Gender + Interview Mode (both optional) */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <div className={styles.preferencesRow}>
         <PillGroup
           label="Gender Preference"
           options={GENDER_PREFERENCES}
@@ -49,65 +46,52 @@ const HiringPreferences = ({ form, setField }) => (
       </div>
 
       {/* Publish Settings */}
-      <div className="border-t border-borderColor pt-5">
-        <p className="mb-3 text-xs font-bold text-slate-600">
-          Publish Settings <span className="text-red-500">*</span>
+      <div className={styles.publishBlock}>
+        <p className={styles.publishLabel}>
+          Publish Settings <span className={styles.requiredMark}>*</span>
         </p>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className={styles.publishOptionsGrid}>
           {PUBLISH_OPTIONS.map(({ val, icon: Icon, sub }) => {
             const active = form.publishOption === val;
             return (
-              <button
+              <Button
                 key={val}
-                type="button"
+                variant={active ? "filled" : "outlined"}
                 onClick={() => setField("publishOption", val)}
-                className={`flex items-center gap-3 rounded-xl border p-4 text-left transition ${
-                  active
-                    ? "border-primary bg-primary/5"
-                    : "border-borderColor hover:border-primary/40"
-                }`}
+                className={active ? styles.publishOptionActive : styles.publishOption}
+                startIcon={<Icon size={18} />}
               >
-                <span
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-                    active ? "bg-primary text-white" : "bg-light text-slate-400"
-                  }`}
-                >
-                  <Icon size={18} />
-                </span>
                 <span>
-                  <span className="block text-sm font-bold text-slate-800">
-                    {val}
-                  </span>
-                  <span className="block text-xs text-slate-400">{sub}</span>
+                  <span className={styles.publishOptionTitle}>{val}</span>
+                  <span className={styles.publishOptionSub}>{sub}</span>
                 </span>
-              </button>
-            );
+              </Button>);
           })}
         </div>
 
         {/* Date & time pickers when scheduling */}
         {form.publishOption === "Publish Later" && (
-          <div className="mt-4 grid grid-cols-1 gap-4 rounded-xl border border-primary/20 bg-primary/5 p-4 sm:grid-cols-2">
+          <div className={styles.scheduleGrid}>
             <div>
-              <p className="mb-1.5 text-xs font-bold text-slate-600">
-                Publish Date <span className="text-red-500">*</span>
+              <p className={styles.scheduleLabel}>
+                Publish Date <span className={styles.requiredMark}>*</span>
               </p>
-              <input
+              <Input
                 type="date"
                 value={form.publishDate}
-                onChange={(e) => setField("publishDate", e.target.value)}
-                className={inputCls}
+                fieldClassName="host-tweak"
+                onChange={(value) => setField("publishDate", value)}
               />
             </div>
             <div>
-              <p className="mb-1.5 text-xs font-bold text-slate-600">
-                Publish Time <span className="text-red-500">*</span>
+              <p className={styles.scheduleLabel}>
+                Publish Time <span className={styles.requiredMark}>*</span>
               </p>
-              <input
+              <Input
                 type="time"
+                fieldClassName="host-tweak"
                 value={form.publishTime}
-                onChange={(e) => setField("publishTime", e.target.value)}
-                className={inputCls}
+                onChange={(value) => setField("publishTime", value)}
               />
             </div>
           </div>

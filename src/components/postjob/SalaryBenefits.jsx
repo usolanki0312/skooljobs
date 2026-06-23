@@ -2,6 +2,8 @@ import MinMaxInput from "./MinMaxInput";
 import SectionCard from "./SectionCard";
 import Select from "../ui/Select";
 import postjob from "../../../dropdown/School_module/postjob.json";
+import styles from "./styles/SalaryBenefits.module.css";
+import { Button, Input } from "@cloudstrytech/ui-components";
 
 const {
   Compensation_structure: COMPENSATION_STRUCTURES,
@@ -13,11 +15,10 @@ const {
   Internship_duration: INTERNSHIP_DURATIONS,
 } = postjob;
 
-const selectCls =
-  "w-full rounded-xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10";
+const selectCls = styles.selectFieldWrap;
 
 const SubLabel = ({ children }) => (
-  <p className="mb-3 text-xs font-bold uppercase tracking-wide text-primary">
+  <p className={styles.subLabel}>
     {children}
   </p>
 );
@@ -25,17 +26,16 @@ const SubLabel = ({ children }) => (
 const BenefitCheckboxes = ({ title, list, selected, onToggle }) => (
   <div>
     <SubLabel>{title}</SubLabel>
-    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+    <div className={styles.checkboxGrid}>
       {list.map((b) => (
         <label
           key={b}
-          className="flex cursor-pointer items-center gap-2 text-sm text-slate-700"
+          className={styles.checkboxLabel}
         >
-          <input
+          <Input
             type="checkbox"
             checked={selected.includes(b)}
             onChange={() => onToggle(b)}
-            className="h-4 w-4 accent-primary"
           />
           {b}
         </label>
@@ -60,8 +60,8 @@ const FullTimeSalary = ({
   };
 
   return (
-    <div className="space-y-5">
-      <div className="rounded-xl border border-borderColor bg-light p-4 space-y-4">
+    <div className={styles.panelStack}>
+      <div className={styles.panelBox}>
         <SubLabel>Salary Structure</SubLabel>
 
         <MinMaxInput
@@ -74,22 +74,21 @@ const FullTimeSalary = ({
 
         {/* In-hand take-home percentage of the CTC */}
         <div>
-          <p className="mb-2 text-xs font-bold text-slate-600">
+          <p className={styles.fieldLabel}>
             In-Hand Percentage (% of CTC)
           </p>
-          <div className="flex w-full items-center gap-2 rounded-xl border border-borderColor bg-white px-3 py-2.5 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 sm:w-40">
-            <input
+          <div className={styles.percentField}>
+            <Input
               type="number"
               min="0"
               max="100"
               value={form.inHandPercentage}
-              onChange={(e) => setField("inHandPercentage", e.target.value)}
+              onChange={(value) => setField("inHandPercentage", value)}
               placeholder="75"
-              className="w-full bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400"
             />
-            <span className="text-sm font-bold text-slate-400">%</span>
+            <span className={styles.percentSign}>%</span>
           </div>
-          <p className="mt-1 text-xs text-slate-400">
+          <p className={styles.helperText}>
             Take-home portion of CTC after deductions. Monthly in-hand is
             calculated automatically.
           </p>
@@ -107,8 +106,8 @@ const FullTimeSalary = ({
 };
 
 const PartTimeSalary = ({ form, setField }) => (
-  <div className="space-y-4">
-    <div className="rounded-xl border border-borderColor bg-light p-4 space-y-4">
+  <div className={styles.panelStackTight}>
+    <div className={styles.panelBox}>
       <SubLabel>Hourly Compensation</SubLabel>
       <MinMaxInput
         label="Hourly Rate (₹)"
@@ -119,7 +118,7 @@ const PartTimeSalary = ({ form, setField }) => (
         suffix="per hour"
       />
       <div>
-        <p className="mb-2 text-xs font-bold text-slate-600">
+        <p className={styles.fieldLabel}>
           Expected Hours Per Week
         </p>
         <Select value={form.hoursPerWeek} onChange={(v) => setField("hoursPerWeek", v)} placeholder="Select" options={HOURS_PER_WEEK} />
@@ -129,38 +128,37 @@ const PartTimeSalary = ({ form, setField }) => (
 );
 
 const ContractSalary = ({ form, setField }) => (
-  <div className="space-y-4">
-    <div className="rounded-xl border border-borderColor bg-light p-4 space-y-4">
+  <div className={styles.panelStackTight}>
+    <div className={styles.panelBox}>
       <SubLabel>Contract Details</SubLabel>
       <div>
-        <p className="mb-2 text-xs font-bold text-slate-600">
+        <p className={styles.fieldLabel}>
           Contract Duration
         </p>
         <Select value={form.contractDuration} onChange={(v) => setField("contractDuration", v)} placeholder="Select Duration" options={CONTRACT_DURATIONS} />
       </div>
       <div>
-        <p className="mb-2 text-xs font-bold text-slate-600">Payment Type</p>
-        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+        <p className={styles.fieldLabel}>Payment Type</p>
+        <div className={styles.radioRow}>
           {["Monthly Payment (₹)", "Total Contract Value (₹)"].map((type) => (
             <label
               key={type}
-              className="flex cursor-pointer items-center gap-2 text-sm text-slate-700"
+              className={styles.radioLabel}
             >
-              <input
+              <Input
                 type="radio"
                 name="contractPaymentType"
                 value={type}
                 checked={form.contractPaymentType === type}
                 onChange={() => setField("contractPaymentType", type)}
-                className="accent-primary"
               />
               {type}
             </label>
           ))}
         </div>
       </div>
-      <div className="flex items-center gap-2 rounded-xl border border-borderColor bg-white px-3 py-2.5 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
-        <span className="text-sm font-bold text-slate-400">₹</span>
+      <div className={styles.amountField}>
+        <span className={styles.amountPrefix}>₹</span>
         <input
           type="number"
           value={
@@ -178,7 +176,7 @@ const ContractSalary = ({ form, setField }) => (
               ? "e.g. 30,000"
               : "e.g. 1,80,000"
           }
-          className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
+          className={styles.amountInput}
         />
       </div>
     </div>
@@ -186,8 +184,8 @@ const ContractSalary = ({ form, setField }) => (
 );
 
 const HybridSalary = ({ form, setField }) => (
-  <div className="space-y-4">
-    <div className="rounded-xl border border-borderColor bg-light p-4 space-y-4">
+  <div className={styles.panelStackTight}>
+    <div className={styles.panelBox}>
       <SubLabel>Salary Range</SubLabel>
       <MinMaxInput
         label="Monthly Salary (₹)"
@@ -197,17 +195,17 @@ const HybridSalary = ({ form, setField }) => (
         onMaxChange={(v) => setField("maxMonthlySalary", v)}
       />
     </div>
-    <div className="rounded-xl border border-borderColor bg-light p-4">
+    <div className={styles.panelBox}>
       <SubLabel>Work Arrangement</SubLabel>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className={styles.twoColGrid}>
         <div>
-          <p className="mb-2 text-xs font-bold text-slate-600">
+          <p className={styles.fieldLabel}>
             Work From Home Days
           </p>
           <Select value={form.wfhDays} onChange={(v) => setField("wfhDays", v)} placeholder="Select" options={WFH_DAYS} />
         </div>
         <div>
-          <p className="mb-2 text-xs font-bold text-slate-600">Office Days</p>
+          <p className={styles.fieldLabel}>Office Days</p>
           <Select value={form.officeDays} onChange={(v) => setField("officeDays", v)} placeholder="Select" options={OFFICE_DAYS} />
         </div>
       </div>
@@ -216,8 +214,8 @@ const HybridSalary = ({ form, setField }) => (
 );
 
 const RemoteSalary = ({ form, setField }) => (
-  <div className="space-y-4">
-    <div className="rounded-xl border border-borderColor bg-light p-4 space-y-4">
+  <div className={styles.panelStackTight}>
+    <div className={styles.panelBox}>
       <SubLabel>Salary Range</SubLabel>
       <MinMaxInput
         label="Monthly Salary (₹)"
@@ -227,20 +225,32 @@ const RemoteSalary = ({ form, setField }) => (
         onMaxChange={(v) => setField("maxMonthlySalary", v)}
       />
     </div>
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div className={styles.twoColGrid}>
       <div>
-        <p className="mb-2 text-xs font-bold text-slate-600">Work Timezone</p>
+        <p className={styles.fieldLabel}>Work Timezone</p>
         <Select value={form.workTimezone} onChange={(v) => setField("workTimezone", v)} placeholder="Select Timezone" options={TIMEZONES} />
       </div>
       <div>
-        <p className="mb-2 text-xs font-bold text-slate-600">
+        <p className={styles.fieldLabel}>
           Location Preference
         </p>
-        <input
-          value={form.remoteLocation}
-          onChange={(e) => setField("remoteLocation", e.target.value)}
-          placeholder="Any Location"
-          className={selectCls}
+        <Input
+          type="number"
+          value={
+            form.contractPaymentType === "Monthly Payment (₹)"
+              ? form.contractMonthlyPayment
+              : form.contractTotalValue
+          }
+          onChange={(value) =>
+            form.contractPaymentType === "Monthly Payment (₹)"
+              ? setField("contractMonthlyPayment", value)
+              : setField("contractTotalValue", value)
+          }
+          placeholder={
+            form.contractPaymentType === "Monthly Payment (₹)"
+              ? "e.g. 30,000"
+              : "e.g. 1,80,000"
+          }
         />
       </div>
     </div>
@@ -248,11 +258,11 @@ const RemoteSalary = ({ form, setField }) => (
 );
 
 const InternshipSalary = ({ form, setField }) => (
-  <div className="space-y-4">
-    <div className="rounded-xl border border-borderColor bg-light p-4 space-y-4">
+  <div className={styles.panelStackTight}>
+    <div className={styles.panelBox}>
       <SubLabel>Stipend Structure</SubLabel>
       <div>
-        <p className="mb-2 text-xs font-bold text-slate-600">
+        <p className={styles.fieldLabel}>
           Internship Duration
         </p>
         <Select value={form.internshipDuration} onChange={(v) => setField("internshipDuration", v)} placeholder="Select Duration" options={INTERNSHIP_DURATIONS} />
@@ -293,21 +303,18 @@ const SalaryBenefits = ({ form, setField }) => {
   return (
     <SectionCard number={6} title="Salary & Benefits">
       {/* Compensation structure */}
-      <div className="mb-5">
-        <p className="mb-2 text-xs font-bold text-slate-600">
+      <div className={styles.compWrap}>
+        <p className={styles.fieldLabel}>
           Compensation Structure
         </p>
-        <div className="flex flex-wrap gap-2">
+        <div className={styles.compButtonRow}>
           {COMPENSATION_STRUCTURES.map((s) => (
             <button
               key={s}
               type="button"
               onClick={() => setField("compensationStructure", s)}
-              className={`rounded-full border px-4 py-1.5 text-sm font-bold transition ${
-                form.compensationStructure === s
-                  ? "border-primary bg-primary text-white"
-                  : "border-borderColor text-slate-600 hover:border-primary hover:text-primary"
-              }`}
+              className={`${styles.compButton} ${form.compensationStructure === s ? styles.compButtonActive : ""
+                }`}
             >
               {s}
             </button>
@@ -316,20 +323,20 @@ const SalaryBenefits = ({ form, setField }) => {
       </div>
 
       {!type ? (
-        <p className="rounded-xl bg-light px-4 py-5 text-center text-sm text-slate-400">
+        <p className={styles.emptyState}>
           Select an Employment Type in Section 1 to configure salary details.
         </p>
       ) : (
-        <div className="rounded-xl border border-borderColor p-4 sm:p-5">
-          <div className="mb-5 flex flex-wrap items-center gap-3 border-b border-borderColor pb-4">
-            <span className="text-2xl">{meta.icon}</span>
-            <div className="min-w-0">
-              <p className="font-bold text-slate-800">{meta.subtitle}</p>
-              <p className="text-xs text-slate-400">
+        <div className={styles.panelOuter}>
+          <div className={styles.panelHeader}>
+            <span className={styles.panelIcon}>{meta.icon}</span>
+            <div className={styles.panelHeaderText}>
+              <p className={styles.panelTitle}>{meta.subtitle}</p>
+              <p className={styles.panelSubtitle}>
                 Fields change based on Employment Type
               </p>
             </div>
-            <span className="ml-auto rounded-full border border-borderColor px-3 py-1 text-xs font-bold text-slate-500">
+            <span className={styles.panelTypeBadge}>
               {type}
             </span>
           </div>

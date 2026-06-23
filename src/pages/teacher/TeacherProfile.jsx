@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "@cloudstrytech/ui-components/styles.css";
-import { Button, Input } from "@cloudstrytech/ui-components";
+import { Button, Input, Select } from "@cloudstrytech/ui-components";
 import {
   Award,
   BookOpen,
@@ -24,12 +24,13 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import BackButton from "../../components/backbutton";
-import Select from "../../components/ui/Select";
 import { pinStateMap } from "../../lib/teacherdata";
 import qualificationOptions from "../../../dropdown/Teacher_module/qualifications.json";
 import experienceOptions from "../../../dropdown/Teacher_module/experience.json";
 import common from "../../../dropdown/common/common.json";
 import myprofile from "../../../dropdown/Teacher_module/myprofile.json";
+import styles from "./styles/TeacherProfile.module.css";
+
 
 const { Language: languageOptions, Nationality: nationalities } = common;
 const {
@@ -54,20 +55,17 @@ const navItems = [
   { id: "resume", label: "Resume", icon: FileText },
 ];
 
-const inputClass =
-  "w-full rounded-xl border border-borderColor bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10 disabled:bg-slate-100 disabled:text-slate-500";
+const inputClass = styles.input;
 
-const compactInputClass =
-  "w-full rounded-xl border border-borderColor bg-white px-3 py-3 text-sm text-slate-800 outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10 disabled:bg-slate-100 disabled:text-slate-500";
+const compactInputClass = styles.compactInput;
 
-const labelClass =
-  "mb-2 block text-xs font-bold uppercase tracking-wide text-primary";
+const labelClass = styles.fieldLabel;
 
 const SectionHeader = ({ title, description }) => (
-  <div className="mb-7">
-    <h2 className="text-2xl font-bold text-primary sm:text-3xl">{title}</h2>
+  <div className={styles.sectionHeaderWrap}>
+    <h2 className={styles.sectionHeaderTitle}>{title}</h2>
     {description && (
-      <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+      <p className={styles.sectionHeaderDescription}>
         {description}
       </p>
     )}
@@ -1007,13 +1005,12 @@ const TeacherProfile = () => {
         title="My Profile"
         description="Keep your identity, teaching preferences, and profile details accurate for schools."
       />
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[120px_1fr_1fr_1fr]">
+      <div className={styles.basicInfoNameGrid}>
         <Field label="Title">
           <Select
             value={teacherData.title}
             onChange={(v) => setField("title", v)}
             options={TITLES}
-            className={compactInputClass}
           />
         </Field>
         <Field label="First Name">
@@ -1052,10 +1049,10 @@ const TeacherProfile = () => {
         </Field>
       </div>
 
-      <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-3">
-        <div className="flex flex-col justify-start">
+      <div className={styles.basicInfoDobGrid}>
+        <div className={styles.flexColStart}>
           <label className={labelClass}>DOB</label>
-          <div className="grid grid-cols-[72px_72px_1fr] gap-2">
+          <div className={styles.dobInputGrid}>
             <Input
               value={teacherData.dobDay}
               placeholder="DD"
@@ -1089,7 +1086,7 @@ const TeacherProfile = () => {
             />
           </div>
         </div>
-        <div className="flex flex-col justify-start">
+        <div className={styles.flexColStart}>
           <label className={labelClass}>Age (Years Only)</label>
           <Input
             value={teacherData.age}
@@ -1101,11 +1098,11 @@ const TeacherProfile = () => {
               }))
             }
           />
-          <p className="mt-2 text-xs text-slate-500">
+          <p className={styles.helperText}>
             If DOB not entered, user can enter age.
           </p>
         </div>
-        <div className="flex flex-col justify-start">
+        <div className={styles.flexColStart}>
           <label className={labelClass}>Nationality</label>
           <Select
             value={teacherData.nationality}
@@ -1116,7 +1113,7 @@ const TeacherProfile = () => {
         </div>
       </div>
 
-      <div className="mt-5 grid grid-cols-1 items-start gap-5 lg:grid-cols-3">
+      <div className={styles.basicInfoLowerGrid}>
         <Field label="Current Job Title">
           <Select
             value={teacherData.currentJob}
@@ -1132,19 +1129,19 @@ const TeacherProfile = () => {
             placeholder="Select Subject"
             options={MAIN_SUBJECTS}
           />
-          <p className="mt-2 text-xs text-slate-500">
+          <p className={styles.helperTextTight}>
             Only one can be selected.
           </p>
         </Field>
-        <div className="lg:col-span-2">
+        <div className={styles.lgColSpan2}>
           <label className={labelClass}>Additional Subject(s)</label>
           {/* Selected subjects as removable tags */}
           {selectedAdditionalSubjects.length > 0 && (
-            <div className="mb-3 flex flex-wrap gap-2">
+            <div className={styles.subjectTagsRow}>
               {selectedAdditionalSubjects.map((subject) => (
                 <span
                   key={subject}
-                  className="flex items-center gap-1.5 rounded-xl bg-primary/10 px-3 py-1.5 text-sm font-bold text-primary"
+                  className={styles.subjectTag}
                 >
                   {subject}
                   <button
@@ -1154,7 +1151,7 @@ const TeacherProfile = () => {
                         prev.filter((s) => s !== subject),
                       )
                     }
-                    className="ml-0.5 rounded-full text-primary/60 hover:text-primary"
+                    className={styles.subjectTagRemoveBtn}
                   >
                     <X size={13} />
                   </button>
@@ -1163,7 +1160,7 @@ const TeacherProfile = () => {
             </div>
           )}
           {/* Dropdown + manual input row */}
-          <div className="flex flex-col gap-2 sm:flex-row">
+          <div className={styles.subjectPickerRow}>
             <select
               value=""
               onChange={(e) => {
@@ -1172,7 +1169,7 @@ const TeacherProfile = () => {
                   setSelectedAdditionalSubjects((prev) => [...prev, val]);
                 }
               }}
-              className={`${inputClass} sm:flex-1`}
+              className={`${inputClass} ${styles.subjectSelectFlex}`}
             >
               <option value="">Select additional subject...</option>
               {ALL_ADDITIONAL_SUBJECTS.filter(
@@ -1184,7 +1181,7 @@ const TeacherProfile = () => {
             <input
               type="text"
               placeholder="Or type custom subject"
-              className={`${inputClass} sm:flex-1`}
+              className={`${inputClass} ${styles.subjectSelectFlex}`}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
@@ -1207,20 +1204,20 @@ const TeacherProfile = () => {
                   input.value = "";
                 }
               }}
-              className="flex items-center justify-center gap-1 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary/90"
+              className={styles.addSubjectBtn}
             >
               <Plus size={15} /> Add
             </button>
           </div>
-          <p className="mt-2 text-xs text-slate-500">
+          <p className={styles.helperTextTight}>
             Select from dropdown or type a custom subject and press Enter / Add.
           </p>
         </div>
-        <div className="lg:col-span-3">
+        <div className={styles.lgColSpan3}>
           <label className={labelClass}>Classes Taught</label>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <span className="text-sm font-bold text-slate-500">(1)</span>
-            <div className="sm:max-w-44 sm:flex-1">
+          <div className={styles.classesTaughtRow}>
+            <span className={styles.classIndexLabel}>(1)</span>
+            <div className={styles.classSelectWrap}>
               <Select
                 value={teacherData.classTaughtOne}
                 onChange={(v) => setField("classTaughtOne", v)}
@@ -1228,8 +1225,8 @@ const TeacherProfile = () => {
                 options={CLASSES_TAUGHT}
               />
             </div>
-            <span className="text-sm font-bold text-slate-500">(2)</span>
-            <div className="sm:max-w-44 sm:flex-1">
+            <span className={styles.classIndexLabel}>(2)</span>
+            <div className={styles.classSelectWrap}>
               <Select
                 value={teacherData.classTaughtTwo}
                 onChange={(v) => setField("classTaughtTwo", v)}
@@ -1239,28 +1236,13 @@ const TeacherProfile = () => {
             </div>
           </div>
         </div>
-        <div className="lg:col-span-3">
-          <div className="mb-3 flex items-center justify-between">
-            <label className={labelClass}>Language</label>
-            <Button
-              type="button"
-              variant="filled"
-              startIcon="plusIcon"
-              onClick={() =>
-                setDynamicLanguages((prev) => [
-                  ...prev,
-                  { language: "", status: "" },
-                ])
-              }
-            >
-              Add Language
-            </Button>
-          </div>
-          <div className="space-y-3">
+        <div className={styles.lgColSpan3}>
+          <Button startIcon="plusIcon" endIcon="shareIcon" size="sm">Add Language</Button>
+          <div className={styles.languageRowsStack}>
             {dynamicLanguages.map((lang, idx) => (
               <div
                 key={idx}
-                className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_1fr_40px] lg:items-center"
+                className={styles.languageRow}
               >
                 <Select
                   value={lang.language}
@@ -1292,7 +1274,7 @@ const TeacherProfile = () => {
                         prev.filter((_, i) => i !== idx),
                       )
                     }
-                    className="flex h-10 w-10 items-center justify-center rounded-xl border border-red-100 text-red-400 hover:bg-red-50"
+                    className={styles.languageRemoveBtn}
                   >
                     <X size={16} />
                   </button>
@@ -1301,9 +1283,9 @@ const TeacherProfile = () => {
             ))}
           </div>
         </div>
-        <div className="lg:col-span-3">
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-[260px_1fr] lg:items-center">
-            <span className="text-sm font-bold text-slate-500">
+        <div className={styles.lgColSpan3}>
+          <div className={styles.qualificationGrid}>
+            <span className={styles.qualificationLabel}>
               Highest Qualification 1
             </span>
             <Select
@@ -1312,7 +1294,7 @@ const TeacherProfile = () => {
               placeholder="Select..."
               options={qualificationOptions.degrees}
             />
-            <span className="text-sm font-bold text-slate-500">
+            <span className={styles.qualificationLabel}>
               Highest Qualification 2
             </span>
             <Select
@@ -1323,7 +1305,7 @@ const TeacherProfile = () => {
             />
           </div>
         </div>
-        <div className="lg:col-span-3">
+        <div className={styles.lgColSpan3}>
           <Field label="Brief Professional Write-up (50–100 words)">
             <textarea
               name="briefWriteUp"
@@ -1331,10 +1313,10 @@ const TeacherProfile = () => {
               onChange={handleChange}
               maxLength={600}
               rows={4}
-              className={`${inputClass} resize-none`}
+              className={`${inputClass} ${styles.inputTextarea}`}
               placeholder="Write a short professional summary about yourself — your teaching philosophy, key strengths, and what makes you stand out as an educator..."
             />
-            <p className="mt-1 text-xs text-slate-400">
+            <p className={styles.wordCountText}>
               {teacherData.briefWriteUp.split(/\s+/).filter(Boolean).length} /
               100 words
             </p>
@@ -1350,15 +1332,15 @@ const TeacherProfile = () => {
         title="Contact Details"
         description="Update your primary communication methods and postal address."
       />
-      <div className="space-y-8">
+      <div className={styles.contactSectionStack}>
         <div>
-          <div className="mb-5 flex items-center gap-3">
-            <span className="rounded-xl bg-primary/10 p-2 text-primary">
+          <div className={styles.contactSubHeaderRow}>
+            <span className={styles.contactSubHeaderIcon}>
               <Phone size={19} />
             </span>
-            <h3 className="text-lg font-bold text-slate-800">Phone & Email</h3>
+            <h3 className={styles.contactSubHeaderTitle}>Phone & Email</h3>
           </div>
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+          <div className={styles.contactFieldsGrid}>
             <Field label="Mobile Number *">
               <Input
                 value={teacherData.mobile}
@@ -1384,13 +1366,13 @@ const TeacherProfile = () => {
                   }
                 />
               </Field>
-              <label className="mt-3 flex items-center gap-2 text-xs font-semibold text-slate-500">
+              <label className={styles.sameAsMobileLabel}>
                 <input
                   type="checkbox"
                   name="sameAsMobile"
                   checked={teacherData.sameAsMobile}
                   onChange={handleChange}
-                  className="h-4 w-4 accent-primary"
+                  className={styles.sameAsMobileCheckbox}
                 />
                 Same as Mobile Number
               </label>
@@ -1423,24 +1405,24 @@ const TeacherProfile = () => {
           </div>
         </div>
         <div>
-          <div className="mb-5 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="rounded-xl bg-primary/10 p-2 text-primary">
+          <div className={styles.addressSubHeaderRow}>
+            <div className={styles.addressSubHeaderLeft}>
+              <span className={styles.contactSubHeaderIcon}>
                 <MapPin size={19} />
               </span>
-              <h3 className="text-lg font-bold text-slate-800">
+              <h3 className={styles.contactSubHeaderTitle}>
                 Postal Address
               </h3>
             </div>
-            <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+            <span className={styles.smartEntryBadge}>
               <Sparkles size={14} /> Smart Entry
             </span>
           </div>
 
           {/* Locality search — type an area name, pick from results, everything fills */}
-          <div className="mb-5 rounded-2xl border border-primary/20 bg-primary/5 p-4">
+          <div className={styles.localitySearchCard}>
             <Field label="Search Area / Locality">
-              <div className="relative">
+              <div className={styles.relativeWrap}>
                 <Input
                   value={areaQuery}
                   placeholder="Type an area name, e.g. Rajendra Nagar (min 3 letters)"
@@ -1454,29 +1436,29 @@ const TeacherProfile = () => {
                   }
                 />
                 {areaLoading && (
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-primary animate-pulse">
+                  <span className={styles.searchingBadge}>
                     Searching…
                   </span>
                 )}
 
                 {showAreaDropdown && areaResults.length > 0 && (
-                  <div className="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto rounded-xl border border-borderColor bg-white shadow-lg">
+                  <div className={styles.localityDropdown}>
                     {areaResults.map((po, i) => (
                       <button
                         key={`${po.Name}-${po.Pincode}-${i}`}
                         type="button"
                         onClick={() => handleSelectLocality(po)}
-                        className="flex w-full items-start justify-between gap-3 border-b border-borderColor/60 px-4 py-2.5 text-left last:border-0 hover:bg-light"
+                        className={styles.localityOptionBtn}
                       >
                         <span>
-                          <span className="block text-sm font-semibold text-slate-800">
+                          <span className={styles.localityOptionName}>
                             {po.Name}
                           </span>
-                          <span className="block text-xs text-slate-500">
+                          <span className={styles.localityOptionMeta}>
                             {po.District}, {po.State}
                           </span>
                         </span>
-                        <span className="shrink-0 rounded-md bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary">
+                        <span className={styles.localityOptionPincode}>
                           {po.Pincode}
                         </span>
                       </button>
@@ -1485,9 +1467,9 @@ const TeacherProfile = () => {
                 )}
               </div>
               {areaError ? (
-                <p className="mt-1 text-xs text-red-500">{areaError}</p>
+                <p className={styles.errorTextSm}>{areaError}</p>
               ) : (
-                <p className="mt-1 text-xs text-slate-500">
+                <p className={styles.helperTextSm}>
                   Select a locality and the City, State &amp; PIN code fill in
                   automatically.
                 </p>
@@ -1495,64 +1477,79 @@ const TeacherProfile = () => {
             </Field>
           </div>
 
-          <div className="rounded-2xl bg-light p-5">
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+          <div className={styles.addressLightCard}>
+            <div className={styles.addressFieldsGrid}>
               <Field label="PIN Code *">
-                <div className="relative">
-                  <input
+                <div className={styles.relativeWrap}>
+                  <Input
                     name="pinCode"
                     value={teacherData.pinCode}
-                    onChange={(e) => {
+                    onChange={(value) => {
                       setPincodeError("");
-                      handleChange(e);
+                      handleChange({
+                        target: {
+                          name: "pinCode",
+                          value,
+                        },
+                      });
                     }}
-                    className={inputClass}
                     placeholder="Enter PIN"
-                    maxLength={6}
                   />
                   {pincodeLoading && (
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-primary animate-pulse">
+                    <span className={styles.fetchingBadge}>
                       Fetching…
                     </span>
                   )}
                 </div>
                 {pincodeError ? (
-                  <p className="mt-1 text-xs text-red-500">{pincodeError}</p>
+                  <p className={styles.errorTextSm}>{pincodeError}</p>
                 ) : (
-                  <p className="mt-1 text-xs text-slate-400">
+                  <p className={styles.helperTextXs}>
                     Auto-filled from locality search, or type a 6-digit PIN to
                     fill the rest.
                   </p>
                 )}
               </Field>
               <Field label="City *">
-                <input
+                <Input
                   name="city"
                   value={teacherData.city}
-                  onChange={handleChange}
-                  className={inputClass}
+                  onChange={(value) =>
+                    handleChange({
+                      target: {
+                        name: "city",
+                        value,
+                      },
+                    })
+                  }
                   placeholder="Type city"
                 />
               </Field>
               <Field label="State *">
-                <input
+                <Input
                   name="state"
                   value={teacherData.state}
-                  onChange={handleChange}
-                  className={inputClass}
+                  onChange={(value) =>
+                    handleChange({
+                      target: {
+                        name: "state",
+                        value,
+                      },
+                    })
+                  }
                   placeholder="Auto-filled"
                 />
               </Field>
             </div>
           </div>
 
-          <div className="mt-5">
+          <div className={styles.fullAddressWrap}>
             <Field label="Full Address for Correspondence">
               <textarea
                 name="address"
                 value={teacherData.address}
                 onChange={handleChange}
-                className={`${inputClass} min-h-28 resize-none`}
+                className={`${inputClass} ${styles.inputTextareaMinH28}`}
                 placeholder="Flat No., Building Name, Street Name, Landmark..."
               />
             </Field>
@@ -1565,7 +1562,7 @@ const TeacherProfile = () => {
   const renderQualification = () => (
     <>
       <SectionHeader title="Academic Qualifications" />
-      <div className="space-y-7">
+      <div className={styles.sectionStack7}>
         {!showQualificationForm && (
           <Button
             type="button"
@@ -1580,9 +1577,9 @@ const TeacherProfile = () => {
         {showQualificationForm && (
           <div
             ref={qualificationFormRef}
-            className="rounded-xl border border-borderColor bg-white p-5 shadow-sm"
+            className={styles.formCard}
           >
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+            <div className={styles.formGrid3}>
               <Field label="Class">
                 <Select
                   value={qualificationDraft.classLevel}
@@ -1614,7 +1611,7 @@ const TeacherProfile = () => {
                 </Field>
               )}
               {qualificationDraft.classLevel && (
-                <Field label="Percentage %">
+                <Field label=" %">
                   <Input
                     value={qualificationDraft.percentage}
                     placeholder="e.g. 76.2"
@@ -1671,8 +1668,7 @@ const TeacherProfile = () => {
               {!qualificationDraft.classLevel && (
                 <Field label="Percentage %">
                   <Input
-                    label="Percentage %"
-                    fieldClassName={inputClass}
+                    label=" "
                     value={qualificationDraft.percentage}
                     onChange={(value) =>
                       updateQualification("percentage", value)
@@ -1689,7 +1685,7 @@ const TeacherProfile = () => {
                   options={qualificationOptions.universities}
                 />
               </Field>
-              <div className="lg:col-span-2">
+              <div className={styles.lgColSpan2}>
                 <Field label="College Name">
                   <Select
                     value={qualificationDraft.college}
@@ -1700,7 +1696,7 @@ const TeacherProfile = () => {
                 </Field>
               </div>
             </div>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-end">
+            <div className={styles.formActionsRow}>
               <Button
                 variant="filled"
                 startIcon="saveIcon"
@@ -1719,18 +1715,18 @@ const TeacherProfile = () => {
           </div>
         )}
 
-        <div className="rounded-xl bg-light p-5">
-          <h3 className="mb-4 text-lg font-bold text-primary">
+        <div className={styles.savedListCard}>
+          <h3 className={styles.savedListTitle}>
             Saved Qualifications
           </h3>
           {savedQualifications.length === 0 ? (
-            <p className="text-sm text-slate-500">
+            <p className={styles.emptyListText}>
               Saved qualification entries will appear here.
             </p>
           ) : (
-            <div className="overflow-x-auto rounded-xl border border-borderColor bg-white">
-              <table className="min-w-[980px] w-full text-left text-sm">
-                <thead className="bg-primary/5 text-xs uppercase tracking-wide text-primary">
+            <div className={styles.tableScrollWrap}>
+              <table className={styles.tableMinWide}>
+                <thead className={styles.tableHead}>
                   <tr>
                     {[
                       "Class",
@@ -1745,43 +1741,43 @@ const TeacherProfile = () => {
                       "College",
                       "Action",
                     ].map((heading) => (
-                      <th key={heading} className="px-4 py-3 font-bold">
+                      <th key={heading} className={styles.tableHeadCell}>
                         {heading}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-borderColor text-slate-600">
+                <tbody className={styles.tableBody}>
                   {savedQualifications.map((item, index) => (
-                    <tr key={`${item.degree}-${index}`} className="align-top">
-                      <td className="px-4 py-3 font-bold text-slate-800">
+                    <tr key={`${item.degree}-${index}`} className={styles.tableRowTop}>
+                      <td className={styles.tableCellBold}>
                         {item.classLevel || "Not added"}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className={styles.tableCell}>
                         {item.school || "Not added"}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className={styles.tableCell}>
                         {item.percentage || "Not added"}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className={styles.tableCell}>
                         {item.degree || "Not added"}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className={styles.tableCell}>
                         {item.course || "Not added"}
                       </td>
-                      <td className="px-4 py-3">{item.year || "Not added"}</td>
-                      <td className="px-4 py-3">
+                      <td className={styles.tableCell}>{item.year || "Not added"}</td>
+                      <td className={styles.tableCell}>
                         {item.medium || "Not added"}
                       </td>
-                      <td className="px-4 py-3">{item.mode || "Not added"}</td>
-                      <td className="px-4 py-3">
+                      <td className={styles.tableCell}>{item.mode || "Not added"}</td>
+                      <td className={styles.tableCell}>
                         {item.university || "Not added"}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className={styles.tableCell}>
                         {item.college || "Not added"}
                       </td>
-                      <td className="px-4 py-3">
-                        <div className="flex gap-2">
+                      <td className={styles.tableCell}>
+                        <div className={styles.tableActionsRow}>
                           <Button
                             variant="outlined"
                             onClick={() => editQualification(index)}
@@ -1813,7 +1809,7 @@ const TeacherProfile = () => {
   const renderExperience = () => (
     <>
       <SectionHeader title="Teaching Experience" />
-      <div className="space-y-7">
+      <div className={styles.sectionStack7}>
         {!showExperienceForm && (
           <Button
             variant="primary"
@@ -1827,10 +1823,10 @@ const TeacherProfile = () => {
         {showExperienceForm && (
           <div
             ref={experienceFormRef}
-            className="rounded-xl border border-borderColor bg-white p-5 shadow-sm"
+            className={styles.formCard}
           >
-            <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-              <div className="lg:col-span-2">
+            <div className={styles.formGrid3}>
+              <div className={styles.lgColSpan2}>
                 <Field label="Name of the School">
                   <Input
                     label="School"
@@ -1842,14 +1838,14 @@ const TeacherProfile = () => {
                   />
                 </Field>
               </div>
-              <label className="mt-8 flex items-center gap-2 text-sm font-bold text-slate-600">
+              <label className={styles.checkboxLabelLg}>
                 <input
                   type="checkbox"
                   checked={experienceDraft.currentEmployer}
                   onChange={(e) =>
                     updateExperience("currentEmployer", e.target.checked)
                   }
-                  className="h-4 w-4 accent-primary"
+                  className={styles.sameAsMobileCheckbox}
                 />
                 Current Employer
               </label>
@@ -1936,20 +1932,20 @@ const TeacherProfile = () => {
                   options={experienceOptions.reasons}
                 />
               </Field>
-              <div className="lg:col-span-3">
+              <div className={styles.lgColSpan3}>
                 <Field label="Any other details to be mentioned">
                   <textarea
                     value={experienceDraft.details}
                     onChange={(e) =>
                       updateExperience("details", e.target.value)
                     }
-                    className={`${inputClass} min-h-28 resize-none`}
+                    className={`${inputClass} ${styles.inputTextareaMinH28}`}
                     placeholder="Describe key achievements, responsibilities, or specific methodologies used."
                   />
                 </Field>
               </div>
             </div>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-end">
+            <div className={styles.formActionsRow}>
               <Button
                 variant="primary"
                 onClick={saveExperienceDraft}
@@ -1969,18 +1965,18 @@ const TeacherProfile = () => {
           </div>
         )}
 
-        <div className="rounded-xl bg-light p-5">
-          <h3 className="mb-4 text-lg font-bold text-primary">
+        <div className={styles.savedListCard}>
+          <h3 className={styles.savedListTitle}>
             Saved Experience
           </h3>
           {savedExperiences.length === 0 ? (
-            <p className="text-sm text-slate-500">
+            <p className={styles.emptyListText}>
               Saved experience entries will appear here.
             </p>
           ) : (
-            <div className="overflow-x-auto rounded-xl border border-borderColor bg-white">
-              <table className="min-w-[1100px] w-full text-left text-sm">
-                <thead className="bg-primary/5 text-xs uppercase tracking-wide text-primary">
+            <div className={styles.tableScrollWrap}>
+              <table className={styles.tableMinWideLg}>
+                <thead className={styles.tableHead}>
                   <tr>
                     {[
                       "School",
@@ -1996,48 +1992,48 @@ const TeacherProfile = () => {
                       "Reason",
                       "Action",
                     ].map((heading) => (
-                      <th key={heading} className="px-4 py-3 font-bold">
+                      <th key={heading} className={styles.tableHeadCell}>
                         {heading}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-borderColor text-slate-600">
+                <tbody className={styles.tableBody}>
                   {savedExperiences.map((item, index) => (
-                    <tr key={`${item.school}-${index}`} className="align-top">
-                      <td className="px-4 py-3 font-bold text-slate-800">
+                    <tr key={`${item.school}-${index}`} className={styles.tableRowTop}>
+                      <td className={styles.tableCellBold}>
                         {item.school || "Not added"}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className={styles.tableCell}>
                         {item.currentEmployer ? "Yes" : "No"}
                       </td>
-                      <td className="px-4 py-3">{item.board || "Not added"}</td>
-                      <td className="px-4 py-3">
+                      <td className={styles.tableCell}>{item.board || "Not added"}</td>
+                      <td className={styles.tableCell}>
                         {item.startDate || "Not added"}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className={styles.tableCell}>
                         {item.currentEmployer
                           ? "Present"
                           : item.endDate || "Not added"}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className={styles.tableCell}>
                         {item.mainSubject || "Not added"}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className={styles.tableCell}>
                         {item.otherSubjects || "Not added"}
                       </td>
-                      <td className="px-4 py-3">{item.post || "Not added"}</td>
-                      <td className="px-4 py-3">
+                      <td className={styles.tableCell}>{item.post || "Not added"}</td>
+                      <td className={styles.tableCell}>
                         {item.salary || "Not added"}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className={styles.tableCell}>
                         {item.monthlyTakeHome || "Not added"}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className={styles.tableCell}>
                         {item.reason || "Not added"}
                       </td>
-                      <td className="px-4 py-3">
-                        <div className="flex gap-2">
+                      <td className={styles.tableCell}>
+                        <div className={styles.tableActionsRow}>
                           <Button
                             variant="outlined"
                             onClick={() => editExperience(index)}
@@ -2072,17 +2068,17 @@ const TeacherProfile = () => {
         title="Achievements"
         description="Add achievements, recognitions, and professional development courses to strengthen your profile."
       />
-      <div className="space-y-8">
-        <div className="rounded-2xl border border-borderColor bg-white p-6 shadow-sm">
-          <div className="mb-6 flex items-center gap-3 border-b border-borderColor pb-5">
-            <span className="rounded-xl bg-primary/10 p-2 text-primary">
+      <div className={styles.achievementsStack}>
+        <div className={styles.achievementCard}>
+          <div className={styles.achievementCardHeader}>
+            <span className={styles.contactSubHeaderIcon}>
               <Trophy size={20} />
             </span>
-            <h3 className="text-lg font-bold text-slate-800">
+            <h3 className={styles.contactSubHeaderTitle}>
               Achievements & Recognitions
             </h3>
           </div>
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-4">
+          <div className={styles.formGrid4}>
             <Field label="Type">
               <Select
                 value={resumeData.awardType}
@@ -2131,45 +2127,45 @@ const TeacherProfile = () => {
             </Field>
           </div>
           <Button
-            variant="text"
+            variant="filled"
             onClick={addAward}
             startIcon="plusIcon"
           >
             Add Another Award
           </Button>
-          <div className="mt-5 rounded-2xl bg-light p-4">
-            <h4 className="mb-3 font-bold text-primary">Saved Awards</h4>
+          <div className={styles.savedSubCard}>
+            <h4 className={styles.savedSubCardTitle}>Saved Awards</h4>
             {savedAwards.length === 0 ? (
-              <p className="text-sm text-slate-500">
+              <p className={styles.emptyListText}>
                 Saved award entries will appear here.
               </p>
             ) : (
-              <div className="space-y-3">
+              <div className={styles.savedEntriesStack}>
                 {savedAwards.map((award, index) => (
                   <div
                     key={`award-${index}`}
-                    className="rounded-xl border border-borderColor bg-white p-4 text-sm text-slate-600"
+                    className={styles.savedEntryCard}
                   >
-                    <p className="mb-2 font-bold text-slate-800">
+                    <p className={styles.savedEntryTitle}>
                       Award #{index + 1}
                     </p>
-                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
+                    <div className={styles.savedEntryGrid}>
                       <p>
-                        <span className="font-bold text-slate-800">Type:</span>{" "}
+                        <span className={styles.savedEntryFieldLabel}>Type:</span>{" "}
                         {award.type || "Not added"}
                       </p>
                       <p>
-                        <span className="font-bold text-slate-800">Name:</span>{" "}
+                        <span className={styles.savedEntryFieldLabel}>Name:</span>{" "}
                         {award.name || "Not added"}
                       </p>
                       <p>
-                        <span className="font-bold text-slate-800">
+                        <span className={styles.savedEntryFieldLabel}>
                           Presented By:
                         </span>{" "}
                         {award.by || "Not added"}
                       </p>
                       <p>
-                        <span className="font-bold text-slate-800">Year:</span>{" "}
+                        <span className={styles.savedEntryFieldLabel}>Year:</span>{" "}
                         {award.year || "Not added"}
                       </p>
                     </div>
@@ -2179,16 +2175,16 @@ const TeacherProfile = () => {
             )}
           </div>
         </div>
-        <div className="rounded-2xl border border-borderColor bg-white p-6 shadow-sm">
-          <div className="mb-6 flex items-center gap-3 border-b border-borderColor pb-5">
-            <span className="rounded-xl bg-primary/10 p-2 text-primary">
+        <div className={styles.achievementCard}>
+          <div className={styles.achievementCardHeader}>
+            <span className={styles.contactSubHeaderIcon}>
               <BookOpen size={20} />
             </span>
-            <h3 className="text-lg font-bold text-slate-800">
+            <h3 className={styles.contactSubHeaderTitle}>
               Additional Courses & Trainings
             </h3>
           </div>
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-4">
+          <div className={styles.formGrid4}>
             <Field label="Type">
               <Select
                 value={resumeData.courseType}
@@ -2237,45 +2233,45 @@ const TeacherProfile = () => {
             </Field>
           </div>
           <Button
-            variant="text"
+            variant="filled"
             onClick={addCourse}
             startIcon="plusIcon"
           >
             Add Another Course
           </Button>
-          <div className="mt-5 rounded-2xl bg-light p-4">
-            <h4 className="mb-3 font-bold text-primary">Saved Courses</h4>
+          <div className={styles.savedSubCard}>
+            <h4 className={styles.savedSubCardTitle}>Saved Courses</h4>
             {savedCourses.length === 0 ? (
-              <p className="text-sm text-slate-500">
+              <p className={styles.emptyListText}>
                 Saved course entries will appear here.
               </p>
             ) : (
-              <div className="space-y-3">
+              <div className={styles.savedEntriesStack}>
                 {savedCourses.map((course, index) => (
                   <div
                     key={`course-${index}`}
-                    className="rounded-xl border border-borderColor bg-white p-4 text-sm text-slate-600"
+                    className={styles.savedEntryCard}
                   >
-                    <p className="mb-2 font-bold text-slate-800">
+                    <p className={styles.savedEntryTitle}>
                       Course #{index + 1}
                     </p>
-                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
+                    <div className={styles.savedEntryGrid}>
                       <p>
-                        <span className="font-bold text-slate-800">Type:</span>{" "}
+                        <span className={styles.savedEntryFieldLabel}>Type:</span>{" "}
                         {course.type || "Not added"}
                       </p>
                       <p>
-                        <span className="font-bold text-slate-800">Name:</span>{" "}
+                        <span className={styles.savedEntryFieldLabel}>Name:</span>{" "}
                         {course.name || "Not added"}
                       </p>
                       <p>
-                        <span className="font-bold text-slate-800">
+                        <span className={styles.savedEntryFieldLabel}>
                           Conducted By:
                         </span>{" "}
                         {course.by || "Not added"}
                       </p>
                       <p>
-                        <span className="font-bold text-slate-800">Year:</span>{" "}
+                        <span className={styles.savedEntryFieldLabel}>Year:</span>{" "}
                         {course.year || "Not added"}
                       </p>
                     </div>
@@ -2295,15 +2291,15 @@ const TeacherProfile = () => {
         title="Resume"
         description="Upload your CV in Word (.docx) or PDF format, use the CV Builder to create one, or generate an AI-powered cover letter."
       />
-      <div className="space-y-7">
-        <div className="rounded-xl border border-borderColor bg-white p-6 shadow-sm">
-          <div className="mb-6 flex flex-col gap-4 border-b border-borderColor pb-5 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-center gap-3">
-              <span className="rounded-xl bg-primary/10 p-2 text-primary">
+      <div className={styles.resumeSectionStack}>
+        <div className={styles.resumeMainCard}>
+          <div className={styles.resumeHeaderRow}>
+            <div className={styles.resumeHeaderLeft}>
+              <span className={styles.contactSubHeaderIcon}>
                 <Upload size={20} />
               </span>
               <div>
-                <h3 className="text-lg font-bold text-slate-800">
+                <h3 className={styles.contactSubHeaderTitle}>
                   {resumeMode === "upload"
                     ? "Add Resume"
                     : resumeMode === "create"
@@ -2311,32 +2307,32 @@ const TeacherProfile = () => {
                       : "Cover Letter"}
                 </h3>
                 {resumeMode === "upload" && (
-                  <p className="mt-0.5 text-xs text-slate-500">
+                  <p className={styles.resumeHeaderSubtext}>
                     Accepted formats: <strong>PDF</strong> or{" "}
                     <strong>Word (.docx)</strong> only.
                   </p>
                 )}
               </div>
             </div>
-            <div className="grid grid-cols-3 rounded-xl border border-borderColor bg-light p-1 text-xs font-bold sm:text-sm">
+            <div className={styles.resumeModeTabs}>
               <button
                 type="button"
                 onClick={() => setResumeMode("upload")}
-                className={`rounded-lg px-2 py-2 sm:px-4 ${resumeMode === "upload" ? "bg-white text-primary shadow-sm" : "text-slate-500"}`}
+                className={`${styles.resumeModeTab} ${resumeMode === "upload" ? styles.resumeModeTabActive : ""}`}
               >
                 Add Resume
               </button>
               <button
                 type="button"
                 onClick={() => setResumeMode("create")}
-                className={`rounded-lg px-2 py-2 sm:px-4 ${resumeMode === "create" ? "bg-white text-primary shadow-sm" : "text-slate-500"}`}
+                className={`${styles.resumeModeTab} ${resumeMode === "create" ? styles.resumeModeTabActive : ""}`}
               >
                 Create Resume
               </button>
               <button
                 type="button"
                 onClick={() => setResumeMode("coverletter")}
-                className={`rounded-lg px-2 py-2 sm:px-4 ${resumeMode === "coverletter" ? "bg-white text-primary shadow-sm" : "text-slate-500"}`}
+                className={`${styles.resumeModeTab} ${resumeMode === "coverletter" ? styles.resumeModeTabActive : ""}`}
               >
                 Cover Letter
               </button>
@@ -2344,13 +2340,13 @@ const TeacherProfile = () => {
           </div>
           {/* Upload mode: show CV Builder callout */}
           {resumeMode === "upload" && (
-            <div className="mb-5 flex items-start gap-4 rounded-2xl border border-blue-200 bg-blue-50 p-4">
-              <FileText size={20} className="mt-0.5 shrink-0 text-blue-600" />
+            <div className={styles.cvBuilderCallout}>
+              <FileText size={20} className={styles.cvBuilderIcon} />
               <div>
-                <p className="text-sm font-bold text-blue-800">
+                <p className={styles.cvBuilderTitle}>
                   Don't have a CV ready?
                 </p>
-                <p className="mt-1 text-xs text-blue-600">
+                <p className={styles.cvBuilderText}>
                   Use the <strong>Create Resume</strong> tab to build a
                   formatted CV using our CV Builder — you can preview and
                   download it as a PDF.
@@ -2358,7 +2354,7 @@ const TeacherProfile = () => {
                 <button
                   type="button"
                   onClick={() => setResumeMode("create")}
-                  className="mt-2 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-blue-700"
+                  className={styles.cvBuilderButton}
                 >
                   Open CV Builder →
                 </button>
@@ -2368,17 +2364,16 @@ const TeacherProfile = () => {
 
           {/* Top row: always visible for upload/create */}
           {resumeMode !== "coverletter" && (
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className={styles.resumeTopRowGrid}>
               <Field label="Resume Title *">
-                <input
+                <Input
                   value={resumeDraft.title}
-                  onChange={(e) =>
+                  onChange={(value) =>
                     setResumeDraft((prev) => ({
                       ...prev,
-                      title: e.target.value,
+                      title: value,
                     }))
                   }
-                  className={inputClass}
                   placeholder="e.g. Senior Teacher Resume"
                 />
               </Field>
@@ -2393,10 +2388,10 @@ const TeacherProfile = () => {
               </Field>
               {resumeMode === "upload" && (
                 <Field label="Upload File">
-                  <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-primary/40 bg-light px-4 py-5 text-sm font-bold text-primary hover:bg-primary/5">
+                  <label className={styles.fileUploadLabel}>
                     <Upload size={22} />
                     <span>Choose PDF or Word (.docx)</span>
-                    <span className="text-xs font-normal text-slate-400">
+                    <span className={styles.fileUploadHint}>
                       Only PDF and .docx files are accepted
                     </span>
                     <input
@@ -2407,7 +2402,7 @@ const TeacherProfile = () => {
                     />
                   </label>
                   {resumeDraft.fileName && (
-                    <p className="mt-2 text-xs font-bold text-green-600">
+                    <p className={styles.fileSelectedText}>
                       Selected: {resumeDraft.fileName}
                     </p>
                   )}
@@ -2418,17 +2413,16 @@ const TeacherProfile = () => {
 
           {/* Create mode: full structured resume form */}
           {resumeMode === "create" && (
-            <div className="mt-6 space-y-6">
+            <div className={styles.createModeStack}>
               {/* Section 1: Personal Info & Contact Details */}
-              <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm space-y-4">
-                <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide border-b border-borderColor pb-2">
+              <div className={styles.createModeCard}>
+                <h4 className={styles.createModeCardTitle}>
                   1. Personal &amp; Contact Information
                 </h4>
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <div className={styles.createModeFieldsGrid}>
                   <Field label="First Name *">
                     <Input
                       value={teacherData.firstName}
-                      fieldClassName={inputClass}
                       onChange={(value) =>
                         setTeacherData((prev) => ({
                           ...prev,
@@ -2437,66 +2431,66 @@ const TeacherProfile = () => {
                       }
                     />
                   </Field>
+
                   <Field label="Last Name *">
-                    <input
+                    <Input
                       value={teacherData.lastName}
-                      onChange={(e) =>
+                      onChange={(value) =>
                         setTeacherData((prev) => ({
                           ...prev,
-                          lastName: e.target.value,
+                          lastName: value,
                         }))
                       }
-                      className={inputClass}
                     />
                   </Field>
+
                   <Field label="Email Address *">
-                    <input
+                    <Input
                       type="email"
                       value={teacherData.primaryEmail}
-                      onChange={(e) =>
+                      onChange={(value) =>
                         setTeacherData((prev) => ({
                           ...prev,
-                          primaryEmail: e.target.value,
+                          primaryEmail: value,
                         }))
                       }
-                      className={inputClass}
                     />
                   </Field>
+
                   <Field label="Mobile Number *">
-                    <input
+                    <Input
                       value={teacherData.mobile}
-                      onChange={(e) =>
+                      onChange={(value) =>
                         setTeacherData((prev) => ({
                           ...prev,
-                          mobile: e.target.value,
+                          mobile: value,
                         }))
                       }
-                      className={inputClass}
                     />
                   </Field>
+
                   <Field label="Current Job Title">
-                    <input
+                    <Input
                       value={teacherData.currentJob}
-                      onChange={(e) =>
+                      placeholder="e.g. Mathematics Teacher"
+                      onChange={(value) =>
                         setTeacherData((prev) => ({
                           ...prev,
-                          currentJob: e.target.value,
+                          currentJob: value,
                         }))
                       }
-                      className={inputClass}
-                      placeholder="e.g. Mathematics Teacher"
                     />
                   </Field>
+
                   <Field label="Full Address">
-                    <input
+                    <Input
                       value={teacherData.address}
-                      onChange={(e) =>
+                      onChange={(value) =>
                         setTeacherData((prev) => ({
                           ...prev,
-                          address: e.target.value,
+                          address: value,
                         }))
                       }
-                      className={inputClass}
                     />
                   </Field>
                 </div>
@@ -2509,35 +2503,35 @@ const TeacherProfile = () => {
                         briefWriteUp: e.target.value,
                       }))
                     }
-                    className={`${inputClass} min-h-24 resize-none`}
+                    className={`${inputClass} ${styles.inputTextareaMinH24}`}
                     placeholder="Describe your teaching philosophy and core pedagogical experience..."
                   />
                 </Field>
               </div>
 
               {/* Section 2: Academic Qualifications */}
-              <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm space-y-4">
-                <div className="flex items-center justify-between border-b border-borderColor pb-2">
-                  <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide">
+              <div className={styles.createModeCard}>
+                <div className={styles.createModeCardHeaderRow}>
+                  <h4 className={styles.createModeCardTitleNoBorder}>
                     2. Academic Qualifications
                   </h4>
                   {!showQualificationForm && (
-                    <button
-                      type="button"
+                    <Button
+                      variant="filled"
                       onClick={addQualification}
-                      className="rounded-xl bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary hover:bg-primary/15 transition"
+                      className={styles.addInlineBtn}
                     >
-                      + Add Qualification
-                    </button>
+                      Add Qualification
+                    </Button>
                   )}
                 </div>
 
                 {showQualificationForm && (
                   <div
                     ref={qualificationFormRef}
-                    className="rounded-xl border border-borderColor bg-light p-4 space-y-4"
+                    className={styles.nestedFormCard}
                   >
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className={styles.nestedFormGrid}>
                       <Field label="Class">
                         <Select
                           value={qualificationDraft.classLevel}
@@ -2571,12 +2565,11 @@ const TeacherProfile = () => {
                       )}
                       {qualificationDraft.classLevel && (
                         <Field label="Percentage %">
-                          <input
+                          <Input
                             value={qualificationDraft.percentage}
-                            onChange={(e) =>
-                              updateQualification("percentage", e.target.value)
+                            onChange={(value) =>
+                              updateQualification("percentage", value)
                             }
-                            className={inputClass}
                             placeholder="e.g. 76.2"
                           />
                         </Field>
@@ -2598,12 +2591,11 @@ const TeacherProfile = () => {
                         />
                       </Field>
                       <Field label="Year Passed">
-                        <input
+                        <Input
                           value={qualificationDraft.year}
-                          onChange={(e) =>
-                            updateQualification("year", e.target.value)
+                          onChange={(value) =>
+                            updateQualification("year", value)
                           }
-                          className={inputClass}
                           placeholder="e.g. 2023"
                         />
                       </Field>
@@ -2625,12 +2617,11 @@ const TeacherProfile = () => {
                       </Field>
                       {!qualificationDraft.classLevel && (
                         <Field label="Percentage %">
-                          <input
+                          <Input
                             value={qualificationDraft.percentage}
-                            onChange={(e) =>
-                              updateQualification("percentage", e.target.value)
+                            onChange={(value) =>
+                              updateQualification("percentage", value)
                             }
-                            className={inputClass}
                             placeholder="e.g. 76.2"
                           />
                         </Field>
@@ -2643,7 +2634,7 @@ const TeacherProfile = () => {
                           options={qualificationOptions.universities}
                         />
                       </Field>
-                      <div className="lg:col-span-2">
+                      <div className={styles.lgColSpan2}>
                         <Field label="College Name">
                           <Select
                             value={qualificationDraft.college}
@@ -2654,62 +2645,64 @@ const TeacherProfile = () => {
                         </Field>
                       </div>
                     </div>
-                    <div className="flex gap-2 justify-end">
-                      <button
-                        type="button"
+                    <div className={styles.nestedFormActionsRow}>
+                      <Button
+                        variant="filled"
                         onClick={saveQualificationDraft}
-                        className="rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-white hover:bg-primary/95"
+                        className={styles.smallSaveBtn}
                       >
                         Save
-                      </button>
-                      <button
-                        type="button"
+                      </Button>
+
+                      <Button
+                        variant="outlined"
                         onClick={() => setShowQualificationForm(false)}
-                        className="rounded-lg border border-borderColor px-3 py-1.5 text-xs font-bold text-slate-500 hover:bg-light"
+                        className={styles.smallCancelBtn}
                       >
                         Cancel
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 )}
 
                 {savedQualifications.length === 0 ? (
-                  <p className="text-xs text-slate-500 italic">
+                  <p className={styles.emptyListTextItalic}>
                     No qualifications added yet. Use the button above to add
                     qualifications.
                   </p>
                 ) : (
-                  <div className="space-y-2.5">
+                  <div className={styles.compactSavedStack}>
                     {savedQualifications.map((q, idx) => (
                       <div
                         key={idx}
-                        className="flex flex-col gap-2 rounded-xl bg-light p-3 text-xs border border-borderColor/40 sm:flex-row sm:items-center sm:justify-between"
+                        className={styles.compactSavedRow}
                       >
-                        <div className="min-w-0">
-                          <p className="break-words font-bold text-slate-800">
+                        <div className={styles.compactSavedMinW0}>
+                          <p className={styles.compactSavedTitle}>
                             {q.degree || q.classLevel}{" "}
                             {q.course ? `(${q.course})` : ""}
                           </p>
-                          <p className="break-words text-slate-500">
+                          <p className={styles.compactSavedSubtext}>
                             {q.college || q.school} · Passed in {q.year} ·
                             Marks: {q.percentage ? `${q.percentage}%` : "—"}
                           </p>
                         </div>
-                        <div className="flex gap-2 shrink-0">
-                          <button
-                            type="button"
+                        <div className={styles.compactSavedActions}>
+                          <Button
+                            variant="filled"
                             onClick={() => editQualification(idx)}
-                            className="text-primary font-bold hover:underline"
+                            className={styles.editLinkBtn}
                           >
                             Edit
-                          </button>
-                          <button
-                            type="button"
+                          </Button>
+
+                          <Button
+                            variant="filled"
                             onClick={() => removeQualification(idx)}
-                            className="text-red-500 font-bold hover:underline"
+                            className={styles.deleteLinkBtn}
                           >
                             Delete
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     ))}
@@ -2718,49 +2711,48 @@ const TeacherProfile = () => {
               </div>
 
               {/* Section 3: Employment History */}
-              <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm space-y-4">
-                <div className="flex items-center justify-between border-b border-borderColor pb-2">
-                  <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide">
+              <div className={styles.createModeCard}>
+                <div className={styles.createModeCardHeaderRow}>
+                  <h4 className={styles.createModeCardTitleNoBorder}>
                     3. Employment History
                   </h4>
                   {!showExperienceForm && (
-                    <button
-                      type="button"
+                    <Button
+                      variant="filled"
                       onClick={addExperience}
-                      className="rounded-xl bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary hover:bg-primary/15 transition"
+                      className={styles.addInlineBtn}
                     >
-                      + Add Experience
-                    </button>
+                      Add Experience
+                    </Button>
                   )}
                 </div>
 
                 {showExperienceForm && (
                   <div
                     ref={experienceFormRef}
-                    className="rounded-xl border border-borderColor bg-light p-4 space-y-4"
+                    className={styles.nestedFormCard}
                   >
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className={styles.nestedFormGrid}>
                       <Field label="School Name">
-                        <input
+                        <Input
                           value={experienceDraft.school}
-                          onChange={(e) =>
-                            updateExperience("school", e.target.value)
-                          }
-                          className={inputClass}
                           placeholder="Enter school/employer name"
-                        />
-                      </Field>
-                      <Field label="Salary / Take Home (Monthly)">
-                        <input
-                          value={experienceDraft.monthlyTakeHome}
-                          onChange={(e) =>
-                            updateExperience("monthlyTakeHome", e.target.value)
+                          onChange={(value) =>
+                            updateExperience("school", value)
                           }
-                          className={inputClass}
-                          placeholder="e.g. 35,000"
                         />
                       </Field>
-                      <div className="flex items-center gap-2 pt-6">
+
+                      <Field label="Salary / Take Home (Monthly)">
+                        <Input
+                          value={experienceDraft.monthlyTakeHome}
+                          placeholder="e.g. 35,000"
+                          onChange={(value) =>
+                            updateExperience("monthlyTakeHome", value)
+                          }
+                        />
+                      </Field>
+                      <div className={styles.checkboxInlineTopPad}>
                         <input
                           type="checkbox"
                           checked={experienceDraft.currentEmployer}
@@ -2770,9 +2762,9 @@ const TeacherProfile = () => {
                               e.target.checked,
                             )
                           }
-                          className="h-4 w-4 accent-primary"
+                          className={styles.sameAsMobileCheckbox}
                         />
-                        <span className="text-xs font-bold text-slate-600">
+                        <span className={styles.checkboxInlineLabelText}>
                           Current Employer
                         </span>
                       </div>
@@ -2815,13 +2807,12 @@ const TeacherProfile = () => {
                         />
                       </Field>
                       <Field label="Other Subjects Taught">
-                        <input
+                        <Input
                           value={experienceDraft.otherSubjects}
-                          onChange={(e) =>
-                            updateExperience("otherSubjects", e.target.value)
-                          }
-                          className={inputClass}
                           placeholder="e.g. Science, Hindi"
+                          onChange={(value) =>
+                            updateExperience("otherSubjects", value)
+                          }
                         />
                       </Field>
                       <Field label="Designation / Post">
@@ -2840,75 +2831,77 @@ const TeacherProfile = () => {
                           options={experienceOptions.reasons}
                         />
                       </Field>
-                      <div className="lg:col-span-2">
+                      <div className={styles.lgColSpan2}>
                         <Field label="Key Achievements / Work Details">
                           <textarea
                             value={experienceDraft.details}
                             onChange={(e) =>
                               updateExperience("details", e.target.value)
                             }
-                            className={`${inputClass} min-h-20 resize-none`}
+                            className={`${inputClass} ${styles.inputTextareaMinH20}`}
                             placeholder="Describe responsibilities and achievements..."
                           />
                         </Field>
                       </div>
                     </div>
-                    <div className="flex gap-2 justify-end">
-                      <button
-                        type="button"
+                    <div className={styles.nestedFormActionsRow}>
+                      <Button
+                        variant="filled"
                         onClick={saveExperienceDraft}
-                        className="rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-white hover:bg-primary/95"
+                        className={styles.smallSaveBtn}
                       >
                         Save
-                      </button>
-                      <button
-                        type="button"
+                      </Button>
+
+                      <Button
+                        variant="outlined"
                         onClick={() => setShowExperienceForm(false)}
-                        className="rounded-lg border border-borderColor px-3 py-1.5 text-xs font-bold text-slate-500 hover:bg-light"
+                        className={styles.smallCancelBtn}
                       >
                         Cancel
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 )}
 
                 {savedExperiences.length === 0 ? (
-                  <p className="text-xs text-slate-500 italic">
+                  <p className={styles.emptyListTextItalic}>
                     No experience added yet. Use the button above to add
                     experiences.
                   </p>
                 ) : (
-                  <div className="space-y-2.5">
+                  <div className={styles.compactSavedStack}>
                     {savedExperiences.map((exp, idx) => (
                       <div
                         key={idx}
-                        className="flex flex-col gap-2 rounded-xl bg-light p-3 text-xs border border-borderColor/40 sm:flex-row sm:items-center sm:justify-between"
+                        className={styles.compactSavedRow}
                       >
-                        <div className="min-w-0">
-                          <p className="break-words font-bold text-slate-800">
+                        <div className={styles.compactSavedMinW0}>
+                          <p className={styles.compactSavedTitle}>
                             {exp.post} at {exp.school}
                           </p>
-                          <p className="break-words text-slate-500">
+                          <p className={styles.compactSavedSubtext}>
                             {exp.startDate} to{" "}
                             {exp.currentEmployer ? "Present" : exp.endDate} ·
                             Subject: {exp.mainSubject} · Board: {exp.board}
                           </p>
                         </div>
-                        <div className="flex gap-2 shrink-0">
-                          <button
-                            type="button"
+                        <div className={styles.compactSavedActions}>
+                          <Button
+                            variant="filled"
                             onClick={() => editExperience(idx)}
-                            className="text-primary font-bold hover:underline"
+                            className={styles.editLinkBtn}
                           >
                             Edit
-                          </button>
-                          <button
-                            type="button"
+                          </Button>
+
+                          <Button
+                            variant="filled"
                             onClick={() => removeExperience(idx)}
-                            className="text-red-500 font-bold hover:underline"
+                            className={styles.deleteLinkBtn}
                           >
                             Delete
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     ))}
@@ -2917,16 +2910,16 @@ const TeacherProfile = () => {
               </div>
 
               {/* Section 4: Achievements, Awards & Courses */}
-              <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm space-y-5">
-                <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide border-b border-borderColor pb-2">
+              <div className={styles.createModeCardSpace5}>
+                <h4 className={styles.createModeCardTitle}>
                   4. Achievements, Awards &amp; Courses
                 </h4>
 
                 <div>
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
+                  <p className={styles.subBlockLabel}>
                     Awards &amp; Recognitions
                   </p>
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 items-end">
+                  <div className={styles.formGrid4ItemsEnd}>
                     <Field label="Type">
                       <Select
                         value={resumeData.awardType}
@@ -2938,85 +2931,83 @@ const TeacherProfile = () => {
                       />
                     </Field>
                     <Field label="Name of the Award">
-                      <input
+                      <Input
                         value={resumeData.awardName}
-                        onChange={(e) =>
-                          setResumeData((prev) => ({
-                            ...prev,
-                            awardName: e.target.value,
-                          }))
-                        }
-                        className={inputClass}
                         placeholder="e.g. Best Educator Award"
+                        onChange={(value) =>
+                          setResumeData((prev) => ({
+                            ...prev,
+                            awardName: value,
+                          }))
+                        }
                       />
                     </Field>
+
                     <Field label="Presented By">
-                      <input
+                      <Input
                         value={resumeData.awardBy}
-                        onChange={(e) =>
+                        placeholder="Organization / Institute"
+                        onChange={(value) =>
                           setResumeData((prev) => ({
                             ...prev,
-                            awardBy: e.target.value,
+                            awardBy: value,
                           }))
                         }
-                        className={inputClass}
-                        placeholder="Organization / Institute"
                       />
                     </Field>
+
                     <Field label="Year">
-                      <input
+                      <Input
                         value={resumeData.awardYear}
-                        onChange={(e) =>
+                        placeholder="Year"
+                        onChange={(value) =>
                           setResumeData((prev) => ({
                             ...prev,
-                            awardYear: e.target.value,
+                            awardYear: value,
                           }))
                         }
-                        className={inputClass}
-                        placeholder="Year"
                       />
                     </Field>
                   </div>
-                  <button
-                    type="button"
+                  <Button
+                    icon="plusIcon"
                     onClick={addAward}
-                    className="mt-3 rounded-lg border border-primary text-primary px-3 py-1.5 text-xs font-bold hover:bg-primary/5 flex items-center gap-1"
                   >
-                    <Plus size={14} /> Add Award to Resume
-                  </button>
+                    Add Award to Resume
+                  </Button>
                   {savedAwards.length > 0 && (
-                    <div className="mt-3 space-y-1.5">
+                    <div className={styles.miniSavedStack}>
                       {savedAwards.map((award, index) => (
                         <div
                           key={index}
-                          className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-light p-2.5 text-xs border border-borderColor/45"
+                          className={styles.miniSavedRow}
                         >
-                          <span className="min-w-0 break-words">
+                          <span className={styles.miniSavedText}>
                             <strong>{award.name}</strong> by {award.by} (
                             {award.year})
                           </span>
-                          <button
-                            type="button"
+                          <Button
+                            variant="filled"
                             onClick={() =>
                               setSavedAwards((prev) =>
-                                prev.filter((_, i) => i !== index),
+                                prev.filter((_, i) => i !== index)
                               )
                             }
-                            className="shrink-0 text-red-500 font-bold hover:underline"
+                            className={styles.removeLinkBtn}
                           >
                             Remove
-                          </button>
+                          </Button>
                         </div>
                       ))}
                     </div>
                   )}
                 </div>
 
-                <div className="border-t border-borderColor/50 pt-4">
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
+                <div className={styles.dividerTop}>
+                  <p className={styles.subBlockLabel}>
                     Additional Courses &amp; Certifications
                   </p>
-                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 items-end">
+                  <div className={styles.formGrid4ItemsEnd}>
                     <Field label="Type">
                       <Select
                         value={resumeData.courseType}
@@ -3028,60 +3019,59 @@ const TeacherProfile = () => {
                       />
                     </Field>
                     <Field label="Name of the Course">
-                      <input
+                      <Input
                         value={resumeData.courseName}
-                        onChange={(e) =>
-                          setResumeData((prev) => ({
-                            ...prev,
-                            courseName: e.target.value,
-                          }))
-                        }
-                        className={inputClass}
                         placeholder="e.g. Advanced Pedagogy"
+                        onChange={(value) =>
+                          setResumeData((prev) => ({
+                            ...prev,
+                            courseName: value,
+                          }))
+                        }
                       />
                     </Field>
+
                     <Field label="Conducted By">
-                      <input
+                      <Input
                         value={resumeData.conductedBy}
-                        onChange={(e) =>
+                        placeholder="Organization / Institute"
+                        onChange={(value) =>
                           setResumeData((prev) => ({
                             ...prev,
-                            conductedBy: e.target.value,
+                            conductedBy: value,
                           }))
                         }
-                        className={inputClass}
-                        placeholder="Organization / Institute"
                       />
                     </Field>
+
                     <Field label="Year">
-                      <input
+                      <Input
                         value={resumeData.courseYear}
-                        onChange={(e) =>
+                        placeholder="Year"
+                        onChange={(value) =>
                           setResumeData((prev) => ({
                             ...prev,
-                            courseYear: e.target.value,
+                            courseYear: value,
                           }))
                         }
-                        className={inputClass}
-                        placeholder="Year"
                       />
                     </Field>
                   </div>
-                  <button
-                    type="button"
+                  <Button
+                    variant="filled"
+                    startIcon="plusIcon"
                     onClick={addCourse}
-                    className="mt-3 rounded-lg border border-primary text-primary px-3 py-1.5 text-xs font-bold hover:bg-primary/5 flex items-center gap-1"
                   >
-                    <Plus size={14} /> Add Course to Resume
-                  </button>
+                    Add Course to Resume
+                  </Button>
                   {savedCourses.length > 0 && (
-                    <div className="mt-3 space-y-1.5">
+                    <div className={styles.miniSavedStack}>
                       {savedCourses.map((course, index) => (
                         <div
                           key={index}
-                          className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-light p-2.5 text-xs border border-borderColor/45"
+                          className={styles.miniSavedRow}
                         >
-                          <span className="min-w-0 break-words">
+                          <span className={styles.miniSavedText}>
                             <strong>{course.name}</strong> conducted by{" "}
                             {course.by} ({course.year})
                           </span>
@@ -3092,7 +3082,7 @@ const TeacherProfile = () => {
                                 prev.filter((_, i) => i !== index),
                               )
                             }
-                            className="shrink-0 text-red-500 font-bold hover:underline"
+                            className={styles.removeLinkBtn}
                           >
                             Remove
                           </button>
@@ -3104,25 +3094,25 @@ const TeacherProfile = () => {
               </div>
 
               {/* Section 5: Skills & Languages Information */}
-              <div className="rounded-2xl border border-borderColor bg-white p-5 shadow-sm space-y-4">
-                <h4 className="font-bold text-slate-800 text-sm uppercase tracking-wide border-b border-borderColor pb-2">
+              <div className={styles.createModeCard}>
+                <h4 className={styles.createModeCardTitle}>
                   5. Skills &amp; Languages
                 </h4>
-                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                <div className={styles.skillsLanguagesGrid}>
                   <div>
                     <label className={labelClass}>
                       Subject Skills (Linked to Profile)
                     </label>
-                    <div className="mt-2 flex flex-wrap gap-2">
+                    <div className={styles.subjectTagsWrap}>
                       {teacherData.mainSubject && (
-                        <span className="rounded-full bg-primary px-3 py-1 text-xs font-bold text-white shadow-sm">
+                        <span className={styles.subjectTagSolid}>
                           {teacherData.mainSubject} (Main)
                         </span>
                       )}
                       {selectedAdditionalSubjects.map((subject) => (
                         <span
                           key={subject}
-                          className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary"
+                          className={styles.subjectTagLight}
                         >
                           {subject}
                         </span>
@@ -3133,13 +3123,13 @@ const TeacherProfile = () => {
                     <label className={labelClass}>
                       Languages Spoken (Linked to Profile)
                     </label>
-                    <div className="mt-2 flex flex-wrap gap-2">
+                    <div className={styles.subjectTagsWrap}>
                       {dynamicLanguages.map(
                         (lang, idx) =>
                           lang.language && (
                             <span
                               key={idx}
-                              className="rounded-full bg-green-50 border border-green-150 px-3 py-1 text-xs font-bold text-green-600"
+                              className={styles.languageTag}
                             >
                               {lang.language} ({lang.status})
                             </span>
@@ -3148,7 +3138,7 @@ const TeacherProfile = () => {
                     </div>
                   </div>
                 </div>
-                <p className="text-[11px] text-slate-400 italic">
+                <p className={styles.noteTextTiny}>
                   * Note: Skills and Languages are kept in sync with the **My
                   Profile** tab entries.
                 </p>
@@ -3158,13 +3148,13 @@ const TeacherProfile = () => {
 
           {/* Cover Letter mode */}
           {resumeMode === "coverletter" && (
-            <div className="space-y-5">
-              <p className="text-sm text-slate-600 leading-relaxed">
+            <div className={styles.coverLetterStack}>
+              <p className={styles.coverLetterIntroText}>
                 Select the job you are applying for and the CV you want to use.
                 Our AI will generate a crisp, humanized cover letter tailored to
                 the role.
               </p>
-              <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+              <div className={styles.coverLetterFieldsGrid}>
                 <Field label="Select Job Applying For">
                   <Select
                     value={coverLetterState.selectedJob}
@@ -3226,7 +3216,7 @@ const TeacherProfile = () => {
                     }));
                   }, 1500);
                 }}
-                className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95 disabled:opacity-50"
+                className={styles.coverLetterGenerateBtn}
               >
                 <Wand2 size={17} />{" "}
                 {coverLetterState.loading
@@ -3234,12 +3224,12 @@ const TeacherProfile = () => {
                   : "Generate Cover Letter"}
               </button>
               {coverLetterState.generated && (
-                <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5">
-                  <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                    <p className="text-sm font-bold text-primary">
+                <div className={styles.coverLetterResultCard}>
+                  <div className={styles.coverLetterResultHeader}>
+                    <p className={styles.coverLetterResultTitle}>
                       AI Generated Cover Letter
                     </p>
-                    <div className="flex gap-2">
+                    <div className={styles.coverLetterActionsRow}>
                       <button
                         type="button"
                         onClick={() => {
@@ -3264,7 +3254,7 @@ const TeacherProfile = () => {
                           );
                           alert("Cover letter saved!");
                         }}
-                        className="rounded-lg bg-primary px-3 py-1 text-xs font-bold text-white hover:bg-primary/90"
+                        className={styles.smallSaveBtnSolid}
                       >
                         Save
                       </button>
@@ -3276,47 +3266,47 @@ const TeacherProfile = () => {
                           );
                           alert("Copied to clipboard!");
                         }}
-                        className="rounded-lg border border-primary/30 px-3 py-1 text-xs font-bold text-primary hover:bg-primary/10"
+                        className={styles.smallCopyBtn}
                       >
                         Copy
                       </button>
                     </div>
                   </div>
-                  <pre className="whitespace-pre-wrap text-sm text-slate-700 leading-relaxed font-sans">
+                  <pre className={styles.coverLetterPre}>
                     {coverLetterState.generated}
                   </pre>
                 </div>
               )}
 
               {savedCoverLetters.length > 0 && (
-                <div className="space-y-3">
-                  <p className="text-sm font-bold text-slate-700">
+                <div className={styles.savedLettersStack}>
+                  <p className={styles.savedLettersHeading}>
                     Saved Cover Letters ({savedCoverLetters.length})
                   </p>
                   {savedCoverLetters.map((cl) => (
                     <div
                       key={cl.id}
-                      className="rounded-xl border border-borderColor bg-white p-4"
+                      className={styles.savedLetterCard}
                     >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-bold text-slate-800">
+                      <div className={styles.savedLetterRow}>
+                        <div className={styles.savedLetterMinW0}>
+                          <p className={styles.savedLetterTitle}>
                             {cl.title}
                           </p>
                           {cl.resumeTitle && (
-                            <p className="mt-0.5 text-xs text-slate-400">
+                            <p className={styles.savedLetterMeta}>
                               CV: {cl.resumeTitle}
                             </p>
                           )}
                         </div>
-                        <div className="flex shrink-0 gap-2">
+                        <div className={styles.savedLetterActions}>
                           <button
                             type="button"
                             onClick={() => {
                               navigator.clipboard.writeText(cl.content);
                               alert("Copied to clipboard!");
                             }}
-                            className="rounded-lg border border-borderColor px-2.5 py-1 text-xs font-bold text-primary hover:bg-light"
+                            className={styles.copyOutlineBtn}
                           >
                             Copy
                           </button>
@@ -3332,7 +3322,7 @@ const TeacherProfile = () => {
                                 JSON.stringify(updated),
                               );
                             }}
-                            className="rounded-lg border border-red-200 px-2.5 py-1 text-xs font-bold text-red-500 hover:bg-red-50"
+                            className={styles.deleteOutlineBtn}
                           >
                             Delete
                           </button>
@@ -3347,7 +3337,7 @@ const TeacherProfile = () => {
 
           {/* Notes: only visible for upload/create modes */}
           {resumeMode !== "coverletter" && (
-            <div className="mt-5">
+            <div className={styles.fullAddressWrap}>
               <Field label="Resume Notes">
                 <textarea
                   value={resumeDraft.notes}
@@ -3357,7 +3347,7 @@ const TeacherProfile = () => {
                       notes: e.target.value,
                     }))
                   }
-                  className={`${inputClass} min-h-24 resize-none`}
+                  className={`${inputClass} ${styles.inputTextareaMinH24}`}
                   placeholder="Short note about when to use this resume."
                 />
               </Field>
@@ -3368,7 +3358,7 @@ const TeacherProfile = () => {
             <button
               type="button"
               onClick={addResume}
-              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-soft hover:bg-primary/95"
+              className={styles.coverLetterGenerateBtn}
             >
               <Plus size={17} />{" "}
               {resumeMode === "upload" ? "Add Resume" : "Save Resume"}
@@ -3376,16 +3366,16 @@ const TeacherProfile = () => {
           )}
         </div>
 
-        <div className="rounded-xl bg-light p-5">
-          <h3 className="mb-4 text-lg font-bold text-primary">All Resumes</h3>
+        <div className={styles.savedListCard}>
+          <h3 className={styles.savedListTitle}>All Resumes</h3>
           {savedResumes.length === 0 ? (
-            <p className="text-sm text-slate-500">
+            <p className={styles.emptyListText}>
               Added or created resumes will appear here.
             </p>
           ) : (
-            <div className="overflow-x-auto rounded-xl border border-borderColor bg-white">
-              <table className="min-w-[1000px] w-full text-left text-sm">
-                <thead className="bg-primary/5 text-xs uppercase tracking-wide text-primary">
+            <div className={styles.tableScrollWrap}>
+              <table className={styles.tableMinWideMd}>
+                <thead className={styles.tableHead}>
                   <tr>
                     {[
                       "Title",
@@ -3397,38 +3387,38 @@ const TeacherProfile = () => {
                       "Notes",
                       "Actions",
                     ].map((heading) => (
-                      <th key={heading} className="px-4 py-3 font-bold">
+                      <th key={heading} className={styles.tableHeadCell}>
                         {heading}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-borderColor text-slate-600">
+                <tbody className={styles.tableBody}>
                   {savedResumes.map((resume, index) => (
                     <tr
                       key={`${resume.fileName}-${index}`}
-                      className="align-top"
+                      className={styles.tableRowTop}
                     >
-                      <td className="px-4 py-3 font-bold text-slate-800">
+                      <td className={styles.tableCellBold}>
                         {resume.title}
                       </td>
-                      <td className="px-4 py-3">{resume.fullName || "—"}</td>
-                      <td className="px-4 py-3">{resume.email || "—"}</td>
-                      <td className="px-4 py-3">{resume.mobile || "—"}</td>
-                      <td className="px-4 py-3">
+                      <td className={styles.tableCell}>{resume.fullName || "—"}</td>
+                      <td className={styles.tableCell}>{resume.email || "—"}</td>
+                      <td className={styles.tableCell}>{resume.mobile || "—"}</td>
+                      <td className={styles.tableCell}>
                         {resume.currentJobTitle || "—"}
                       </td>
-                      <td className="px-4 py-3">{resume.format}</td>
-                      <td className="max-w-[160px] truncate px-4 py-3">
+                      <td className={styles.tableCell}>{resume.format}</td>
+                      <td className={styles.tableCellTruncate}>
                         {resume.notes || "—"}
                       </td>
-                      <td className="px-4 py-3">
-                        <div className="flex gap-2">
+                      <td className={styles.tableCell}>
+                        <div className={styles.tableActionsRow}>
                           {resume.source === "Created" && (
                             <button
                               type="button"
                               onClick={() => downloadResume(resume)}
-                              className="rounded-lg border border-primary/30 px-3 py-2 text-xs font-bold text-primary hover:bg-primary/5"
+                              className={styles.downloadBtn}
                             >
                               Download
                             </button>
@@ -3436,7 +3426,7 @@ const TeacherProfile = () => {
                           <button
                             type="button"
                             onClick={() => handleDeleteResume(index)}
-                            className="rounded-lg border border-red-100 px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50"
+                            className={styles.deleteBtn}
                           >
                             Delete
                           </button>
@@ -3479,22 +3469,22 @@ const TeacherProfile = () => {
           description="This is how your profile appears to recruiters before you give consent to share full details."
         />
 
-        <div className="overflow-hidden rounded-3xl border border-borderColor bg-white shadow-soft">
-          <div className="h-28 bg-primary" />
-          <div className="relative px-6 pb-8">
-            <div className="-mt-16 flex flex-col items-center gap-5 md:flex-row md:items-end">
-              <div className="flex h-32 w-32 items-center justify-center rounded-3xl border-4 border-white bg-slate-200 shadow-md text-slate-400">
+        <div className={styles.viewProfileCard}>
+          <div className={styles.viewProfileBanner} />
+          <div className={styles.viewProfileBody}>
+            <div className={styles.viewProfileHeaderRow}>
+              <div className={styles.viewProfileAvatar}>
                 <User size={48} />
               </div>
-              <div className="flex-1 text-center md:text-left">
-                <h2 className="text-2xl font-bold text-slate-900">
+              <div className={styles.viewProfileNameBlock}>
+                <h2 className={styles.viewProfileName}>
                   {teacherData.title} {teacherData.firstName?.charAt(0)}.{" "}
                   {teacherData.lastName?.charAt(0)}.
                 </h2>
-                <p className="mt-2 text-sm font-semibold text-primary">
+                <p className={styles.viewProfileJobTitle}>
                   {teacherData.currentJob || "Teaching Professional"}
                 </p>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className={styles.viewProfileLocation}>
                   {teacherData.city
                     ? `${teacherData.city}`
                     : "Location not added"}
@@ -3502,83 +3492,83 @@ const TeacherProfile = () => {
               </div>
             </div>
 
-            <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="rounded-2xl border border-borderColor bg-light p-4">
-                <p className="text-xs font-bold uppercase text-slate-500">
+            <div className={styles.viewProfileStatsGrid}>
+              <div className={styles.viewProfileStatCard}>
+                <p className={styles.viewProfileStatLabel}>
                   Age
                 </p>
-                <p className="mt-1 text-sm font-semibold text-slate-800">
+                <p className={styles.viewProfileStatValue}>
                   {teacherData.age || "Not added"}
                 </p>
               </div>
-              <div className="rounded-2xl border border-borderColor bg-light p-4">
-                <p className="text-xs font-bold uppercase text-slate-500">
+              <div className={styles.viewProfileStatCard}>
+                <p className={styles.viewProfileStatLabel}>
                   Main Subject
                 </p>
-                <p className="mt-1 text-sm font-semibold text-slate-800">
+                <p className={styles.viewProfileStatValue}>
                   {teacherData.mainSubject || "Not added"}
                 </p>
               </div>
-              <div className="rounded-2xl border border-borderColor bg-light p-4">
-                <p className="text-xs font-bold uppercase text-slate-500">
+              <div className={styles.viewProfileStatCard}>
+                <p className={styles.viewProfileStatLabel}>
                   Total Experience
                 </p>
-                <p className="mt-1 text-sm font-semibold text-slate-800">
+                <p className={styles.viewProfileStatValue}>
                   {expDisplay}
                 </p>
               </div>
-              <div className="rounded-2xl border border-borderColor bg-light p-4">
-                <p className="text-xs font-bold uppercase text-slate-500">
+              <div className={styles.viewProfileStatCard}>
+                <p className={styles.viewProfileStatLabel}>
                   Highest Qualification
                 </p>
-                <p className="mt-1 text-sm font-semibold text-slate-800">
+                <p className={styles.viewProfileStatValue}>
                   {highestDeg}
                 </p>
               </div>
-              <div className="rounded-2xl border border-borderColor bg-light p-4">
-                <p className="text-xs font-bold uppercase text-slate-500">
+              <div className={styles.viewProfileStatCard}>
+                <p className={styles.viewProfileStatLabel}>
                   University
                 </p>
-                <p className="mt-1 text-sm font-semibold text-slate-800">
+                <p className={styles.viewProfileStatValue}>
                   {university}
                 </p>
               </div>
-              <div className="rounded-2xl border border-borderColor bg-light p-4">
-                <p className="text-xs font-bold uppercase text-slate-500">
+              <div className={styles.viewProfileStatCard}>
+                <p className={styles.viewProfileStatLabel}>
                   Area / City
                 </p>
-                <p className="mt-1 text-sm font-semibold text-slate-800">
+                <p className={styles.viewProfileStatValue}>
                   {teacherData.city || "Not added"}
                 </p>
               </div>
             </div>
 
             {teacherData.briefWriteUp && (
-              <div className="mt-6">
-                <h4 className="mb-2 text-sm font-bold uppercase tracking-wide text-slate-500">
+              <div className={styles.summaryBlockWrap}>
+                <h4 className={styles.summaryBlockTitle}>
                   Professional Summary
                 </h4>
-                <p className="rounded-2xl border border-borderColor bg-light px-4 py-3 text-sm leading-relaxed text-slate-700">
+                <p className={styles.summaryBlockText}>
                   {teacherData.briefWriteUp}
                 </p>
               </div>
             )}
 
             {savedAwards.length > 0 && (
-              <div className="mt-6">
-                <h4 className="mb-3 text-sm font-bold uppercase tracking-wide text-slate-500">
+              <div className={styles.publicAwardsWrap}>
+                <h4 className={styles.summaryBlockTitle}>
                   Public Awards
                 </h4>
-                <div className="flex flex-wrap gap-3">
+                <div className={styles.publicAwardsRow}>
                   {savedAwards.map((award, i) => (
                     <div
                       key={i}
-                      className="rounded-2xl border border-borderColor bg-light px-4 py-3"
+                      className={styles.publicAwardCard}
                     >
-                      <p className="text-sm font-bold text-slate-800">
+                      <p className={styles.publicAwardName}>
                         {award.name || "Unnamed Award"}
                       </p>
-                      <p className="text-xs text-slate-500">
+                      <p className={styles.publicAwardMeta}>
                         {award.by} · {award.year}
                       </p>
                     </div>
@@ -3589,9 +3579,9 @@ const TeacherProfile = () => {
           </div>
         </div>
 
-        <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-800">
-          <p className="font-bold">Privacy Notice</p>
-          <p className="mt-1 leading-relaxed">
+        <div className={styles.privacyNotice}>
+          <p className={styles.privacyNoticeTitle}>Privacy Notice</p>
+          <p className={styles.privacyNoticeText}>
             The above profile is what recruiters will see in the first instance
             — your photo, full name, mobile number, and email are kept private.
             Once you apply for a job and give your consent, your complete CV and
@@ -3612,49 +3602,49 @@ const TeacherProfile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-light">
-      <form onSubmit={handleSubmit} className="flex min-h-screen">
-        <aside className="hidden w-72 bg-primary p-5 text-white lg:block">
-          <div className="rounded-3xl bg-white/10 p-5">
-            <div className="flex flex-col items-center text-center">
-              <div className="relative">
+    <div className={styles.pageWrap}>
+      <form onSubmit={handleSubmit} className={styles.formLayoutRow}>
+        <aside className={styles.sidebar}>
+          <div className={styles.sidebarProfileCard}>
+            <div className={styles.sidebarProfileInner}>
+              <div className={styles.sidebarAvatarWrap}>
                 <img
                   src={profileImage}
                   alt="profile"
-                  className="h-24 w-24 rounded-3xl border-4 border-white/20 object-cover"
+                  className={styles.sidebarAvatarImg}
                 />
-                <span className="absolute -bottom-2 -right-2 rounded-full bg-green-500 p-2 text-white">
+                <span className={styles.sidebarAvatarBadge}>
                   <CheckCircle2 size={18} />
                 </span>
               </div>
-              <label className="mt-5 cursor-pointer rounded-xl bg-white px-4 py-2 text-sm font-bold text-primary hover:bg-white/90">
+              <label className={styles.sidebarUploadLabel}>
                 Upload Photo
                 <input type="file" hidden onChange={handleProfileImage} />
               </label>
-              <h1 className="mt-5 text-xl font-bold text-white">
+              <h1 className={styles.sidebarName}>
                 {teacherData.title} {teacherData.firstName}{" "}
                 {teacherData.lastName}
               </h1>
-              <p className="mt-1 text-sm text-white/70">
+              <p className={styles.sidebarJobTitle}>
                 {teacherData.currentJob}
               </p>
             </div>
           </div>
 
-          <div className="mt-6 rounded-3xl bg-white/10 p-5">
-            <div className="mb-3 flex items-center justify-between text-sm font-bold text-white">
+          <div className={styles.sidebarScoreCard}>
+            <div className={styles.sidebarScoreHeaderRow}>
               <span>Profile Score</span>
               <span>{completion}%</span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-white/20">
+            <div className={styles.sidebarScoreTrack}>
               <div
-                className="h-full rounded-full bg-white"
+                className={styles.sidebarScoreFill}
                 style={{ width: `${completion}%` }}
               />
             </div>
           </div>
 
-          <nav className="mt-8 space-y-2">
+          <nav className={styles.sidebarNav}>
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeSection === item.id;
@@ -3663,10 +3653,7 @@ const TeacherProfile = () => {
                   key={item.id}
                   type="button"
                   onClick={() => setActiveSection(item.id)}
-                  className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${isActive
-                    ? "bg-white text-primary shadow-soft"
-                    : "text-white/80 hover:bg-white/10 hover:text-white"
-                    }`}
+                  className={`${styles.sidebarNavBtn} ${isActive ? styles.sidebarNavBtnActive : ""}`}
                 >
                   <Icon size={18} />
                   {item.label}
@@ -3675,7 +3662,7 @@ const TeacherProfile = () => {
             })}
           </nav>
 
-          <div className="mt-8 border-t border-white/20 pt-4">
+          <div className={styles.sidebarFooter}>
             <Button
               type="button"
               variant="filled"
@@ -3687,16 +3674,16 @@ const TeacherProfile = () => {
           </div>
         </aside>
 
-        <main className="min-w-0 flex-1 p-4 sm:p-5 lg:p-8">
-          <div className="mb-6 flex flex-col gap-4 rounded-3xl bg-white p-5 shadow-soft md:flex-row md:items-center md:justify-between">
+        <main className={styles.mainContent}>
+          <div className={styles.mainHeaderCard}>
             <div>
-              <p className="text-xs font-bold uppercase tracking-[2px] text-secondary">
+              <p className={styles.mainHeaderEyebrow}>
                 Profile Workspace
               </p>
-              <h1 className="mt-1 text-2xl font-bold text-primary sm:text-3xl">
+              <h1 className={styles.mainHeaderTitle}>
                 Teacher Profile
               </h1>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className={styles.mainHeaderSubtext}>
                 Complete your profile sections so schools can evaluate you
                 faster.
               </p>
@@ -3704,9 +3691,9 @@ const TeacherProfile = () => {
             <BackButton />
           </div>
 
-          <div className="relative mb-6 lg:hidden">
-            <div className="flex items-center justify-between rounded-3xl bg-white p-3 shadow-soft">
-              <span className="px-2 text-sm font-bold text-primary">
+          <div className={styles.mobileNavWrap}>
+            <div className={styles.mobileNavBar}>
+              <span className={styles.mobileNavLabel}>
                 {navItems.find((item) => item.id === activeSection)?.label || "Menu"}
               </span>
               <button
@@ -3714,14 +3701,14 @@ const TeacherProfile = () => {
                 onClick={() => setMobileNavOpen((o) => !o)}
                 aria-label="Toggle navigation menu"
                 aria-expanded={mobileNavOpen}
-                className="rounded-xl p-2 text-primary hover:bg-light"
+                className={styles.mobileNavToggleBtn}
               >
                 {mobileNavOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
             </div>
 
             {mobileNavOpen && (
-              <div className="absolute left-0 right-0 top-full z-40 mt-2 space-y-1 rounded-3xl bg-white p-3 shadow-soft">
+              <div className={styles.mobileNavDropdown}>
                 {navItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = activeSection === item.id;
@@ -3733,9 +3720,7 @@ const TeacherProfile = () => {
                         setActiveSection(item.id);
                         setMobileNavOpen(false);
                       }}
-                      className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold transition ${
-                        isActive ? "bg-primary text-white" : "text-slate-600 hover:bg-light hover:text-primary"
-                      }`}
+                      className={`${styles.mobileNavItemBtn} ${isActive ? styles.mobileNavItemBtnActive : ""}`}
                     >
                       <Icon size={17} />
                       {item.label}
@@ -3746,12 +3731,12 @@ const TeacherProfile = () => {
             )}
           </div>
 
-          <div className="rounded-3xl bg-white p-4 shadow-soft sm:p-6 lg:p-8">
+          <div className={styles.contentCard}>
             {renderActiveSection()}
             {!["qualification", "experience", "viewProfile"].includes(
               activeSection,
             ) && (
-                <div className="mt-10 flex flex-col-reverse gap-3 border-t border-borderColor pt-6 sm:flex-row sm:justify-end">
+                <div className={styles.formFooterActions}>
                   <Button
                     type="button"
                     variant="text"

@@ -1,0 +1,45 @@
+.section {
+  border-radius: 1.5rem;
+  background-color: #fff;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-soft);
+}
+
+@media (min-width: 640px) {
+  .section {
+    padding: 1.5rem;
+  }
+}
+
+.heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+@media (min-width: 640px) {
+  .heading {
+    font-size: 1.875rem;
+  }
+}
+
+.grid {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.emptyMessage {
+  border-radius: 1rem;
+  background-color: var(--color-light);
+  padding: 1.25rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}

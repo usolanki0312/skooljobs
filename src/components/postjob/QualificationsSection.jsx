@@ -1,7 +1,8 @@
 import { X } from "lucide-react";
 import SectionCard from "./SectionCard";
-import Select from "../ui/Select";
 import postjob from "../../../dropdown/School_module/postjob.json";
+import styles from "./styles/QualificationsSection.module.css";
+import { Button ,Select,Input  } from "@cloudstrytech/ui-components";
 
 const {
   Min_qualification: MIN_QUALIFICATIONS,
@@ -14,12 +15,12 @@ const {
 
 const TagMultiSelect = ({ label, options, selected, onToggle }) => (
   <div>
-    <p className="mb-2 text-xs font-bold text-slate-600">{label}</p>
-    <div className="flex min-h-12 flex-wrap items-center gap-1.5 rounded-xl border border-borderColor bg-white px-3 py-2">
+    <p className={styles.fieldLabel}>{label}</p>
+    <div className={styles.tagSelectBox}>
       {selected.map((c) => (
-        <span key={c} className="flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-bold text-primary">
+        <span key={c} className={styles.tag}>
           {c}
-          <button type="button" onClick={() => onToggle(c)} className="text-primary/60 hover:text-primary">
+          <button type="button" onClick={() => onToggle(c)} className={styles.tagRemoveButton}>
             <X size={10} />
           </button>
         </span>
@@ -27,7 +28,7 @@ const TagMultiSelect = ({ label, options, selected, onToggle }) => (
       <select
         value=""
         onChange={(e) => { if (e.target.value) onToggle(e.target.value); }}
-        className="min-w-14 flex-1 bg-transparent text-xs text-slate-400 outline-none"
+        className={styles.tagSelect}
       >
         <option value="">Add…</option>
         {options.filter((o) => !selected.includes(o)).map((o) => (
@@ -40,15 +41,15 @@ const TagMultiSelect = ({ label, options, selected, onToggle }) => (
 
 const CheckboxGrid = ({ label, options, selected, onToggle, cols = 3 }) => (
   <div>
-    <p className="mb-2 text-xs font-bold text-slate-600">{label}</p>
-    <div className={`grid gap-2 grid-cols-2 sm:grid-cols-${cols}`}>
+    <p className={styles.fieldLabel}>{label}</p>
+    <div className={`${styles.checkboxGrid} ${cols === 4 ? styles.checkboxGridCols4 : styles.checkboxGridCols3}`}>
       {options.map((opt) => (
-        <label key={opt} className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+        <label key={opt} className={styles.checkboxLabel}>
           <input
             type="checkbox"
             checked={selected.includes(opt)}
             onChange={() => onToggle(opt)}
-            className="h-4 w-4 accent-primary"
+            className={styles.checkboxInput}
           />
           {opt}
         </label>
@@ -65,24 +66,24 @@ const QualificationsSection = ({ form, setField }) => {
 
   return (
     <SectionCard number={3} title="Qualifications & Experience">
-      <div className="space-y-6">
+      <div className={styles.wrapper}>
 
         {/* Row 1: Min Qual + Additional Qual + Certifications */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+        <div className={styles.gridRow3}>
           <div>
-            <label className="mb-1.5 block text-xs font-bold text-slate-600">
-              Minimum Qualification <span className="text-red-500">*</span>
+            <label className={styles.fieldLabelBlock}>
+              Minimum Qualification <span className={styles.requiredMark}>*</span>
             </label>
             <Select value={form.minQualification} onChange={(v) => setField("minQualification", v)} placeholder="Select" options={MIN_QUALIFICATIONS} />
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-bold text-slate-600">Additional Qualification</label>
+            <label className={styles.fieldLabelBlock}>Additional Qualification</label>
             <Select value={form.additionalQualification} onChange={(v) => setField("additionalQualification", v)} placeholder="Select" options={ADDITIONAL_QUALIFICATIONS} />
           </div>
 
           <TagMultiSelect
-            label={<>Certifications <span className="ml-1 text-xs font-normal text-slate-400">(Optional)</span></>}
+            label={<>Certifications <span className={styles.optionalMark}>(Optional)</span></>}
             options={CERTIFICATIONS}
             selected={form.certifications}
             onToggle={toggle("certifications")}
@@ -90,10 +91,10 @@ const QualificationsSection = ({ form, setField }) => {
         </div>
 
         {/* Row 2: Experience + Student Level */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div className={styles.gridRow2}>
           <div>
-            <label className="mb-1.5 block text-xs font-bold text-slate-600">
-              Experience Required <span className="text-red-500">*</span>
+            <label className={styles.fieldLabelBlock}>
+              Experience Required <span className={styles.requiredMark}>*</span>
             </label>
             <Select value={form.experience} onChange={(v) => setField("experience", v)} placeholder="Select Experience" options={EXPERIENCE_OPTIONS} />
           </div>
@@ -108,7 +109,7 @@ const QualificationsSection = ({ form, setField }) => {
 
         {/* Row 3: Preferred School Type */}
         <CheckboxGrid
-          label={<>Preferred School Type <span className="ml-1 text-xs font-normal text-slate-400">(Select all that apply)</span></>}
+          label={<>Preferred School Type <span className={styles.optionalMark}>(Select all that apply)</span></>}
           options={PREFERRED_SCHOOL_TYPES}
           selected={form.preferredSchoolTypes}
           onToggle={toggle("preferredSchoolTypes")}

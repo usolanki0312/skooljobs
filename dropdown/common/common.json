@@ -1,4 +1,8 @@
 {
+  "Language_type": [
+    { "label": "Indian Languages", "value": "Indian" },
+    { "label": "Foreign Languages", "value": "Foreign" }
+  ],
   "Nationality": [
     "Indian",
     "Afghan",
