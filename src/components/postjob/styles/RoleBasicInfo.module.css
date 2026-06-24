@@ -99,16 +99,8 @@
   color: var(--color-primary);
 }
 
-.employmentTypeButtonActive {
-  border-color: var(--color-primary);
-  background-color: var(--color-primary);
-  color: #ffffff;
-}
 
-.employmentTypeButtonActive:hover {
-  border-color: var(--color-primary);
-  color: #ffffff;
-}
+
 
 .locationField {
   position: relative;

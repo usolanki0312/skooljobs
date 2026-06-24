@@ -1178,21 +1178,7 @@ const TeacherProfile = () => {
                 <option key={s}>{s}</option>
               ))}
             </select>
-            <input
-              type="text"
-              placeholder="Or type custom subject"
-              className={`${inputClass} ${styles.subjectSelectFlex}`}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  const val = e.target.value.trim();
-                  if (val && !selectedAdditionalSubjects.includes(val)) {
-                    setSelectedAdditionalSubjects((prev) => [...prev, val]);
-                    e.target.value = "";
-                  }
-                }
-              }}
-            />
+          
             <button
               type="button"
               title="Add typed subject"
@@ -1237,7 +1223,7 @@ const TeacherProfile = () => {
           </div>
         </div>
         <div className={styles.lgColSpan3}>
-          <Button startIcon="plusIcon" endIcon="shareIcon" size="sm">Add Language</Button>
+          <Button startIcon="plusIcon">Add Language</Button>
           <div className={styles.languageRowsStack}>
             {dynamicLanguages.map((lang, idx) => (
               <div
