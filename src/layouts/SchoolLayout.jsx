@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import Topbar from "../components/topbar";
 import { initialJobs, initialApplicants } from "../lib/schooldata";
+import { useImageUpload } from "../lib/useImageUpload";
 import styles from "./SchoolLayout.module.css";
 
 const augmentedJobs = [...initialJobs]
@@ -84,6 +85,11 @@ const SchoolLayout = () => {
   }, [applicants]);
 
   const [logoImage, setLogoImage] = useState(null);
+  const {
+    error: logoImageError,
+    validating: logoImageValidating,
+    validateAndProcess: validateLogoImage,
+  } = useImageUpload("logo");
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   const [notifications, setNotifications] = useState([
     { id: 1, msg: "New application from Rahul Sharma for Math Teacher", time: "2h ago", read: false },
@@ -202,9 +208,12 @@ const SchoolLayout = () => {
     navigate("/");
   };
 
-  const handleLogoUpload = (e) => {
+  const handleLogoUpload = async (e) => {
     const file = e.target.files[0];
-    if (file) setLogoImage(URL.createObjectURL(file));
+    e.target.value = "";
+    if (!file) return;
+    const url = await validateLogoImage(file);
+    if (url) setLogoImage(url);
   };
 
   const handleMarkRead = (id) => {
@@ -294,9 +303,18 @@ const SchoolLayout = () => {
           <div className={styles.sidebarInner}>
             <label className={styles.logoUploadLabel}>
               <Upload size={13} />
-              Upload Institute Logo
-              <input type="file" hidden accept="image/*" onChange={handleLogoUpload} />
+              {logoImageValidating ? "Checking..." : "Upload Institute Logo"}
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                disabled={logoImageValidating}
+                onChange={handleLogoUpload}
+              />
             </label>
+            {logoImageError && (
+              <p className={styles.uploadError}>{logoImageError}</p>
+            )}
 
             <div className={styles.schoolInfoRow}>
               <div className={styles.logoBox}>

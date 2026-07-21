@@ -3,9 +3,11 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { ChevronRight, PlusCircle, Search, Share2 } from "lucide-react";
 import managejobsOptions from "../../../dropdown/School_module/managejobs.json";
 import styles from "./styles/SchoolManageJobs.module.css";
-import { Button, Input, Select } from "@cloudstrytech/ui-components";
+import { Button, Select } from "@cloudstrytech/ui-components";
+import { toOptions } from "../../lib/selectOptions";
 
-const { Job_status: jobStatusOptions } = managejobsOptions;
+const { Job_status: jobStatusOptionsRaw } = managejobsOptions;
+const jobStatusOptions = toOptions(jobStatusOptionsRaw);
 
 const jobStatusChip = {
   Active: styles.statusActive,
@@ -13,16 +15,27 @@ const jobStatusChip = {
   Closed: styles.statusClosed,
   Paused: styles.statusPaused,
   Scheduled: styles.statusScheduled,
+  "Pending Approval": styles.statusPending,
+  Approved: styles.statusApproved,
+  Rejected: styles.statusRejected,
 };
 
 const SchoolManageJobs = () => {
   const navigate = useNavigate();
-  const { jobs, applicants } = useOutletContext();
+  const { jobs, setJobs, applicants } = useOutletContext();
 
   const [jobSearch, setJobSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
   const draftCount = jobs.filter((j) => j.status === "Draft").length;
+
+  const publishApprovedJob = (id) => {
+    setJobs((prev) =>
+      prev.map((j) =>
+        j.id === id ? { ...j, status: j.requestedStatus || "Active" } : j,
+      ),
+    );
+  };
 
   const filteredJobs = jobs
     .filter((j) => j.title.toLowerCase().includes(jobSearch.toLowerCase()))
@@ -104,11 +117,26 @@ const SchoolManageJobs = () => {
                         <span className={`${styles.statusChip} ${jobStatusChip[job.status] || styles.statusDefault}`}>
                           {job.status}
                         </span>
+                        {job.status === "Rejected" && job.rejectionReason && (
+                          <p className={styles.tdSubject} title={job.rejectionReason}>
+                            {job.rejectionReason}
+                          </p>
+                        )}
                       </td>
                       <td className={styles.tdLight}>{job.date}</td>
                       <td className={styles.tdLight}>{job.expiryDate || "—"}</td>
                       <td className={styles.tdActions} onClick={(e) => e.stopPropagation()}>
                         <div className={styles.actionsInner}>
+                          {job.status === "Approved" && (
+                            <button
+                              type="button"
+                              onClick={() => publishApprovedJob(job.id)}
+                              className={styles.publishButton}
+                              title="Publish Now"
+                            >
+                              Publish Now
+                            </button>
+                          )}
                           <button
                             type="button"
                             onClick={() => {

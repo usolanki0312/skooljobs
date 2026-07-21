@@ -39,7 +39,7 @@
   gap: 0.5rem;
   border-radius: 1rem;
   border: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 0.75rem 1rem;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
@@ -64,7 +64,7 @@
   min-width: 11rem;
   border-radius: 1rem;
   border: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -79,7 +79,7 @@
   width: 180px;
   border-radius: 1rem;
   border: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -95,7 +95,7 @@
   overflow: hidden;
   border-radius: 1rem;
   border: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
@@ -111,7 +111,7 @@
 }
 
 .tableHead {
-  background-color: rgba(4, 72, 144, 0.05);
+  background-color: rgba(21, 41, 63, 0.05);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.025em;
@@ -159,14 +159,14 @@
 
 .trSelected {
   cursor: pointer;
-  background-color: rgba(4, 72, 144, 0.05);
+  background-color: rgba(21, 41, 63, 0.05);
   transition-property: all;
   transition-duration: 150ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .trSelected:hover {
-  background-color: rgba(4, 72, 144, 0.05);
+  background-color: rgba(21, 41, 63, 0.05);
 }
 
 .td {
@@ -244,7 +244,7 @@
   width: 100%;
   max-width: 28rem;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   transition-property: transform;
   transition-duration: 300ms;
@@ -262,7 +262,7 @@
   width: 100%;
   max-width: 28rem;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   transition-property: transform;
   transition-duration: 300ms;
@@ -384,7 +384,7 @@
 .detailCard {
   border-radius: 0.75rem;
   border: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 0.75rem;
 }
 
@@ -629,7 +629,7 @@
   overflow-y: auto;
   border-radius: 1.5rem;
   border: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
@@ -641,7 +641,7 @@
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 1rem 1.5rem;
 }
 
@@ -658,7 +658,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 0.75rem;
-  background-color: rgba(4, 72, 144, 0.1);
+  background-color: rgba(21, 41, 63, 0.1);
   color: var(--color-primary);
 }
 
@@ -722,14 +722,14 @@
 }
 
 .modalFooterBtn:hover {
-  background-color: rgba(4, 72, 144, 0.9);
+  background-color: rgba(21, 41, 63, 0.9);
 }
 
 /* ── Resume modal ─────────────────────────────────────────────────────── */
 
 .resumeHeaderCard {
   border-radius: 1rem;
-  background-image: linear-gradient(to right, var(--color-primary), rgba(4, 72, 144, 0.8));
+  background-image: linear-gradient(to right, var(--color-primary), rgba(21, 41, 63, 0.8));
   padding: 1.5rem;
   color: #ffffff;
   box-shadow: var(--shadow-soft);
@@ -798,7 +798,7 @@
 
 .experienceItem {
   position: relative;
-  border-left: 2px solid rgba(4, 72, 144, 0.2);
+  border-left: 2px solid rgba(21, 41, 63, 0.2);
   padding-left: 1rem;
 }
 
@@ -888,7 +888,7 @@
 .qualificationScore {
   border-radius: 0.25rem;
   border: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 0.125rem 0.5rem;
   font-weight: 700;
   color: #475569;
@@ -926,13 +926,13 @@
   overflow: hidden;
   border-radius: 1rem;
   border: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   box-shadow: var(--shadow-soft);
 }
 
 .profileModalBanner {
   height: 5rem;
-  background-color: rgba(4, 72, 144, 0.1);
+  background-color: rgba(21, 41, 63, 0.1);
 }
 
 .profileModalBody {

@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import "@cloudstrytech/ui-components/styles.css";
 import { Button, Input, Select } from "@cloudstrytech/ui-components";
 import {
@@ -14,6 +14,7 @@ import {
   Menu,
   Phone,
   Plus,
+  RotateCcw,
   Save,
   Sparkles,
   Trophy,
@@ -24,26 +25,59 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import BackButton from "../../components/backbutton";
+import SelectOrOther from "../../components/ui/SelectOrOther";
 import { pinStateMap } from "../../lib/teacherdata";
-import qualificationOptions from "../../../dropdown/Teacher_module/qualifications.json";
-import experienceOptions from "../../../dropdown/Teacher_module/experience.json";
+import qualificationOptionsRaw from "../../../dropdown/Teacher_module/qualifications.json";
+import experienceOptionsRaw from "../../../dropdown/Teacher_module/experience.json";
 import common from "../../../dropdown/common/common.json";
 import myprofile from "../../../dropdown/Teacher_module/myprofile.json";
 import styles from "./styles/TeacherProfile.module.css";
+import { toOptions, toOptionsMap } from "../../lib/selectOptions";
+import { useImageUpload } from "../../lib/useImageUpload";
+import { validateText, validateFields } from "../../lib/textValidation";
 
+const { coursesByDegree: coursesByDegreeRaw, ...qualificationOptionsFlatRaw } =
+  qualificationOptionsRaw;
+const qualificationOptions = {
+  ...toOptionsMap(qualificationOptionsFlatRaw),
+  coursesByDegree: toOptionsMap(coursesByDegreeRaw),
+};
+const experienceOptions = toOptionsMap(experienceOptionsRaw);
 
-const { Language: languageOptions, Nationality: nationalities } = common;
+const { Language: languageOptionsRaw, Nationality: nationalitiesRaw } = common;
+const languageOptions = toOptions(languageOptionsRaw);
+const nationalities = toOptions(nationalitiesRaw);
+
 const {
-  Title: TITLES,
-  Current_job_title: CURRENT_JOB_TITLES,
-  Main_subject: MAIN_SUBJECTS,
+  Title: TITLES_RAW,
+  Current_job_title: CURRENT_JOB_TITLES_RAW,
+  Main_subject: MAIN_SUBJECTS_RAW,
   Additional_subject: ALL_ADDITIONAL_SUBJECTS,
-  Class: CLASSES_TAUGHT,
-  Language_proficiency: languageStatuses,
-  Achievement_award_type: AWARD_TYPES,
-  Achievement_course_type: COURSE_TYPES,
-  Resume_format: RESUME_FORMATS,
+  Class: CLASSES_TAUGHT_RAW,
+  Language_proficiency: languageStatusesRaw,
+  Achievement_award_type: AWARD_TYPES_RAW,
+  Achievement_course_type: COURSE_TYPES_RAW,
+  Resume_format: RESUME_FORMATS_RAW,
+  Cover_letter_sample_jobs: SAMPLE_JOB_OPENINGS_RAW,
 } = myprofile;
+
+const TITLES = toOptions(TITLES_RAW);
+const CURRENT_JOB_TITLES = toOptions(CURRENT_JOB_TITLES_RAW);
+const MAIN_SUBJECTS = toOptions(MAIN_SUBJECTS_RAW);
+const CLASSES_TAUGHT = toOptions(CLASSES_TAUGHT_RAW);
+const languageStatuses = toOptions(languageStatusesRaw);
+const AWARD_TYPES = toOptions(AWARD_TYPES_RAW);
+const COURSE_TYPES = toOptions(COURSE_TYPES_RAW);
+const RESUME_FORMATS = toOptions(RESUME_FORMATS_RAW);
+const SAMPLE_JOB_OPENINGS = toOptions(SAMPLE_JOB_OPENINGS_RAW);
+
+const CURRENT_YEAR = new Date().getFullYear();
+const BIRTH_YEARS = Array.from({ length: 83 }, (_, i) =>
+  String(CURRENT_YEAR - 18 - i),
+);
+const birthYearOptions = toOptions(BIRTH_YEARS);
+
+const OTHER_VALUE = "Other";
 
 const navItems = [
   { id: "basic", label: "My Profile", icon: User },
@@ -79,17 +113,44 @@ const Field = ({ label, children }) => (
   </div>
 );
 
+const SelectWithOther = ({
+  label,
+  value,
+  onChange,
+  otherValue,
+  onOtherChange,
+  options,
+  placeholder,
+}) => (
+  <Field label={label}>
+    <SelectOrOther
+      value={value}
+      onChange={onChange}
+      otherValue={otherValue}
+      onOtherChange={onOtherChange}
+      options={options}
+      placeholder={placeholder}
+      otherToken={OTHER_VALUE}
+    />
+  </Field>
+);
+
 const blankQualification = {
   classLevel: "",
   degree: "",
+  degreeOther: "",
   course: "",
+  courseOther: "",
   year: "",
   medium: "",
+  mediumOther: "",
   mode: "",
   percentage: "",
   school: "",
   university: "",
+  universityOther: "",
   college: "",
+  collegeOther: "",
 };
 
 const blankExperience = {
@@ -97,13 +158,18 @@ const blankExperience = {
   monthlyTakeHome: "",
   currentEmployer: false,
   board: "",
+  boardOther: "",
   startDate: "",
   endDate: "",
   mainSubject: "",
+  mainSubjectOther: "",
   otherSubjects: "",
+  otherSubjectsOther: "",
   post: "",
+  postOther: "",
   salary: "",
   reason: "",
+  reasonOther: "",
   details: "",
 };
 
@@ -124,8 +190,11 @@ const hasValue = (item) =>
     return String(value || "").trim();
   });
 
+const validSectionIds = navItems.map((item) => item.id);
+
 const TeacherProfile = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const storedUser = useMemo(() => {
     try {
       return JSON.parse(localStorage.getItem("currentUser") || "{}");
@@ -134,11 +203,28 @@ const TeacherProfile = () => {
     }
   }, []);
 
-  const [activeSection, setActiveSection] = useState("basic");
+  const [activeSection, setActiveSectionState] = useState(() => {
+    const requested = searchParams.get("section");
+    return validSectionIds.includes(requested) ? requested : "basic";
+  });
+  const setActiveSection = (id) => {
+    setActiveSectionState(id);
+    setSearchParams(id === "basic" ? {} : { section: id }, { replace: true });
+  };
+  useEffect(() => {
+    const requested = searchParams.get("section");
+    if (!validSectionIds.includes(requested)) return;
+    setActiveSectionState((current) => (requested !== current ? requested : current));
+  }, [searchParams]);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [profileImage, setProfileImage] = useState(
     storedUser.profilePhoto || "https://i.pravatar.cc/300?img=12",
   );
+  const {
+    error: profileImageError,
+    validating: profileImageValidating,
+    validateAndProcess: validateProfilePhoto,
+  } = useImageUpload("photo");
   const [teacherData, setTeacherData] = useState(() => {
     const saved = localStorage.getItem("skooljobs_teacher_data");
     if (saved) {
@@ -157,10 +243,14 @@ const TeacherProfile = () => {
       age: "",
       nationality: "Indian",
       currentJob: "",
+      currentJobOther: "",
       mainSubject: "Mathematics",
+      mainSubjectOther: "",
       additionalSubjects: "History\nGeography\nArt\nMusic",
-      classTaughtOne: "Class A",
-      classTaughtTwo: "Class C",
+      classTaughtOne: "",
+      classTaughtOneOther: "",
+      classTaughtTwo: "",
+      classTaughtTwoOther: "",
       languageOne: "English",
       languageStatusOne: "Fluency enough to teach",
       languageTwo: "",
@@ -168,7 +258,9 @@ const TeacherProfile = () => {
       languageThree: "",
       languageStatusThree: "",
       highestQualificationOne: "",
+      highestQualificationOneOther: "",
       highestQualificationTwo: "",
+      highestQualificationTwoOther: "",
       mobile: storedUser.phone || "9876543210",
       whatsapp: "",
       sameAsMobile: false,
@@ -277,7 +369,9 @@ const TeacherProfile = () => {
         return JSON.parse(saved);
       } catch { }
     }
-    return [{ language: "English", status: "Fluency enough to teach" }];
+    return [
+      { language: "English", status: "Fluency enough to teach", languageOther: "" },
+    ];
   });
 
   const [selectedAdditionalSubjects, setSelectedAdditionalSubjects] = useState(
@@ -293,6 +387,10 @@ const TeacherProfile = () => {
       return ["History", "Geography"];
     },
   );
+  const [showAdditionalSubjectOther, setShowAdditionalSubjectOther] =
+    useState(false);
+  const [additionalSubjectOtherText, setAdditionalSubjectOtherText] =
+    useState("");
 
   const [coverLetterState, setCoverLetterState] = useState({
     selectedJob: "",
@@ -367,6 +465,68 @@ const TeacherProfile = () => {
   const setField = (name, value) =>
     setTeacherData((prev) => ({ ...prev, [name]: value }));
 
+  const effectiveValue = (value, otherValue) =>
+    value === OTHER_VALUE ? otherValue || OTHER_VALUE : value;
+
+  const effectiveLanguage = (lang) =>
+    effectiveValue(lang.language, lang.languageOther);
+
+  // Auto-fill Highest Qualification 1/2 from the saved Qualification list
+  // (kept editable — only fills fields the user hasn't already set manually).
+  useEffect(() => {
+    const highest = savedQualifications[0];
+    const secondHighest = savedQualifications[1];
+    setTeacherData((prev) => {
+      const next = { ...prev };
+      let changed = false;
+      if (highest?.degree && !prev.highestQualificationOne) {
+        next.highestQualificationOne = highest.degree;
+        next.highestQualificationOneOther = highest.degreeOther || "";
+        changed = true;
+      }
+      if (secondHighest?.degree && !prev.highestQualificationTwo) {
+        next.highestQualificationTwo = secondHighest.degree;
+        next.highestQualificationTwoOther = secondHighest.degreeOther || "";
+        changed = true;
+      }
+      return changed ? next : prev;
+    });
+  }, [savedQualifications]);
+
+  const [writeUpGenerating, setWriteUpGenerating] = useState(false);
+  const handleGenerateWriteUp = () => {
+    setWriteUpGenerating(true);
+    setTimeout(() => {
+      const subject = effectiveValue(teacherData.mainSubject, teacherData.mainSubjectOther) || "my subject";
+      const role = effectiveValue(teacherData.currentJob, teacherData.currentJobOther) || "educator";
+      const highestQual =
+        effectiveValue(
+          teacherData.highestQualificationOne,
+          teacherData.highestQualificationOneOther,
+        ) || savedQualifications[0]?.degree;
+      const expYears = savedExperiences.reduce((sum, exp) => {
+        if (!exp.startDate) return sum;
+        const end = exp.currentEmployer
+          ? new Date()
+          : exp.endDate
+            ? new Date(exp.endDate)
+            : new Date();
+        return sum + Math.max(0, (end - new Date(exp.startDate)) / (1000 * 60 * 60 * 24 * 365));
+      }, 0);
+      const expPhrase =
+        expYears > 0
+          ? `${Math.round(expYears)}+ years of experience teaching ${subject}`
+          : `a strong foundation in teaching ${subject}`;
+      const qualPhrase = highestQual ? ` I hold a ${highestQual} and` : "";
+
+      setField(
+        "briefWriteUp",
+        `Dedicated ${role} with ${expPhrase}.${qualPhrase} am committed to creating an engaging, student-centered classroom that builds curiosity and strong fundamentals. I focus on clear communication, individualized attention, and measurable learning outcomes, and I continuously adapt my teaching methods to help every student reach their full potential.`,
+      );
+      setWriteUpGenerating(false);
+    }, 1200);
+  };
+
   const [pincodeLoading, setPincodeLoading] = useState(false);
   const [pincodeError, setPincodeError] = useState("");
   const [areaQuery, setAreaQuery] = useState("");
@@ -393,7 +553,7 @@ const TeacherProfile = () => {
           setTeacherData((p) => ({
             ...p,
             state: po.State,
-            city: po.District,
+            city: p.city ? p.city : po.District,
           }));
         } else {
           setPincodeError("PIN code not found. Enter state & city manually.");
@@ -457,7 +617,7 @@ const TeacherProfile = () => {
     const cleanName = po.Name.replace(/\s*(S\.O|B\.O|H\.O)$/i, "").trim();
     setTeacherData((p) => ({
       ...p,
-      city: po.District,
+      city: p.city ? p.city : po.District,
       state: po.State,
       pinCode: po.Pincode,
       address: p.address ? p.address : cleanName,
@@ -468,10 +628,15 @@ const TeacherProfile = () => {
     setPincodeError("");
   };
 
-  const handleDobChange = (e) => {
-    const { name, value } = e.target;
-    const nextData = { ...teacherData, [name]: value };
+  const handleDobFieldChange = (field, value) => {
+    const nextData = { ...teacherData, [field]: value };
     const { dobDay, dobMonth, dobYear } = nextData;
+
+    if (!dobDay || !dobMonth || !dobYear) {
+      setTeacherData(nextData);
+      return;
+    }
+
     const birthDate = new Date(`${dobYear}-${dobMonth}-${dobDay}`);
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
@@ -487,16 +652,46 @@ const TeacherProfile = () => {
     setTeacherData({ ...nextData, age: Number.isNaN(age) ? "" : age });
   };
 
-  const handleProfileImage = (event) => {
+  const dobComplete = Boolean(
+    teacherData.dobDay && teacherData.dobMonth && teacherData.dobYear,
+  );
+
+  const handleProfileImage = async (event) => {
     const file = event.target.files[0];
-    if (file) {
-      setProfileImage(URL.createObjectURL(file));
-    }
+    event.target.value = "";
+    if (!file) return;
+    const url = await validateProfilePhoto(file);
+    if (url) setProfileImage(url);
   };
 
   const updateQualification = (field, value) => {
     setQualificationDraft((prev) => ({ ...prev, [field]: value }));
   };
+
+  const courseOptionsFor = (degreeOrClassLevel) =>
+    qualificationOptions.coursesByDegree?.[degreeOrClassLevel] ||
+    qualificationOptions.coursesByDegree?.[OTHER_VALUE] ||
+    [];
+
+  const updateQualificationClass = (classLevel) => {
+    setQualificationDraft((prev) => ({
+      ...prev,
+      classLevel,
+      degree: "",
+      course: "",
+    }));
+  };
+
+  const updateQualificationDegree = (degree) => {
+    setQualificationDraft((prev) => ({
+      ...prev,
+      degree,
+      classLevel: "",
+      course: "",
+    }));
+  };
+
+  const isSchoolLevelQualification = Boolean(qualificationDraft.classLevel);
 
   const updateExperience = (field, value) => {
     setExperienceDraft((prev) => ({ ...prev, [field]: value }));
@@ -617,6 +812,12 @@ const TeacherProfile = () => {
       return false;
     }
 
+    const experienceContent = validateText(experienceDraft.details);
+    if (!experienceContent.valid) {
+      alert(experienceContent.reason);
+      return false;
+    }
+
     setSavedExperiences((prev) => {
       if (editingExperienceIndex !== null) {
         return prev.map((item, index) =>
@@ -700,6 +901,14 @@ const TeacherProfile = () => {
         alert("Please add a resume title.");
         return;
       }
+      const resumeContent = validateFields({
+        title: resumeDraft.title,
+        notes: resumeDraft.notes,
+      });
+      if (!resumeContent.valid) {
+        alert(Object.values(resumeContent.errors)[0]);
+        return;
+      }
 
       const addressParts = [];
       if (teacherData.address) addressParts.push(teacherData.address);
@@ -711,7 +920,9 @@ const TeacherProfile = () => {
       const educationStr = savedQualifications
         .map(
           (q) =>
-            `${q.degree || q.classLevel}${q.course ? " in " + q.course : ""} - ${q.college || q.school} (${q.year || "N/A"})`,
+            `${effectiveValue(q.degree, q.degreeOther) || q.classLevel}${
+              q.course ? " in " + effectiveValue(q.course, q.courseOther) : ""
+            } - ${effectiveValue(q.college, q.collegeOther) || q.school} (${q.year || "N/A"})`,
         )
         .join("\n");
 
@@ -737,7 +948,7 @@ const TeacherProfile = () => {
         .join("\n");
 
       const languagesStr = dynamicLanguages
-        .map((l) => `${l.language} (${l.status})`)
+        .map((l) => `${effectiveLanguage(l)} (${l.status})`)
         .filter((l) => l.trim())
         .join(", ");
 
@@ -807,6 +1018,14 @@ const TeacherProfile = () => {
         alert("Please choose a file to upload.");
         return;
       }
+      const uploadResumeContent = validateFields({
+        title: resumeDraft.title,
+        notes: resumeDraft.notes,
+      });
+      if (!uploadResumeContent.valid) {
+        alert(Object.values(uploadResumeContent.errors)[0]);
+        return;
+      }
       const cleanTitle =
         resumeDraft.title.trim() ||
         resumeDraft.fileName.replace(/\.[^/.]+$/, "");
@@ -857,43 +1076,146 @@ const TeacherProfile = () => {
     localStorage.setItem("skooljobs_resumes", JSON.stringify(updated));
   };
 
-  const generateResumeContent = (resume) => {
-    const sep = "=".repeat(60);
-    const sec = "-".repeat(60);
-    const lines = [
-      sep,
-      resume.title.toUpperCase(),
-      sep,
-      "",
-      "PERSONAL INFORMATION",
-      sec,
-      `Name        : ${resume.fullName}`,
-      `Email       : ${resume.email}`,
-      `Mobile      : ${resume.mobile}`,
-      `Address     : ${resume.address || "Not provided"}`,
-      `Job Title   : ${resume.currentJobTitle || "Not provided"}`,
-      "",
+  // Each saved field is either a single line/paragraph or several entries
+  // joined with a delimiter (see addResume) — split them back out so both the
+  // text export and the printable HTML can render proper lists/bullets.
+  const buildResumeSections = (resume) => {
+    const sectionConfig = [
+      { key: "summary", label: "Profile Summary", style: "paragraph" },
+      { key: "skills", label: "Skills", style: "inline", split: "," },
+      { key: "education", label: "Education", style: "list", split: "\n" },
+      { key: "experience", label: "Experience", style: "list", split: "\n\n" },
+      { key: "certifications", label: "Certifications", style: "list", split: "\n" },
+      { key: "languages", label: "Languages", style: "inline", split: "," },
+      { key: "achievements", label: "Achievements", style: "list", split: "\n" },
     ];
-    const addSection = (heading, value) => {
-      if (value?.trim())
-        lines.push(heading.toUpperCase(), sec, value.trim(), "");
-    };
-    addSection("Profile Summary", resume.summary);
-    addSection("Skills", resume.skills);
-    addSection("Education", resume.education);
-    addSection("Experience", resume.experience);
-    addSection("Certifications", resume.certifications);
-    addSection("Languages", resume.languages);
-    addSection("Achievements", resume.achievements);
+
+    return sectionConfig
+      .map(({ key, label, style, split }) => {
+        const raw = resume[key];
+        if (!raw?.trim()) return null;
+        const items =
+          style === "paragraph"
+            ? raw.trim().split("\n").map((p) => p.trim()).filter(Boolean)
+            : raw.split(split).map((item) => item.trim()).filter(Boolean);
+        return items.length ? { label, style, items } : null;
+      })
+      .filter(Boolean);
+  };
+
+  const generateResumeContent = (resume) => {
+    const divider = "-".repeat(60);
+    const name = (resume.fullName?.trim() || resume.title).toUpperCase();
+    const contactLine = [resume.email, resume.mobile, resume.address]
+      .filter(Boolean)
+      .join("  |  ");
+
+    const lines = [name];
+    if (resume.currentJobTitle) lines.push(resume.currentJobTitle);
+    if (contactLine) lines.push(contactLine);
+    lines.push(divider);
+
+    buildResumeSections(resume).forEach(({ label, style, items }) => {
+      lines.push("", label.toUpperCase(), divider);
+      if (style === "inline") {
+        lines.push(items.join(", "));
+      } else if (style === "paragraph") {
+        lines.push(...items);
+      } else {
+        items.forEach((item) => lines.push(`• ${item}`));
+      }
+    });
+
     return lines.join("\n");
   };
 
+  const escapeResumeHtml = (str = "") =>
+    str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+
+  const generateResumeHtml = (resume) => {
+    const name = escapeResumeHtml(resume.fullName?.trim() || resume.title);
+    const contact = [resume.email, resume.mobile, resume.address]
+      .filter(Boolean)
+      .map(escapeResumeHtml)
+      .join(" &nbsp;|&nbsp; ");
+
+    const sectionsHtml = buildResumeSections(resume)
+      .map(({ label, style, items }) => {
+        const body =
+          style === "inline"
+            ? `<p class="inline">${items.map(escapeResumeHtml).join(", ")}</p>`
+            : style === "paragraph"
+              ? items.map((p) => `<p>${escapeResumeHtml(p)}</p>`).join("")
+              : `<ul>${items.map((item) => `<li>${escapeResumeHtml(item)}</li>`).join("")}</ul>`;
+        return `<section><h2>${escapeResumeHtml(label)}</h2>${body}</section>`;
+      })
+      .join("");
+
+    return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>${name} - Resume</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: #1f2937; max-width: 760px; margin: 32px auto; padding: 0 24px; line-height: 1.5; }
+  header { text-align: center; border-bottom: 3px solid #2563eb; padding-bottom: 16px; margin-bottom: 20px; }
+  header h1 { margin: 0 0 4px; font-size: 26px; letter-spacing: 0.5px; }
+  header .role { color: #2563eb; font-weight: 600; margin: 0 0 8px; }
+  header .contact { font-size: 13px; color: #4b5563; }
+  section { margin-bottom: 18px; }
+  section h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.6px; color: #2563eb; border-bottom: 1px solid #e5e7eb; padding-bottom: 4px; margin-bottom: 8px; }
+  p { margin: 0 0 6px; font-size: 13.5px; }
+  p.inline { margin: 0; }
+  ul { margin: 0; padding-left: 18px; }
+  li { font-size: 13.5px; margin-bottom: 5px; }
+  .watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-35deg);
+    font-size: 64px;
+    font-weight: 800;
+    letter-spacing: 6px;
+    color: rgba(37, 99, 235, 0.09);
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @media print { body { margin: 0; padding: 16px 28px; } }
+</style>
+</head>
+<body>
+  <div class="watermark">SKOOLJOBS</div>
+  <header>
+    <h1>${name}</h1>
+    ${resume.currentJobTitle ? `<p class="role">${escapeResumeHtml(resume.currentJobTitle)}</p>` : ""}
+    ${contact ? `<p class="contact">${contact}</p>` : ""}
+  </header>
+  ${sectionsHtml}
+</body>
+</html>`;
+  };
+
   const downloadResume = (resume) => {
+    if (resume.format === "PDF") {
+      const printWindow = window.open("", "_blank");
+      if (!printWindow) {
+        alert("Please allow pop-ups for this site to download your resume as a PDF.");
+        return;
+      }
+      printWindow.document.write(generateResumeHtml(resume));
+      printWindow.document.close();
+      printWindow.focus();
+      setTimeout(() => printWindow.print(), 300);
+      return;
+    }
+
     const content = generateResumeContent(resume);
-    const isPdf = resume.format === "PDF";
-    const blob = new Blob([content], {
-      type: isPdf ? "application/octet-stream" : "text/plain",
-    });
+    const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -912,6 +1234,11 @@ const TeacherProfile = () => {
 
     if (!hasValue(award)) {
       alert("Please enter award details before adding.");
+      return;
+    }
+    const awardCheck = validateFields({ name: award.name, by: award.by });
+    if (!awardCheck.valid) {
+      alert(Object.values(awardCheck.errors)[0]);
       return;
     }
 
@@ -937,6 +1264,11 @@ const TeacherProfile = () => {
       alert("Please enter course details before adding.");
       return;
     }
+    const courseCheck = validateFields({ name: course.name, by: course.by });
+    if (!courseCheck.valid) {
+      alert(Object.values(courseCheck.errors)[0]);
+      return;
+    }
 
     setSavedCourses((prev) => [...prev, course]);
     setResumeData((prev) => ({
@@ -957,6 +1289,15 @@ const TeacherProfile = () => {
 
     if (activeSection === "experience" && showExperienceForm) {
       if (saveExperienceDraft()) alert("Experience saved successfully");
+      return;
+    }
+
+    const profileContent = validateFields({
+      briefWriteUp: teacherData.briefWriteUp,
+      address: teacherData.address,
+    });
+    if (!profileContent.valid) {
+      alert(Object.values(profileContent.errors)[0]);
       return;
     }
 
@@ -986,7 +1327,9 @@ const TeacherProfile = () => {
     teacherData.primaryEmail,
     teacherData.mobile,
     teacherData.mainSubject,
-    savedQualifications[0]?.degree || qualificationDraft.degree,
+    savedQualifications[0]?.degree ||
+      savedQualifications[0]?.classLevel ||
+      qualificationDraft.degree,
     savedExperiences[0]?.school || experienceDraft.school,
   ];
   const completion = Math.round(
@@ -1057,32 +1400,22 @@ const TeacherProfile = () => {
               value={teacherData.dobDay}
               placeholder="DD"
               onChange={(value) =>
-                setTeacherData((prev) => ({
-                  ...prev,
-                  dobDay: value,
-                }))
+                handleDobFieldChange("dobDay", value.replace(/\D/g, "").slice(0, 2))
               }
             />
             <Input
               value={teacherData.dobMonth}
               placeholder="MM"
               onChange={(value) =>
-                setTeacherData((prev) => ({
-                  ...prev,
-                  dobMonth: value.replace(/\D/g, "").slice(0, 2),
-                }))
+                handleDobFieldChange("dobMonth", value.replace(/\D/g, "").slice(0, 2))
               }
             />
 
-            <Input
+            <Select
               value={teacherData.dobYear}
+              onChange={(value) => handleDobFieldChange("dobYear", value)}
               placeholder="YYYY"
-              onChange={(value) =>
-                setTeacherData((prev) => ({
-                  ...prev,
-                  dobYear: value.replace(/\D/g, "").slice(0, 4),
-                }))
-              }
+              options={birthYearOptions}
             />
           </div>
         </div>
@@ -1091,10 +1424,11 @@ const TeacherProfile = () => {
           <Input
             value={teacherData.age}
             placeholder="Auto calculated"
+            disabled={dobComplete}
             onChange={(value) =>
               setTeacherData((prev) => ({
                 ...prev,
-                age: value,
+                age: value.replace(/\D/g, "").slice(0, 3),
               }))
             }
           />
@@ -1114,25 +1448,29 @@ const TeacherProfile = () => {
       </div>
 
       <div className={styles.basicInfoLowerGrid}>
-        <Field label="Current Job Title">
-          <Select
-            value={teacherData.currentJob}
-            onChange={(v) => setField("currentJob", v)}
-            placeholder="Select..."
-            options={CURRENT_JOB_TITLES}
-          />
-        </Field>
-        <Field label="Main Subject">
-          <Select
+        <SelectWithOther
+          label="Current Job Title"
+          value={teacherData.currentJob}
+          onChange={(v) => setField("currentJob", v)}
+          otherValue={teacherData.currentJobOther}
+          onOtherChange={(v) => setField("currentJobOther", v)}
+          placeholder="Select..."
+          options={CURRENT_JOB_TITLES}
+        />
+        <div>
+          <SelectWithOther
+            label="Main Subject"
             value={teacherData.mainSubject}
             onChange={(v) => setField("mainSubject", v)}
+            otherValue={teacherData.mainSubjectOther}
+            onOtherChange={(v) => setField("mainSubjectOther", v)}
             placeholder="Select Subject"
             options={MAIN_SUBJECTS}
           />
           <p className={styles.helperTextTight}>
             Only one can be selected.
           </p>
-        </Field>
+        </div>
         <div className={styles.lgColSpan2}>
           <label className={labelClass}>Additional Subject(s)</label>
           {/* Selected subjects as removable tags */}
@@ -1159,44 +1497,69 @@ const TeacherProfile = () => {
               ))}
             </div>
           )}
-          {/* Dropdown + manual input row */}
+          {/* Dropdown + manual input row (same slot, no extra field appears) */}
           <div className={styles.subjectPickerRow}>
-            <select
-              value=""
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val && !selectedAdditionalSubjects.includes(val)) {
-                  setSelectedAdditionalSubjects((prev) => [...prev, val]);
-                }
-              }}
-              className={`${inputClass} ${styles.subjectSelectFlex}`}
-            >
-              <option value="">Select additional subject...</option>
-              {ALL_ADDITIONAL_SUBJECTS.filter(
-                (s) => !selectedAdditionalSubjects.includes(s),
-              ).map((s) => (
-                <option key={s}>{s}</option>
-              ))}
-            </select>
-          
-            <button
-              type="button"
-              title="Add typed subject"
-              onClick={(e) => {
-                const input = e.currentTarget.previousSibling;
-                const val = input.value.trim();
-                if (val && !selectedAdditionalSubjects.includes(val)) {
-                  setSelectedAdditionalSubjects((prev) => [...prev, val]);
-                  input.value = "";
-                }
-              }}
-              className={styles.addSubjectBtn}
-            >
-              <Plus size={15} /> Add
-            </button>
+            {showAdditionalSubjectOther ? (
+              <>
+                <Input
+                  value={additionalSubjectOtherText}
+                  placeholder="Type custom subject"
+                  onChange={setAdditionalSubjectOtherText}
+                  autoFocus
+                />
+                <Button
+                  type="button"
+                  variant="filled"
+                  onClick={() => {
+                    const val = additionalSubjectOtherText.trim();
+                    if (val && !selectedAdditionalSubjects.includes(val)) {
+                      setSelectedAdditionalSubjects((prev) => [...prev, val]);
+                    }
+                    setAdditionalSubjectOtherText("");
+                    setShowAdditionalSubjectOther(false);
+                  }}
+                >
+                  Add
+                </Button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAdditionalSubjectOtherText("");
+                    setShowAdditionalSubjectOther(false);
+                  }}
+                  className={styles.subjectOtherBackBtn}
+                  aria-label="Choose from list instead"
+                  title="Choose from list instead"
+                >
+                  <RotateCcw size={14} />
+                </button>
+              </>
+            ) : (
+              <select
+                value=""
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === OTHER_VALUE) {
+                    setShowAdditionalSubjectOther(true);
+                    return;
+                  }
+                  if (val && !selectedAdditionalSubjects.includes(val)) {
+                    setSelectedAdditionalSubjects((prev) => [...prev, val]);
+                  }
+                }}
+                className={`${inputClass} ${styles.subjectSelectFlex}`}
+              >
+                <option value="">Select additional subject...</option>
+                {ALL_ADDITIONAL_SUBJECTS.filter(
+                  (s) => !selectedAdditionalSubjects.includes(s),
+                ).map((s) => (
+                  <option key={s}>{s}</option>
+                ))}
+              </select>
+            )}
           </div>
           <p className={styles.helperTextTight}>
-            Select from dropdown or type a custom subject and press Enter / Add.
+            Select from dropdown or choose "Other" to type a custom subject.
           </p>
         </div>
         <div className={styles.lgColSpan3}>
@@ -1204,44 +1567,57 @@ const TeacherProfile = () => {
           <div className={styles.classesTaughtRow}>
             <span className={styles.classIndexLabel}>(1)</span>
             <div className={styles.classSelectWrap}>
-              <Select
+              <SelectOrOther
                 value={teacherData.classTaughtOne}
                 onChange={(v) => setField("classTaughtOne", v)}
-                placeholder="Select..."
+                otherValue={teacherData.classTaughtOneOther}
+                onOtherChange={(v) => setField("classTaughtOneOther", v)}
                 options={CLASSES_TAUGHT}
               />
             </div>
             <span className={styles.classIndexLabel}>(2)</span>
             <div className={styles.classSelectWrap}>
-              <Select
+              <SelectOrOther
                 value={teacherData.classTaughtTwo}
                 onChange={(v) => setField("classTaughtTwo", v)}
-                placeholder="Select..."
+                otherValue={teacherData.classTaughtTwoOther}
+                onOtherChange={(v) => setField("classTaughtTwoOther", v)}
                 options={CLASSES_TAUGHT}
               />
             </div>
           </div>
         </div>
+        <Button startIcon="plusIcon">Add Language</Button>
+
         <div className={styles.lgColSpan3}>
-          <Button startIcon="plusIcon">Add Language</Button>
           <div className={styles.languageRowsStack}>
             {dynamicLanguages.map((lang, idx) => (
               <div
                 key={idx}
                 className={styles.languageRow}
               >
-                <Select
-                  value={lang.language}
-                  onChange={(v) =>
-                    setDynamicLanguages((prev) =>
-                      prev.map((l, i) =>
-                        i === idx ? { ...l, language: v } : l,
-                      ),
-                    )
-                  }
-                  placeholder="Select language..."
-                  options={languageOptions}
-                />
+                <div className={styles.otherFieldWrap}>
+                  <SelectOrOther
+                    value={lang.language}
+                    onChange={(v) =>
+                      setDynamicLanguages((prev) =>
+                        prev.map((l, i) =>
+                          i === idx ? { ...l, language: v } : l,
+                        ),
+                      )
+                    }
+                    otherValue={lang.languageOther || ""}
+                    onOtherChange={(v) =>
+                      setDynamicLanguages((prev) =>
+                        prev.map((l, i) =>
+                          i === idx ? { ...l, languageOther: v } : l,
+                        ),
+                      )
+                    }
+                    placeholder="Select language..."
+                    options={languageOptions}
+                  />
+                </div>
                 <Select
                   value={lang.status}
                   onChange={(v) =>
@@ -1274,39 +1650,58 @@ const TeacherProfile = () => {
             <span className={styles.qualificationLabel}>
               Highest Qualification 1
             </span>
-            <Select
-              value={teacherData.highestQualificationOne}
-              onChange={(v) => setField("highestQualificationOne", v)}
-              placeholder="Select..."
-              options={qualificationOptions.degrees}
-            />
+            <div>
+              <SelectOrOther
+                value={teacherData.highestQualificationOne}
+                onChange={(v) => setField("highestQualificationOne", v)}
+                otherValue={teacherData.highestQualificationOneOther}
+                onOtherChange={(v) => setField("highestQualificationOneOther", v)}
+                options={qualificationOptions.degrees}
+              />
+            </div>
             <span className={styles.qualificationLabel}>
               Highest Qualification 2
             </span>
-            <Select
-              value={teacherData.highestQualificationTwo}
-              onChange={(v) => setField("highestQualificationTwo", v)}
-              placeholder="Select..."
-              options={qualificationOptions.degrees}
-            />
+            <div>
+              <SelectOrOther
+                value={teacherData.highestQualificationTwo}
+                onChange={(v) => setField("highestQualificationTwo", v)}
+                otherValue={teacherData.highestQualificationTwoOther}
+                onOtherChange={(v) => setField("highestQualificationTwoOther", v)}
+                options={qualificationOptions.degrees}
+              />
+            </div>
           </div>
         </div>
         <div className={styles.lgColSpan3}>
-          <Field label="Brief Professional Write-up (50–100 words)">
-            <textarea
-              name="briefWriteUp"
-              value={teacherData.briefWriteUp}
-              onChange={handleChange}
-              maxLength={600}
-              rows={4}
-              className={`${inputClass} ${styles.inputTextarea}`}
-              placeholder="Write a short professional summary about yourself — your teaching philosophy, key strengths, and what makes you stand out as an educator..."
-            />
-            <p className={styles.wordCountText}>
-              {teacherData.briefWriteUp.split(/\s+/).filter(Boolean).length} /
-              100 words
-            </p>
-          </Field>
+          <div className={styles.writeUpHeaderRow}>
+            <label className={labelClass}>
+              Brief Professional Write-up (50–100 words)
+            </label>
+            <Button
+              type="button"
+              variant="filled"
+              size="sm"
+              startIcon={<Wand2 size={13} />}
+              loading={writeUpGenerating}
+              onClick={handleGenerateWriteUp}
+            >
+              {writeUpGenerating ? "Generating…" : "AI Generate Write-up"}
+            </Button>
+          </div>
+          <textarea
+            name="briefWriteUp"
+            value={teacherData.briefWriteUp}
+            onChange={handleChange}
+            maxLength={600}
+            rows={4}
+            className={`${inputClass} ${styles.inputTextarea}`}
+            placeholder="Write a short professional summary about yourself — your teaching philosophy, key strengths, and what makes you stand out as an educator... or click 'AI Generate Write-up' and edit the result."
+          />
+          <p className={styles.wordCountText}>
+            {teacherData.briefWriteUp.split(/\s+/).filter(Boolean).length} /
+            100 words
+          </p>
         </div>
       </div>
     </>
@@ -1566,66 +1961,81 @@ const TeacherProfile = () => {
             className={styles.formCard}
           >
             <div className={styles.formGrid3}>
-              <Field label="Class">
-                <Select
-                  value={qualificationDraft.classLevel}
-                  onChange={(classLevel) => {
-                    setQualificationDraft((prev) => ({
-                      ...prev,
-                      classLevel,
-                      degree:
-                        classLevel === "Class 10"
-                          ? "Secondary (10th)"
-                          : classLevel === "Class 12"
-                            ? "Senior Secondary (12th)"
-                            : prev.degree,
-                    }));
-                  }}
-                  placeholder="Select Class"
-                  options={qualificationOptions.class_levels}
-                />
-              </Field>
-              {qualificationDraft.classLevel && (
-                <Field label="School Name">
-                  <Input
-                    value={qualificationDraft.school}
-                    placeholder="Enter school name"
-                    onChange={(value) =>
-                      updateQualification("school", value)
-                    }
-                  />
-                </Field>
-              )}
-              {qualificationDraft.classLevel && (
-                <Field label=" %">
-                  <Input
-                    value={qualificationDraft.percentage}
-                    placeholder="e.g. 76.2"
-                    onChange={(value) =>
-                      updateQualification(
-                        "percentage",
-                        value.replace(/[^0-9.]/g, "")
-                      )
-                    }
-                  />
-                </Field>
-              )}
-              <Field label="Degree">
-                <Select
-                  value={qualificationDraft.degree}
-                  onChange={(v) => updateQualification("degree", v)}
-                  placeholder="Select Degree"
-                  options={qualificationOptions.degrees}
-                />
-              </Field>
-              <Field label="Course Name">
-                <Select
-                  value={qualificationDraft.course}
-                  onChange={(v) => updateQualification("course", v)}
-                  placeholder="Select Course"
-                  options={qualificationOptions.courses}
-                />
-              </Field>
+              <div className={styles.lgColSpan3}>
+                <div className={styles.qualificationSubsection}>
+                  <h4 className={styles.qualificationSubsectionTitle}>
+                    School Education
+                  </h4>
+                  <div className={styles.formGrid3}>
+                    <Field label="Class">
+                      <Select
+                        value={qualificationDraft.classLevel}
+                        onChange={updateQualificationClass}
+                        placeholder="Select Class"
+                        options={qualificationOptions.class_levels}
+                      />
+                    </Field>
+                    {isSchoolLevelQualification && (
+                      <Field label="School Name">
+                        <Input
+                          value={qualificationDraft.school}
+                          placeholder="Enter school name"
+                          onChange={(value) =>
+                            updateQualification("school", value)
+                          }
+                        />
+                      </Field>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className={styles.lgColSpan3}>
+                <div className={styles.qualificationSubsection}>
+                  <h4 className={styles.qualificationSubsectionTitle}>
+                    Higher Education
+                  </h4>
+                  <div className={styles.formGrid3}>
+                    <SelectWithOther
+                      label="Degree"
+                      value={qualificationDraft.degree}
+                      onChange={updateQualificationDegree}
+                      otherValue={qualificationDraft.degreeOther}
+                      onOtherChange={(v) => updateQualification("degreeOther", v)}
+                      placeholder="Select Degree"
+                      options={qualificationOptions.degrees}
+                    />
+                    <SelectWithOther
+                      label="Course Name"
+                      value={qualificationDraft.course}
+                      onChange={(v) => updateQualification("course", v)}
+                      otherValue={qualificationDraft.courseOther}
+                      onOtherChange={(v) => updateQualification("courseOther", v)}
+                      placeholder="Select Course"
+                      options={courseOptionsFor(qualificationDraft.degree)}
+                    />
+                    <SelectWithOther
+                      label="University Name"
+                      value={qualificationDraft.university}
+                      onChange={(v) => updateQualification("university", v)}
+                      otherValue={qualificationDraft.universityOther}
+                      onOtherChange={(v) =>
+                        updateQualification("universityOther", v)
+                      }
+                      placeholder="Select University"
+                      options={qualificationOptions.universities}
+                    />
+                    <SelectWithOther
+                      label="College Name"
+                      value={qualificationDraft.college}
+                      onChange={(v) => updateQualification("college", v)}
+                      otherValue={qualificationDraft.collegeOther}
+                      onOtherChange={(v) => updateQualification("collegeOther", v)}
+                      placeholder="Select College / Institution"
+                      options={qualificationOptions.colleges}
+                    />
+                  </div>
+                </div>
+              </div>
               <Field label="Year Passed">
                 <Input
                   value={qualificationDraft.year}
@@ -1635,14 +2045,15 @@ const TeacherProfile = () => {
                   }
                 />
               </Field>
-              <Field label="Medium of Instruction">
-                <Select
-                  value={qualificationDraft.medium}
-                  onChange={(v) => updateQualification("medium", v)}
-                  placeholder="Select Medium"
-                  options={qualificationOptions.mediums}
-                />
-              </Field>
+              <SelectWithOther
+                label="Medium of Instruction"
+                value={qualificationDraft.medium}
+                onChange={(v) => updateQualification("medium", v)}
+                otherValue={qualificationDraft.mediumOther}
+                onOtherChange={(v) => updateQualification("mediumOther", v)}
+                placeholder="Select Medium"
+                options={qualificationOptions.mediums}
+              />
               <Field label="Mode of Study">
                 <Select
                   value={qualificationDraft.mode}
@@ -1651,36 +2062,18 @@ const TeacherProfile = () => {
                   options={qualificationOptions.modes}
                 />
               </Field>
-              {!qualificationDraft.classLevel && (
-                <Field label="Percentage %">
-                  <Input
-                    label=" "
-                    value={qualificationDraft.percentage}
-                    onChange={(value) =>
-                      updateQualification("percentage", value)
-                    }
-                    placeholder="e.g. 76.2"
-                  />
-                </Field>
-              )}
-              <Field label="University Name">
-                <Select
-                  value={qualificationDraft.university}
-                  onChange={(v) => updateQualification("university", v)}
-                  placeholder="Select University"
-                  options={qualificationOptions.universities}
+              <Field label="Percentage %">
+                <Input
+                  value={qualificationDraft.percentage}
+                  onChange={(value) =>
+                    updateQualification(
+                      "percentage",
+                      value.replace(/[^0-9.]/g, ""),
+                    )
+                  }
+                  placeholder="e.g. 76.2"
                 />
               </Field>
-              <div className={styles.lgColSpan2}>
-                <Field label="College Name">
-                  <Select
-                    value={qualificationDraft.college}
-                    onChange={(v) => updateQualification("college", v)}
-                    placeholder="Select College / Institution"
-                    options={qualificationOptions.colleges}
-                  />
-                </Field>
-              </div>
             </div>
             <div className={styles.formActionsRow}>
               <Button
@@ -1746,21 +2139,23 @@ const TeacherProfile = () => {
                         {item.percentage || "Not added"}
                       </td>
                       <td className={styles.tableCell}>
-                        {item.degree || "Not added"}
+                        {effectiveValue(item.degree, item.degreeOther) || "Not added"}
                       </td>
                       <td className={styles.tableCell}>
-                        {item.course || "Not added"}
+                        {effectiveValue(item.course, item.courseOther) || "Not added"}
                       </td>
                       <td className={styles.tableCell}>{item.year || "Not added"}</td>
                       <td className={styles.tableCell}>
-                        {item.medium || "Not added"}
+                        {effectiveValue(item.medium, item.mediumOther) || "Not added"}
                       </td>
                       <td className={styles.tableCell}>{item.mode || "Not added"}</td>
                       <td className={styles.tableCell}>
-                        {item.university || "Not added"}
+                        {effectiveValue(item.university, item.universityOther) ||
+                          "Not added"}
                       </td>
                       <td className={styles.tableCell}>
-                        {item.college || "Not added"}
+                        {effectiveValue(item.college, item.collegeOther) ||
+                          "Not added"}
                       </td>
                       <td className={styles.tableCell}>
                         <div className={styles.tableActionsRow}>
@@ -1835,14 +2230,15 @@ const TeacherProfile = () => {
                 />
                 Current Employer
               </label>
-              <Field label="Board">
-                <Select
-                  value={experienceDraft.board}
-                  onChange={(v) => updateExperience("board", v)}
-                  placeholder="Select Board"
-                  options={experienceOptions.boards}
-                />
-              </Field>
+              <SelectWithOther
+                label="Board"
+                value={experienceDraft.board}
+                onChange={(v) => updateExperience("board", v)}
+                otherValue={experienceDraft.boardOther}
+                onOtherChange={(v) => updateExperience("boardOther", v)}
+                placeholder="Select Board"
+                options={experienceOptions.boards}
+              />
               <Field label="Start Date">
                 <input
                   type="date"
@@ -1865,30 +2261,33 @@ const TeacherProfile = () => {
                   className={inputClass}
                 />
               </Field>
-              <Field label="Subject Taught (Main)">
-                <Select
-                  value={experienceDraft.mainSubject}
-                  onChange={(v) => updateExperience("mainSubject", v)}
-                  placeholder="Select Main Subject"
-                  options={experienceOptions.subjects}
-                />
-              </Field>
-              <Field label="Other Subjects">
-                <Select
-                  value={experienceDraft.otherSubjects}
-                  onChange={(v) => updateExperience("otherSubjects", v)}
-                  placeholder="Select Other Subject"
-                  options={experienceOptions.subjects}
-                />
-              </Field>
-              <Field label="Post Held / Job Title">
-                <Select
-                  value={experienceDraft.post}
-                  onChange={(v) => updateExperience("post", v)}
-                  placeholder="Select Post"
-                  options={experienceOptions.posts}
-                />
-              </Field>
+              <SelectWithOther
+                label="Subject Taught (Main)"
+                value={experienceDraft.mainSubject}
+                onChange={(v) => updateExperience("mainSubject", v)}
+                otherValue={experienceDraft.mainSubjectOther}
+                onOtherChange={(v) => updateExperience("mainSubjectOther", v)}
+                placeholder="Select Main Subject"
+                options={experienceOptions.subjects}
+              />
+              <SelectWithOther
+                label="Other Subjects"
+                value={experienceDraft.otherSubjects}
+                onChange={(v) => updateExperience("otherSubjects", v)}
+                otherValue={experienceDraft.otherSubjectsOther}
+                onOtherChange={(v) => updateExperience("otherSubjectsOther", v)}
+                placeholder="Select Other Subject"
+                options={experienceOptions.subjects}
+              />
+              <SelectWithOther
+                label="Post Held / Job Title"
+                value={experienceDraft.post}
+                onChange={(v) => updateExperience("post", v)}
+                otherValue={experienceDraft.postOther}
+                onOtherChange={(v) => updateExperience("postOther", v)}
+                placeholder="Select Post"
+                options={experienceOptions.posts}
+              />
               <Field label="Salary Drawn (CTC) per Year">
                 <input
                   type="number"
@@ -1910,14 +2309,15 @@ const TeacherProfile = () => {
                   placeholder="e.g. 50000"
                 />
               </Field>
-              <Field label="Reason for Leaving">
-                <Select
-                  value={experienceDraft.reason}
-                  onChange={(v) => updateExperience("reason", v)}
-                  placeholder="Select Reason"
-                  options={experienceOptions.reasons}
-                />
-              </Field>
+              <SelectWithOther
+                label="Reason for Leaving"
+                value={experienceDraft.reason}
+                onChange={(v) => updateExperience("reason", v)}
+                otherValue={experienceDraft.reasonOther}
+                onOtherChange={(v) => updateExperience("reasonOther", v)}
+                placeholder="Select Reason"
+                options={experienceOptions.reasons}
+              />
               <div className={styles.lgColSpan3}>
                 <Field label="Any other details to be mentioned">
                   <textarea
@@ -1941,7 +2341,7 @@ const TeacherProfile = () => {
               </Button>
 
               <Button
-                variant="outlined"
+                variant="filled"
                 onClick={saveAndAddExperience}
                 startIcon="plusIcon"
               >
@@ -1993,7 +2393,9 @@ const TeacherProfile = () => {
                       <td className={styles.tableCell}>
                         {item.currentEmployer ? "Yes" : "No"}
                       </td>
-                      <td className={styles.tableCell}>{item.board || "Not added"}</td>
+                      <td className={styles.tableCell}>
+                        {effectiveValue(item.board, item.boardOther) || "Not added"}
+                      </td>
                       <td className={styles.tableCell}>
                         {item.startDate || "Not added"}
                       </td>
@@ -2003,12 +2405,18 @@ const TeacherProfile = () => {
                           : item.endDate || "Not added"}
                       </td>
                       <td className={styles.tableCell}>
-                        {item.mainSubject || "Not added"}
+                        {effectiveValue(item.mainSubject, item.mainSubjectOther) ||
+                          "Not added"}
                       </td>
                       <td className={styles.tableCell}>
-                        {item.otherSubjects || "Not added"}
+                        {effectiveValue(
+                          item.otherSubjects,
+                          item.otherSubjectsOther,
+                        ) || "Not added"}
                       </td>
-                      <td className={styles.tableCell}>{item.post || "Not added"}</td>
+                      <td className={styles.tableCell}>
+                        {effectiveValue(item.post, item.postOther) || "Not added"}
+                      </td>
                       <td className={styles.tableCell}>
                         {item.salary || "Not added"}
                       </td>
@@ -2016,7 +2424,7 @@ const TeacherProfile = () => {
                         {item.monthlyTakeHome || "Not added"}
                       </td>
                       <td className={styles.tableCell}>
-                        {item.reason || "Not added"}
+                        {effectiveValue(item.reason, item.reasonOther) || "Not added"}
                       </td>
                       <td className={styles.tableCell}>
                         <div className={styles.tableActionsRow}>
@@ -2111,14 +2519,15 @@ const TeacherProfile = () => {
               />
 
             </Field>
+            <Button
+              variant="filled"
+              onClick={addAward}
+              startIcon="plusIcon"
+            >
+              Add Another Award
+            </Button>
           </div>
-          <Button
-            variant="filled"
-            onClick={addAward}
-            startIcon="plusIcon"
-          >
-            Add Another Award
-          </Button>
+
           <div className={styles.savedSubCard}>
             <h4 className={styles.savedSubCardTitle}>Saved Awards</h4>
             {savedAwards.length === 0 ? (
@@ -2217,14 +2626,15 @@ const TeacherProfile = () => {
                 placeholder="Year"
               />
             </Field>
+            <Button
+              variant="filled"
+              onClick={addCourse}
+              startIcon="plusIcon"
+            >
+              Add Another Course
+            </Button>
           </div>
-          <Button
-            variant="filled"
-            onClick={addCourse}
-            startIcon="plusIcon"
-          >
-            Add Another Course
-          </Button>
+
           <div className={styles.savedSubCard}>
             <h4 className={styles.savedSubCardTitle}>Saved Courses</h4>
             {savedCourses.length === 0 ? (
@@ -2301,27 +2711,33 @@ const TeacherProfile = () => {
               </div>
             </div>
             <div className={styles.resumeModeTabs}>
-              <button
+              <Button
                 type="button"
+                variant={resumeMode === "upload" ? "filled" : "text"}
+                size="sm"
                 onClick={() => setResumeMode("upload")}
-                className={`${styles.resumeModeTab} ${resumeMode === "upload" ? styles.resumeModeTabActive : ""}`}
+                className={styles.resumeModeTab}
               >
                 Add Resume
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
+                variant={resumeMode === "create" ? "filled" : "text"}
+                size="sm"
                 onClick={() => setResumeMode("create")}
-                className={`${styles.resumeModeTab} ${resumeMode === "create" ? styles.resumeModeTabActive : ""}`}
+                className={styles.resumeModeTab}
               >
                 Create Resume
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
+                variant={resumeMode === "coverletter" ? "filled" : "text"}
+                size="sm"
                 onClick={() => setResumeMode("coverletter")}
-                className={`${styles.resumeModeTab} ${resumeMode === "coverletter" ? styles.resumeModeTabActive : ""}`}
+                className={styles.resumeModeTab}
               >
                 Cover Letter
-              </button>
+              </Button>
             </div>
           </div>
           {/* Upload mode: show CV Builder callout */}
@@ -2337,13 +2753,16 @@ const TeacherProfile = () => {
                   formatted CV using our CV Builder — you can preview and
                   download it as a PDF.
                 </p>
-                <button
+                <Button
                   type="button"
+                  variant="text"
+                  size="sm"
+                  endIcon="arrowForwardIcon"
                   onClick={() => setResumeMode("create")}
                   className={styles.cvBuilderButton}
                 >
-                  Open CV Builder →
-                </button>
+                  Open CV Builder
+                </Button>
               </div>
             </div>
           )}
@@ -2518,64 +2937,92 @@ const TeacherProfile = () => {
                     className={styles.nestedFormCard}
                   >
                     <div className={styles.nestedFormGrid}>
-                      <Field label="Class">
-                        <Select
-                          value={qualificationDraft.classLevel}
-                          onChange={(classLevel) => {
-                            setQualificationDraft((prev) => ({
-                              ...prev,
-                              classLevel,
-                              degree:
-                                classLevel === "Class 10"
-                                  ? "Secondary (10th)"
-                                  : classLevel === "Class 12"
-                                    ? "Senior Secondary (12th)"
-                                    : prev.degree,
-                            }));
-                          }}
-                          placeholder="Select Class"
-                          options={qualificationOptions.class_levels}
-                        />
-                      </Field>
-                      {qualificationDraft.classLevel && (
-                        <Field label="School Name">
-                          <input
-                            value={qualificationDraft.school}
-                            onChange={(e) =>
-                              updateQualification("school", e.target.value)
-                            }
-                            className={inputClass}
-                            placeholder="Enter school name"
-                          />
-                        </Field>
-                      )}
-                      {qualificationDraft.classLevel && (
-                        <Field label="Percentage %">
-                          <Input
-                            value={qualificationDraft.percentage}
-                            onChange={(value) =>
-                              updateQualification("percentage", value)
-                            }
-                            placeholder="e.g. 76.2"
-                          />
-                        </Field>
-                      )}
-                      <Field label="Degree">
-                        <Select
-                          value={qualificationDraft.degree}
-                          onChange={(v) => updateQualification("degree", v)}
-                          placeholder="Select Degree"
-                          options={qualificationOptions.degrees}
-                        />
-                      </Field>
-                      <Field label="Course Name">
-                        <Select
-                          value={qualificationDraft.course}
-                          onChange={(v) => updateQualification("course", v)}
-                          placeholder="Select Course"
-                          options={qualificationOptions.courses}
-                        />
-                      </Field>
+                      <div className={styles.lgColSpan3}>
+                        <div className={styles.qualificationSubsection}>
+                          <h4 className={styles.qualificationSubsectionTitle}>
+                            School Education
+                          </h4>
+                          <div className={styles.nestedFormGrid}>
+                            <Field label="Class">
+                              <Select
+                                value={qualificationDraft.classLevel}
+                                onChange={updateQualificationClass}
+                                placeholder="Select Class"
+                                options={qualificationOptions.class_levels}
+                              />
+                            </Field>
+                            {isSchoolLevelQualification && (
+                              <Field label="School Name">
+                                <input
+                                  value={qualificationDraft.school}
+                                  onChange={(e) =>
+                                    updateQualification("school", e.target.value)
+                                  }
+                                  className={inputClass}
+                                  placeholder="Enter school name"
+                                />
+                              </Field>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className={styles.lgColSpan3}>
+                        <div className={styles.qualificationSubsection}>
+                          <h4 className={styles.qualificationSubsectionTitle}>
+                            Higher Education
+                          </h4>
+                          <div className={styles.nestedFormGrid}>
+                            <SelectWithOther
+                              label="Degree"
+                              value={qualificationDraft.degree}
+                              onChange={updateQualificationDegree}
+                              otherValue={qualificationDraft.degreeOther}
+                              onOtherChange={(v) =>
+                                updateQualification("degreeOther", v)
+                              }
+                              placeholder="Select Degree"
+                              options={qualificationOptions.degrees}
+                            />
+                            <SelectWithOther
+                              label="Course Name"
+                              value={qualificationDraft.course}
+                              onChange={(v) => updateQualification("course", v)}
+                              otherValue={qualificationDraft.courseOther}
+                              onOtherChange={(v) =>
+                                updateQualification("courseOther", v)
+                              }
+                              placeholder="Select Course"
+                              options={courseOptionsFor(qualificationDraft.degree)}
+                            />
+                            <SelectWithOther
+                              label="University Name"
+                              value={qualificationDraft.university}
+                              onChange={(v) =>
+                                updateQualification("university", v)
+                              }
+                              otherValue={qualificationDraft.universityOther}
+                              onOtherChange={(v) =>
+                                updateQualification("universityOther", v)
+                              }
+                              placeholder="Select University"
+                              options={qualificationOptions.universities}
+                            />
+                            <SelectWithOther
+                              label="College Name"
+                              value={qualificationDraft.college}
+                              onChange={(v) =>
+                                updateQualification("college", v)
+                              }
+                              otherValue={qualificationDraft.collegeOther}
+                              onOtherChange={(v) =>
+                                updateQualification("collegeOther", v)
+                              }
+                              placeholder="Select College / Institution"
+                              options={qualificationOptions.colleges}
+                            />
+                          </div>
+                        </div>
+                      </div>
                       <Field label="Year Passed">
                         <Input
                           value={qualificationDraft.year}
@@ -2585,14 +3032,15 @@ const TeacherProfile = () => {
                           placeholder="e.g. 2023"
                         />
                       </Field>
-                      <Field label="Medium of Instruction">
-                        <Select
-                          value={qualificationDraft.medium}
-                          onChange={(v) => updateQualification("medium", v)}
-                          placeholder="Select Medium"
-                          options={qualificationOptions.mediums}
-                        />
-                      </Field>
+                      <SelectWithOther
+                        label="Medium of Instruction"
+                        value={qualificationDraft.medium}
+                        onChange={(v) => updateQualification("medium", v)}
+                        otherValue={qualificationDraft.mediumOther}
+                        onOtherChange={(v) => updateQualification("mediumOther", v)}
+                        placeholder="Select Medium"
+                        options={qualificationOptions.mediums}
+                      />
                       <Field label="Mode of Study">
                         <Select
                           value={qualificationDraft.mode}
@@ -2601,35 +3049,15 @@ const TeacherProfile = () => {
                           options={qualificationOptions.modes}
                         />
                       </Field>
-                      {!qualificationDraft.classLevel && (
-                        <Field label="Percentage %">
-                          <Input
-                            value={qualificationDraft.percentage}
-                            onChange={(value) =>
-                              updateQualification("percentage", value)
-                            }
-                            placeholder="e.g. 76.2"
-                          />
-                        </Field>
-                      )}
-                      <Field label="University Name">
-                        <Select
-                          value={qualificationDraft.university}
-                          onChange={(v) => updateQualification("university", v)}
-                          placeholder="Select University"
-                          options={qualificationOptions.universities}
+                      <Field label="Percentage %">
+                        <Input
+                          value={qualificationDraft.percentage}
+                          onChange={(value) =>
+                            updateQualification("percentage", value)
+                          }
+                          placeholder="e.g. 76.2"
                         />
                       </Field>
-                      <div className={styles.lgColSpan2}>
-                        <Field label="College Name">
-                          <Select
-                            value={qualificationDraft.college}
-                            onChange={(v) => updateQualification("college", v)}
-                            placeholder="Select College / Institution"
-                            options={qualificationOptions.colleges}
-                          />
-                        </Field>
-                      </div>
                     </div>
                     <div className={styles.nestedFormActionsRow}>
                       <Button
@@ -2665,12 +3093,15 @@ const TeacherProfile = () => {
                       >
                         <div className={styles.compactSavedMinW0}>
                           <p className={styles.compactSavedTitle}>
-                            {q.degree || q.classLevel}{" "}
-                            {q.course ? `(${q.course})` : ""}
+                            {effectiveValue(q.degree, q.degreeOther) || q.classLevel}{" "}
+                            {q.course
+                              ? `(${effectiveValue(q.course, q.courseOther)})`
+                              : ""}
                           </p>
                           <p className={styles.compactSavedSubtext}>
-                            {q.college || q.school} · Passed in {q.year} ·
-                            Marks: {q.percentage ? `${q.percentage}%` : "—"}
+                            {effectiveValue(q.college, q.collegeOther) || q.school} ·
+                            Passed in {q.year} · Marks:{" "}
+                            {q.percentage ? `${q.percentage}%` : "—"}
                           </p>
                         </div>
                         <div className={styles.compactSavedActions}>
@@ -2754,14 +3185,15 @@ const TeacherProfile = () => {
                           Current Employer
                         </span>
                       </div>
-                      <Field label="Board">
-                        <Select
-                          value={experienceDraft.board}
-                          onChange={(v) => updateExperience("board", v)}
-                          placeholder="Select Board"
-                          options={experienceOptions.boards}
-                        />
-                      </Field>
+                      <SelectWithOther
+                        label="Board"
+                        value={experienceDraft.board}
+                        onChange={(v) => updateExperience("board", v)}
+                        otherValue={experienceDraft.boardOther}
+                        onOtherChange={(v) => updateExperience("boardOther", v)}
+                        placeholder="Select Board"
+                        options={experienceOptions.boards}
+                      />
                       <Field label="Start Date">
                         <input
                           type="date"
@@ -2784,14 +3216,15 @@ const TeacherProfile = () => {
                           />
                         </Field>
                       )}
-                      <Field label="Main Subject Taught">
-                        <Select
-                          value={experienceDraft.mainSubject}
-                          onChange={(v) => updateExperience("mainSubject", v)}
-                          placeholder="Select Subject"
-                          options={experienceOptions.subjects}
-                        />
-                      </Field>
+                      <SelectWithOther
+                        label="Main Subject Taught"
+                        value={experienceDraft.mainSubject}
+                        onChange={(v) => updateExperience("mainSubject", v)}
+                        otherValue={experienceDraft.mainSubjectOther}
+                        onOtherChange={(v) => updateExperience("mainSubjectOther", v)}
+                        placeholder="Select Subject"
+                        options={experienceOptions.subjects}
+                      />
                       <Field label="Other Subjects Taught">
                         <Input
                           value={experienceDraft.otherSubjects}
@@ -2801,22 +3234,24 @@ const TeacherProfile = () => {
                           }
                         />
                       </Field>
-                      <Field label="Designation / Post">
-                        <Select
-                          value={experienceDraft.post}
-                          onChange={(v) => updateExperience("post", v)}
-                          placeholder="Select Designation"
-                          options={experienceOptions.posts}
-                        />
-                      </Field>
-                      <Field label="Reason for Leaving">
-                        <Select
-                          value={experienceDraft.reason}
-                          onChange={(v) => updateExperience("reason", v)}
-                          placeholder="Select Reason"
-                          options={experienceOptions.reasons}
-                        />
-                      </Field>
+                      <SelectWithOther
+                        label="Designation / Post"
+                        value={experienceDraft.post}
+                        onChange={(v) => updateExperience("post", v)}
+                        otherValue={experienceDraft.postOther}
+                        onOtherChange={(v) => updateExperience("postOther", v)}
+                        placeholder="Select Designation"
+                        options={experienceOptions.posts}
+                      />
+                      <SelectWithOther
+                        label="Reason for Leaving"
+                        value={experienceDraft.reason}
+                        onChange={(v) => updateExperience("reason", v)}
+                        otherValue={experienceDraft.reasonOther}
+                        onOtherChange={(v) => updateExperience("reasonOther", v)}
+                        placeholder="Select Reason"
+                        options={experienceOptions.reasons}
+                      />
                       <div className={styles.lgColSpan2}>
                         <Field label="Key Achievements / Work Details">
                           <textarea
@@ -2954,13 +3389,14 @@ const TeacherProfile = () => {
                         }
                       />
                     </Field>
-                  </div>
-                  <Button
-                    icon="plusIcon"
+                     <Button
+                    startIcon="plusIcon"
                     onClick={addAward}
                   >
                     Add Award to Resume
                   </Button>
+                  </div>
+                 
                   {savedAwards.length > 0 && (
                     <div className={styles.miniSavedStack}>
                       {savedAwards.map((award, index) => (
@@ -3042,14 +3478,15 @@ const TeacherProfile = () => {
                         }
                       />
                     </Field>
-                  </div>
-                  <Button
+                      <Button
                     variant="filled"
                     startIcon="plusIcon"
                     onClick={addCourse}
                   >
                     Add Course to Resume
                   </Button>
+                  </div>
+                
                   {savedCourses.length > 0 && (
                     <div className={styles.miniSavedStack}>
                       {savedCourses.map((course, index) => (
@@ -3061,8 +3498,8 @@ const TeacherProfile = () => {
                             <strong>{course.name}</strong> conducted by{" "}
                             {course.by} ({course.year})
                           </span>
-                          <button
-                            type="button"
+                          <Button
+                            variant="filled"
                             onClick={() =>
                               setSavedCourses((prev) =>
                                 prev.filter((_, i) => i !== index),
@@ -3071,7 +3508,7 @@ const TeacherProfile = () => {
                             className={styles.removeLinkBtn}
                           >
                             Remove
-                          </button>
+                          </Button>
                         </div>
                       ))}
                     </div>
@@ -3117,7 +3554,7 @@ const TeacherProfile = () => {
                               key={idx}
                               className={styles.languageTag}
                             >
-                              {lang.language} ({lang.status})
+                              {effectiveLanguage(lang)} ({lang.status})
                             </span>
                           ),
                       )}
@@ -3152,12 +3589,7 @@ const TeacherProfile = () => {
                       }))
                     }
                     placeholder="Select a job..."
-                    options={[
-                      "Mathematics Teacher - Green Valley School",
-                      "Science Faculty - Delhi Public Academy",
-                      "English Teacher - St. Mary's International",
-                      "Computer Teacher - Bright Future School",
-                    ]}
+                    options={SAMPLE_JOB_OPENINGS}
                   />
                 </Field>
                 <Field label="Select CV / Resume">
@@ -3175,12 +3607,17 @@ const TeacherProfile = () => {
                         ? "No resumes saved yet"
                         : "Select a resume..."
                     }
-                    options={savedResumes.map((r) => r.title).filter(Boolean)}
+                    options={toOptions(
+                      savedResumes.map((r) => r.title).filter(Boolean),
+                    )}
                   />
                 </Field>
               </div>
-              <button
+              <Button
                 type="button"
+                variant="filled"
+                startIcon={<Wand2 size={17} />}
+                loading={coverLetterState.loading}
                 disabled={
                   !coverLetterState.selectedJob ||
                   !coverLetterState.selectedResume ||
@@ -3204,11 +3641,10 @@ const TeacherProfile = () => {
                 }}
                 className={styles.coverLetterGenerateBtn}
               >
-                <Wand2 size={17} />{" "}
                 {coverLetterState.loading
                   ? "Generating..."
                   : "Generate Cover Letter"}
-              </button>
+              </Button>
               {coverLetterState.generated && (
                 <div className={styles.coverLetterResultCard}>
                   <div className={styles.coverLetterResultHeader}>
@@ -3216,9 +3652,18 @@ const TeacherProfile = () => {
                       AI Generated Cover Letter
                     </p>
                     <div className={styles.coverLetterActionsRow}>
-                      <button
+                      <Button
                         type="button"
+                        variant="filled"
+                        size="sm"
                         onClick={() => {
+                          const coverLetterContent = validateText(
+                            coverLetterState.generated,
+                          );
+                          if (!coverLetterContent.valid) {
+                            alert(coverLetterContent.reason);
+                            return;
+                          }
                           const linkedResume = savedResumes.find(
                             (r) => r.title === coverLetterState.selectedResume,
                           );
@@ -3243,9 +3688,11 @@ const TeacherProfile = () => {
                         className={styles.smallSaveBtnSolid}
                       >
                         Save
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         type="button"
+                        variant="outlined"
+                        size="sm"
                         onClick={() => {
                           navigator.clipboard.writeText(
                             coverLetterState.generated,
@@ -3255,7 +3702,7 @@ const TeacherProfile = () => {
                         className={styles.smallCopyBtn}
                       >
                         Copy
-                      </button>
+                      </Button>
                     </div>
                   </div>
                   <pre className={styles.coverLetterPre}>
@@ -3286,8 +3733,10 @@ const TeacherProfile = () => {
                           )}
                         </div>
                         <div className={styles.savedLetterActions}>
-                          <button
+                          <Button
                             type="button"
+                            variant="outlined"
+                            size="sm"
                             onClick={() => {
                               navigator.clipboard.writeText(cl.content);
                               alert("Copied to clipboard!");
@@ -3295,9 +3744,11 @@ const TeacherProfile = () => {
                             className={styles.copyOutlineBtn}
                           >
                             Copy
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             type="button"
+                            variant="outlined"
+                            size="sm"
                             onClick={() => {
                               const updated = savedCoverLetters.filter(
                                 (c) => c.id !== cl.id,
@@ -3311,7 +3762,7 @@ const TeacherProfile = () => {
                             className={styles.deleteOutlineBtn}
                           >
                             Delete
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -3341,14 +3792,13 @@ const TeacherProfile = () => {
           )}
 
           {resumeMode !== "coverletter" && (
-            <button
-              type="button"
+            <Button
+              variant="filled"
+              startIcon="plusIcon"
               onClick={addResume}
-              className={styles.coverLetterGenerateBtn}
             >
-              <Plus size={17} />{" "}
-              {resumeMode === "upload" ? "Add Resume" : "Save Resume"}
-            </button>
+              Add Resume
+            </Button>
           )}
         </div>
 
@@ -3359,69 +3809,48 @@ const TeacherProfile = () => {
               Added or created resumes will appear here.
             </p>
           ) : (
-            <div className={styles.tableScrollWrap}>
-              <table className={styles.tableMinWideMd}>
-                <thead className={styles.tableHead}>
-                  <tr>
-                    {[
-                      "Title",
-                      "Full Name",
-                      "Email",
-                      "Mobile",
-                      "Job Title",
-                      "Format",
-                      "Notes",
-                      "Actions",
-                    ].map((heading) => (
-                      <th key={heading} className={styles.tableHeadCell}>
-                        {heading}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className={styles.tableBody}>
-                  {savedResumes.map((resume, index) => (
-                    <tr
-                      key={`${resume.fileName}-${index}`}
-                      className={styles.tableRowTop}
+            <div className={styles.compactSavedStack}>
+              {savedResumes.map((resume, index) => (
+                <div
+                  key={`${resume.fileName}-${index}`}
+                  className={styles.compactSavedRow}
+                >
+                  <div className={styles.compactSavedMinW0}>
+                    <p className={styles.compactSavedTitle}>
+                      {resume.title}
+                      <span className={styles.resumeFormatBadge}>
+                        {resume.format}
+                      </span>
+                    </p>
+                    <p className={styles.compactSavedSubtext}>
+                      {resume.currentJobTitle || "Teaching Professional"}
+                      {resume.notes ? ` · ${resume.notes}` : ""}
+                    </p>
+                  </div>
+                  <div className={styles.compactSavedActions}>
+                    {resume.source === "Created" && (
+                      <Button
+                        type="button"
+                        variant="outlined"
+                        size="sm"
+                        onClick={() => downloadResume(resume)}
+                        className={styles.downloadBtn}
+                      >
+                        Download
+                      </Button>
+                    )}
+                    <Button
+                      type="button"
+                      variant="outlined"
+                      size="sm"
+                      onClick={() => handleDeleteResume(index)}
+                      className={styles.deleteBtn}
                     >
-                      <td className={styles.tableCellBold}>
-                        {resume.title}
-                      </td>
-                      <td className={styles.tableCell}>{resume.fullName || "—"}</td>
-                      <td className={styles.tableCell}>{resume.email || "—"}</td>
-                      <td className={styles.tableCell}>{resume.mobile || "—"}</td>
-                      <td className={styles.tableCell}>
-                        {resume.currentJobTitle || "—"}
-                      </td>
-                      <td className={styles.tableCell}>{resume.format}</td>
-                      <td className={styles.tableCellTruncate}>
-                        {resume.notes || "—"}
-                      </td>
-                      <td className={styles.tableCell}>
-                        <div className={styles.tableActionsRow}>
-                          {resume.source === "Created" && (
-                            <button
-                              type="button"
-                              onClick={() => downloadResume(resume)}
-                              className={styles.downloadBtn}
-                            >
-                              Download
-                            </button>
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteResume(index)}
-                            className={styles.deleteBtn}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -3443,10 +3872,28 @@ const TeacherProfile = () => {
     const expDisplay =
       totalExpYears > 0 ? `${totalExpYears.toFixed(1)} years` : "Not added";
     const highestDeg =
-      savedQualifications[0]?.degree ||
-      teacherData.highestQualificationOne ||
+      effectiveValue(
+        savedQualifications[0]?.degree,
+        savedQualifications[0]?.degreeOther,
+      ) ||
+      savedQualifications[0]?.classLevel ||
+      effectiveValue(
+        teacherData.highestQualificationOne,
+        teacherData.highestQualificationOneOther,
+      ) ||
       "Not added";
-    const university = savedQualifications[0]?.university || "Not added";
+    const university =
+      effectiveValue(
+        savedQualifications[0]?.university,
+        savedQualifications[0]?.universityOther,
+      ) || "Not added";
+    const mainSubjectDisplay = effectiveValue(
+      teacherData.mainSubject,
+      teacherData.mainSubjectOther,
+    );
+    const subjectTeacherLabel = mainSubjectDisplay
+      ? `${mainSubjectDisplay} Teacher`
+      : "Teaching Professional";
 
     return (
       <>
@@ -3468,7 +3915,7 @@ const TeacherProfile = () => {
                   {teacherData.lastName?.charAt(0)}.
                 </h2>
                 <p className={styles.viewProfileJobTitle}>
-                  {teacherData.currentJob || "Teaching Professional"}
+                  {subjectTeacherLabel}
                 </p>
                 <p className={styles.viewProfileLocation}>
                   {teacherData.city
@@ -3492,7 +3939,7 @@ const TeacherProfile = () => {
                   Main Subject
                 </p>
                 <p className={styles.viewProfileStatValue}>
-                  {teacherData.mainSubject || "Not added"}
+                  {mainSubjectDisplay || "Not added"}
                 </p>
               </div>
               <div className={styles.viewProfileStatCard}>
@@ -3604,9 +4051,18 @@ const TeacherProfile = () => {
                 </span>
               </div>
               <label className={styles.sidebarUploadLabel}>
-                Upload Photo
-                <input type="file" hidden onChange={handleProfileImage} />
+                {profileImageValidating ? "Checking Photo..." : "Upload Photo"}
+                <input
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  disabled={profileImageValidating}
+                  onChange={handleProfileImage}
+                />
               </label>
+              {profileImageError && (
+                <p className={styles.errorTextSm}>{profileImageError}</p>
+              )}
               <h1 className={styles.sidebarName}>
                 {teacherData.title} {teacherData.firstName}{" "}
                 {teacherData.lastName}
@@ -3674,7 +4130,6 @@ const TeacherProfile = () => {
                 faster.
               </p>
             </div>
-            <BackButton />
           </div>
 
           <div className={styles.mobileNavWrap}>
@@ -3725,7 +4180,7 @@ const TeacherProfile = () => {
                 <div className={styles.formFooterActions}>
                   <Button
                     type="button"
-                    variant="text"
+                    variant="filled"
                     onClick={() => navigate(-1)}
                   >
                     Cancel

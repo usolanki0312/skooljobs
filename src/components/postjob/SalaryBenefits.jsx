@@ -1,19 +1,26 @@
 import MinMaxInput from "./MinMaxInput";
 import SectionCard from "./SectionCard";
-import Select from "../ui/Select";
 import postjob from "../../../dropdown/School_module/postjob.json";
 import styles from "./styles/SalaryBenefits.module.css";
-import { Button, Input } from "@cloudstrytech/ui-components";
+import { Button, Input, Select } from "@cloudstrytech/ui-components";
+import { toOptions } from "../../lib/selectOptions";
 
 const {
   Compensation_structure: COMPENSATION_STRUCTURES,
-  Contract_duration: CONTRACT_DURATIONS,
-  Hours_per_week: HOURS_PER_WEEK,
-  Wfh_days: WFH_DAYS,
-  Office_days: OFFICE_DAYS,
-  Timezone: TIMEZONES,
-  Internship_duration: INTERNSHIP_DURATIONS,
+  Contract_duration: CONTRACT_DURATIONS_RAW,
+  Hours_per_week: HOURS_PER_WEEK_RAW,
+  Wfh_days: WFH_DAYS_RAW,
+  Office_days: OFFICE_DAYS_RAW,
+  Timezone: TIMEZONES_RAW,
+  Internship_duration: INTERNSHIP_DURATIONS_RAW,
 } = postjob;
+
+const CONTRACT_DURATIONS = toOptions(CONTRACT_DURATIONS_RAW);
+const HOURS_PER_WEEK = toOptions(HOURS_PER_WEEK_RAW);
+const WFH_DAYS = toOptions(WFH_DAYS_RAW);
+const OFFICE_DAYS = toOptions(OFFICE_DAYS_RAW);
+const TIMEZONES = toOptions(TIMEZONES_RAW);
+const INTERNSHIP_DURATIONS = toOptions(INTERNSHIP_DURATIONS_RAW);
 
 const selectCls = styles.selectFieldWrap;
 

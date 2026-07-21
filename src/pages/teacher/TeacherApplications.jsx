@@ -39,7 +39,7 @@ const TeacherApplications = () => {
   return (
     <section className={styles.section}>
       <div className={styles.headerRow}>
-        <h2 className={styles.heading}>My Applications</h2>
+        <h2 className={styles.heading}>Applied Jobs</h2>
         <p className={styles.subtext}>
           Monitor your job application history and current status.
         </p>
@@ -49,13 +49,12 @@ const TeacherApplications = () => {
         <div className={styles.emptyState}>
           <Briefcase size={40} className={styles.emptyIcon} />
           <p>You haven't submitted any job applications yet.</p>
-          <button
-            type="button"
+           <Button
+            variant="filled"
             onClick={() => navigate("/teacher/all-jobs")}
-            className={styles.findJobsButton}
           >
             Find Teaching Jobs
-          </button>
+          </Button>
         </div>
       ) : (
         <div className={styles.tableScrollWrap}>
@@ -99,7 +98,7 @@ const TeacherApplications = () => {
                           styles.statusDefault
                         }`}>
                         <CheckCircle2 size={12} className={styles.statusIcon} />
-                        {status}
+                        {status === "Rejected" ? "Feedback" : status}
                       </span>
                     </td>
                     <td className={styles.tdActions}>

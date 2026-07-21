@@ -29,7 +29,7 @@
   outline: none;
   font-size: 15px;
   color: var(--color-secondary);
-  background-color: #fff;
+  background-color: var(--color-bg);
   transition-property: all;
   font-weight: 500;
 }
@@ -39,8 +39,8 @@
 }
 
 .input:focus {
-  box-shadow: 0 0 0 2px rgba(4, 72, 144, 0.2);
-  border-color: rgba(4, 72, 144, 0.5);
+  box-shadow: 0 0 0 2px rgba(21, 41, 63, 0.2);
+  border-color: rgba(21, 41, 63, 0.5);
 }
 
 .input:disabled {

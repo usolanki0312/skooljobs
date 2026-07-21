@@ -7,6 +7,7 @@ import "@cloudstrytech/ui-components/styles.css";
 import { Button, Input } from "@cloudstrytech/ui-components";
 import styles from "./login.module.css";
 
+
 // ---------------------------------------------------------------------------
 // TODO: Replace hardcoded auth with backend API
 //
@@ -90,6 +91,42 @@ const MOCK_CREDENTIALS = [
       profilePhoto: "https://i.pravatar.cc/300?img=47",
     },
   },
+
+  // --- Head Admin account — separate login, manages multiple schools ---
+  {
+    email: "headadmin@skooljobs.com",
+    password: "headadmin123",
+    user: {
+      id: 6,
+      name: "EduHire Group Admin",
+      companyName: "EduHire Recruiters Group",
+      email: "headadmin@skooljobs.com",
+      role: "headAdmin",
+      city: "Delhi",
+      phone: "9876005678",
+      profilePhoto: "https://i.pravatar.cc/300?img=54",
+      managedSchools: [
+        "School 1 — Bhopal Central",
+        "School 2 — Bhopal East",
+        "School 3 — Indore",
+        "School 4 — Indore South",
+        "School 5 — Ujjain",
+      ],
+    },
+  },
+
+  // --- SkoolJobs Platform Admin account ---
+  {
+    email: "admin@skooljobs.com",
+    password: "admin123",
+    user: {
+      id: 5,
+      name: "SkoolJobs Admin",
+      email: "admin@skooljobs.com",
+      role: "admin",
+      profilePhoto: "https://i.pravatar.cc/300?img=68",
+    },
+  },
 ];
 
 function Login() {
@@ -153,9 +190,13 @@ function Login() {
     if (match) {
       localStorage.setItem("currentUser", JSON.stringify(match.user));
       navigate(
-        match.user.role === "employer"
-          ? "/school/dashboard"
-          : "/teacher/dashboard",
+        match.user.role === "admin"
+          ? "/admin/dashboard"
+          : match.user.role === "headAdmin"
+            ? "/head-admin/dashboard"
+            : match.user.role === "employer"
+              ? "/school/dashboard"
+              : "/teacher/dashboard",
       );
       return;
     }
@@ -194,6 +235,7 @@ function Login() {
           endIcon={
             <button
               type="button"
+              
               className="reveal-btn"
               aria-label={showPwd ? "Hide password" : "Show password"}
               aria-pressed={showPwd}

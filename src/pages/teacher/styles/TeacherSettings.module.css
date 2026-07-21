@@ -19,7 +19,7 @@
 .card {
   border-radius: 1rem;
   border: 1px solid var(--color-border);
-  background-color: #fff;
+  background-color: var(--color-bg);
   padding: 1.25rem;
   box-shadow: var(--shadow-soft);
 }
@@ -41,7 +41,7 @@
 
 .cardIcon {
   border-radius: 0.75rem;
-  background-color: rgba(4, 72, 144, 0.1);
+  background-color: rgba(21, 41, 63, 0.1);
   padding: 0.5rem;
   color: var(--color-primary);
 }
@@ -127,7 +127,7 @@
   width: 1.25rem;
   border-radius: 9999px;
   border: 1px solid #d1d5db;
-  background-color: #fff;
+  background-color: var(--color-bg);
   transition: all 0.2s ease-in-out;
 }
 
@@ -175,7 +175,7 @@
 }
 
 .updatePasswordButton:hover {
-  background-color: rgba(4, 72, 144, 0.95);
+  background-color: rgba(21, 41, 63, 0.95);
 }
 
 .faqGrid {
@@ -212,8 +212,8 @@
 .helpBanner {
   margin-top: 1.25rem;
   border-radius: 0.75rem;
-  border: 1px solid rgba(4, 72, 144, 0.2);
-  background-color: rgba(4, 72, 144, 0.05);
+  border: 1px solid rgba(21, 41, 63, 0.2);
+  background-color: rgba(21, 41, 63, 0.05);
   padding: 1rem;
   font-size: 0.875rem;
 }
@@ -236,7 +236,7 @@
 .dangerCard {
   border-radius: 1rem;
   border: 1px solid #fecaca;
-  background-color: #fff;
+  background-color: var(--color-bg);
   padding: 1.25rem;
   box-shadow: var(--shadow-soft);
 }
@@ -277,13 +277,8 @@
 
 .requestDeleteButton {
   margin-top: 1.25rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
   border-radius: 0.75rem;
   border: 1px solid #fca5a5;
-  padding: 0.625rem 1.25rem;
-  font-size: 0.875rem;
   font-weight: 700;
   color: #ef4444;
 }
@@ -313,8 +308,6 @@
 .secondaryButton {
   border-radius: 0.75rem;
   border: 1px solid var(--color-border);
-  padding: 0.625rem 1.25rem;
-  font-size: 0.875rem;
   font-weight: 700;
   color: #64748b;
 }

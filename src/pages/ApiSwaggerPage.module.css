@@ -3,7 +3,7 @@
 }
 
 .pageLight {
-  background-color: #ffffff;
+  background-color: var(--color-bg);
 }
 
 .header {

@@ -35,12 +35,12 @@
 }
 
 .boxEditable {
-  background-color: #fff;
+  background-color: var(--color-bg);
 }
 
 .boxEditable:focus-within {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(4, 72, 144, 0.1);
+  box-shadow: 0 0 0 4px rgba(21, 41, 63, 0.1);
 }
 
 .currencySymbol {

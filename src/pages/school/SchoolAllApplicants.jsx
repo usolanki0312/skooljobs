@@ -6,10 +6,14 @@ import {
 import postjob from "../../../dropdown/School_module/postjob.json";
 import applicantsOptions from "../../../dropdown/School_module/applicants.json";
 import styles from "./styles/SchoolAllApplicants.module.css";
-import { Button ,Select} from "@cloudstrytech/ui-components";
+import { Button, Select } from "@cloudstrytech/ui-components";
+import { toOptions } from "../../lib/selectOptions";
 
-const { Subject: subjects } = postjob;
-const { Applicant_status: statusOptions, Experience_filter: experienceFilterOptions } = applicantsOptions;
+const { Subject: subjectsRaw } = postjob;
+const { Applicant_status: statusOptionsRaw, Experience_filter: experienceFilterOptionsRaw } = applicantsOptions;
+const subjects = toOptions(subjectsRaw);
+const statusOptions = toOptions(statusOptionsRaw);
+const experienceFilterOptions = toOptions(experienceFilterOptionsRaw);
 
 const applicantStatusChipStyle = {
   "Not Reviewed": { backgroundColor: "#eff6ff", color: "#2563eb" },
@@ -209,7 +213,7 @@ const SchoolAllApplicants = () => {
 
   const publicProfileData = selected ? getPublicProfileData(selected) : null;
 
-  const uniqueJobTitles = [...new Set(applicants.map((a) => a.jobTitle))];
+  const uniqueJobTitles = toOptions([...new Set(applicants.map((a) => a.jobTitle))]);
 
   const filteredApplicants = applicants.filter((a) => {
     const matchSearch =

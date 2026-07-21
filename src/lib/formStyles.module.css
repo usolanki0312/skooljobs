@@ -2,7 +2,7 @@
   width: 100%;
   border-radius: 0.75rem;
   border: 1px solid var(--color-border);
-  background: #fff;
+  background: var(--color-bg);
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
   color: #1e293b;
@@ -12,7 +12,7 @@
 
 .input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(4, 72, 144, 0.1);
+  box-shadow: 0 0 0 4px rgba(21, 41, 63, 0.1);
 }
 
 .label {

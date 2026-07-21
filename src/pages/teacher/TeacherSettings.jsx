@@ -154,9 +154,8 @@ const TeacherSettings = () => {
           </FormField>
         </div>
         <div className={styles.passwordActions}>
-          <button
-            type="button"
-            className={styles.updatePasswordButton}
+          <Button
+            variant="filled"
             onClick={() => {
               if (!pwForm.current) {
                 alert("Enter your current password.");
@@ -178,7 +177,7 @@ const TeacherSettings = () => {
             }}
           >
             <Save size={16} /> Update Password
-          </button>
+          </Button>
         </div>
       </div>
 
