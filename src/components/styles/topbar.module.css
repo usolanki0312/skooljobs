@@ -1,6 +1,6 @@
 .topbar {
   border-radius: 1.5rem;
-  background-color: #fff;
+  background-color: var(--color-bg);
   padding: 1rem;
   box-shadow: var(--shadow-soft);
 }

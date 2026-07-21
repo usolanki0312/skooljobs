@@ -3,7 +3,7 @@
 }
 
 .pageLight {
-  background-color: #ffffff;
+  background-color: var(--color-bg);
 }
 
 .sidebarGroup {
@@ -49,7 +49,7 @@
 }
 
 .sidebarGroupButton:hover {
-  background-color: rgba(4, 72, 144, 0.1);
+  background-color: rgba(21, 41, 63, 0.1);
   color: var(--color-primary);
 }
 

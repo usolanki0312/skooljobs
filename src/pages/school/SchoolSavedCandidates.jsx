@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Bookmark, MessageSquare, Save } from "lucide-react";
 import styles from "./styles/SchoolSavedCandidates.module.css";
+import { Button } from "@cloudstrytech/ui-components";
+import { validateText } from "../../lib/textValidation";
 
 const SchoolSavedCandidates = () => {
   const navigate = useNavigate();
@@ -32,13 +34,12 @@ const SchoolSavedCandidates = () => {
           <p className={styles.emptySubtitle}>
             Click the bookmark icon on any candidate in All Applicants to save them here.
           </p>
-          <button
-            type="button"
+          <Button
+            variant="filled"
             onClick={() => navigate("/school/all-applicants")}
-            className={styles.emptyButton}
           >
             Go to All Applicants
-          </button>
+          </Button>
         </div>
       ) : (
         <div className={styles.list}>
@@ -57,10 +58,10 @@ const SchoolSavedCandidates = () => {
                     </div>
                     <div className={styles.statusActions}>
                       <span className={`${styles.statusChip} ${applicant.status === "Shortlisted"
-                          ? styles.statusShortlisted
-                          : applicant.status === "Rejected"
-                            ? styles.statusRejected
-                            : styles.statusDefault
+                        ? styles.statusShortlisted
+                        : applicant.status === "Rejected"
+                          ? styles.statusRejected
+                          : styles.statusDefault
                         }`}>
                         {applicant.status}
                       </span>
@@ -89,6 +90,11 @@ const SchoolSavedCandidates = () => {
                           <button
                             type="button"
                             onClick={() => {
+                              const { valid, reason } = validateText(commentDraft);
+                              if (!valid) {
+                                alert(reason);
+                                return;
+                              }
                               setCandidateComments((prev) => ({ ...prev, [applicant.id]: commentDraft }));
                               setEditingComment(null);
                             }}

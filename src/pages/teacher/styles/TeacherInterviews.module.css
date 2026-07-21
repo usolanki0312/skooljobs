@@ -1,6 +1,6 @@
 .section {
   border-radius: 1.5rem;
-  background-color: #fff;
+  background-color: var(--color-bg);
   padding: 1.25rem;
   box-shadow: var(--shadow-soft);
   display: flex;
@@ -79,7 +79,7 @@
   transition-property: all;
   transition-duration: 150ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  background-color: #fff;
+  background-color: var(--color-bg);
   color: var(--color-primary);
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
@@ -100,7 +100,7 @@
 .card {
   border-radius: 1rem;
   border: 1px solid var(--color-border);
-  background-color: #fff;
+  background-color: var(--color-bg);
   padding: 1.25rem;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   transition-property: all;

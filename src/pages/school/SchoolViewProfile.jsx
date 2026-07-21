@@ -1,6 +1,7 @@
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { Building2 } from "lucide-react";
 import styles from "./styles/SchoolViewProfile.module.css";
+import { Button } from "@cloudstrytech/ui-components";
 
 const SchoolViewProfile = () => {
   const navigate = useNavigate();

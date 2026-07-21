@@ -6,14 +6,25 @@
 
 .pageHeader {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .pageTitle {
-  font-size: 1.875rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--color-primary-text);
+}
+
+.pageSubtitle {
+  font-size: 0.875rem;
+  color: #6b6b5f;
+}
+
+@media (min-width: 640px) {
+  .pageTitle {
+    font-size: 1.875rem;
+  }
 }
 
 .alertBanner {
@@ -22,9 +33,10 @@
   gap: 0.75rem;
   padding: 1rem 1.25rem;
   border-radius: 1rem;
-  background: var(--color-primary, #2563eb);
+  background: var(--gradient-hero);
   color: white;
   font-size: 0.875rem;
+  box-shadow: var(--shadow-soft);
 }
 
 .alertIcon {
@@ -44,10 +56,22 @@
   grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 
+@media (min-width: 640px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .statsGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .statCard {
   padding: 1.25rem;
-  background: white;
-  border: 1px solid var(--border-color, #e2e8f0);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
   border-radius: 1rem;
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
   transition: all 0.2s ease;
@@ -59,8 +83,25 @@
 
 .statCardClickable:hover {
   transform: translateY(-2px);
-  border-color: rgb(37 99 235 / 0.4);
-  box-shadow: 0 10px 15px rgb(0 0 0 / 0.08);
+  border-color: rgba(21, 41, 63, 0.4);
+  box-shadow: 0 10px 20px rgb(0 0 0 / 0.08);
+}
+
+.statTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.statIconWrap {
+  display: flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
 }
 
 .statLabel {
@@ -68,19 +109,20 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #64748b;
+  color: #8a8a78;
 }
 
 .statValue {
   margin-top: 0.75rem;
   font-size: 2rem;
   font-weight: 700;
+  color: #26261f;
 }
 
 .statSub {
   margin-top: 0.5rem;
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: #9a9a89;
 }
 
 .contentGrid {
@@ -88,10 +130,16 @@
   gap: 1.5rem;
 }
 
+@media (min-width: 1280px) {
+  .contentGrid {
+    grid-template-columns: 1fr 320px;
+  }
+}
+
 .card {
   padding: 1.5rem;
-  background: white;
-  border: 1px solid var(--border-color, #e2e8f0);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
   border-radius: 1rem;
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
 }
@@ -103,7 +151,7 @@
   gap: 1rem;
   min-height: 10rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border-color, #e2e8f0);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .chartItem {
@@ -118,20 +166,20 @@
 .chartValue {
   font-size: 0.75rem;
   font-weight: 700;
-  color: #94a3b8;
+  color: #8a8a78;
 }
 
 .chartBar {
   width: 100%;
   border-radius: 0.5rem 0.5rem 0 0;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 .chartLabel {
   text-align: center;
   font-size: 0.75rem;
   line-height: 1.2;
-  color: #94a3b8;
+  color: #9a9a89;
   word-break: break-word;
 }
 
@@ -139,7 +187,7 @@
   margin-top: 0.75rem;
   text-align: center;
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: #9a9a89;
 }
 
 .sectionHeader {
@@ -151,16 +199,16 @@
 
 .sectionTitle {
   font-weight: 700;
-  color: #1e293b;
+  color: #26261f;
 }
 
 .primaryIcon {
-  color: var(--color-primary, #2563eb);
+  color: var(--color-primary);
 }
 
 .emptyText {
   font-size: 0.875rem;
-  color: #94a3b8;
+  color: #9a9a89;
 }
 
 .interviewList {
@@ -171,20 +219,20 @@
 
 .interviewCard {
   padding: 0.75rem;
-  background: #f8fafc;
-  border: 1px solid var(--border-color, #e2e8f0);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
   border-radius: 0.75rem;
 }
 
 .candidateName {
   font-size: 0.875rem;
   font-weight: 700;
-  color: #1e293b;
+  color: #26261f;
 }
 
 .interviewInfo {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #6b6b5f;
 }
 
 .interviewMeta {
@@ -192,7 +240,7 @@
   gap: 0.75rem;
   margin-top: 0.5rem;
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: #9a9a89;
 }
 
 .metaItem {
@@ -228,12 +276,10 @@
   font-weight: 700;
 }
 
-
-
-/* Colors */
+/* Accent colors used across stats/chart bars */
 
 .colorPrimary {
-  color: #2563eb;
+  color: var(--color-primary);
 }
 
 .colorGreen {
@@ -256,8 +302,32 @@
   color: #0f766e;
 }
 
+.iconBgPrimary {
+  background: rgba(21, 41, 63, 0.12);
+}
+
+.iconBgGreen {
+  background: rgba(22, 163, 74, 0.12);
+}
+
+.iconBgOrange {
+  background: rgba(234, 88, 12, 0.12);
+}
+
+.iconBgBlue {
+  background: rgba(2, 132, 199, 0.12);
+}
+
+.iconBgPurple {
+  background: rgba(147, 51, 234, 0.12);
+}
+
+.iconBgTeal {
+  background: rgba(15, 118, 110, 0.12);
+}
+
 .barBgPrimary {
-  background: #2563eb;
+  background: var(--color-primary);
 }
 
 .barBgGreen {
@@ -279,366 +349,3 @@
 .barBgTeal {
   background: #0f766e;
 }
-
-@media (min-width: 640px) {
-  .statsGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .pageTitle {
-    font-size: 2rem;
-  }
-}
-
-@media (min-width: 1280px) {
-  .statsGrid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .contentGrid {
-    grid-template-columns: 1fr 320px;
-  }
-}
-
-
-.page {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.headerRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1e293b;
-}
-
-@media (min-width: 640px) {
-  .title {
-    font-size: 1.875rem;
-  }
-}
-
-.banner {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  border-radius: 1rem;
-  background-color: var(--color-primary);
-  padding: 1rem 1.25rem;
-  font-size: 0.875rem;
-  color: #ffffff;
-}
-
-.bannerIcon {
-  margin-top: 0.125rem;
-  flex-shrink: 0;
-}
-
-.bannerLink {
-  font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-@media (min-width: 640px) {
-  .statsGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 1280px) {
-  .statsGrid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-.statCard {
-  border-radius: 1rem;
-  border: 1px solid var(--color-border);
-  background-color: #ffffff;
-  padding: 1.25rem;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  transition-property: all;
-  transition-duration: 150ms;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.statCardClickable {
-  cursor: pointer;
-}
-
-.statCardClickable:hover {
-  transform: translateY(-0.125rem);
-  border-color: rgba(4, 72, 144, 0.4);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-}
-
-.statLabel {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.025em;
-  color: #64748b;
-}
-
-.statValue {
-  margin-top: 0.75rem;
-  font-size: 1.875rem;
-  font-weight: 700;
-}
-
-@media (min-width: 640px) {
-  .statValue {
-    font-size: 2.25rem;
-  }
-}
-
-.statSub {
-  margin-top: 0.5rem;
-  font-size: 0.75rem;
-  color: #94a3b8;
-}
-
-.colorPrimary {
-  color: var(--color-primary);
-}
-
-.colorGreen {
-  color: #22c55e;
-}
-
-.colorOrange {
-  color: #f97316;
-}
-
-.colorBlue {
-  color: #3b82f6;
-}
-
-.colorPurple {
-  color: #a855f7;
-}
-
-.colorTeal {
-  color: #14b8a6;
-}
-
-.bottomGrid {
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 1.5rem;
-}
-
-@media (min-width: 1280px) {
-  .bottomGrid {
-    grid-template-columns: 1fr 20rem;
-  }
-}
-
-.chartCard {
-  border-radius: 1rem;
-  border: 1px solid var(--color-border);
-  background-color: #ffffff;
-  padding: 1rem;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-}
-
-@media (min-width: 640px) {
-  .chartCard {
-    padding: 1.5rem;
-  }
-}
-
-.chartBars {
-  display: flex;
-  height: 10rem;
-  align-items: flex-end;
-  justify-content: space-around;
-  gap: 0.5rem;
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: 1rem;
-}
-
-@media (min-width: 640px) {
-  .chartBars {
-    gap: 1rem;
-  }
-}
-
-.barColumn {
-  display: flex;
-  min-width: 0;
-  flex: 1 1 0%;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.barValue {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #94a3b8;
-}
-
-.bar {
-  width: 100%;
-  border-top-left-radius: 0.5rem;
-  border-top-right-radius: 0.5rem;
-  opacity: 0.8;
-}
-
-.barBgPrimary {
-  background-color: var(--color-primary);
-}
-
-.barBgOrange {
-  background-color: #f97316;
-}
-
-.barBgGreen {
-  background-color: #22c55e;
-}
-
-.barBgBlue {
-  background-color: #3b82f6;
-}
-
-.barBgPurple {
-  background-color: #a855f7;
-}
-
-.barBgTeal {
-  background-color: #14b8a6;
-}
-
-.barLabel {
-  overflow-wrap: break-word;
-  text-align: center;
-  font-size: 0.625rem;
-  line-height: 1.25;
-  color: #94a3b8;
-}
-
-@media (min-width: 640px) {
-  .barLabel {
-    font-size: 0.75rem;
-  }
-}
-
-.chartFooter {
-  margin-top: 0.75rem;
-  text-align: center;
-  font-size: 0.75rem;
-  color: #94a3b8;
-}
-
-.interviewsCard {
-  border-radius: 1rem;
-  border: 1px solid var(--color-border);
-  background-color: #ffffff;
-  padding: 1.25rem;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-}
-
-.interviewsHeader {
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.interviewsHeaderIcon {
-  color: var(--color-primary);
-}
-
-.interviewsHeaderTitle {
-  font-weight: 700;
-  color: #1e293b;
-}
-
-.noInterviews {
-  font-size: 0.875rem;
-  color: #94a3b8;
-}
-
-.interviewsList {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.interviewItem {
-  border-radius: 0.75rem;
-  border: 1px solid var(--color-border);
-  background-color: var(--color-light);
-  padding: 0.75rem;
-}
-
-.interviewName {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: #1e293b;
-}
-
-.interviewMeta {
-  font-size: 0.75rem;
-  color: #64748b;
-}
-
-.interviewDetails {
-  margin-top: 0.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.75rem;
-  color: #94a3b8;
-}
-
-.interviewDetailItem {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.interviewStatus {
-  margin-top: 0.5rem;
-  display: inline-block;
-  border-radius: 9999px;
-  padding: 0.125rem 0.625rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-.interviewStatusConfirmed {
-  background-color: #f0fdf4;
-  color: #16a34a;
-}
-
-.interviewStatusPending {
-  background-color: #fffbeb;
-  color: #d97706;
-}
-
-.scheduleButton {
-  margin-top: 1rem;
-  width: 100%;
-  border-radius: 0.75rem;
-  padding: 0.5rem 0;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-

@@ -6,15 +6,21 @@ import {
 } from "lucide-react";
 import postjob from "../../../dropdown/School_module/postjob.json";
 import { inputClass, labelClass } from "../../lib/formStyles";
-import Select from "../../components/ui/Select";
+import { toOptions } from "../../lib/selectOptions";
+import { Input, Select } from "@cloudstrytech/ui-components";
+import { validateFields } from "../../lib/textValidation";
 import styles from "./styles/SchoolJobDetail.module.css";
 
 const {
-  Subject: subjects,
-  Experience_required: experienceOptions,
+  Subject: subjectsRaw,
+  Experience_required: experienceOptionsRaw,
   Employment_type: employmentTypes,
-  Salary_range: salaryRanges,
+  Salary_range: salaryRangesRaw,
 } = postjob;
+
+const subjects = toOptions(subjectsRaw);
+const experienceOptions = toOptions(experienceOptionsRaw);
+const salaryRanges = toOptions(salaryRangesRaw);
 
 const jobStatusChipStyle = {
   Active: { backgroundColor: "#f0fdf4", color: "#16a34a" },
@@ -93,6 +99,17 @@ const SchoolJobDetail = () => {
   const handleSaveEdit = () => {
     if (!editForm.title || !editForm.location || !editForm.employmentType) {
       alert("Job Title, Location and Employment Type are required.");
+      return;
+    }
+    const { valid, errors } = validateFields({
+      title: editForm.title,
+      location: editForm.location,
+      description: editForm.description,
+      requirements: editForm.requirements,
+      qualifications: editForm.qualifications,
+    });
+    if (!valid) {
+      alert(Object.values(errors)[0]);
       return;
     }
     setJobs((p) => p.map((j) => (j.id === job.id ? { ...j, ...editForm } : j)));

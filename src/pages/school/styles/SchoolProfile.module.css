@@ -3,7 +3,7 @@
   width: 100%;
   border-radius: 0.75rem;
   border: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
   color: #1e293b;
@@ -14,7 +14,7 @@
 
 .inputBase:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(4, 72, 144, 0.1);
+  box-shadow: 0 0 0 4px rgba(21, 41, 63, 0.1);
 }
 
 .fieldLabel {
@@ -120,7 +120,7 @@
   gap: 0.375rem;
   border-radius: 0.75rem;
   border: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 0.5rem 0.75rem;
   font-size: 0.75rem;
   font-weight: 700;
@@ -128,7 +128,7 @@
 }
 
 .uploadLogoLabel:hover {
-  background-color: rgba(4, 72, 144, 0.05);
+  background-color: rgba(21, 41, 63, 0.05);
 }
 
 .logoHint {
@@ -155,7 +155,7 @@
 }
 
 .uploadCoverLabel:hover {
-  background-color: rgba(4, 72, 144, 0.05);
+  background-color: rgba(21, 41, 63, 0.05);
 }
 
 .coverPreviewWrap {
@@ -227,7 +227,7 @@
 }
 
 .editorToolbarBtn:hover {
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
@@ -239,12 +239,12 @@
 
 .editorModeBtnActive {
   border-radius: 0.25rem;
-  border: 1px solid rgba(4, 72, 144, 0.3);
+  border: 1px solid rgba(21, 41, 63, 0.3);
   padding: 0.25rem 0.75rem;
   font-size: 0.75rem;
   font-weight: 700;
   color: var(--color-primary);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
 }
 
 .editorModeBtn {
@@ -256,14 +256,14 @@
 }
 
 .editorModeBtn:hover {
-  background-color: #ffffff;
+  background-color: var(--color-bg);
 }
 
 .editorTextarea {
   min-height: 8rem;
   width: 100%;
   resize: none;
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
   color: #1e293b;
@@ -304,7 +304,7 @@
   align-items: center;
   gap: 0.5rem;
   border-radius: 0.75rem;
-  border: 1px dashed rgba(4, 72, 144, 0.4);
+  border: 1px dashed rgba(21, 41, 63, 0.4);
   padding: 0.75rem 1.25rem;
   font-size: 0.875rem;
   font-weight: 700;
@@ -312,7 +312,7 @@
 }
 
 .uploadPhotosLabel:hover {
-  background-color: rgba(4, 72, 144, 0.05);
+  background-color: rgba(21, 41, 63, 0.05);
 }
 
 .galleryGrid {
@@ -379,8 +379,8 @@
 
 .localitySearchBox {
   border-radius: 1rem;
-  border: 1px solid rgba(4, 72, 144, 0.2);
-  background-color: rgba(4, 72, 144, 0.05);
+  border: 1px solid rgba(21, 41, 63, 0.2);
+  background-color: rgba(21, 41, 63, 0.05);
   padding: 1rem;
 }
 
@@ -418,7 +418,7 @@
   overflow-y: auto;
   border-radius: 0.75rem;
   border: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
 }
 
@@ -457,7 +457,7 @@
 .localityPincode {
   flex-shrink: 0;
   border-radius: 0.375rem;
-  background-color: rgba(4, 72, 144, 0.1);
+  background-color: rgba(21, 41, 63, 0.1);
   padding: 0.125rem 0.5rem;
   font-size: 0.75rem;
   font-weight: 700;
@@ -524,12 +524,12 @@
   white-space: nowrap;
   font-size: 0.875rem;
   font-weight: 700;
-  color: #1e293b;
+  color: #fff;
 }
 
 .sidebarAccountLabel {
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .completionBox {
@@ -558,7 +558,7 @@
   height: 0.5rem;
   overflow: hidden;
   border-radius: 9999px;
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   border: 1px solid rgba(219, 228, 240, 0.5);
 }
 
@@ -588,29 +588,29 @@
   width: 100%;
   align-items: center;
   gap: 0.75rem;
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   padding: 0.75rem 1rem;
   text-align: left;
   font-size: 0.875rem;
   font-weight: 700;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
   transition-duration: 150ms;
-  color: #475569;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .navItem:hover {
-  background-color: var(--color-light);
-  color: var(--color-primary);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 
 .navItem.navItemActive {
-  background-color: var(--color-primary);
-  color: #ffffff;
+  background-color: var(--color-bg);
+  color: var(--color-primary);
 }
 
 .navItem.navItemActive:hover {
-  background-color: var(--color-primary);
-  color: #ffffff;
+  background-color: var(--color-bg);
+  color: var(--color-primary);
 }
 
 .sidebarFooter {
@@ -618,7 +618,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
   padding-top: 1rem;
 }
 
@@ -627,16 +627,17 @@
   width: 100%;
   align-items: center;
   gap: 0.75rem;
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   padding: 0.75rem 1rem;
   text-align: left;
   font-size: 0.875rem;
   font-weight: 700;
-  color: #475569;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .footerNavItem:hover {
-  background-color: var(--color-light);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 
 /* ─── Page layout ──────────────────────────────────────────────────────── */
@@ -656,9 +657,9 @@
   width: 16rem;
   flex-shrink: 0;
   flex-direction: column;
-  border-right: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-primary);
   padding: 1.25rem;
+  color: #fff;
 }
 
 @media (min-width: 1024px) {
@@ -683,7 +684,7 @@
 .headerCard {
   margin-bottom: 1.5rem;
   border-radius: 1.5rem;
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 1.25rem;
   box-shadow: var(--shadow-soft);
 }
@@ -722,7 +723,7 @@
   display: none;
   gap: 0.5rem;
   border-radius: 1.5rem;
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 0.75rem;
   box-shadow: var(--shadow-soft);
 }
@@ -748,7 +749,7 @@
 }
 
 .sectionTabBtn:hover {
-  background-color: rgba(4, 72, 144, 0.1);
+  background-color: rgba(21, 41, 63, 0.1);
 }
 
 .sectionTabBtn.sectionTabBtnActive {
@@ -778,7 +779,7 @@
   align-items: center;
   justify-content: space-between;
   border-radius: 1.5rem;
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 0.75rem;
   box-shadow: var(--shadow-soft);
 }
@@ -812,7 +813,7 @@
   flex-direction: column;
   gap: 0.25rem;
   border-radius: 1.5rem;
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 0.75rem;
   box-shadow: var(--shadow-soft);
 }
@@ -850,7 +851,7 @@
 
 .contentCard {
   border-radius: 1.5rem;
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 1.5rem;
   box-shadow: var(--shadow-soft);
 }

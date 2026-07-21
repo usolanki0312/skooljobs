@@ -1,6 +1,16 @@
 
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { Calendar, CheckSquare, Clock } from "lucide-react";
+import {
+  Award,
+  Bookmark,
+  Briefcase,
+  Calendar,
+  CalendarCheck,
+  CheckSquare,
+  Clock,
+  Eye,
+  Star,
+} from "lucide-react";
 import styles from "./styles/SchoolHome.module.css";
 import { Button } from "@cloudstrytech/ui-components";
 
@@ -19,9 +29,29 @@ const SchoolHome = () => {
   const stats = [
     {
       label: "Posted Jobs",
-      value: jobs.filter((j) => j.status === "Active").length,
-      sub: "In Job board",
+      value: jobs.filter((j) => j.status === "Active" || j.status === "Scheduled").length,
+      sub: "Live on the job board",
       color: styles.colorPrimary,
+      iconBg: styles.iconBgPrimary,
+      icon: Briefcase,
+      to: "/school/manage-jobs",
+    },
+    {
+      label: "Sent to SkoolJobs",
+      value: jobs.filter((j) => j.status === "Pending Approval").length,
+      sub: "Awaiting platform review",
+      color: styles.colorOrange,
+      iconBg: styles.iconBgOrange,
+      icon: Clock,
+      to: "/school/manage-jobs",
+    },
+    {
+      label: "Approved",
+      value: jobs.filter((j) => j.status === "Approved").length,
+      sub: "Ready — needs your Publish",
+      color: styles.colorTeal,
+      iconBg: styles.iconBgTeal,
+      icon: CheckSquare,
       to: "/school/manage-jobs",
     },
     {
@@ -29,12 +59,16 @@ const SchoolHome = () => {
       value: 0,
       sub: "CVs against opportunities",
       color: styles.colorGreen,
+      iconBg: styles.iconBgGreen,
+      icon: Eye,
     },
     {
       label: "Saved Candidates",
       value: shortlistedApplicants.length,
       sub: "Manually saved candidates",
       color: styles.colorOrange,
+      iconBg: styles.iconBgOrange,
+      icon: Bookmark,
       to: "/school/saved-candidates",
     },
     {
@@ -42,6 +76,8 @@ const SchoolHome = () => {
       value: shortlistedApplicants.length,
       sub: "Shortlisted for interview",
       color: styles.colorBlue,
+      iconBg: styles.iconBgBlue,
+      icon: Star,
       to: "/school/all-applicants?status=Shortlisted",
     },
     {
@@ -49,6 +85,8 @@ const SchoolHome = () => {
       value: scheduledInterviews.length,
       sub: "Upcoming interviews",
       color: styles.colorPurple,
+      iconBg: styles.iconBgPurple,
+      icon: CalendarCheck,
       to: "/school/interviews",
     },
     {
@@ -56,6 +94,8 @@ const SchoolHome = () => {
       value: 1,
       sub: "Offer letters sent",
       color: styles.colorTeal,
+      iconBg: styles.iconBgTeal,
+      icon: Award,
     },
   ];
 
@@ -63,7 +103,7 @@ const SchoolHome = () => {
     {
       label: "Posted Jobs",
       color: styles.barBgPrimary,
-      val: jobs.filter((j) => j.status === "Active").length,
+      val: jobs.filter((j) => j.status === "Active" || j.status === "Scheduled").length,
     },
     {
       label: "Saved",
@@ -96,6 +136,9 @@ const SchoolHome = () => {
     <div className={styles.container}>
       <div className={styles.pageHeader}>
         <h2 className={styles.pageTitle}>Applications Statistics</h2>
+        <p className={styles.pageSubtitle}>
+          Overview of your hiring activity across jobs, candidates and interviews.
+        </p>
       </div>
 
       <div className={styles.alertBanner}>
@@ -116,6 +159,7 @@ const SchoolHome = () => {
       <div className={styles.statsGrid}>
         {stats.map((stat) => {
           const clickable = Boolean(stat.to);
+          const Icon = stat.icon;
 
           return (
             <div
@@ -136,9 +180,14 @@ const SchoolHome = () => {
               className={`${styles.statCard} ${clickable ? styles.statCardClickable : ""
                 }`}
             >
-              <p className={styles.statLabel}>{stat.label}</p>
+              <div className={styles.statTop}>
+                <p className={styles.statLabel}>{stat.label}</p>
+                <div className={`${styles.statIconWrap} ${stat.iconBg}`}>
+                  <Icon size={18} className={stat.color} />
+                </div>
+              </div>
 
-              <p className={`${styles.statValue} ${stat.color}`}>
+              <p className={`${styles.statValue}`}>
                 {stat.value}
               </p>
 
@@ -166,7 +215,7 @@ const SchoolHome = () => {
           </div>
 
           <p className={styles.chartSummary}>
-            Posted: {jobs.filter((j) => j.status === "Active").length} ·
+            Posted: {jobs.filter((j) => j.status === "Active" || j.status === "Scheduled").length} ·
             Shortlisted: {shortlistedApplicants.length} · Interviews:{" "}
             {scheduledInterviews.length}
           </p>

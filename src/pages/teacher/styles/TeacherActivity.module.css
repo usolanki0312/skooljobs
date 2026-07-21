@@ -1,6 +1,6 @@
 .section {
   border-radius: 1.5rem;
-  background-color: #fff;
+  background-color: var(--color-bg);
   padding: 1.25rem;
   box-shadow: var(--shadow-soft);
 }
@@ -47,7 +47,7 @@
 .countBadge {
   align-self: flex-start;
   border-radius: 9999px;
-  background-color: rgba(4, 72, 144, 0.1);
+  background-color: rgba(21, 41, 63, 0.1);
   padding: 0.25rem 0.75rem;
   font-size: 0.875rem;
   font-weight: 700;

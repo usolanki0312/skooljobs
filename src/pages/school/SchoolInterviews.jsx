@@ -1,22 +1,27 @@
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { Button, Input } from "@cloudstrytech/ui-components";
+import { Button, Input, Select } from "@cloudstrytech/ui-components";
 
 import {
   Calendar, CheckCircle, Clock, Link2, MapPin, MessageCircle, Pencil,
   PhoneCall, Video, XCircle, X,
 } from "lucide-react";
-import Select from "../../components/ui/Select";
+import { toOptions } from "../../lib/selectOptions";
+import { validateFields } from "../../lib/textValidation";
 import interviewsOptions from "../../../dropdown/School_module/interviews.json";
 import styles from "./styles/SchoolInterviews.module.css";
 
 const {
-  Duration: DURATIONS,
-  Round: ROUNDS,
-  Status: STATUSES,
+  Duration: DURATIONS_RAW,
+  Round: ROUNDS_RAW,
+  Status: STATUSES_RAW,
   Mode: INTERVIEW_MODES,
   Online_platform: ONLINE_PLATFORM_DATA,
 } = interviewsOptions;
+
+const DURATIONS = toOptions(DURATIONS_RAW);
+const ROUNDS = toOptions(ROUNDS_RAW);
+const STATUSES = toOptions(STATUSES_RAW);
 
 // Online meeting platforms come from JSON; only the `val` key is renamed for
 // readability (icons/colors are JSX and can't live in JSON, so they're mapped below).
@@ -116,6 +121,14 @@ const SchoolInterviews = () => {
     if (!form.date || !form.time) { alert("Date and Time are required."); return; }
     if (form.mode === "Online" && platformNeedsLink(form.onlinePlatform) && !form.meetingLink) {
       alert(`Please add a Meeting Link for ${form.onlinePlatform} interviews.`);
+      return;
+    }
+    const { valid, errors } = validateFields({
+      notesForCandidate: form.notesForCandidate,
+      internalNotes: form.internalNotes,
+    });
+    if (!valid) {
+      alert(Object.values(errors)[0]);
       return;
     }
 

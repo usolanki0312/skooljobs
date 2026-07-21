@@ -2,23 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { profileSections } from "../../lib/schooldata";
 import profileOptions from "../../../dropdown/School_module/profile.json";
-import { Button, Input ,Select} from "@cloudstrytech/ui-components";
+import { Button, Input, Select } from "@cloudstrytech/ui-components";
+import { toOptions } from "../../lib/selectOptions";
 import styles from "./styles/SchoolProfile.module.css";
-
-
-const {
-  Sector: sectors,
-  Medium: mediums,
-  Level: levels,
-  Board: boards,
-  Industry: industries,
-  Country: countries,
-  Indian_state: indianStates,
-  Student_count: studentCountOptions,
-  Students_per_class: studentsPerClassOptions,
-  Public_view: publicViewOptions,
-  Bus_service: busServiceOptions,
-} = profileOptions;
+import { saveSchoolProfile } from "../../services/schoolProfileService";
+import { useImageUpload } from "../../lib/useImageUpload";
+import { validateFields } from "../../lib/textValidation";
 import {
   ArrowLeft,
   BriefcaseBusiness,
@@ -42,6 +31,34 @@ import {
   Users,
   X,
 } from "lucide-react";
+
+
+
+const {
+  Sector: sectorsRaw,
+  Medium: mediumsRaw,
+  Level: levelsRaw,
+  Board: boardsRaw,
+  Industry: industriesRaw,
+  Country: countriesRaw,
+  Indian_state: indianStatesRaw,
+  Student_count: studentCountOptionsRaw,
+  Students_per_class: studentsPerClassOptionsRaw,
+  Public_view: publicViewOptionsRaw,
+  Bus_service: busServiceOptionsRaw,
+} = profileOptions;
+
+const sectors = toOptions(sectorsRaw);
+const mediums = toOptions(mediumsRaw);
+const levels = toOptions(levelsRaw);
+const boards = toOptions(boardsRaw);
+const industries = toOptions(industriesRaw);
+const countries = toOptions(countriesRaw);
+const indianStates = toOptions(indianStatesRaw);
+const studentCountOptions = toOptions(studentCountOptionsRaw);
+const studentsPerClassOptions = toOptions(studentsPerClassOptionsRaw);
+const publicViewOptions = toOptions(publicViewOptionsRaw);
+const busServiceOptions = toOptions(busServiceOptionsRaw);
 
 const sidebarItems = [
   {
@@ -95,8 +112,8 @@ const sidebarItems = [
   },
 ];
 
-const establishmentYears = Array.from({ length: 76 }, (_, i) =>
-  String(2025 - i),
+const establishmentYears = toOptions(
+  Array.from({ length: 76 }, (_, i) => String(2025 - i)),
 );
 
 const inputClass = styles.inputBase;
@@ -130,6 +147,21 @@ const SchoolProfile = () => {
   const [logoImage, setLogoImage] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
   const [galleryImages, setGalleryImages] = useState([]);
+  const {
+    error: logoImageError,
+    validating: logoImageValidating,
+    validateAndProcess: validateLogoImage,
+  } = useImageUpload("logo");
+  const {
+    error: coverImageError,
+    validating: coverImageValidating,
+    validateAndProcess: validateCoverImage,
+  } = useImageUpload("cover");
+  const {
+    error: galleryImagesError,
+    validating: galleryImagesValidating,
+    validateAndProcessMultiple: validateGalleryImages,
+  } = useImageUpload("gallery");
   const [pincodeLoading, setPincodeLoading] = useState(false);
   const [pincodeError, setPincodeError] = useState("");
 
@@ -153,7 +185,6 @@ const SchoolProfile = () => {
     currentUser.schoolName ||
     currentUser.firstName ||
     "Som Lalit School";
-
   const [formData, setFormData] = useState({
     firstName: currentUser.firstName || "Som Lalit School",
     lastName: currentUser.lastName || "Jankara Nagar, Ahmedabad",
@@ -171,6 +202,9 @@ const SchoolProfile = () => {
     busService: "",
     establishedYear: "2000",
     industry: "Schools & Institutions",
+    schoolType: "",
+    affiliationStatus: "",
+
     medium: "English",
     level: "",
     board: "",
@@ -187,6 +221,7 @@ const SchoolProfile = () => {
     addressLane2: "",
   });
 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -195,20 +230,29 @@ const SchoolProfile = () => {
   const setField = (name, value) =>
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-  const handleLogoUpload = (e) => {
+  const handleLogoUpload = async (e) => {
     const file = e.target.files[0];
-    if (file) setLogoImage(URL.createObjectURL(file));
+    e.target.value = "";
+    if (!file) return;
+    const url = await validateLogoImage(file);
+    if (url) setLogoImage(url);
   };
 
-  const handleCoverUpload = (e) => {
+  const handleCoverUpload = async (e) => {
     const file = e.target.files[0];
-    if (file) setCoverImage(URL.createObjectURL(file));
+    e.target.value = "";
+    if (!file) return;
+    const url = await validateCoverImage(file);
+    if (url) setCoverImage(url);
   };
 
-  const handleGalleryUpload = (e) => {
+  const handleGalleryUpload = async (e) => {
     const files = Array.from(e.target.files || []);
-    const urls = files.map((f) => URL.createObjectURL(f));
-    setGalleryImages((prev) => [...prev, ...urls].slice(0, 8));
+    e.target.value = "";
+    const urls = await validateGalleryImages(files);
+    if (urls.length > 0) {
+      setGalleryImages((prev) => [...prev, ...urls].slice(0, 8));
+    }
   };
 
   const handleNavClick = (item) => {
@@ -219,8 +263,7 @@ const SchoolProfile = () => {
     localStorage.removeItem("currentUser");
     navigate("/");
   };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (activeSection === "address" && !formData.postalCode) {
       alert("Postal Code is required for job location matching.");
@@ -230,7 +273,62 @@ const SchoolProfile = () => {
       alert("Level is required as it directly affects job matching.");
       return;
     }
-    alert("Profile saved successfully!");
+    const { valid, errors } = validateFields({
+      aboutInstitute: formData.aboutInstitute,
+    });
+    if (!valid) {
+      alert(Object.values(errors)[0]);
+      return;
+    }
+
+    console.log(currentUser);
+
+
+    const payload = {
+      schoolAdminId: String(currentUser.id),
+      schoolName: formData.companyName,
+      sector: formData.sector,
+      schoolType: "Private",
+      affiliationStatus: "Affiliated",
+
+      board: formData.board,
+      medium: formData.medium,
+      level: formData.level,
+      industry: formData.industry,
+      description: formData.aboutInstitute,
+
+      contact: {
+        email: formData.email,
+        phone: formData.phone,
+        website: formData.website,
+      },
+
+      address: {
+        pinCode: formData.postalCode,
+        city: formData.city,
+        state: formData.state,
+        country: formData.country,
+      },
+
+      socialLinks: {
+        linkedin: formData.linkedin,
+        facebook: formData.facebook,
+        twitter: formData.twitter,
+        instagram: "",
+      },
+    };
+    console.log("Form Data:", formData);
+    console.log("Board =", payload.board);
+    console.log("Level =", payload.level);
+    console.log("Payload =", JSON.stringify(payload, null, 2));
+    try {
+      const response = await saveSchoolProfile(payload);
+      console.log("API Response:", response);
+      alert("Profile saved successfully!");
+    } catch (error) {
+      console.error("API Error:", error);
+      alert("Failed to save profile.");
+    }
   };
 
   // Profile completion calculation
@@ -271,18 +369,38 @@ const SchoolProfile = () => {
             )}
           </div>
           <label className={styles.uploadLogoLabel}>
-            <Upload size={13} /> {logoImage ? "Change Logo" : "Upload Logo"}
-            <input type="file" hidden accept="image/*" onChange={handleLogoUpload} />
+            <Upload size={13} />{" "}
+            {logoImageValidating
+              ? "Checking..."
+              : logoImage
+                ? "Change Logo"
+                : "Upload Logo"}
+            <input
+              type="file"
+              hidden
+              accept="image/*"
+              disabled={logoImageValidating}
+              onChange={handleLogoUpload}
+            />
           </label>
           <p className={styles.logoHint}>Recommended: 200×200px</p>
+          {logoImageError && <p className={styles.errorText}>{logoImageError}</p>}
         </div>
 
         {/* Cover photo */}
         <div className={styles.coverCol}>
           <label className={styles.uploadCoverLabel}>
-            <ImageIcon size={16} /> Upload Cover Photo
-            <input type="file" hidden accept="image/*" onChange={handleCoverUpload} />
+            <ImageIcon size={16} />{" "}
+            {coverImageValidating ? "Checking..." : "Upload Cover Photo"}
+            <input
+              type="file"
+              hidden
+              accept="image/*"
+              disabled={coverImageValidating}
+              onChange={handleCoverUpload}
+            />
           </label>
+          {coverImageError && <p className={styles.errorText}>{coverImageError}</p>}
           {coverImage && (
             <div className={styles.coverPreviewWrap}>
               <img src={coverImage} alt="cover" className={styles.coverPreviewImg} />
@@ -494,15 +612,20 @@ const SchoolProfile = () => {
           attractive to candidates.
         </p>
         <label className={styles.uploadPhotosLabel}>
-          <Camera size={16} /> Upload Photos
+          <Camera size={16} />{" "}
+          {galleryImagesValidating ? "Checking Photos..." : "Upload Photos"}
           <input
             type="file"
             hidden
             accept="image/*"
             multiple
+            disabled={galleryImagesValidating}
             onChange={handleGalleryUpload}
           />
         </label>
+        {galleryImagesError && (
+          <p className={styles.errorText}>{galleryImagesError}</p>
+        )}
         {galleryImages.length > 0 && (
           <div className={styles.galleryGrid}>
             {galleryImages.map((url, i) => (
@@ -600,8 +723,10 @@ const SchoolProfile = () => {
           <Field label="Board">
             <Select
               value={formData.board}
-              onChange={(v) => setField("board", v)}
-              placeholder="Select the Board"
+              onChange={(v) => {
+                console.log("Board Changed =", v);
+                setField("board", v);
+              }}
               options={boards}
             />
             <p className={styles.fieldHelpText}>
@@ -1111,6 +1236,7 @@ const SchoolProfile = () => {
                 Cancel
               </Button>
               <Button
+                type="submit"
                 variant="filled"
                 startIcon="saveIcon"
               >

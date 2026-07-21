@@ -1,10 +1,9 @@
 import { useOutletContext } from "react-router-dom";
 import { FileText } from "lucide-react";
-import { Button } from "@cloudstrytech/ui-components";
 import styles from "./styles/TeacherResume.module.css";
 
 const TeacherResume = () => {
-  const { resumes = [], selectedResume, setSelectedResume, addActivity } = useOutletContext();
+  const { resumes = [], setSelectedResume, addActivity } = useOutletContext();
 
   return (
     <section className={styles.section}>
@@ -12,37 +11,32 @@ const TeacherResume = () => {
       <p className={styles.subtext}>Select a resume to update recommendations.</p>
       <div className={styles.grid}>
         {resumes.map((resume) => {
-          const isSelected = selectedResume && String(selectedResume.id) === String(resume.id);
           const resumeName = resume.name || resume.title || "Custom Resume";
           const skillFocus = resume.skill || resume.currentJobTitle || "Teaching";
 
           return (
-            <Button
+            <button
               key={resume.id}
               type="button"
               onClick={() => {
                 setSelectedResume(resume);
                 addActivity(`Selected ${resumeName}`);
               }}
-              className={isSelected ? styles.resumeCardSelected : styles.resumeCard}
+              className={styles.resumeCard}
             >
               <div className={styles.cardHeader}>
                 <FileText size={26} />
-                <span
-                  className={isSelected ? styles.scoreBadgeSelected : styles.scoreBadge}
-                >
+                <span className={styles.scoreBadge}>
                   {resume.score || 85}% Score
                 </span>
               </div>
 
               <h3 className={styles.resumeName}>{resumeName}</h3>
 
-              <p
-                className={isSelected ? styles.skillFocusSelected : styles.skillFocus}
-              >
+              <p className={styles.skillFocus}>
                 Skill focus: {skillFocus}
               </p>
-            </Button>
+            </button>
           );
         })}
       </div>

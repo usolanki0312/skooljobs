@@ -2,6 +2,7 @@ import { useOutletContext, useNavigate } from "react-router-dom";
 import { Bookmark } from "lucide-react";
 import TeacherJobCard from "../../components/TeacherJobCard";
 import styles from "./styles/TeacherSavedJobs.module.css";
+import { Button } from "@cloudstrytech/ui-components";
 
 const TeacherSavedJobs = () => {
   const { savedJobs, appliedJobs, handleApply, handleSave } = useOutletContext();
@@ -29,13 +30,12 @@ const TeacherSavedJobs = () => {
             <p className={styles.emptyText}>
               Explore available teaching positions and save them here by clicking the bookmark icon.
             </p>
-            <button
-              type="button"
+            <Button
+              variant="filled"
               onClick={() => navigate("/teacher/all-jobs")}
-              className={styles.emptyButton}
             >
               Explore All Jobs
-            </button>
+            </Button>
           </div>
         ) : (
           <div className={styles.grid}>

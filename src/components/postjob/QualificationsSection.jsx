@@ -2,16 +2,21 @@ import { X } from "lucide-react";
 import SectionCard from "./SectionCard";
 import postjob from "../../../dropdown/School_module/postjob.json";
 import styles from "./styles/QualificationsSection.module.css";
-import { Button ,Select,Input  } from "@cloudstrytech/ui-components";
+import { Button, Input, Select } from "@cloudstrytech/ui-components";
+import { toOptions } from "../../lib/selectOptions";
 
 const {
-  Min_qualification: MIN_QUALIFICATIONS,
-  Additional_qualification: ADDITIONAL_QUALIFICATIONS,
+  Min_qualification: MIN_QUALIFICATIONS_RAW,
+  Additional_qualification: ADDITIONAL_QUALIFICATIONS_RAW,
   Certification: CERTIFICATIONS,
-  Experience: EXPERIENCE_OPTIONS,
+  Experience: EXPERIENCE_OPTIONS_RAW,
   Preferred_school_type: PREFERRED_SCHOOL_TYPES,
   Student_level: STUDENT_LEVELS,
 } = postjob;
+
+const MIN_QUALIFICATIONS = toOptions(MIN_QUALIFICATIONS_RAW);
+const ADDITIONAL_QUALIFICATIONS = toOptions(ADDITIONAL_QUALIFICATIONS_RAW);
+const EXPERIENCE_OPTIONS = toOptions(EXPERIENCE_OPTIONS_RAW);
 
 const TagMultiSelect = ({ label, options, selected, onToggle }) => (
   <div>

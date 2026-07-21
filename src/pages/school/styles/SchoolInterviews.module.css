@@ -21,7 +21,7 @@
 .card {
   border-radius: 1rem;
   border: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
@@ -67,7 +67,7 @@
 }
 
 .tableHead {
-  background-color: rgba(4, 72, 144, 0.05);
+  background-color: rgba(21, 41, 63, 0.05);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.025em;
@@ -176,10 +176,20 @@
 }
 
 .statusSelect {
-  min-width: 8rem;
+  /* Public override surface (see @cloudstrytech/ui-components styles.css):
+     these custom properties cross the shadow-DOM boundary into the actual
+     field, unlike plain `padding`/`font-size` which only affect this wrapper.
+     Defaults left too little room for 9-character labels like "Scheduled",
+     so the field truncated the text. */
+  --cst-input-leading-space: 0.625rem;
+  --cst-input-trailing-space: 0.375rem;
+  --cst-input-top-space: 0.375rem;
+  --cst-input-bottom-space: 0.375rem;
+  --cst-input-text-size: 0.75rem;
+  --cst-input-radius: 9999px;
+  min-width: 9.5rem;
   border-radius: 9999px;
   border: 0;
-  padding: 0.375rem 0.75rem;
   font-size: 0.75rem;
   font-weight: 700;
 }
@@ -229,7 +239,7 @@
   max-height: 92vh;
   overflow-y: auto;
   border-radius: 1.5rem;
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
@@ -242,7 +252,7 @@
   justify-content: space-between;
   border-radius: 1.5rem 1.5rem 0 0;
   border-bottom: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 1rem 1.5rem;
 }
 
@@ -259,7 +269,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 0.75rem;
-  background-color: rgba(4, 72, 144, 0.1);
+  background-color: rgba(21, 41, 63, 0.1);
 }
 
 .modalHeaderIconSvg {
@@ -297,7 +307,7 @@
   gap: 0.75rem;
   border-radius: 0 0 1.5rem 1.5rem;
   border-top: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 1rem 1.5rem;
 }
 
@@ -386,7 +396,7 @@
   width: 100%;
   border-radius: 0.75rem;
   border: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 0.625rem 0.75rem;
   font-size: 0.875rem;
   color: #1e293b;
@@ -398,14 +408,14 @@
 
 .input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(4, 72, 144, 0.1);
+  box-shadow: 0 0 0 4px rgba(21, 41, 63, 0.1);
 }
 
 .textarea {
   width: 100%;
   border-radius: 0.75rem;
   border: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 0.625rem 0.75rem;
   font-size: 0.875rem;
   color: #1e293b;
@@ -418,7 +428,7 @@
 
 .textarea:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(4, 72, 144, 0.1);
+  box-shadow: 0 0 0 4px rgba(21, 41, 63, 0.1);
 }
 
 /* ── Interview mode radio cards ─────────────────────────────────────── */
@@ -448,11 +458,11 @@
 
 .modeOptionActive {
   border-color: var(--color-primary);
-  background-color: rgba(4, 72, 144, 0.05);
+  background-color: rgba(21, 41, 63, 0.05);
 }
 
 .modeOptionActive:hover {
-  background-color: rgba(4, 72, 144, 0.05);
+  background-color: rgba(21, 41, 63, 0.05);
 }
 
 .modeIcon {
@@ -516,13 +526,13 @@
   gap: 0.5rem;
   border-radius: 0.75rem;
   border: 1px solid var(--color-border);
-  background-color: #ffffff;
+  background-color: var(--color-bg);
   padding: 0.625rem 0.75rem;
 }
 
 .meetingLinkBox:focus-within {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(4, 72, 144, 0.1);
+  box-shadow: 0 0 0 4px rgba(21, 41, 63, 0.1);
 }
 
 .meetingLinkIcon {

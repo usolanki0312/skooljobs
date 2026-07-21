@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { Bell, Filter } from "lucide-react";
 import TeacherJobCard from "../../components/TeacherJobCard";
-import Select from "../../components/ui/Select";
+import { Select } from "@cloudstrytech/ui-components";
+import { toOptions } from "../../lib/selectOptions";
 import styles from "./styles/TeacherAllJobs.module.css";
 
 
@@ -36,12 +37,11 @@ const TeacherAllJobs = () => {
         <div className={styles.headerRow}>
           <h2 className={styles.heading}>All Teaching Jobs</h2>
           <div className={styles.filterGroup}>
-            <Filter size={16} className={styles.filterIcon} />
             <Select
               value={jobFilter.subject}
               onChange={(v) => setJobFilter((p) => ({ ...p, subject: v }))}
               placeholder="All Subjects"
-              options={subjectOptions}
+              options={toOptions(subjectOptions)}
               className={styles.subjectSelect}
             />
 
@@ -49,7 +49,7 @@ const TeacherAllJobs = () => {
               value={jobFilter.type}
               onChange={(v) => setJobFilter((p) => ({ ...p, type: v }))}
               placeholder="All Types"
-              options={typeOptions}
+              options={toOptions(typeOptions)}
               className={styles.typeSelect}
             />
           </div>
