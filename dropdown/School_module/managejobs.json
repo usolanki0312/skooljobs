@@ -1,3 +1,11 @@
 {
-  "Job_status": ["Active", "Paused", "Draft", "Closed"]
+  "Job_status": ["Pending Approval", "Approved", "Active", "Scheduled", "Paused", "Draft", "Closed", "Rejected"],
+  "Rejection_reason": [
+    "Job title doesn't match a recognised teaching role",
+    "Missing or unclear job description",
+    "Salary/compensation details missing",
+    "Duplicate of an existing listing",
+    "Not a teaching/academic position",
+    "Other"
+  ]
 }

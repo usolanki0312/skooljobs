@@ -1,6 +1,6 @@
 .section {
   border-radius: 1.5rem;
-  background-color: #fff;
+  background-color: var(--color-bg);
   padding: 1.25rem;
   box-shadow: var(--shadow-soft);
 }
@@ -42,10 +42,12 @@
   }
 }
 
-.resumeCard {
+button.resumeCard {
+  display: block;
+  width: 100%;
   border-radius: 1.5rem;
   border: 1px solid var(--color-border);
-  background-color: #fff;
+  background-color: var(--color-bg);
   padding: 1.25rem;
   text-align: left;
   color: #334155;
@@ -54,28 +56,15 @@
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.resumeCard:hover {
-  border-color: var(--color-primary);
-}
-
-.resumeCardSelected {
-  border-radius: 1.5rem;
-  border: 1px solid var(--color-primary);
-  background-color: var(--color-primary);
-  padding: 1.25rem;
-  text-align: left;
-  color: #fff;
-  box-shadow: var(--shadow-soft);
-  transition-property: all;
-  transition-duration: 150ms;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 .cardHeader {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.cardHeader svg {
+  flex-shrink: 0;
 }
 
 .scoreBadge {
@@ -83,16 +72,8 @@
   padding: 0.25rem 0.75rem;
   font-size: 0.75rem;
   font-weight: 700;
-  background-color: rgba(4, 72, 144, 0.1);
+  background-color: rgba(21, 41, 63, 0.1);
   color: var(--color-primary);
-}
-
-.scoreBadgeSelected {
-  border-radius: 9999px;
-  padding: 0.25rem 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .resumeName {
@@ -108,10 +89,4 @@
   margin-top: 0.5rem;
   font-size: 0.875rem;
   color: #64748b;
-}
-
-.skillFocusSelected {
-  margin-top: 0.5rem;
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.8);
 }

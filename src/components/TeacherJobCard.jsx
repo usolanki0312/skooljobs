@@ -56,7 +56,7 @@ const TeacherJobCard = ({ job, appliedJobs, savedJobs, onApply, onSave }) => {
           className={isSaved ? styles.saveButtonSaved : styles.saveButton}
           startIcon="bookmarkIcon"
         >
-          {isSaved ? "Saved" : "Save"}
+          Interested
         </Button>
       </div>
     </div>

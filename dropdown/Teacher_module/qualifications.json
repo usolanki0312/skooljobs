@@ -1,8 +1,6 @@
 {
-  "class_levels": ["Class 10", "Class 12"],
+  "class_levels": ["Secondary (10th)", "Senior Secondary (12th)"],
   "degrees": [
-    "Secondary (10th)",
-    "Senior Secondary (12th)",
     "Bachelor's Degree",
     "Master's Degree",
     "MPhil",
@@ -36,6 +34,17 @@
     "Subject Specialization",
     "Other"
   ],
+  "coursesByDegree": {
+    "Secondary (10th)": ["General Secondary Education", "Other"],
+    "Senior Secondary (12th)": ["Science", "Commerce", "Arts / Humanities", "Vocational", "Other"],
+    "Bachelor's Degree": ["BCA", "B.Tech", "BE", "B.Sc", "BA", "B.Com", "BBA", "B.Ed", "Other"],
+    "Master's Degree": ["MCA", "M.Tech", "M.Sc", "MA", "M.Com", "MBA", "M.Ed", "Other"],
+    "MPhil": ["MPhil in Education", "MPhil in Science", "MPhil in Arts", "MPhil in Commerce", "Other"],
+    "PhD / Doctorate": ["PhD in Education", "Research Degree", "Subject Specialization", "Other"],
+    "Post Doctorate": ["Post Doctoral Research", "Other"],
+    "Professional Degree": ["B.Ed", "M.Ed", "Diploma in Education", "Professional Certification", "Other"],
+    "Other": ["Other"]
+  },
   "mediums": [
     "English",
     "Hindi",

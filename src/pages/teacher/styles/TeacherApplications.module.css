@@ -1,6 +1,6 @@
 .section {
   border-radius: 1.5rem;
-  background-color: #fff;
+  background-color: var(--color-bg);
   padding: 1.25rem;
   box-shadow: var(--shadow-soft);
   display: flex;
@@ -79,7 +79,7 @@
 }
 
 .findJobsButton:hover {
-  background-color: rgba(4, 72, 144, 0.95);
+  background-color: rgba(21, 41, 63, 0.95);
 }
 
 .tableScrollWrap {

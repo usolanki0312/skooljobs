@@ -1,6 +1,6 @@
 .section {
   border-radius: 1.5rem;
-  background-color: #fff;
+  background-color: var(--color-bg);
   padding: 1.25rem;
   box-shadow: var(--shadow-soft);
 }

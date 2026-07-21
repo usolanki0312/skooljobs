@@ -10,6 +10,14 @@ const ApiSpecPage = lazy(() => import("../pages/ApiSpecPage"));
 const ApiSwaggerPage = lazy(() => import("../pages/ApiSwaggerPage"));
 import SchoolLayout from "../layouts/SchoolLayout";
 import TeacherLayout from "../layouts/TeacherLayout";
+import AdminLayout from "../layouts/AdminLayout";
+import AdminDashboard from "../pages/admin/AdminDashboard";
+import AdminJobs from "../pages/admin/AdminJobs";
+import AdminSchools from "../pages/admin/AdminSchools";
+import HeadAdminLayout from "../layouts/HeadAdminLayout";
+import HeadAdminDashboard from "../pages/headadmin/HeadAdminDashboard";
+import HeadAdminPostJob from "../pages/headadmin/HeadAdminPostJob";
+import HeadAdminJobs from "../pages/headadmin/HeadAdminJobs";
 import SchoolHome from "../pages/school/SchoolHome";
 import SchoolViewProfile from "../pages/school/SchoolViewProfile";
 import SchoolPostJob from "../pages/school/SchoolPostJob";
@@ -92,6 +100,23 @@ function AppRoutes() {
         <Route path="settings" element={<TeacherSettings />} />
       </Route>
       <Route path="/teacher/profile" element={<TeacherProfile />} />
+
+      {/* SkoolJobs platform admin module — reviews jobs submitted by schools */}
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="job-approvals" element={<AdminDashboard />} />
+        <Route path="jobs" element={<AdminJobs />} />
+        <Route path="schools" element={<AdminSchools />} />
+      </Route>
+
+      {/* Head Admin module — one login manages jobs across multiple schools */}
+      <Route path="/head-admin" element={<HeadAdminLayout />}>
+        <Route index element={<Navigate to="/head-admin/dashboard" replace />} />
+        <Route path="dashboard" element={<HeadAdminDashboard />} />
+        <Route path="post-job" element={<HeadAdminPostJob />} />
+        <Route path="manage-jobs" element={<HeadAdminJobs />} />
+      </Route>
 
       {/* Legacy redirects so old bookmarks / links still work */}
       <Route path="/school-dashboard" element={<Navigate to="/school/dashboard" replace />} />

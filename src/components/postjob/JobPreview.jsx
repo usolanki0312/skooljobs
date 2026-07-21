@@ -71,6 +71,7 @@ const salarySummary = (form) => {
 const JobPreview = ({ form, onClose }) => {
   const title = form.jobTitle === "Other" ? form.customJobTitle : form.jobTitle;
   const subject = form.subject === "Other" ? form.customSubject : form.subject;
+  const jobImage = form.jobLogoImage || form.aiGeneratedImage || "";
 
   return (
     <div className={styles.overlay}>
@@ -97,6 +98,9 @@ const JobPreview = ({ form, onClose }) => {
         <div className={styles.body}>
 
           {/* Hero */}
+          {jobImage && (
+            <img src={jobImage} alt="" className={styles.heroBannerImg} />
+          )}
           <div className={styles.hero}>
             <div className={styles.heroTop}>
               <div className={styles.heroIconWrap}>
@@ -131,11 +135,29 @@ const JobPreview = ({ form, onClose }) => {
           {/* Body sections */}
           <div className={styles.sections}>
 
+            {form.shortDescription && (
+              <Section icon={Sparkles} title="Job Summary">
+                <div className={styles.imageTextRow}>
+                  {jobImage && (
+                    <img src={jobImage} alt="" className={styles.imageThumb} />
+                  )}
+                  <p className={styles.description}>
+                    {form.shortDescription}
+                  </p>
+                </div>
+              </Section>
+            )}
+
             {form.description && (
               <Section icon={Briefcase} title="Job Description">
-                <p className={styles.description}>
-                  {form.description}
-                </p>
+                <div className={styles.imageTextRow}>
+                  {jobImage && (
+                    <img src={jobImage} alt="" className={styles.imageThumb} />
+                  )}
+                  <p className={styles.description}>
+                    {form.description}
+                  </p>
+                </div>
               </Section>
             )}
 

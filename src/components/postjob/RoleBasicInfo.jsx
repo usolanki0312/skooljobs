@@ -2,25 +2,34 @@ import { MapPin } from "lucide-react";
 import SectionCard from "./SectionCard";
 import postjob from "../../../dropdown/School_module/postjob.json";
 import styles from "./styles/RoleBasicInfo.module.css";
-import { Button, Select, Input } from "@cloudstrytech/ui-components";
+import { Button, Input, Select } from "@cloudstrytech/ui-components";
+import { toOptions } from "../../lib/selectOptions";
+import SelectOrOther from "../ui/SelectOrOther";
 
 const {
-  Role_category: ROLE_CATEGORIES,
+  Role_category: ROLE_CATEGORIES_RAW,
   Job_title_group: JOB_TITLE_GROUPS,
   Subject_by_job_title: SUBJECTS_BY_JOB_TITLE,
-  Joining_timeline: JOINING_TIMELINES,
+  Joining_timeline: JOINING_TIMELINES_RAW,
   Employment_type: EMPLOYMENT_TYPES,
 } = postjob;
 
+const ROLE_CATEGORIES = toOptions(ROLE_CATEGORIES_RAW);
+const JOINING_TIMELINES = toOptions(JOINING_TIMELINES_RAW);
+
 const inputCls = styles.input;
 
-const RoleBasicInfo = ({ form, setField }) => {
-  const jobTitleList = form.roleCategory
-    ? [...(JOB_TITLE_GROUPS[form.roleCategory] || []), "Other"]
-    : [];
-  const subjectList = form.jobTitle
-    ? [...(SUBJECTS_BY_JOB_TITLE[form.jobTitle] || []), "Other"]
-    : [];
+const RoleBasicInfo = ({ form, setField, managedSchools }) => {
+  const jobTitleList = toOptions(
+    form.roleCategory
+      ? [...(JOB_TITLE_GROUPS[form.roleCategory] || []), "Other"]
+      : [],
+  );
+  const subjectList = toOptions(
+    form.jobTitle
+      ? [...(SUBJECTS_BY_JOB_TITLE[form.jobTitle] || []), "Other"]
+      : [],
+  );
 
   const handleRoleChange = (value) => {
     setField("roleCategory", value);
@@ -36,6 +45,20 @@ const RoleBasicInfo = ({ form, setField }) => {
   return (
     <SectionCard number={1} title="Role & Basic Information">
       <div className={styles.fieldGroup}>
+
+        {managedSchools && managedSchools.length > 0 && (
+          <div>
+            <label className={styles.label}>
+              School / Branch <span className={styles.required}>*</span>
+            </label>
+            <Select
+              value={form.branchSchool}
+              onChange={(value) => setField("branchSchool", value)}
+              placeholder="Select which school this job is for"
+              options={toOptions(managedSchools)}
+            />
+          </div>
+        )}
 
         {/* Row 1: Role Category + Job Title + Subject/Department */}
         <div className={styles.rowThree}>
@@ -56,29 +79,23 @@ const RoleBasicInfo = ({ form, setField }) => {
             <label className={styles.label}>
               Job Title <span className={styles.required}>*</span>
             </label>
-            <Select
+            <SelectOrOther
               value={form.jobTitle}
               onChange={(value) => handleJobTitleChange(value)}
               placeholder={form.roleCategory ? "Select Job Title" : "Select Role Category first"}
               options={jobTitleList}
               disabled={!form.roleCategory}
+              otherValue={form.customJobTitle || ""}
+              onOtherChange={(value) => setField("customJobTitle", value)}
+              otherPlaceholder="Enter custom job title"
             />
-            {form.jobTitle === "Other" && (
-              <Input
-                type="text"
-                value={form.customJobTitle || ""}
-                onChange={(value) => setField("customJobTitle", value)}
-                placeholder="Enter custom job title"
-                required
-              />
-            )}
           </div>
 
           <div>
             <label className={styles.label}>
               Subject / Department <span className={styles.required}>*</span>
             </label>
-            <Select
+            <SelectOrOther
               value={form.subject}
               onChange={(value) => setField("subject", value)}
               placeholder={
@@ -92,16 +109,10 @@ const RoleBasicInfo = ({ form, setField }) => {
               }
               options={subjectList}
               disabled={!form.jobTitle || !subjectList.length}
+              otherValue={form.customSubject || ""}
+              onOtherChange={(value) => setField("customSubject", value)}
+              otherPlaceholder="Enter custom subject/department"
             />
-            {form.subject === "Other" && (
-              <Input
-                type="text"
-                value={form.customSubject || ""}
-                onChange={(value) => setField("customSubject", value)}
-                placeholder="Enter custom subject/department"
-                required
-              />
-            )}
           </div>
         </div>
 

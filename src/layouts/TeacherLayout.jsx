@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   BriefcaseBusiness,
+  ChevronDown,
   Clock3,
   FileText,
   LayoutDashboard,
@@ -16,16 +17,32 @@ import {
   X,
 } from "lucide-react";
 import { jobsData, resumesData } from "../lib/teacherdata";
+import { computeJobMatch, loadTeacherMatchProfile } from "../lib/jobMatch";
 import styles from "./TeacherLayout.module.css";
 
 const resumes = resumesData;
 
+const profileSections = [
+  { id: "basic", label: "My Profile" },
+  { id: "viewProfile", label: "View Profile" },
+  { id: "contact", label: "Contact Details" },
+  { id: "qualification", label: "Qualification" },
+  { id: "experience", label: "Experience" },
+  { id: "achievements", label: "Achievements" },
+  { id: "resume", label: "Resume" },
+];
+
 const navItems = [
-  { label: "My Profile", icon: UserRound, path: "/teacher/profile" },
+  {
+    label: "My Profile",
+    icon: UserRound,
+    path: "/teacher/profile",
+    children: profileSections,
+  },
   { label: "Dashboard", icon: LayoutDashboard, path: "/teacher/dashboard" },
   { label: "All Jobs", icon: BriefcaseBusiness, path: "/teacher/all-jobs" },
   { label: "Saved Jobs", icon: Bookmark, path: "/teacher/saved-jobs" },
-  { label: "My Applications", icon: ClipboardList, path: "/teacher/applications" },
+  { label: "Applied Jobs", icon: ClipboardList, path: "/teacher/applications" },
   { label: "Interviews", icon: Calendar, path: "/teacher/interviews" },
   { label: "Recommendation", icon: Sparkles, path: "/teacher/recommendation" },
   { label: "Resume", icon: FileText, path: "/teacher/resume" },
@@ -37,9 +54,21 @@ const TeacherLayout = () => {
   const location = useLocation();
 
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(
+    location.pathname === "/teacher/profile",
+  );
   useEffect(() => {
     setMobileNavOpen(false);
   }, [location.pathname]);
+
+  const activeProfileSection =
+    location.pathname === "/teacher/profile"
+      ? new URLSearchParams(location.search).get("section") || "basic"
+      : null;
+
+  const goToProfileSection = (sectionId) => {
+    navigate(`/teacher/profile?section=${sectionId}`);
+  };
 
   const [profileImage, setProfileImage] = useState("https://i.pravatar.cc/300?img=12");
   const [appliedJobs, setAppliedJobs] = useState(() => {
@@ -62,25 +91,34 @@ const TeacherLayout = () => {
   });
 
   const allJobs = useMemo(() => {
+    const matchProfile = loadTeacherMatchProfile();
     const savedRecruiterJobsStr = localStorage.getItem("skooljobs_jobs");
     const recruiterJobs = savedRecruiterJobsStr ? JSON.parse(savedRecruiterJobsStr) : [];
-    const normalizedRecruiter = recruiterJobs.map((j) => ({
-      id: j.id,
-      role: j.title || "Teaching Position",
-      school: j.companyName || "Green Valley School",
-      location: j.location || "Bhopal, MP",
-      type: j.employmentType || "Full Time",
-      salary: j.salaryRange || "Competitive",
-      skill: j.subject || "Teaching",
-      match: "98",
-      description: j.description,
-      requirements: j.requirements,
-      qualifications: j.qualifications,
-      expiryDate: j.expiryDate,
-      vacancies: j.vacancies,
-      roleType: j.roleType,
+    const normalizedRecruiter = recruiterJobs
+      .filter((j) => j.status === "Active" || j.status === "Scheduled")
+      .map((j) => {
+        const job = {
+          id: j.id,
+          role: j.title || "Teaching Position",
+          school: j.schoolName || j.companyName || "Green Valley School",
+          location: j.location || "Bhopal, MP",
+          type: j.employmentType || "Full Time",
+          salary: j.salaryRange || "Competitive",
+          skill: j.subject || "Teaching",
+          description: j.description,
+          requirements: j.requirements,
+          qualifications: j.qualifications,
+          expiryDate: j.expiryDate,
+          vacancies: j.vacancies,
+          roleType: j.roleType,
+        };
+        return { ...job, match: computeJobMatch(job, matchProfile) };
+      });
+    const matchedStaticJobs = jobsData.map((job) => ({
+      ...job,
+      match: computeJobMatch(job, matchProfile),
     }));
-    return [...normalizedRecruiter, ...jobsData];
+    return [...normalizedRecruiter, ...matchedStaticJobs];
   }, []);
 
   const [resumes, setResumes] = useState(() => {
@@ -278,6 +316,51 @@ const TeacherLayout = () => {
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
+
+              if (item.children) {
+                return (
+                  <div key={item.path} className={styles.navGroup}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!isActive) navigate(item.path);
+                        setProfileMenuOpen((open) => !open);
+                      }}
+                      aria-expanded={profileMenuOpen}
+                      className={`${styles.navButton} ${styles.navGroupButton} ${
+                        isActive ? styles.navButtonActive : ""
+                      }`}
+                    >
+                      <Icon size={18} /> {item.label}
+                      <ChevronDown
+                        size={14}
+                        className={`${styles.navChevron} ${
+                          profileMenuOpen ? styles.navChevronOpen : ""
+                        }`}
+                      />
+                    </button>
+                    {profileMenuOpen && (
+                      <div className={styles.subNav}>
+                        {item.children.map((child) => (
+                          <button
+                            key={child.id}
+                            type="button"
+                            onClick={() => goToProfileSection(child.id)}
+                            className={`${styles.subNavButton} ${
+                              activeProfileSection === child.id
+                                ? styles.subNavButtonActive
+                                : ""
+                            }`}
+                          >
+                            {child.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
               return (
                 <button
                   key={item.path}
@@ -337,6 +420,40 @@ const TeacherLayout = () => {
                 {navItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
+
+                  if (item.children) {
+                    return (
+                      <div key={item.path} className={styles.mobileNavGroup}>
+                        <button
+                          type="button"
+                          onClick={() => navigate(item.path)}
+                          className={`${styles.mobileNavButton} ${
+                            isActive ? styles.mobileNavButtonActive : ""
+                          }`}
+                        >
+                          <Icon size={17} />
+                          {item.label}
+                        </button>
+                        <div className={styles.mobileSubNav}>
+                          {item.children.map((child) => (
+                            <button
+                              key={child.id}
+                              type="button"
+                              onClick={() => goToProfileSection(child.id)}
+                              className={`${styles.mobileSubNavButton} ${
+                                activeProfileSection === child.id
+                                  ? styles.mobileSubNavButtonActive
+                                  : ""
+                              }`}
+                            >
+                              {child.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  }
+
                   return (
                     <button
                       key={item.path}

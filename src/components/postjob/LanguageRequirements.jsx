@@ -5,9 +5,12 @@ import common from "../../../dropdown/common/common.json";
 import postjob from "../../../dropdown/School_module/postjob.json";
 import styles from "./styles/LanguageRequirements.module.css";
 import { Button, Select } from "@cloudstrytech/ui-components";
+import { toOptions } from "../../lib/selectOptions";
 
-const { Indian_language: INDIAN_LANGUAGES, Foreign_language: FOREIGN_LANGUAGES, Language_type: LANGUAGE_TYPES } = common;
-const { Proficiency_level: PROFICIENCY_LEVELS } = postjob;
+const { Indian_language: INDIAN_LANGUAGES, Foreign_language: FOREIGN_LANGUAGES, Language_type: LANGUAGE_TYPES_RAW } = common;
+const { Proficiency_level: PROFICIENCY_LEVELS_RAW } = postjob;
+const LANGUAGE_TYPES = toOptions(LANGUAGE_TYPES_RAW);
+const PROFICIENCY_LEVELS = toOptions(PROFICIENCY_LEVELS_RAW);
 
 const LanguageRequirements = ({ form, setField }) => {
   const [showPicker, setShowPicker] = useState(false);
@@ -79,12 +82,12 @@ const LanguageRequirements = ({ form, setField }) => {
               onChange={setTempLang}
               disabled={!tempType}
               placeholder={tempType ? "Select Language..." : "Choose Type first"}
-              options={
+              options={toOptions(
                 tempType
                   ? (tempType === "Indian" ? INDIAN_LANGUAGES : FOREIGN_LANGUAGES)
                     .filter((l) => !form.languages.some((fl) => fl.name === l))
-                  : []
-              }
+                  : [],
+              )}
               className={styles.pickerSelect}
             />
           </div>

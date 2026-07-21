@@ -154,7 +154,94 @@ const TeacherHome = () => {
         </div>
       </div>
 
-      {/* 2. Metrics Section (3 cards instead of 4) */}
+      {/* 2. Recommended (Featured) Jobs */}
+      <section className={styles.panel}>
+        <div className={styles.panelHeaderRow}>
+          <h2 className={styles.panelTitle}>
+            Recommended Jobs
+          </h2>
+          <button
+            onClick={() => navigate("/teacher/recommendation")}
+            className={styles.viewAllButton}
+            type="button"
+          >
+            View all
+          </button>
+        </div>
+
+        <div className={styles.jobListWrap}>
+          {recommendedJobs.length === 0 ? (
+            <p className={styles.jobListEmpty}>
+              No recommended jobs found. Update your profile skills to match listings.
+            </p>
+          ) : (
+            recommendedJobs.map((job) => {
+              const isApplied = appliedJobs.some((item) => item.id === job.id);
+              const isSaved = savedJobs.some((item) => item.id === job.id);
+
+              const handleRowClick = (e) => {
+                if (e.target.closest("button")) return;
+                navigate(`/teacher/jobs/${job.id}`);
+              };
+
+              return (
+                <div
+                  key={job.id}
+                  onClick={handleRowClick}
+                  className={styles.jobRow}
+                >
+                  <div className={styles.jobRowLeft}>
+                    {/* School Icon Placeholder */}
+                    <div className={styles.jobIconBadge}>
+                      <GraduationCap size={22} />
+                    </div>
+                    <div className={styles.jobRowInfo}>
+                      <h3 className={styles.jobRole}>
+                        {job.role}
+                      </h3>
+                      <p className={styles.jobMeta}>
+                        {job.school} · {job.location}
+                      </p>
+                      <div className={styles.jobTagsRow}>
+                        <span>{job.type}</span>
+                        <span>·</span>
+                        <span>{job.skill}</span>
+                        <span>·</span>
+                        <span className={styles.jobSalary}>
+                          {job.salary}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={styles.jobRowRight}>
+                    <span className={styles.matchBadge}>
+                      {job.match || "95"}% Match
+                    </span>
+                    <div className={styles.jobActionsRow}>
+                      <Button
+                        variant="filled"
+                        onClick={() => handleApply(job)}
+                      >
+                        {isApplied ? "Applied" : "Apply"}
+                      </Button>
+
+                      <Button
+                        variant="outlined"
+                        onClick={() => handleSave(job)}
+                      >
+                        {isSaved ? "Saved" : "Save"}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </section>
+
+      {/* 3. Metrics Section (3 cards instead of 4) */}
       <div className={styles.metricsGrid}>
         {/* Card 1: Applications Sent */}
         <button
@@ -221,99 +308,10 @@ const TeacherHome = () => {
         </button>
       </div>
 
-      {/* 3. Two-Column Dashboard Layout (Left: Job recommendation + Activity, Right: Upcoming Interview Card) */}
+      {/* 4. Two-Column Dashboard Layout (Left: Activity, Right: Upcoming Interview Card) */}
       <div className={styles.dashboardGrid}>
         {/* Left Column: Occupies 2/3 width */}
         <div className={styles.leftColumn}>
-          {/* Recommended Jobs */}
-          <section className={styles.panel}>
-            <div className={styles.panelHeaderRow}>
-              <h2 className={styles.panelTitle}>
-                Recommended Jobs
-              </h2>
-              <button
-                onClick={() => navigate("/teacher/recommendation")}
-                className={styles.viewAllButton}
-                type="button"
-              >
-                View all
-              </button>
-            </div>
-
-            <div className={styles.jobListWrap}>
-              {recommendedJobs.length === 0 ? (
-                <p className={styles.jobListEmpty}>
-                  No recommended jobs found. Update your profile skills to match listings.
-                </p>
-              ) : (
-                recommendedJobs.map((job) => {
-                  const isApplied = appliedJobs.some((item) => item.id === job.id);
-                  const isSaved = savedJobs.some((item) => item.id === job.id);
-
-                  const handleRowClick = (e) => {
-                    if (e.target.closest("button")) return;
-                    navigate(`/teacher/jobs/${job.id}`);
-                  };
-
-                  return (
-                    <div
-                      key={job.id}
-                      onClick={handleRowClick}
-                      className={styles.jobRow}
-                    >
-                      <div className={styles.jobRowLeft}>
-                        {/* School Icon Placeholder */}
-                        <div className={styles.jobIconBadge}>
-                          <GraduationCap size={22} />
-                        </div>
-                        <div className={styles.jobRowInfo}>
-                          <h3 className={styles.jobRole}>
-                            {job.role}
-                          </h3>
-                          <p className={styles.jobMeta}>
-                            {job.school} · {job.location}
-                          </p>
-                          <div className={styles.jobTagsRow}>
-                            <span>{job.type}</span>
-                            <span>·</span>
-                            <span>{job.skill}</span>
-                            <span>·</span>
-                            <span className={styles.jobSalary}>
-                              {job.salary}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className={styles.jobRowRight}>
-                        <span className={styles.matchBadge}>
-                          {job.match || "95"}% Match
-                        </span>
-                        <div className={styles.jobActionsRow}>
-                          <Button
-                            variant={isApplied ? "success" : "filled"}
-                            onClick={() => handleApply(job)}
-                            className={isApplied ? styles.applyButtonApplied : styles.applyButton}
-                          >
-                            {isApplied ? "Applied" : "Apply"}
-                          </Button>
-
-                          <Button
-                            variant={isSaved ? "success" : "outlined"}
-                            onClick={() => handleSave(job)}
-                            className={isSaved ? styles.saveButtonSaved : styles.saveButton}
-                          >
-                            {isSaved ? "Saved" : "Save"}
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          </section>
-
           {/* Recent Activity */}
           <section className={styles.panelCompact}>
             <h3 className={styles.panelTitleSm}>

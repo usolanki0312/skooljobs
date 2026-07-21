@@ -13,9 +13,9 @@
   width: 16rem;
   flex-shrink: 0;
   flex-direction: column;
-  border-right: 1px solid var(--color-border);
-  background-color: #fff;
+  background-color: var(--color-primary);
   padding: 1.25rem;
+  color: #fff;
 }
 
 @media (min-width: 1024px) {
@@ -38,15 +38,21 @@
   gap: 0.5rem;
   align-self: flex-start;
   border-radius: 0.75rem;
-  border: 1px dashed var(--color-border);
+  border: 1px dashed rgba(255, 255, 255, 0.3);
   padding: 0.5rem 1rem;
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--color-primary);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .logoUploadLabel:hover {
-  background-color: var(--color-light);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.uploadError {
+  margin: -0.75rem 0 1rem;
+  font-size: 0.7rem;
+  color: #fca5a5;
 }
 
 .schoolInfoRow {
@@ -89,12 +95,12 @@
   white-space: nowrap;
   font-size: 0.875rem;
   font-weight: 700;
-  color: #1e293b;
+  color: #fff;
 }
 
 .schoolAccountLabel {
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .nav {
@@ -110,24 +116,24 @@
   width: 100%;
   align-items: center;
   gap: 0.75rem;
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   padding: 0.75rem 1rem;
   text-align: left;
   font-size: 0.875rem;
   font-weight: 700;
   transition-property: all;
   transition-duration: 150ms;
-  color: #475569;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .navButton:hover {
-  background-color: var(--color-light);
-  color: var(--color-primary);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 
 .navButton.navButtonActive {
-  background-color: var(--color-primary);
-  color: #fff;
+  background-color: var(--color-bg);
+  color: var(--color-primary);
 }
 
 .navButton.navButtonActive:hover {
@@ -137,7 +143,7 @@
 
 .sidebarFooter {
   margin-top: 1rem;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
   padding-top: 1rem;
 }
 
@@ -146,16 +152,19 @@
   width: 100%;
   align-items: center;
   gap: 0.75rem;
-  border-radius: 0.75rem;
+  border-radius: 1rem;
+  background-color: #ef4444;
   padding: 0.75rem 1rem;
   text-align: left;
   font-size: 0.875rem;
   font-weight: 700;
-  color: #475569;
+  color: #fff;
+  transition-property: all;
+  transition-duration: 150ms;
 }
 
 .logoutButton:hover {
-  background-color: var(--color-light);
+  background-color: #dc2626;
 }
 
 .main {
@@ -187,7 +196,7 @@
   align-items: center;
   justify-content: space-between;
   border-radius: 1.5rem;
-  background-color: #fff;
+  background-color: var(--color-bg);
   padding: 0.75rem;
   box-shadow: var(--shadow-soft);
 }
@@ -220,7 +229,7 @@
   flex-direction: column;
   gap: 0.25rem;
   border-radius: 1.5rem;
-  background-color: #fff;
+  background-color: var(--color-bg);
   padding: 0.75rem;
   box-shadow: var(--shadow-soft);
 }
@@ -267,7 +276,7 @@
   width: 20rem;
   border-radius: 1rem;
   border: 1px solid var(--color-border);
-  background-color: #fff;
+  background-color: var(--color-bg);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
 
@@ -340,7 +349,7 @@
   font-size: 0.875rem;
   transition-property: all;
   transition-duration: 150ms;
-  background-color: #fff;
+  background-color: var(--color-bg);
 }
 
 .notifItem:hover {
@@ -348,7 +357,7 @@
 }
 
 .notifItemUnread {
-  background-color: rgba(4, 72, 144, 0.05);
+  background-color: rgba(21, 41, 63, 0.05);
 }
 
 .notifItemUnread:hover {

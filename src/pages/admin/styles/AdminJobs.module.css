@@ -1,0 +1,164 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+@media (min-width: 640px) {
+  .title {
+    font-size: 1.875rem;
+  }
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.filterRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .filterRow {
+    flex-direction: row;
+  }
+}
+
+.searchBox {
+  display: flex;
+  flex: 1 1 0%;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  padding: 0.75rem 1rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.searchIcon {
+  color: #94a3b8;
+}
+
+.searchInput {
+  flex: 1 1 0%;
+  background-color: transparent;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: #94a3b8;
+}
+
+.tableWrap {
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.tableScroll {
+  overflow-x: auto;
+}
+
+.table {
+  min-width: 47.5rem;
+  width: 100%;
+  text-align: left;
+  font-size: 0.875rem;
+  border-collapse: collapse;
+}
+
+.tableHead {
+  background-color: rgba(21, 41, 63, 0.05);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  color: var(--color-primary);
+}
+
+.th {
+  padding: 1rem 1.25rem;
+}
+
+.tableBody {
+  border-top: 1px solid var(--color-border);
+}
+
+.tableBody > tr:not(:last-child) {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.emptyCell {
+  padding: 2.5rem 1.25rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+.row {
+  transition: background-color 150ms ease;
+}
+
+.row:hover {
+  background-color: rgba(238, 242, 247, 0.6);
+}
+
+.td {
+  padding: 0.875rem 1.25rem;
+}
+
+.tdTitle {
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.tdSubject {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.tdMuted {
+  padding: 0.875rem 1.25rem;
+  color: #475569;
+}
+
+.tdLight {
+  padding: 0.875rem 1.25rem;
+  color: #64748b;
+}
+
+.statusChip {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.statusActive { background-color: #f0fdf4; color: #16a34a; }
+.statusScheduled { background-color: #eff6ff; color: #2563eb; }
+.statusPending { background-color: #f5f3ff; color: #7c3aed; }
+.statusApproved { background-color: #ecfdf5; color: #059669; }
+.statusRejected { background-color: #fef2f2; color: #dc2626; }
+.statusDraft { background-color: #fffbeb; color: #d97706; }
+.statusPaused { background-color: #fff7ed; color: #f97316; }
+.statusClosed { background-color: #f1f5f9; color: #64748b; }
+.statusDefault { background-color: #f1f5f9; color: #64748b; }
