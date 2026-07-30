@@ -20,6 +20,8 @@ jobs:
       # Checkout Source Code
       - name: Checkout Source Code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # Setup Node.js
       - name: Setup Node.js
@@ -62,7 +64,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
-            -Dsonar.projectKey=react-app
+            -Dsonar.projectKey=skooljobs-react
             -Dsonar.sources=src
             -Dsonar.exclusions=node_modules/**,dist/**,android/**
 
