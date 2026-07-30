@@ -1,7 +1,5 @@
 import { useState } from "react";
 import AuthLayout from "../components/Authlayout";
-import AuthInput from "../components/AuthInput";
-import AuthButton from "../components/AuthButton";
 import { Link, useNavigate } from "react-router-dom";
 import "@cloudstrytech/ui-components/styles.css";
 import { Button, Input } from "@cloudstrytech/ui-components";

@@ -8,7 +8,7 @@ const Topbar = ({
   onNotificationClick,
   notificationDropdown,
 }) => {
-  let currentUser = {};
+  let currentUser;
 
   try {
     currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");

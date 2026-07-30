@@ -1,11 +1,10 @@
 import styles from "./styles/MinMaxInput.module.css";
-import { Button, Input } from "@cloudstrytech/ui-components";
+import { Input } from "@cloudstrytech/ui-components";
 
 const MinMaxInput = ({
   label, minValue, maxValue, onMinChange, onMaxChange, suffix = "", readOnly = false,
 }) => {
   const boxCls = `${styles.box} ${readOnly ? styles.boxReadOnly : styles.boxEditable}`;
-  const inputCls = `${styles.input} ${readOnly ? styles.inputReadOnly : styles.inputEditable}`;
 
   return (
     <div>

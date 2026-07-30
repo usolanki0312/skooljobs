@@ -1,6 +1,6 @@
 import styles from "./styles/Authlayout.module.css";
 
-function AuthLayout({ children, title, subtitle, activeTab = 'candidate', onTabChange }) {
+function AuthLayout({ children, title, activeTab = 'candidate', onTabChange }) {
   return (
     <div className={styles.page}>
       <div className={styles.grid}>

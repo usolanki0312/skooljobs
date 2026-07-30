@@ -1,5 +1,5 @@
 import { useOutletContext, useNavigate } from "react-router-dom";
-import { Calendar, Briefcase, Eye, Trash2, CheckCircle2 } from "lucide-react";
+import { Calendar, Briefcase, CheckCircle2 } from "lucide-react";
 import styles from "./styles/TeacherApplications.module.css";
 import { Button } from "@cloudstrytech/ui-components";
 

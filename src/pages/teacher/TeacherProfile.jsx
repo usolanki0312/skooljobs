@@ -13,18 +13,14 @@ import {
   MapPin,
   Menu,
   Phone,
-  Plus,
   RotateCcw,
-  Save,
   Sparkles,
   Trophy,
   Upload,
   User,
   X,
   Wand2,
-  ArrowLeft,
 } from "lucide-react";
-import BackButton from "../../components/backbutton";
 import SelectOrOther from "../../components/ui/SelectOrOther";
 import { pinStateMap } from "../../lib/teacherdata";
 import qualificationOptionsRaw from "../../../dropdown/Teacher_module/qualifications.json";
@@ -90,8 +86,6 @@ const navItems = [
 ];
 
 const inputClass = styles.input;
-
-const compactInputClass = styles.compactInput;
 
 const labelClass = styles.fieldLabel;
 
@@ -211,11 +205,14 @@ const TeacherProfile = () => {
     setActiveSectionState(id);
     setSearchParams(id === "basic" ? {} : { section: id }, { replace: true });
   };
-  useEffect(() => {
+  const [prevSearchParams, setPrevSearchParams] = useState(searchParams);
+  if (searchParams !== prevSearchParams) {
+    setPrevSearchParams(searchParams);
     const requested = searchParams.get("section");
-    if (!validSectionIds.includes(requested)) return;
-    setActiveSectionState((current) => (requested !== current ? requested : current));
-  }, [searchParams]);
+    if (validSectionIds.includes(requested) && requested !== activeSection) {
+      setActiveSectionState(requested);
+    }
+  }
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [profileImage, setProfileImage] = useState(
     storedUser.profilePhoto || "https://i.pravatar.cc/300?img=12",
@@ -230,7 +227,9 @@ const TeacherProfile = () => {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch { }
+      } catch {
+        /* fall through to defaults below */
+      }
     }
     return {
       title: "Mr",
@@ -281,7 +280,9 @@ const TeacherProfile = () => {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch { }
+      } catch {
+        /* fall through to defaults below */
+      }
     }
     return [];
   });
@@ -296,7 +297,9 @@ const TeacherProfile = () => {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch { }
+      } catch {
+        /* fall through to defaults below */
+      }
     }
     return [];
   });
@@ -310,7 +313,9 @@ const TeacherProfile = () => {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch { }
+      } catch {
+        /* fall through to defaults below */
+      }
     }
     return [];
   });
@@ -319,7 +324,9 @@ const TeacherProfile = () => {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch { }
+      } catch {
+        /* fall through to defaults below */
+      }
     }
     return [];
   });
@@ -367,7 +374,9 @@ const TeacherProfile = () => {
     if (saved) {
       try {
         return JSON.parse(saved);
-      } catch { }
+      } catch {
+        /* fall through to defaults below */
+      }
     }
     return [
       { language: "English", status: "Fluency enough to teach", languageOther: "" },
@@ -382,7 +391,9 @@ const TeacherProfile = () => {
       if (saved) {
         try {
           return JSON.parse(saved);
-        } catch { }
+        } catch {
+          /* fall through to defaults below */
+        }
       }
       return ["History", "Geography"];
     },
@@ -473,7 +484,9 @@ const TeacherProfile = () => {
 
   // Auto-fill Highest Qualification 1/2 from the saved Qualification list
   // (kept editable — only fills fields the user hasn't already set manually).
-  useEffect(() => {
+  const [prevSavedQualifications, setPrevSavedQualifications] = useState(savedQualifications);
+  if (savedQualifications !== prevSavedQualifications) {
+    setPrevSavedQualifications(savedQualifications);
     const highest = savedQualifications[0];
     const secondHighest = savedQualifications[1];
     setTeacherData((prev) => {
@@ -491,7 +504,7 @@ const TeacherProfile = () => {
       }
       return changed ? next : prev;
     });
-  }, [savedQualifications]);
+  }
 
   const [writeUpGenerating, setWriteUpGenerating] = useState(false);
   const handleGenerateWriteUp = () => {
@@ -541,6 +554,7 @@ const TeacherProfile = () => {
     if (!/^\d{6}$/.test(pin)) return;
 
     let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- kicks off a fetch; loading/error state can't be derived during render
     setPincodeLoading(true);
     setPincodeError("");
 
@@ -576,6 +590,7 @@ const TeacherProfile = () => {
   useEffect(() => {
     const q = areaQuery.trim();
     if (q.length < 3) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- resets results when the debounced query becomes too short to search
       setAreaResults([]);
       setAreaError("");
       return;
@@ -1335,13 +1350,6 @@ const TeacherProfile = () => {
   const completion = Math.round(
     (completionItems.filter(Boolean).length / completionItems.length) * 100,
   );
-  const updateField = (field) => (value) => {
-    setTeacherData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
   const renderBasicInfo = () => (
     <>
       <SectionHeader

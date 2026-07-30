@@ -1,4 +1,4 @@
-import { Award, Bookmark, BriefcaseBusiness, GraduationCap, MapPin, Send } from "lucide-react";
+import { Award, BriefcaseBusiness, GraduationCap, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import styles from "./styles/TeacherJobCard.module.css";
 import { Button } from "@cloudstrytech/ui-components";

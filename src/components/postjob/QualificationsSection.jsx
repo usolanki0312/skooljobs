@@ -2,7 +2,7 @@ import { X } from "lucide-react";
 import SectionCard from "./SectionCard";
 import postjob from "../../../dropdown/School_module/postjob.json";
 import styles from "./styles/QualificationsSection.module.css";
-import { Button, Input, Select } from "@cloudstrytech/ui-components";
+import { Select } from "@cloudstrytech/ui-components";
 import { toOptions } from "../../lib/selectOptions";
 
 const {

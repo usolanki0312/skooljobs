@@ -11,7 +11,7 @@ const TeacherInterviews = () => {
   const candidateName =
     `${teacherProfile.firstName || currentUser.firstName || "Rahul"} ${teacherProfile.lastName || currentUser.lastName || "Sharma"}`.trim();
 
-  const [interviews, setInterviews] = useState(() => {
+  const [interviews] = useState(() => {
     const saved = localStorage.getItem("skooljobs_interviews");
     return saved ? JSON.parse(saved) : [];
   });
