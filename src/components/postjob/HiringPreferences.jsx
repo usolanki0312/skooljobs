@@ -6,8 +6,6 @@ import { Button, Input } from "@cloudstrytech/ui-components";
 
 const { Gender_preference: GENDER_PREFERENCES, Interview_mode: INTERVIEW_MODES } = postjob;
 
-const inputCls = styles.input;
-
 const PillGroup = ({ label, options, value, onSelect }) => (
   <div>
     <p className={styles.pillGroupLabel}>{label}</p>

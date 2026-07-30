@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { Bell, Filter } from "lucide-react";
+import { Bell } from "lucide-react";
 import TeacherJobCard from "../../components/TeacherJobCard";
 import { Select } from "@cloudstrytech/ui-components";
 import { toOptions } from "../../lib/selectOptions";

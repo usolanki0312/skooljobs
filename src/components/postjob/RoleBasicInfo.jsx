@@ -2,7 +2,7 @@ import { MapPin } from "lucide-react";
 import SectionCard from "./SectionCard";
 import postjob from "../../../dropdown/School_module/postjob.json";
 import styles from "./styles/RoleBasicInfo.module.css";
-import { Button, Input, Select } from "@cloudstrytech/ui-components";
+import { Input, Select } from "@cloudstrytech/ui-components";
 import { toOptions } from "../../lib/selectOptions";
 import SelectOrOther from "../ui/SelectOrOther";
 
@@ -16,8 +16,6 @@ const {
 
 const ROLE_CATEGORIES = toOptions(ROLE_CATEGORIES_RAW);
 const JOINING_TIMELINES = toOptions(JOINING_TIMELINES_RAW);
-
-const inputCls = styles.input;
 
 const RoleBasicInfo = ({ form, setField, managedSchools }) => {
   const jobTitleList = toOptions(

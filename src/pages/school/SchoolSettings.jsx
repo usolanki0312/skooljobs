@@ -5,7 +5,6 @@ import { Button, Input } from "@cloudstrytech/ui-components";
 import {
   HelpCircle,
   KeyRound,
-  Save,
   Trash2,
   Users,
   ShieldAlert,
@@ -14,7 +13,6 @@ import {
   X,
   Pencil,
 } from "lucide-react";
-import { inputClass } from "../../lib/formStyles";
 import FormField from "../../components/FormField";
 import styles from "./styles/SchoolSettings.module.css";
 
@@ -74,17 +72,6 @@ const SchoolSettings = () => {
 
   // Helper to trigger OTP verification inline
   const triggerOtpVerification = (actionType, targetId, formData = null) => {
-    let defaultPhone = currentUser.phone || "9999999999";
-
-    if (actionType === "edit" || actionType === "add") {
-      defaultPhone = formData.phone || defaultPhone;
-    } else if (actionType === "delete" || actionType === "transfer") {
-      const memberObj = members.find(m => m.id === targetId);
-      if (memberObj) {
-        defaultPhone = memberObj.phone || defaultPhone;
-      }
-    }
-
     setOtpState({
       isOpen: true,
       actionType,

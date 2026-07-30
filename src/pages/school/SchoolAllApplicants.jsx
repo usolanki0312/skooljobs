@@ -6,7 +6,7 @@ import {
 import postjob from "../../../dropdown/School_module/postjob.json";
 import applicantsOptions from "../../../dropdown/School_module/applicants.json";
 import styles from "./styles/SchoolAllApplicants.module.css";
-import { Button, Select } from "@cloudstrytech/ui-components";
+import { Select } from "@cloudstrytech/ui-components";
 import { toOptions } from "../../lib/selectOptions";
 
 const { Subject: subjectsRaw } = postjob;
