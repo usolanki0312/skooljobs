@@ -52,9 +52,11 @@ const SchoolLayout = () => {
   const location = useLocation();
 
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  useEffect(() => {
+  const [prevPathname, setPrevPathname] = useState(location.pathname);
+  if (location.pathname !== prevPathname) {
+    setPrevPathname(location.pathname);
     setMobileNavOpen(false);
-  }, [location.pathname]);
+  }
 
   const [jobs, setJobs] = useState(() => {
     const saved = localStorage.getItem("skooljobs_jobs");
@@ -100,7 +102,7 @@ const SchoolLayout = () => {
   const [interviews, setInterviews] = useState(() => {
     const saved = localStorage.getItem("skooljobs_interviews");
     if (saved) {
-      try { return JSON.parse(saved); } catch { }
+      try { return JSON.parse(saved); } catch { /* fall through to defaults below */ }
     }
     const initial = [
       {

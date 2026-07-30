@@ -2,7 +2,7 @@ import MinMaxInput from "./MinMaxInput";
 import SectionCard from "./SectionCard";
 import postjob from "../../../dropdown/School_module/postjob.json";
 import styles from "./styles/SalaryBenefits.module.css";
-import { Button, Input, Select } from "@cloudstrytech/ui-components";
+import { Input, Select } from "@cloudstrytech/ui-components";
 import { toOptions } from "../../lib/selectOptions";
 
 const {
@@ -22,43 +22,15 @@ const OFFICE_DAYS = toOptions(OFFICE_DAYS_RAW);
 const TIMEZONES = toOptions(TIMEZONES_RAW);
 const INTERNSHIP_DURATIONS = toOptions(INTERNSHIP_DURATIONS_RAW);
 
-const selectCls = styles.selectFieldWrap;
-
 const SubLabel = ({ children }) => (
   <p className={styles.subLabel}>
     {children}
   </p>
 );
 
-const BenefitCheckboxes = ({ title, list, selected, onToggle }) => (
-  <div>
-    <SubLabel>{title}</SubLabel>
-    <div className={styles.checkboxGrid}>
-      {list.map((b) => (
-        <label
-          key={b}
-          className={styles.checkboxLabel}
-        >
-          <Input
-            type="checkbox"
-            checked={selected.includes(b)}
-            onChange={() => onToggle(b)}
-          />
-          {b}
-        </label>
-      ))}
-    </div>
-  </div>
-);
-
 // ── Per-type salary panels ─────────────────────────────────────────────────
 
-const FullTimeSalary = ({
-  form,
-  setField,
-  toggleMonthlyBenefit,
-  toggleAnnualBenefit,
-}) => {
+const FullTimeSalary = ({ form, setField }) => {
   const pct = Number(form.inHandPercentage) || 0;
   const monthlyInHand = (ctc) => {
     const n = Number(ctc);
@@ -296,14 +268,6 @@ const PANEL_META = {
 };
 
 const SalaryBenefits = ({ form, setField }) => {
-  const toggle = (key) => (item) => {
-    const arr = form[key];
-    setField(
-      key,
-      arr.includes(item) ? arr.filter((x) => x !== item) : [...arr, item],
-    );
-  };
-
   const type = form.employmentType;
   const meta = PANEL_META[type];
 
@@ -349,12 +313,7 @@ const SalaryBenefits = ({ form, setField }) => {
           </div>
 
           {type === "Full Time" && (
-            <FullTimeSalary
-              form={form}
-              setField={setField}
-              toggleMonthlyBenefit={toggle("monthlyBenefits")}
-              toggleAnnualBenefit={toggle("annualBenefits")}
-            />
+            <FullTimeSalary form={form} setField={setField} />
           )}
           {type === "Part Time" && (
             <PartTimeSalary form={form} setField={setField} />

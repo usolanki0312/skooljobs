@@ -12,20 +12,16 @@ import {
   ArrowLeft,
   BriefcaseBusiness,
   Building2,
-  Bus,
   Camera,
-  Clock,
   CreditCard,
   Globe,
   Heart,
   ImageIcon,
-  KeyRound,
   LayoutDashboard,
   LogOut,
   Menu,
   Package,
   PlusCircle,
-  Save,
   Settings,
   Upload,
   Users,
@@ -115,8 +111,6 @@ const sidebarItems = [
 const establishmentYears = toOptions(
   Array.from({ length: 76 }, (_, i) => String(2025 - i)),
 );
-
-const inputClass = styles.inputBase;
 
 const labelClass = styles.fieldLabel;
 
@@ -810,6 +804,7 @@ const SchoolProfile = () => {
     if (!/^\d{6}$/.test(pin)) return;
 
     let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- kicks off a fetch; loading/error state can't be derived during render
     setPincodeLoading(true);
     setPincodeError("");
 
@@ -846,6 +841,7 @@ const SchoolProfile = () => {
   useEffect(() => {
     const q = areaQuery.trim();
     if (q.length < 3) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- resets results when the debounced query becomes too short to search
       setAreaResults([]);
       setAreaError("");
       return;
@@ -1074,7 +1070,7 @@ const SchoolProfile = () => {
 
   // ─── Sidebar ───────────────────────────────────────────────────────────────
 
-  const SidebarInner = () => (
+  const sidebarInner = (
     <div className={styles.sidebarInner}>
       <div className={styles.sidebarHeader}>
         <div className={styles.sidebarLogoBox}>
@@ -1157,7 +1153,7 @@ const SchoolProfile = () => {
     <div className={styles.pageWrap}>
       <form onSubmit={handleSubmit} className={styles.formLayout}>
         <aside className={styles.aside}>
-          <SidebarInner />
+          {sidebarInner}
         </aside>
 
         <main className={styles.main}>

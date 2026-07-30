@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useOutletContext } from "react-router-dom";
 import { formatRelativeTime } from "../../lib/teacherdata";
 import styles from "./styles/TeacherActivity.module.css";
@@ -5,10 +6,13 @@ import styles from "./styles/TeacherActivity.module.css";
 const TeacherActivity = () => {
   const { activities } = useOutletContext();
 
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-  const recentActivities = activities
-    .filter((a) => new Date(a.date) >= thirtyDaysAgo)
-    .slice(0, 10);
+  const recentActivities = useMemo(() => {
+    // eslint-disable-next-line react-hooks/purity -- window is anchored to "now" at render time by design (last-30-days display filter)
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    return activities
+      .filter((a) => new Date(a.date) >= thirtyDaysAgo)
+      .slice(0, 10);
+  }, [activities]);
 
   return (
     <section className={styles.section}>

@@ -1,7 +1,7 @@
 import { ImageIcon, Upload, Wand2, X } from "lucide-react";
 import SectionCard from "./SectionCard";
 import styles from "./styles/JobDescriptionSection.module.css";
-import { Input, Button } from "@cloudstrytech/ui-components";
+import { Button } from "@cloudstrytech/ui-components";
 import { useImageUpload } from "../../lib/useImageUpload";
 
 const JobDescriptionSection = ({

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { HelpCircle, KeyRound, Save, Trash2, Bell, Eye } from "lucide-react";
-import { inputClass } from "../../lib/formStyles";
 import FormField from "../../components/FormField";
 import styles from "./styles/TeacherSettings.module.css";
 import { Button, Input } from "@cloudstrytech/ui-components";

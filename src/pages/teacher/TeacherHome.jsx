@@ -3,12 +3,9 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { Button } from "@cloudstrytech/ui-components";
 import {
   Bookmark,
-  CheckCircle2,
   Calendar,
   Send,
   GraduationCap,
-  ChevronRight,
-  Star,
   X,
   Bell,
 } from "lucide-react";
@@ -21,7 +18,6 @@ const TeacherHome = () => {
     appliedJobs,
     savedJobs,
     activities,
-    profileImage,
     displayName,
     recommendedJobs,
     handleApply,

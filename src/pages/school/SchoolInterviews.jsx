@@ -3,8 +3,8 @@ import { useOutletContext } from "react-router-dom";
 import { Button, Input, Select } from "@cloudstrytech/ui-components";
 
 import {
-  Calendar, CheckCircle, Clock, Link2, MapPin, MessageCircle, Pencil,
-  PhoneCall, Video, XCircle, X,
+  Calendar, Clock, Link2, MapPin, MessageCircle,
+  PhoneCall, Video, X,
 } from "lucide-react";
 import { toOptions } from "../../lib/selectOptions";
 import { validateFields } from "../../lib/textValidation";

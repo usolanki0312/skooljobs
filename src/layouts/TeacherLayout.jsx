@@ -20,8 +20,6 @@ import { jobsData, resumesData } from "../lib/teacherdata";
 import { computeJobMatch, loadTeacherMatchProfile } from "../lib/jobMatch";
 import styles from "./TeacherLayout.module.css";
 
-const resumes = resumesData;
-
 const profileSections = [
   { id: "basic", label: "My Profile" },
   { id: "viewProfile", label: "View Profile" },
@@ -57,9 +55,11 @@ const TeacherLayout = () => {
   const [profileMenuOpen, setProfileMenuOpen] = useState(
     location.pathname === "/teacher/profile",
   );
-  useEffect(() => {
+  const [prevPathname, setPrevPathname] = useState(location.pathname);
+  if (location.pathname !== prevPathname) {
+    setPrevPathname(location.pathname);
     setMobileNavOpen(false);
-  }, [location.pathname]);
+  }
 
   const activeProfileSection =
     location.pathname === "/teacher/profile"
@@ -154,9 +154,11 @@ const TeacherLayout = () => {
     localStorage.setItem("skooljobs_teacher_activities", JSON.stringify(activities));
   }, [activities]);
 
-  useEffect(() => {
+  const [prevProfilePhoto, setPrevProfilePhoto] = useState(currentUser.profilePhoto);
+  if (currentUser.profilePhoto !== prevProfilePhoto) {
+    setPrevProfilePhoto(currentUser.profilePhoto);
     if (currentUser.profilePhoto) setProfileImage(currentUser.profilePhoto);
-  }, [currentUser.profilePhoto]);
+  }
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -164,7 +166,9 @@ const TeacherLayout = () => {
         const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
         setCurrentUser(user);
         if (user.profilePhoto) setProfileImage(user.profilePhoto);
-      } catch {}
+      } catch {
+        /* ignore malformed currentUser in storage */
+      }
 
       const saved = localStorage.getItem("skooljobs_resumes");
       if (saved) {
@@ -176,7 +180,9 @@ const TeacherLayout = () => {
             const exists = list.find((r) => String(r.id) === String(prev.id));
             return exists || list[0] || null;
           });
-        } catch {}
+        } catch {
+          /* ignore malformed resumes in storage */
+        }
       }
     };
     window.addEventListener("storage", handleStorageChange);
@@ -186,17 +192,17 @@ const TeacherLayout = () => {
     };
   }, [location.pathname]);
 
-  if (!localStorage.getItem("currentUser")) {
-    return <Navigate to="/" replace />;
-  }
-
-  const displayName = currentUser.name || currentUser.firstName || "Gopal";
-
   const recommendedJobs = useMemo(() => {
     if (!selectedResume) return allJobs;
     const skillFocus = selectedResume.skill || selectedResume.skills?.split(",")[0]?.trim() || "Teaching";
     return allJobs.filter((job) => job.skill.toLowerCase() === skillFocus.toLowerCase());
   }, [selectedResume, allJobs]);
+
+  if (!localStorage.getItem("currentUser")) {
+    return <Navigate to="/" replace />;
+  }
+
+  const displayName = currentUser.name || currentUser.firstName || "Gopal";
 
   const addActivity = (message, type = "action") => {
     setActivities((prev) => [{ message, date: new Date().toISOString(), type }, ...prev]);
