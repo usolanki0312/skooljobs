@@ -14,8 +14,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    # Development Environment
     environment: development
 
     steps:
@@ -29,16 +27,16 @@ jobs:
           cache: npm
 
       - name: Configure Nexus npm Authentication
-  run: |
-    rm -f .npmrc
+        run: |
+          rm -f .npmrc
 
-    cat > .npmrc <<EOF
-    @schoolprofile:registry=https://repo.kaluafarms.com/repository/npm-hosted/
-    //repo.kaluafarms.com/repository/npm-hosted/:username=${{ secrets.NEXUS_USERNAME }}
-    //repo.kaluafarms.com/repository/npm-hosted/:_password=$(printf "%s" "${{ secrets.NEXUS_PASSWORD }}" | base64 | tr -d '\n')
-    //repo.kaluafarms.com/repository/npm-hosted/:email=ci@skooljobs.com
-    //repo.kaluafarms.com/repository/npm-hosted/:always-auth=true
-    EOF
+          cat > .npmrc <<EOF
+          @schoolprofile:registry=https://repo.kaluafarms.com/repository/npm-hosted/
+          //repo.kaluafarms.com/repository/npm-hosted/:username=${{ secrets.NEXUS_USERNAME }}
+          //repo.kaluafarms.com/repository/npm-hosted/:_password=$(printf "%s" "${{ secrets.NEXUS_PASSWORD }}" | base64 | tr -d '\n')
+          //repo.kaluafarms.com/repository/npm-hosted/:email=ci@skooljobs.com
+          //repo.kaluafarms.com/repository/npm-hosted/:always-auth=true
+          EOF
 
       - name: Install Dependencies
         run: npm ci
