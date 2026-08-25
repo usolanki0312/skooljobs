@@ -1,6 +1,7 @@
 import { Configuration, SchoolProfileApi } from "../generated/school-api";
 
-const BASE_URL = "http://dev.app.skooljobs.com/school-profiles";
+const BASE_URL = "http://dev.app.skooljobs.com";
+
 const configuration = new Configuration({
     basePath: BASE_URL,
 });
