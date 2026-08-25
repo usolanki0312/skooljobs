@@ -1,4 +1,3 @@
-
 name: SkoolJobs Dev Deploy
 
 on:
@@ -54,18 +53,15 @@ jobs:
 
             IMAGE_TAG=${{ github.ref_name }}
 
-            cd ~
-
             docker pull gopal011203/skooljobs:$IMAGE_TAG
 
-            docker tag \
-              gopal011203/skooljobs:$IMAGE_TAG \
-              gopal011203/skooljobs:latest
+            docker stop skooljobs-frontend || true
+            docker rm skooljobs-frontend || true
 
-            docker compose up -d \
-              --force-recreate \
-              --remove-orphans \
-              skooljob_frontend
+            docker run -d \
+              --name skooljobs-frontend \
+              --restart unless-stopped \
+              -p 8083:80 \
+              gopal011203/skooljobs:$IMAGE_TAG
 
             docker image prune -f
-
